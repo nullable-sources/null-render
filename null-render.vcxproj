@@ -21,6 +21,11 @@
   <ItemGroup>
     <ClCompile Include="src\null-render.ixx" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="$(SolutionDir)third-party\null-sdk\null-sdk.vcxproj">
+      <Project>{f7a10a5c-0fae-424b-8f2b-6cc4e4d898d1}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
