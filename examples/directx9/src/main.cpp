@@ -25,7 +25,9 @@ int main(HINSTANCE instance) {
 
 		window.create();
 		null::render::initialize();
+		
 		window.main_loop(main_loop);
+		
 		null::render::shutdown();
 		window.destroy();
 	} catch(std::exception exp) {
