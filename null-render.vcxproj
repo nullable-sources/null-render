@@ -19,6 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\backends\directx9\directx9.cxx" />
+    <ClCompile Include="src\backends\directx9\directx9.ixx" />
+    <ClCompile Include="src\compressed-fonts\proggy-clean.ixx" />
+    <ClCompile Include="src\draw-list\draw-list.cxx" />
+    <ClCompile Include="src\draw-list\draw-list.ixx" />
+    <ClCompile Include="src\font\font.cxx" />
+    <ClCompile Include="src\font\font.ixx" />
     <ClCompile Include="src\null-render.ixx" />
   </ItemGroup>
   <ItemGroup>
@@ -110,6 +117,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnableModules>true</EnableModules>
+      <AdditionalIncludeDirectories>$(SolutionDir)third-party\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -131,6 +139,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnableModules>true</EnableModules>
+      <AdditionalIncludeDirectories>$(SolutionDir)third-party\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -152,6 +161,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnableModules>true</EnableModules>
+      <AdditionalIncludeDirectories>$(SolutionDir)third-party\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -173,6 +183,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnableModules>true</EnableModules>
+      <AdditionalIncludeDirectories>$(SolutionDir)third-party\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>

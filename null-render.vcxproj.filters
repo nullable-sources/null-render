@@ -4,10 +4,46 @@
     <Filter Include="src">
       <UniqueIdentifier>{d11addc5-089b-4237-a3dd-c21f8f81dcf1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\draw-list">
+      <UniqueIdentifier>{d437ce68-0d2a-4aae-856f-6b39d4fc45f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\font">
+      <UniqueIdentifier>{eda5cc7f-ea04-4b39-84c1-023faa3fb642}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\compressed-fonts">
+      <UniqueIdentifier>{3c42f8f7-39ef-441e-bce5-b1746945b582}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\backends">
+      <UniqueIdentifier>{a7ae7260-bbb1-4596-a1a9-97d773e0c838}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\backends\directx9">
+      <UniqueIdentifier>{2e0a5fba-cfec-46c8-8f09-5682795d2755}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\null-render.ixx">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compressed-fonts\proggy-clean.ixx">
+      <Filter>src\compressed-fonts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\draw-list\draw-list.ixx">
+      <Filter>src\draw-list</Filter>
+    </ClCompile>
+    <ClCompile Include="src\font\font.cxx">
+      <Filter>src\font</Filter>
+    </ClCompile>
+    <ClCompile Include="src\font\font.ixx">
+      <Filter>src\font</Filter>
+    </ClCompile>
+    <ClCompile Include="src\draw-list\draw-list.cxx">
+      <Filter>src\draw-list</Filter>
+    </ClCompile>
+    <ClCompile Include="src\backends\directx9\directx9.ixx">
+      <Filter>src\backends\directx9</Filter>
+    </ClCompile>
+    <ClCompile Include="src\backends\directx9\directx9.cxx">
+      <Filter>src\backends\directx9</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
