@@ -3,12 +3,11 @@ import :font;
 import null.sdk;
 
 export namespace null {
-	enum struct e_draw_list_flags : int {
+	enum struct e_draw_list_flags {
 		anti_aliased_lines = 1 << 0,
 		anti_aliased_lines_use_texture = 1 << 1,
 		anti_aliased_fill = 1 << 2,
 		allow_vtx_offset = 1 << 3,
-		alla = anti_aliased_lines_use_texture | anti_aliased_fill
 	}; enum_create_bit_operators(e_draw_list_flags, true);
 
 	enum class e_corner_flags {
@@ -24,6 +23,19 @@ export namespace null {
 
 		all = top_left | top_right | bot_left | bot_right
 	}; enum_create_bit_operators(e_corner_flags, true);
+
+	//flags for drawing text
+	enum class e_text_flags {
+		outline = 1 << 0, //the default color for the outline is black, maybe later I will add color settings, but personally I don't need it, so you can always change it in your solution
+
+		//default aligin is top and left
+		aligin_right = 1 << 1, //will be draw at pos - text_size.x
+		aligin_bottom = 1 << 2, //will be draw at pos - text_size.y
+		//align_center is calculated after the rest, so it can be combined with left and bottom
+		aligin_centre_x = 1 << 3,
+		aligin_centre_y = 1 << 4,
+		aligin_centre = aligin_centre_x | aligin_centre_y
+	}; enum_create_bit_operators(e_text_flags, true);
 
 	enum class e_cmd_callbacks {
 		render_draw_data //std::function<bool(cmd*)>, will call setup_render_state if the callback returns true

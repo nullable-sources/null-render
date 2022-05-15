@@ -1,6 +1,4 @@
 //imgui version - 1.80 WIP (https://github.com/ocornut/imgui/tree/v1.80)
-module;
-#include <Windows.h>
 export module null.render;
 import null.sdk;
 import std.core;

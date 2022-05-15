@@ -13,10 +13,10 @@
     <Filter Include="src\compressed-fonts">
       <UniqueIdentifier>{3c42f8f7-39ef-441e-bce5-b1746945b582}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\backends">
+    <Filter Include="src\renderers">
       <UniqueIdentifier>{a7ae7260-bbb1-4596-a1a9-97d773e0c838}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\backends\directx9">
+    <Filter Include="src\renderers\directx9">
       <UniqueIdentifier>{2e0a5fba-cfec-46c8-8f09-5682795d2755}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -39,11 +39,11 @@
     <ClCompile Include="src\draw-list\draw-list.cxx">
       <Filter>src\draw-list</Filter>
     </ClCompile>
-    <ClCompile Include="src\backends\directx9\directx9.ixx">
-      <Filter>src\backends\directx9</Filter>
+    <ClCompile Include="src\renderers\directx9\directx9.cxx">
+      <Filter>src\renderers\directx9</Filter>
     </ClCompile>
-    <ClCompile Include="src\backends\directx9\directx9.cxx">
-      <Filter>src\backends\directx9</Filter>
+    <ClCompile Include="src\renderers\directx9\directx9.ixx">
+      <Filter>src\renderers\directx9</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

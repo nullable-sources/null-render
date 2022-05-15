@@ -19,14 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\backends\directx9\directx9.cxx" />
-    <ClCompile Include="src\backends\directx9\directx9.ixx" />
     <ClCompile Include="src\compressed-fonts\proggy-clean.ixx" />
     <ClCompile Include="src\draw-list\draw-list.cxx" />
     <ClCompile Include="src\draw-list\draw-list.ixx" />
     <ClCompile Include="src\font\font.cxx" />
     <ClCompile Include="src\font\font.ixx" />
     <ClCompile Include="src\null-render.ixx" />
+    <ClCompile Include="src\renderers\directx9\directx9.cxx" />
+    <ClCompile Include="src\renderers\directx9\directx9.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(SolutionDir)third-party\null-sdk\null-sdk.vcxproj">
