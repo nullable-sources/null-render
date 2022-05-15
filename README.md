@@ -7,7 +7,7 @@ Also, after I add all the backends and rewrite the gui, shaders will be added (I
 I tried to translate the entire ImGui render to c++20, most likely I didn’t get it very well, so if you notice some c-style code in the project, or incorrect use of stl - welcome to the issue or pull request tab, I will appreciate any help.
 
 # supported renderers and features
-- ## directx9
+- ### directx9
     - base render
 # dependencies
 [stb](https://github.com/nothings/stb)\
