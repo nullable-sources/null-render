@@ -93,7 +93,7 @@ namespace null::render {
                 return (std::uint32_t)(s2 << 16) + (std::uint32_t)s1;
             }
 
-            std::uint32_t decompress(std::uint8_t* output, const std::uint8_t* i, std::uint32_t /*length*/) {
+            std::uint32_t decompress(std::uint8_t* output, const std::uint8_t* i) {
                 if(stb_impl_in4(0) != 0x57bC0000) return 0;
                 if(stb_impl_in4(4) != 0) return 0;
                 const std::uint32_t olen = decompress_length(i);

@@ -433,7 +433,7 @@ namespace null::render {
 
     c_font* c_font::c_atlas::add_font_from_memory_compressed_ttf(std::vector<char> compressed_ttf, float size_pixels, config_t* config, const std::uint16_t* glyph_ranges) {
         std::vector<char> buf_decompressed_data(impl::stb::decompress_length((std::uint8_t*)compressed_ttf.data()));
-        impl::stb::decompress((std::uint8_t*)buf_decompressed_data.data(), (const std::uint8_t*)compressed_ttf.data(), (std::uint32_t)compressed_ttf.size());
+        impl::stb::decompress((std::uint8_t*)buf_decompressed_data.data(), (const std::uint8_t*)compressed_ttf.data());
 
         config_t cfg = config ? *config : config_t();
         if(!cfg.data.empty()) throw std::runtime_error("!cfg.data.empty()");
