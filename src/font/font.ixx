@@ -64,7 +64,7 @@ namespace null::render {
             }
 
             std::uint32_t adler32(std::uint32_t adler32, std::uint8_t* buffer, std::uint32_t buflen) {
-                const std::uint64_t ADLER_MOD = 65521;
+                constexpr std::uint64_t ADLER_MOD = 65521;
                 std::uint64_t s1 = adler32 & 0xffff, s2 = adler32 >> 16;
                 std::uint64_t blocklen = buflen % 5552;
 
