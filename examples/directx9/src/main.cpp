@@ -21,7 +21,7 @@ int main(HINSTANCE instance) {
 	window = null::render::directx9::c_window{ instance };
 
 	try {
-		null::render::global_atlas.add_font_from_file_ttf("C:\\Windows\\fonts\\Tahoma.ttf", 13.f);
+		//null::render::global_atlas.add_font_from_file_ttf("C:\\Windows\\fonts\\Tahoma.ttf", 13.f);
 
 		window.create();
 		null::render::initialize();

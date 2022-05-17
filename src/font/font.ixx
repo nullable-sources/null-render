@@ -140,8 +140,7 @@ namespace null::render {
             *out_char |= (std::uint32_t)(s[3] & 0x3f) << 0;
             *out_char >>= shiftc[len];
 
-            int e = 0;
-            e = (*out_char < mins[len]) << 6;
+            int e{ (*out_char < mins[len]) << 6 };
             e |= ((*out_char >> 11) == 0x1b) << 7;
             e |= (*out_char > 0xFFFF) << 8;
             e |= (s[1] & 0xc0) >> 2;

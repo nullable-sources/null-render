@@ -374,34 +374,33 @@ namespace null::render {
         else if(fonts.empty()) throw std::runtime_error("cannot use merge_mode for the first font");
 
         configs.push_back(*config);
-        config_t& new_font_cfg = configs.back();
+        config_t& cfg = configs.back();
         
-        if(!new_font_cfg.font) new_font_cfg.font = &fonts.back();
-        if(!new_font_cfg.owned_by_atlas) {
+        if(!cfg.font) cfg.font = &fonts.back();
+        if(!cfg.owned_by_atlas) {
             //new_font_cfg.data = config->data;
-            new_font_cfg.owned_by_atlas = true;
+            cfg.owned_by_atlas = true;
         }
 
-        if(new_font_cfg.font->ellipsis_char == (std::uint16_t)-1)
-            new_font_cfg.font->ellipsis_char = config->ellipsis_char;
+        if(cfg.font->ellipsis_char == (std::uint16_t)-1)
+            cfg.font->ellipsis_char = config->ellipsis_char;
 
         texture.clear();
-        return new_font_cfg.font;
+        return cfg.font;
     }
 
     c_font* c_font::c_atlas::add_font_default(config_t* config) {
-        config_t font_cfg = config ? *config : config_t();
+        config_t cfg = config ? *config : config_t();
         if(!config) {
-            font_cfg.oversample = vec2_t{ 1 };
-            font_cfg.pixel_snap_h = true;
+            cfg.oversample = vec2_t{ 1 };
+            cfg.pixel_snap_h = true;
         }
-        if(font_cfg.size_pixels <= 0.0f) font_cfg.size_pixels = 13.0f * 1.0f;
-        font_cfg.ellipsis_char = (std::uint16_t)0x0085;
-        font_cfg.glyph_config.offset.y = 1.0f * floor(font_cfg.size_pixels / 13.0f);
+        if(cfg.size_pixels <= 0.0f) cfg.size_pixels = 13.0f * 1.0f;
+        cfg.ellipsis_char = (std::uint16_t)0x0085;
+        cfg.glyph_config.offset.y = 1.0f * floor(cfg.size_pixels / 13.0f);
 
-        const char* ttf_compressed_base85 = compressed_fonts::proggy_clean;
-        const std::uint16_t* glyph_ranges = font_cfg.glyph_config.ranges ? font_cfg.glyph_config.ranges : glyph_t::ranges_default();
-        c_font* font = add_font_from_memory_compressed_base_85_ttf(ttf_compressed_base85, font_cfg.size_pixels, &font_cfg, glyph_ranges);
+        const std::uint16_t* glyph_ranges = cfg.glyph_config.ranges ? cfg.glyph_config.ranges : glyph_t::ranges_default();
+        c_font* font = add_font_from_memory_compressed_base_85_ttf(compressed_fonts::proggy_clean, cfg.size_pixels, &cfg, glyph_ranges);
         return font;
     }
 
@@ -423,7 +422,7 @@ namespace null::render {
         if(locked) throw std::runtime_error("cannot modify a locked atlas between begin_render() and end_render/render()!");
 
         config_t cfg = config ? *config : config_t();
-        if(!cfg.data.empty()) throw std::runtime_error("!font_cfg.data.empty()");
+        if(!cfg.data.empty()) throw std::runtime_error("!cfg.data.empty()");
         
         cfg.data = font_file;
         cfg.size_pixels = size_pixels;
@@ -433,12 +432,11 @@ namespace null::render {
     }
 
     c_font* c_font::c_atlas::add_font_from_memory_compressed_ttf(std::vector<char> compressed_ttf, float size_pixels, config_t* config, const std::uint16_t* glyph_ranges) {
-        const std::uint32_t buf_decompressed_size = impl::stb::decompress_length((const std::uint8_t*)*compressed_ttf.data());
-        std::vector<char> buf_decompressed_data(buf_decompressed_size);
-        impl::stb::decompress((std::uint8_t*)*buf_decompressed_data.data(), (const std::uint8_t*)*compressed_ttf.data(), (std::uint32_t)compressed_ttf.size());
+        std::vector<char> buf_decompressed_data(impl::stb::decompress_length((std::uint8_t*)compressed_ttf.data()));
+        impl::stb::decompress((std::uint8_t*)buf_decompressed_data.data(), (const std::uint8_t*)compressed_ttf.data(), (std::uint32_t)compressed_ttf.size());
 
         config_t cfg = config ? *config : config_t();
-        if(!cfg.data.empty()) throw std::runtime_error("!font_cfg.data.empty()");
+        if(!cfg.data.empty()) throw std::runtime_error("!cfg.data.empty()");
         cfg.owned_by_atlas = true;
 
         return add_font_from_memory_ttf(buf_decompressed_data, size_pixels, &cfg, glyph_ranges);
@@ -446,7 +444,7 @@ namespace null::render {
 
     c_font* c_font::c_atlas::add_font_from_memory_compressed_base_85_ttf(const char* compressed_font_data_base85, float size_pixels, config_t* config, const std::uint16_t* glyph_ranges) {
         std::vector<char> compressed_data((((int)strlen(compressed_font_data_base85) + 4) / 5) * 4);
-        impl::decode85((const std::uint8_t*)compressed_font_data_base85, (std::uint8_t*)*compressed_data.data());
+        impl::decode85((const std::uint8_t*)compressed_font_data_base85, (std::uint8_t*)compressed_data.data());
         c_font* font = add_font_from_memory_compressed_ttf(compressed_data, size_pixels, config, glyph_ranges);
         return font;
     }
