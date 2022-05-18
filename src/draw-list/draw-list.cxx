@@ -2,9 +2,12 @@ module null.render;
 import :draw_list;
 import :font;
 
+#define NORMALIZE2F_OVER_ZERO(VX,VY) do { float d2 = VX*VX + VY*VY; if (d2 > 0.0f) { float inv_len = 1.0f / sqrtf(d2); VX *= inv_len; VY *= inv_len; } } while (0)
+#define FIXNORMAL2F(VX,VY) do { float d2 = VX*VX + VY*VY; if (d2 < 0.5f) d2 = 0.5f; float inv_lensq = 1.0f / d2; VX *= inv_lensq; VY *= inv_lensq; } while (0)
+
 namespace null::render {
     void c_draw_list::draw_data_t::de_index_all_buffers() {
-        std::vector<vertex_t> new_vtx_buffer{ };
+        vtx_buffer_t new_vtx_buffer{ };
         total_vtx_count = total_idx_count = 0;
         for(c_draw_list* cmd_list : cmd_lists) { ;
             if(cmd_list->idx_buffer.empty())
@@ -23,17 +26,7 @@ namespace null::render {
         if(draw_list->cmd_buffer.empty()) return;
 
         if(draw_list->vtx_buffer.empty()) throw std::runtime_error("vtx_buffer empty");
-        if(draw_list->vtx_write != draw_list->vtx_buffer.end()) throw std::runtime_error("vtx_write != vtx_buffer.back()");
-
         if(draw_list->idx_buffer.empty()) throw std::runtime_error("idx_buffer empty");
-        if(draw_list->idx_write != draw_list->idx_buffer.end()) throw std::runtime_error("idx_write != idx_buffer.back()");
-
-        if(!(draw_list->flags & e_draw_list_flags::allow_vtx_offset) && draw_list->vtx_current_idx != draw_list->vtx_buffer.size())
-            throw std::runtime_error("vtx_current_idx != vtx_buffer.size()");
-
-        //https://github.com/ocornut/imgui/blob/v1.80/imgui.cpp#L4145
-        if(sizeof(std::uint16_t) == 2 && draw_list->vtx_current_idx >= (1 << 16))
-            throw std::runtime_error("Too many vertices in c_draw_list using 16-bit indices. Read comment above");
 
         layers.push_back(draw_list);
     }
@@ -45,6 +38,17 @@ namespace null::render {
         for(c_draw_list* draw_list : layers) {
             total_vtx_count += draw_list->vtx_buffer.size();
             total_idx_count += draw_list->idx_buffer.size();
+        }
+    }
+
+    void c_draw_list::shade_verts_linear_uv(vtx_buffer_t::iterator vtx_start, vtx_buffer_t::iterator vtx_end, rect_t rect, rect_t uv, bool clamp) {
+        const vec2_t scale = vec2_t{
+            rect.size().x != 0.0f ? (uv.size().x / rect.size().x) : 0.0f,
+            rect.size().y != 0.0f ? (uv.size().y / rect.size().y) : 0.0f };
+
+        for(vtx_buffer_t::iterator vertex = vtx_start; vertex < vtx_end; ++vertex) {
+            if(clamp) vertex->uv = std::clamp(uv.min + (vertex->pos - rect.min) * scale, std::min(uv.min, uv.max), std::max(uv.min, uv.max));
+            else vertex->uv = uv.min + (vertex->pos - rect.min) * scale;
         }
     }
     
@@ -106,19 +110,8 @@ namespace null::render {
         on_changed_texture_id();
     }
 
-    void c_draw_list::shade_verts_linear_uv(std::vector<vertex_t>::iterator vtx_start, std::vector<vertex_t>::iterator vtx_end, rect_t rect, rect_t uv, bool clamp) {
-        const vec2_t scale = vec2_t{
-            rect.size().x != 0.0f ? (uv.size().x / rect.size().x) : 0.0f,
-            rect.size().y != 0.0f ? (uv.size().y / rect.size().y) : 0.0f };
-
-        for(std::vector<vertex_t>::iterator vertex = vtx_start; vertex < vtx_end; ++vertex) {
-            if(clamp) vertex->uv = std::clamp(uv.min + (vertex->pos - rect.min) * scale, std::min(uv.min, uv.max), std::max(uv.min, uv.max));
-            else vertex->uv = uv.min + (vertex->pos - rect.min) * scale;
-        }
-    }
 
     void c_draw_list::on_changed_vtx_offset() {
-        vtx_current_idx = 0;
         if(cmd_buffer.back().element_count) {
             add_draw_cmd();
             return;
@@ -127,66 +120,231 @@ namespace null::render {
         cmd_buffer.back().vtx_offset = cmd_header.vtx_offset;
     }
 
-    void c_draw_list::prim_reserve(int idx_count, int vtx_count) {
-        if(sizeof(std::uint16_t) == 2 && (vtx_current_idx + vtx_count >= (1 << 16)) && (flags & e_draw_list_flags::allow_vtx_offset)) {
+    void c_draw_list::vtx_check(int vtx_count) {
+        if(sizeof(std::uint16_t) == 2 && (vtx_buffer.size() + vtx_count >= (1 << 16)) && (flags & e_draw_list_flags::allow_vtx_offset)) {
             cmd_header.vtx_offset = vtx_buffer.size();
             on_changed_vtx_offset();
         }
-
-        cmd_buffer.back().element_count += idx_count;
-
-        vtx_buffer.insert(vtx_buffer.end(), vtx_count, { });
-        vtx_write = std::prev(vtx_buffer.end(), vtx_count);
-
-        idx_buffer.insert(idx_buffer.end(), idx_count, { });
-        idx_write = std::prev(idx_buffer.end(), idx_count);
-    }
-
-    void c_draw_list::prim_unreserve(int idx_count, int vtx_count) {
-        cmd_buffer.back().element_count -= idx_count;
-        vtx_buffer.erase(vtx_buffer.end() - vtx_count, vtx_buffer.end());
-        idx_buffer.erase(idx_buffer.end() - idx_count, idx_buffer.end());
     }
 
     void c_draw_list::prim_rect(vec2_t a, vec2_t c, color_t color) {
-        std::vector<std::uint16_t> idx_list {
-            (std::uint16_t)vtx_current_idx, (std::uint16_t)(vtx_current_idx + 1), (std::uint16_t)(vtx_current_idx + 2),
-            (std::uint16_t)vtx_current_idx, (std::uint16_t)(vtx_current_idx + 2), (std::uint16_t)(vtx_current_idx + 3)
-        };
-        prim_write_idx(idx_list);
-
-        std::vector<vertex_t> vtx_list {
+        prim_insert_idx({
+            (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 1), (std::uint16_t)(vtx_buffer.size() + 2),
+            (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 2), (std::uint16_t)(vtx_buffer.size() + 3)
+            });
+        
+        prim_insert_vtx({
             { a, shared_data->font->container_atlas->texture.uv_white_pixel, color },
             { { c.x, a.y }, shared_data->font->container_atlas->texture.uv_white_pixel, color },
             { c, shared_data->font->container_atlas->texture.uv_white_pixel, color },
             { { a.x, c.y }, shared_data->font->container_atlas->texture.uv_white_pixel, color },
-        };
-        prim_write_vtx(vtx_list);
+            });
     }
 
     void c_draw_list::prim_rect_uv(vec2_t a, vec2_t c, vec2_t uv_a, vec2_t uv_c, color_t color) {
-        std::vector<std::uint16_t> idx_list {
-            (std::uint16_t)vtx_current_idx, (std::uint16_t)(vtx_current_idx + 1), (std::uint16_t)(vtx_current_idx + 2),
-            (std::uint16_t)vtx_current_idx, (std::uint16_t)(vtx_current_idx + 2), (std::uint16_t)(vtx_current_idx + 3)
-        };
-        prim_write_idx(idx_list);
+        prim_insert_idx({
+            (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 1), (std::uint16_t)(vtx_buffer.size() + 2),
+            (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 2), (std::uint16_t)(vtx_buffer.size() + 3)
+            });
 
-        std::vector<vertex_t> vtx_list {
+        prim_insert_vtx({
             { a, uv_a, color },
             { { c.x, a.y }, { uv_c.x, uv_a.y }, color },
             { c, uv_c, color },
             { { a.x, c.y }, { uv_a.x, uv_c.y }, color }
-        };
-        prim_write_vtx(vtx_list);
+            });
     }
 
     void c_draw_list::prim_quad_uv(std::array<vec2_t, 4> points, std::array<vec2_t, 4> uvs, color_t color) {
-        std::vector<std::uint16_t> idx_list{
-            (std::uint16_t)vtx_current_idx, (std::uint16_t)(vtx_current_idx + 1), (std::uint16_t)(vtx_current_idx + 2),
-            (std::uint16_t)vtx_current_idx, (std::uint16_t)(vtx_current_idx + 2), (std::uint16_t)(vtx_current_idx + 3)
-        };
-        prim_write_idx(idx_list);
+        prim_insert_idx({
+            (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 1), (std::uint16_t)(vtx_buffer.size() + 2),
+            (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 2), (std::uint16_t)(vtx_buffer.size() + 3)
+            });
 
-        std::transform(points.begin(), points.end(), uvs.begin(), points.begin(), [&](vec2_t& point, vec2_t& uv) { prim_write_vtx({ point, uv, color }); return point; });
+        std::transform(points.begin(), points.end(), uvs.begin(), points.begin(), [&](vec2_t& point, vec2_t& uv) { prim_add_vtx({ point, uv, color }); return point; });
+    }
+    
+    void c_draw_list::path_rect(vec2_t a, vec2_t b, float rounding, e_corner_flags rounding_corners) {
+        rounding = std::min(rounding, std::fabsf(b.x - a.x) * (flags & e_corner_flags::top || flags & e_corner_flags::bot ? 0.5f : 1.0f) - 1.0f);
+        rounding = std::min(rounding, std::fabsf(b.y - a.y) * (flags & e_corner_flags::left || flags & e_corner_flags::right ? 0.5f : 1.0f) - 1.0f);
+
+        if(rounding <= 0.0f || rounding_corners == e_corner_flags{ }) {
+            path.push_back(a);
+            path.push_back({ b.x, a.y });
+            path.push_back(b);
+            path.push_back({a.x, b.y });
+        } else {
+            float rounding_tl = flags & e_corner_flags::top_left ? rounding : 0.0f;
+            float rounding_tr = flags & e_corner_flags::top_right ? rounding : 0.0f;
+            float rounding_br = flags & e_corner_flags::bot_right ? rounding : 0.0f;
+            float rounding_bl = flags & e_corner_flags::bot_left ? rounding : 0.0f;
+
+            path_arc_to_fast(vec2_t(a.x + rounding_tl, a.y + rounding_tl), rounding_tl, 6, 9);
+            path_arc_to_fast(vec2_t(b.x - rounding_tr, a.y + rounding_tr), rounding_tr, 9, 12);
+            path_arc_to_fast(vec2_t(b.x - rounding_br, b.y - rounding_br), rounding_br, 0, 3);
+            path_arc_to_fast(vec2_t(a.x + rounding_bl, b.y - rounding_bl), rounding_bl, 3, 6);
+        }
+    }
+
+    void c_draw_list::path_arc_to_fast(vec2_t center, float radius, int a_min_of_12, int a_max_of_12) {
+        if(radius == 0.0f || a_min_of_12 > a_max_of_12) {
+            path.push_back(center);
+            return;
+        }
+
+        path.reserve(path.size() + (a_max_of_12 - a_min_of_12 + 1));
+        for(int a = a_min_of_12; a <= a_max_of_12; a++) {
+            const vec2_t& c = shared_data->arc_fast_vtx[a % shared_data->arc_fast_vtx.size()];
+            path.push_back(vec2_t(center.x + c.x * radius, center.y + c.y * radius));
+        }
+    }
+    
+    void c_draw_list::draw_text(std::string str, vec2_t pos, color_t color, e_text_flags flags, c_font* font, float size) {
+        if(color.a() == 0.f) return;
+        if(!font) font = shared_data->font;
+        if(!size) size = shared_data->font->size;
+
+        if(font->container_atlas->texture.id != cmd_header.texture_id)
+            throw std::runtime_error("font->container_atlas->texture.id != cmd_header.texture_id");
+
+        if(flags & e_text_flags::aligin_mask) {
+            vec2_t str_size = font->calc_text_size(str, size);
+            if(str_size <= 0.f) return;
+            
+            if(flags & e_text_flags::aligin_right) pos.x -= str_size.x;
+            if(flags & e_text_flags::aligin_bottom) pos.y -= str_size.y;
+            if(flags & e_text_flags::aligin_centre_x) pos.x -= str_size.x / 2.f;
+            if(flags & e_text_flags::aligin_centre_y) pos.y -= str_size.y / 2.f;
+        }
+
+        pos = { std::floorf(pos.x), std::floorf(pos.y) };
+        if(pos.y > cmd_header.clip_rect.max.y) return;
+
+        const float scale = size / font->size;
+        const float line_height = font->size * scale;
+
+        if(pos.y + line_height < cmd_header.clip_rect.min.y) {
+            while(pos.y + line_height < cmd_header.clip_rect.min.y) {
+                pos.y += line_height;
+                std::string::iterator new_line = std::find(str.begin(), str.end(), '\n');
+                if(new_line != str.end()) str.erase(str.begin(), new_line + 1);
+                else return; //if all the text is outside the clip_rect, we don't need to draw it
+            }
+        }
+
+        //a more correct solution would be text_size > clip_rect.max.y
+        //but calculating text_size each time would be too resource-intensive and unjustified
+        if(str.size() > 10000) {
+            float y = pos.y;
+            while(y < cmd_header.clip_rect.max.y) {
+                y += line_height;
+                std::string::iterator new_line = std::find(str.begin(), str.end(), '\n');
+                if(new_line != str.end()) str.erase(new_line, str.end());
+                else return;
+            }
+        }
+
+        int vtx_offset{ }; //offset for outline
+        vec2_t draw_pos{ pos };
+        for(std::string::iterator s = str.begin(); s < str.end();) {
+            std::uint32_t c = *s;
+            if(c < 0x80) s += 1;
+            else {
+                s += impl::get_char_from_utf8(&c, std::string(s, str.end()));
+                if(c == 0) break;
+            }
+
+            if(c < 32) {
+                if(c == '\n') {
+                    draw_pos.x = pos.x;
+                    draw_pos.y += line_height;
+                    if(draw_pos.y > cmd_header.clip_rect.max.y)
+                        break;
+                    continue;
+                } if(c == '\r') continue;
+            }
+
+            const c_font::glyph_t* glyph = font->find_glyph((std::uint16_t)c);
+            if(!glyph) continue;
+
+            if(glyph->visible) {
+                rect_t corners{ rect_t{ draw_pos } + glyph->corners * scale };
+                if(corners.min.x <= cmd_header.clip_rect.max.x && corners.max.x >= cmd_header.clip_rect.min.x) {
+                    rect_t uvs = glyph->texture_coordinates;
+
+                    if(flags & e_text_flags::outline && !shared_data->text_outline_offsets.empty()) {
+                        for(vec2_t offset : shared_data->text_outline_offsets) {
+                            prim_insert_idx({
+                                (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 1), (std::uint16_t)(vtx_buffer.size() + 2),
+                                (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 2), (std::uint16_t)(vtx_buffer.size() + 3)
+                                });
+
+                            rect_t pos = corners + offset;
+                            prim_insert_vtx(vtx_buffer.end() - vtx_offset,
+                                {
+                                    { pos.min,                  uvs.min,                    {0, 0, 0} },
+                                    { { pos.max.x, pos.min.y }, { uvs.max.x, uvs.min.y },   {0, 0, 0} },
+                                    { pos.max,                  uvs.max,                    {0, 0, 0} },
+                                    { { pos.min.x, pos.max.y }, { uvs.min.x, uvs.max.y },   {0, 0, 0} }
+                                });
+                        }
+                    }
+                    prim_rect_uv(corners.min, corners.max, uvs.min, uvs.max, color); //main text
+                    
+                    //Necessary for the correct drawing order of the outline and body text.
+                    //Because the outline draw call runs parallel to the body text draw calls, glyphs of new letters can overlap past ones.
+                    vtx_offset += 4;
+                }
+            }
+            draw_pos.x += glyph->advance_x * scale;
+        }
+    }
+
+    void c_draw_list::draw_rect_filled(vec2_t a, vec2_t b, color_t color, float rounding, e_corner_flags flags) {
+        if(color.a() == 0.f) return;
+
+        if(rounding > 0.0f) {
+            path_rect(a, b, rounding, flags);
+            path_fill_convex(color);
+        } else {
+            prim_rect(a, b, color);
+        }
+    }
+
+    void c_draw_list::draw_convex_poly_filled(std::vector<vec2_t> points, color_t color) {
+        if(points.size() < 3) return;
+
+        if(flags & e_draw_list_flags::anti_aliased_fill) {
+            std::size_t vtx_inner_idx = vtx_buffer.size();
+            std::size_t vtx_outer_idx = vtx_buffer.size() + 1;
+            for(int i = 2; i < points.size(); i++) prim_insert_idx({ (std::uint16_t)(vtx_inner_idx), (std::uint16_t)(vtx_inner_idx + ((i - 1) << 1)), (std::uint16_t)(vtx_inner_idx + (i << 1)) });
+
+            std::vector<vec2_t> temp_normals(points.size());
+            for(int i0 = points.size() - 1, i1 = 0; i1 < points.size(); i0 = i1++) {
+                vec2_t p = points[i1] - points[i0];
+                if(p.length() > 0.f) p *= 1.f / p.length();
+
+                temp_normals[i0] = { p.x, -p.y };
+            }
+
+            for(int i0 = points.size() - 1, i1 = 0; i1 < points.size(); i0 = i1++) {
+                vec2_t p = (temp_normals[i0] + temp_normals[i1]) / 2;
+                p *= 1.f / std::min(std::powf(p.length(), 2), 0.5f);
+                p *= 0.5f; //AA_SIZE
+
+                prim_insert_idx({
+                    (std::uint16_t)(vtx_inner_idx + (i1 << 1)), (std::uint16_t)(vtx_inner_idx + (i0 << 1)), (std::uint16_t)(vtx_outer_idx + (i0 << 1)),
+                    (std::uint16_t)(vtx_outer_idx + (i0 << 1)), (std::uint16_t)(vtx_outer_idx + (i1 << 1)), (std::uint16_t)(vtx_inner_idx + (i1 << 1))
+                    });
+                
+                prim_insert_vtx({
+                    { points[i1] - p, shared_data->font->container_atlas->texture.uv_white_pixel, color },
+                    { points[i1] + p, shared_data->font->container_atlas->texture.uv_white_pixel, color_t{ color, 0.f } }
+                    });
+            }
+        } else {
+            for(int i = 2; i < points.size(); i++) prim_insert_idx({ (std::uint16_t)(vtx_buffer.size()), (std::uint16_t)(vtx_buffer.size() + i - 1), (std::uint16_t)(vtx_buffer.size() + i) });
+            for(vec2_t point : points) prim_add_vtx({ point, shared_data->font->container_atlas->texture.uv_white_pixel, color });
+        }
     }
 }
