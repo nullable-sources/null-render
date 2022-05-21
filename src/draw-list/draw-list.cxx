@@ -165,8 +165,8 @@ namespace null::render {
     }
     
     void c_draw_list::path_rect(vec2_t a, vec2_t b, float rounding, e_corner_flags rounding_corners) {
-        rounding = std::min(rounding, std::fabsf(b.x - a.x) * (flags & e_corner_flags::top || flags & e_corner_flags::bot ? 0.5f : 1.0f) - 1.0f);
-        rounding = std::min(rounding, std::fabsf(b.y - a.y) * (flags & e_corner_flags::left || flags & e_corner_flags::right ? 0.5f : 1.0f) - 1.0f);
+        rounding = std::min(rounding, std::fabsf(b.x - a.x) * (rounding_corners & e_corner_flags::top || rounding_corners & e_corner_flags::bot ? 0.5f : 1.f) - 1.f);
+        rounding = std::min(rounding, std::fabsf(b.y - a.y) * (rounding_corners & e_corner_flags::left || rounding_corners & e_corner_flags::right ? 0.5f : 1.f) - 1.f);
 
         if(rounding <= 0.0f || rounding_corners == e_corner_flags{ }) {
             path.push_back(a);
@@ -174,15 +174,15 @@ namespace null::render {
             path.push_back(b);
             path.push_back({a.x, b.y });
         } else {
-            float rounding_tl = flags & e_corner_flags::top_left ? rounding : 0.0f;
-            float rounding_tr = flags & e_corner_flags::top_right ? rounding : 0.0f;
-            float rounding_br = flags & e_corner_flags::bot_right ? rounding : 0.0f;
-            float rounding_bl = flags & e_corner_flags::bot_left ? rounding : 0.0f;
+            float rounding_tl = rounding_corners & e_corner_flags::top_left ? rounding : 0.f;
+            float rounding_tr = rounding_corners & e_corner_flags::top_right ? rounding : 0.f;
+            float rounding_br = rounding_corners & e_corner_flags::bot_right ? rounding : 0.f;
+            float rounding_bl = rounding_corners & e_corner_flags::bot_left ? rounding : 0.f;
 
-            path_arc_to_fast(vec2_t(a.x + rounding_tl, a.y + rounding_tl), rounding_tl, 6, 9);
-            path_arc_to_fast(vec2_t(b.x - rounding_tr, a.y + rounding_tr), rounding_tr, 9, 12);
-            path_arc_to_fast(vec2_t(b.x - rounding_br, b.y - rounding_br), rounding_br, 0, 3);
-            path_arc_to_fast(vec2_t(a.x + rounding_bl, b.y - rounding_bl), rounding_bl, 3, 6);
+            path_arc_to_fast(a + rounding_tl, rounding_tl, 6, 9);
+            path_arc_to_fast(vec2_t{ b.x, a.y } + vec2_t{ -rounding_tr, rounding_tr }, rounding_tr, 9, 12);
+            path_arc_to_fast(b - rounding_br, rounding_br, 0, 3);
+            path_arc_to_fast(vec2_t{ a.x, b.y } + vec2_t{ rounding_bl, -rounding_bl}, rounding_bl, 3, 6);
         }
     }
 
@@ -199,18 +199,18 @@ namespace null::render {
         }
     }
     
-    void c_draw_list::draw_text(std::string str, vec2_t pos, color_t color, e_text_flags flags, c_font* font, float size) {
-        if(color.a() == 0.f) return;
-        if(!font) font = shared_data->font;
-        if(!size) size = shared_data->font->size;
+    void c_draw_list::draw_text(multicolor_text_t str, vec2_t pos, e_text_flags flags, c_font* font, float size) {
+        font = font ? font : shared_data->font;
+        size = size > 0.f ? size : font->size;
 
         if(font->container_atlas->texture.id != cmd_header.texture_id)
             throw std::runtime_error("font->container_atlas->texture.id != cmd_header.texture_id");
 
+        std::string str_unite = str.unite();
         if(flags & e_text_flags::aligin_mask) {
-            vec2_t str_size = font->calc_text_size(str, size);
+            vec2_t str_size = font->calc_text_size(str_unite, size);
             if(str_size <= 0.f) return;
-            
+
             if(flags & e_text_flags::aligin_right) pos.x -= str_size.x;
             if(flags & e_text_flags::aligin_bottom) pos.y -= str_size.y;
             if(flags & e_text_flags::aligin_centre_x) pos.x -= str_size.x / 2.f;
@@ -226,77 +226,95 @@ namespace null::render {
         if(pos.y + line_height < cmd_header.clip_rect.min.y) {
             while(pos.y + line_height < cmd_header.clip_rect.min.y) {
                 pos.y += line_height;
-                std::string::iterator new_line = std::find(str.begin(), str.end(), '\n');
-                if(new_line != str.end()) str.erase(str.begin(), new_line + 1);
+
+                multicolor_text_t::data_t::iterator finded = std::find_if(str.data.begin(), str.data.end(), [&str_unite](multicolor_text_t::data_t::value_type& multicolor_data) {
+                    std::string::iterator new_line = std::find(multicolor_data.first.begin(), multicolor_data.first.end(), '\n');
+                    if(new_line != multicolor_data.first.end()) {
+                        multicolor_data.first.erase(multicolor_data.first.begin(), std::next(new_line));
+                        str_unite.erase(str_unite.begin(), std::find(str_unite.begin(), str_unite.end(), '\n')); //rebuilding str_unite every time is not a good idea, so change it right here
+                    }
+                    return new_line != multicolor_data.first.end();
+                    });
+
+                if(finded != str.data.end()) str.data.erase(str.data.begin(), (*finded).first.empty() ? std::next(finded) : finded);
                 else return; //if all the text is outside the clip_rect, we don't need to draw it
             }
         }
 
         //a more correct solution would be text_size > clip_rect.max.y
         //but calculating text_size each time would be too resource-intensive and unjustified
-        if(str.size() > 10000) {
+        if(str_unite.size() > 10000) {
             float y = pos.y;
             while(y < cmd_header.clip_rect.max.y) {
                 y += line_height;
-                std::string::iterator new_line = std::find(str.begin(), str.end(), '\n');
-                if(new_line != str.end()) str.erase(new_line, str.end());
+                multicolor_text_t::data_t::iterator finded = std::find_if(str.data.begin(), str.data.end(), [&str_unite](multicolor_text_t::data_t::value_type& multicolor_data) {
+                    if(std::string::iterator new_line; (new_line = std::find(multicolor_data.first.begin(), multicolor_data.first.end(), '\n')) != multicolor_data.first.end()) {
+                        multicolor_data.first.erase(new_line, multicolor_data.first.end());
+                        return true;
+                    }
+                    return false;
+                    });
+
+                if(finded != str.data.end()) str.data.erase((*finded).first.empty() ? finded : std::next(finded), str.data.end());
                 else return;
             }
         }
 
         int vtx_offset{ }; //offset for outline
         vec2_t draw_pos{ pos };
-        for(std::string::iterator s = str.begin(); s < str.end();) {
-            std::uint32_t c = *s;
-            if(c < 0x80) s += 1;
-            else {
-                s += impl::get_char_from_utf8(&c, std::string(s, str.end()));
-                if(c == 0) break;
-            }
-
-            if(c < 32) {
-                if(c == '\n') {
-                    draw_pos.x = pos.x;
-                    draw_pos.y += line_height;
-                    if(draw_pos.y > cmd_header.clip_rect.max.y)
-                        break;
-                    continue;
-                } if(c == '\r') continue;
-            }
-
-            const c_font::glyph_t* glyph = font->find_glyph((std::uint16_t)c);
-            if(!glyph) continue;
-
-            if(glyph->visible) {
-                rect_t corners{ rect_t{ draw_pos } + glyph->corners * scale };
-                if(corners.min.x <= cmd_header.clip_rect.max.x && corners.max.x >= cmd_header.clip_rect.min.x) {
-                    rect_t uvs = glyph->texture_coordinates;
-
-                    if(flags & e_text_flags::outline && !shared_data->text_outline_offsets.empty()) {
-                        for(vec2_t offset : shared_data->text_outline_offsets) {
-                            prim_insert_idx({
-                                (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 1), (std::uint16_t)(vtx_buffer.size() + 2),
-                                (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 2), (std::uint16_t)(vtx_buffer.size() + 3)
-                                });
-
-                            rect_t pos = corners + offset;
-                            prim_insert_vtx(vtx_buffer.end() - vtx_offset,
-                                {
-                                    { pos.min,                  uvs.min,                    {0, 0, 0} },
-                                    { { pos.max.x, pos.min.y }, { uvs.max.x, uvs.min.y },   {0, 0, 0} },
-                                    { pos.max,                  uvs.max,                    {0, 0, 0} },
-                                    { { pos.min.x, pos.max.y }, { uvs.min.x, uvs.max.y },   {0, 0, 0} }
-                                });
-                        }
-                    }
-                    prim_rect_uv(corners.min, corners.max, uvs.min, uvs.max, color); //main text
-                    
-                    //Necessary for the correct drawing order of the outline and body text.
-                    //Because the outline draw call runs parallel to the body text draw calls, glyphs of new letters can overlap past ones.
-                    vtx_offset += 4;
+        for(multicolor_text_t::data_t::value_type multicolor_data : str.data) {
+            for(std::string::iterator s = multicolor_data.first.begin(); s != multicolor_data.first.end();) {
+                std::uint32_t c = *s;
+                if(c < 0x80) s += 1;
+                else {
+                    s += impl::get_char_from_utf8(&c, std::string(s, multicolor_data.first.end()));
+                    if(c == 0) break;
                 }
+
+                if(c < 32) {
+                    if(c == '\n') {
+                        draw_pos.x = pos.x;
+                        draw_pos.y += line_height;
+                        if(draw_pos.y > cmd_header.clip_rect.max.y)
+                            break;
+                        continue;
+                    } if(c == '\r') continue;
+                }
+
+                const c_font::glyph_t* glyph = font->find_glyph((std::uint16_t)c);
+                if(!glyph) continue;
+
+                if(glyph->visible) {
+                    rect_t corners{ rect_t{ draw_pos } + glyph->corners * scale };
+                    if(corners.min.x <= cmd_header.clip_rect.max.x && corners.max.x >= cmd_header.clip_rect.min.x) {
+                        rect_t uvs = glyph->texture_coordinates;
+
+                        if(flags & e_text_flags::outline && !shared_data->text_outline_offsets.empty()) {
+                            for(vec2_t offset : shared_data->text_outline_offsets) {
+                                prim_insert_idx({
+                                    (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 1), (std::uint16_t)(vtx_buffer.size() + 2),
+                                    (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 2), (std::uint16_t)(vtx_buffer.size() + 3)
+                                    });
+
+                                rect_t pos = corners + offset;
+                                prim_insert_vtx(vtx_buffer.end() - vtx_offset,
+                                    {
+                                        { pos.min,                  uvs.min,                    {0, 0, 0} },
+                                        { { pos.max.x, pos.min.y }, { uvs.max.x, uvs.min.y },   {0, 0, 0} },
+                                        { pos.max,                  uvs.max,                    {0, 0, 0} },
+                                        { { pos.min.x, pos.max.y }, { uvs.min.x, uvs.max.y },   {0, 0, 0} }
+                                    });
+                            }
+                        }
+                        prim_rect_uv(corners.min, corners.max, uvs.min, uvs.max, multicolor_data.second); //main text
+
+                        //Necessary for the correct drawing order of the outline and body text.
+                        //Because the outline draw call runs parallel to the body text draw calls, glyphs of new letters can overlap past ones.
+                        vtx_offset += 4;
+                    }
+                }
+                draw_pos.x += glyph->advance_x * scale;
             }
-            draw_pos.x += glyph->advance_x * scale;
         }
     }
 
@@ -306,9 +324,7 @@ namespace null::render {
         if(rounding > 0.0f) {
             path_rect(a, b, rounding, flags);
             path_fill_convex(color);
-        } else {
-            prim_rect(a, b, color);
-        }
+        } else prim_rect(a, b, color);
     }
 
     void c_draw_list::draw_convex_poly_filled(std::vector<vec2_t> points, color_t color) {

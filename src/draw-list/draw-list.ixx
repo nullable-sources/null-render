@@ -2,61 +2,6 @@ export module null.render:draw_list;
 import :font;
 import null.sdk;
 
-#define ENUM_UNDERLYING_OPERATOR( enum_t ) \
-    constexpr auto operator -( const enum_t value ) { \
-        return static_cast< std::underlying_type_t< enum_t > >( value ); \
-    } \
-
-#define ENUM_BIT_OPERATOR( enum_t, op, ret_underlying ) \
-    template < typename _value_t > \
-        requires std::_Is_any_of_v< _value_t, enum_t, std::underlying_type_t< enum_t > > \
-    constexpr auto operator op( const enum_t lhs, const _value_t rhs ) { \
-        using underlying_t = std::underlying_type_t< enum_t >; \
-        \
-        using ret_t = std::conditional_t< ret_underlying, underlying_t, enum_t >; \
-        \
-        return static_cast< ret_t >( \
-            static_cast< underlying_t >( lhs ) op static_cast< underlying_t >( rhs ) \
-        ); \
-    } \
-    \
-    constexpr auto operator op( const std::underlying_type_t< enum_t > lhs, const enum_t rhs ) { \
-        using underlying_t = std::underlying_type_t< enum_t >; \
-        \
-        using ret_t = std::conditional_t< ret_underlying, underlying_t, enum_t >; \
-        \
-        return static_cast< ret_t >( \
-            static_cast< underlying_t >( lhs ) op static_cast< underlying_t >( rhs ) \
-        ); \
-    } \
-    \
-    template < typename _value_t > \
-        requires std::_Is_any_of_v< _value_t, enum_t, std::underlying_type_t< enum_t > > \
-    auto& operator op##=( enum_t& lhs, const _value_t rhs ) { \
-        using underlying_t = std::underlying_type_t< enum_t >; \
-        \
-        using ret_t = std::conditional_t< ret_underlying, underlying_t, enum_t >; \
-        \
-        return reinterpret_cast< ret_t& >( \
-            reinterpret_cast< underlying_t& >( lhs ) op##= static_cast< underlying_t >( rhs ) \
-        ); \
-    } \
-
-#define ENUM_BIT_OPERATORS( enum_t, ret_underlying ) \
-    ENUM_BIT_OPERATOR( enum_t, |, ret_underlying ) \
-    \
-    ENUM_BIT_OPERATOR( enum_t, &, ret_underlying ) \
-    \
-    ENUM_BIT_OPERATOR( enum_t, ^, ret_underlying ) \
-    \
-    constexpr auto operator ~( const enum_t value ) { \
-        using underlying_t = std::underlying_type_t< enum_t >; \
-        \
-        using ret_t = std::conditional_t< ret_underlying, underlying_t, enum_t >; \
-        \
-        return static_cast< ret_t >( ~static_cast< underlying_t >( value ) ); \
-    } \
-
 export namespace null {
 	enum struct e_draw_list_flags {
 		anti_aliased_lines = 1 << 0,
@@ -132,6 +77,18 @@ export namespace null {
 				}
 			}
 		} shared_data{ e_draw_list_flags::allow_vtx_offset };
+
+		struct multicolor_text_t {
+			using data_t = std::vector<std::pair<std::string, color_t>>;
+			data_t data{ };
+
+			//returns a string made up of all the strings in the text
+			std::string unite() {
+				return std::accumulate(data.begin(), data.end(), std::string{ }, [=](std::string result, data_t::value_type str) {
+					return result + str.first;
+					});
+			}
+		};
 
 		class c_draw_list {
 		public:
@@ -233,7 +190,8 @@ export namespace null {
 			void path_arc_to_fast(vec2_t center, float radius, int a_min_of_12, int a_max_of_12);
 			void path_fill_convex(color_t clr) { draw_convex_poly_filled(path, clr); path.resize(0); }
 
-			void draw_text(std::string str, vec2_t pos, color_t color, e_text_flags flags = e_text_flags{ }, c_font* font = nullptr, float size = 0.f);
+			void draw_text(std::string str, vec2_t pos, color_t color, e_text_flags flags = e_text_flags{ }, c_font* font = nullptr, float size = 0.f) { draw_text(multicolor_text_t{ { { str , color } } }, pos, flags, font, size); }
+			void draw_text(multicolor_text_t str, vec2_t pos, e_text_flags flags = e_text_flags{ }, c_font* font = nullptr, float size = 0.f);
 			void draw_rect_filled(vec2_t a, vec2_t b, color_t color, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all);
 			void draw_convex_poly_filled(std::vector<vec2_t> points, color_t color);
 		};

@@ -8,11 +8,19 @@ import null.sdk;
 null::render::directx9::c_window window{ };
 
 void main_loop() {
+	static null::render::multicolor_text_t multicolor_text{ {
+		{ "null-", { } },
+		{ "render", { 100, 100, 255 } },
+		{ "\n\n", { } },
+		{ "null\n", { } },
+		{ "render", { 100, 100, 255 } }
+	} };
+
 	null::render::begin_frame(window);
 	{
-		null::render::background_draw_list.draw_text("null", { 100, 100 }, { 255, 255, 255 }, null::e_text_flags{ -null::e_text_flags::aligin_bottom | -null::e_text_flags::aligin_centre_x | -null::e_text_flags::outline });
-		null::render::background_draw_list.draw_rect_filled({ 99 }, { 101 }, { 255, 0, 0 });
-		null::render::background_draw_list.draw_rect_filled({ 200 }, { 300 }, { 255, 0, 0 }, 10.f);
+		null::render::background_draw_list.draw_text(std::format("fps: {:3.0f}", 1.f / window.time_data.delta_time), { window.get_window_size().x, 10 }, { 255, 255, 255 }, null::e_text_flags{ -null::e_text_flags::aligin_right | -null::e_text_flags::aligin_centre_y | -null::e_text_flags::outline });
+		null::render::background_draw_list.draw_text(multicolor_text, { 10 });
+		null::render::background_draw_list.draw_rect_filled({ 200 }, { 300 }, { 100, 100, 255 }, 10.f, null::e_corner_flags{ null::e_corner_flags::bot_left | null::e_corner_flags::top_right });
 	}
 	null::render::end_frame();
 	null::render::setup_draw_data();

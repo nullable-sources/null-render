@@ -150,7 +150,7 @@ namespace null::render {
         for(build_src_t& src : src_array) {
             src.glyphs_list.reserve(src.glyphs_count);
 
-            for(std::vector<std::uint32_t>::iterator it = src.glyphs_set.begin(); it < src.glyphs_set.end(); it++) {
+            for(std::vector<std::uint32_t>::iterator it = src.glyphs_set.begin(); it != src.glyphs_set.end(); it++) {
                 if(*it) {
                     for(std::uint32_t bit_n = 0; bit_n < 32; bit_n++) {
                         if(*it & ((std::uint32_t)1 << bit_n)) {
@@ -568,7 +568,7 @@ namespace null::render {
         vec2_t result{ };
         vec2_t line_size{ 0, custom_size };
 
-        for(std::string::iterator s = str.begin(); s < str.end();) {
+        for(std::string::iterator s = str.begin(); s != str.end();) {
             std::uint32_t c = *s;
             if(c < 0x80) {
                 s += 1;
