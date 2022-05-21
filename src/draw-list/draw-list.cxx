@@ -2,9 +2,6 @@ module null.render;
 import :draw_list;
 import :font;
 
-#define NORMALIZE2F_OVER_ZERO(VX,VY) do { float d2 = VX*VX + VY*VY; if (d2 > 0.0f) { float inv_len = 1.0f / sqrtf(d2); VX *= inv_len; VY *= inv_len; } } while (0)
-#define FIXNORMAL2F(VX,VY) do { float d2 = VX*VX + VY*VY; if (d2 < 0.5f) d2 = 0.5f; float inv_lensq = 1.0f / d2; VX *= inv_lensq; VY *= inv_lensq; } while (0)
-
 namespace null::render {
     void c_draw_list::draw_data_t::de_index_all_buffers() {
         vtx_buffer_t new_vtx_buffer{ };
