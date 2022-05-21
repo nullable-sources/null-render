@@ -12,8 +12,8 @@ export import :compressed_fonts.proggy_clean;
 
 export namespace null::render {
     void initialize() {
-        background_draw_list.shared_data = &shared_data;
-        foreground_draw_list.shared_data = &shared_data;
+        background_draw_list.parent_shared_data = &shared_data;
+        foreground_draw_list.parent_shared_data = &shared_data;
     }
 
     void shutdown() {

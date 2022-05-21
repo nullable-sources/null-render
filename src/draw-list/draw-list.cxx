@@ -77,7 +77,7 @@ namespace null::render {
 
     void c_draw_list::pop_clip_rect() {
         clip_rect_stack.pop_back();
-        cmd_header.clip_rect = (clip_rect_stack.size() == 0) ? shared_data->clip_rect_fullscreen : clip_rect_stack.data()[clip_rect_stack.size() - 1];
+        cmd_header.clip_rect = (clip_rect_stack.size() == 0) ? parent_shared_data->clip_rect_fullscreen : clip_rect_stack.data()[clip_rect_stack.size() - 1];
         on_changed_clip_rect();
     }
 
@@ -118,7 +118,7 @@ namespace null::render {
     }
 
     void c_draw_list::vtx_check(int vtx_count) {
-        if(sizeof(std::uint16_t) == 2 && (vtx_buffer.size() + vtx_count >= (1 << 16)) && (flags & e_draw_list_flags::allow_vtx_offset)) {
+        if(sizeof(std::uint16_t) == 2 && (vtx_buffer.size() + vtx_count >= (1 << 16)) && (parent_shared_data->initialize_flags & e_draw_list_flags::allow_vtx_offset)) {
             cmd_header.vtx_offset = vtx_buffer.size();
             on_changed_vtx_offset();
         }
@@ -131,10 +131,10 @@ namespace null::render {
             });
         
         prim_insert_vtx({
-            { a, shared_data->font->container_atlas->texture.uv_white_pixel, color },
-            { { c.x, a.y }, shared_data->font->container_atlas->texture.uv_white_pixel, color },
-            { c, shared_data->font->container_atlas->texture.uv_white_pixel, color },
-            { { a.x, c.y }, shared_data->font->container_atlas->texture.uv_white_pixel, color },
+            { a, parent_shared_data->font->container_atlas->texture.uv_white_pixel, color },
+            { { c.x, a.y }, parent_shared_data->font->container_atlas->texture.uv_white_pixel, color },
+            { c, parent_shared_data->font->container_atlas->texture.uv_white_pixel, color },
+            { { a.x, c.y }, parent_shared_data->font->container_atlas->texture.uv_white_pixel, color },
             });
     }
 
@@ -161,20 +161,20 @@ namespace null::render {
         std::transform(points.begin(), points.end(), uvs.begin(), points.begin(), [&](vec2_t& point, vec2_t& uv) { prim_add_vtx({ point, uv, color }); return point; });
     }
     
-    void c_draw_list::path_rect(vec2_t a, vec2_t b, float rounding, e_corner_flags rounding_corners) {
-        rounding = std::min(rounding, std::fabsf(b.x - a.x) * (rounding_corners & e_corner_flags::top || rounding_corners & e_corner_flags::bot ? 0.5f : 1.f) - 1.f);
-        rounding = std::min(rounding, std::fabsf(b.y - a.y) * (rounding_corners & e_corner_flags::left || rounding_corners & e_corner_flags::right ? 0.5f : 1.f) - 1.f);
+    void c_draw_list::path_rect(vec2_t a, vec2_t b, float rounding, e_corner_flags flags) {
+        rounding = std::min(rounding, std::fabsf(b.x - a.x) * (flags & e_corner_flags::top || flags & e_corner_flags::bot ? 0.5f : 1.f) - 1.f);
+        rounding = std::min(rounding, std::fabsf(b.y - a.y) * (flags & e_corner_flags::left || flags & e_corner_flags::right ? 0.5f : 1.f) - 1.f);
 
-        if(rounding <= 0.0f || rounding_corners == e_corner_flags{ }) {
+        if(rounding <= 0.0f || flags == e_corner_flags{ }) {
             path.push_back(a);
             path.push_back({ b.x, a.y });
             path.push_back(b);
             path.push_back({a.x, b.y });
         } else {
-            float rounding_tl = rounding_corners & e_corner_flags::top_left ? rounding : 0.f;
-            float rounding_tr = rounding_corners & e_corner_flags::top_right ? rounding : 0.f;
-            float rounding_br = rounding_corners & e_corner_flags::bot_right ? rounding : 0.f;
-            float rounding_bl = rounding_corners & e_corner_flags::bot_left ? rounding : 0.f;
+            float rounding_tl = flags & e_corner_flags::top_left ? rounding : 0.f;
+            float rounding_tr = flags & e_corner_flags::top_right ? rounding : 0.f;
+            float rounding_br = flags & e_corner_flags::bot_right ? rounding : 0.f;
+            float rounding_bl = flags & e_corner_flags::bot_left ? rounding : 0.f;
 
             path_arc_to_fast(a + rounding_tl, rounding_tl, 6, 9);
             path_arc_to_fast(vec2_t{ b.x, a.y } + vec2_t{ -rounding_tr, rounding_tr }, rounding_tr, 9, 12);
@@ -191,13 +191,13 @@ namespace null::render {
 
         path.reserve(path.size() + (a_max_of_12 - a_min_of_12 + 1));
         for(int a = a_min_of_12; a <= a_max_of_12; a++) {
-            const vec2_t& c = shared_data->arc_fast_vtx[a % shared_data->arc_fast_vtx.size()];
+            const vec2_t& c = parent_shared_data->arc_fast_vtx[a % parent_shared_data->arc_fast_vtx.size()];
             path.push_back(vec2_t(center.x + c.x * radius, center.y + c.y * radius));
         }
     }
     
     void c_draw_list::draw_text(multicolor_text_t str, vec2_t pos, e_text_flags flags, c_font* font, float size) {
-        font = font ? font : shared_data->font;
+        font = font ? font : parent_shared_data->font;
         size = size > 0.f ? size : font->size;
 
         if(font->container_atlas->texture.id != cmd_header.texture_id)
@@ -286,8 +286,8 @@ namespace null::render {
                     if(corners.min.x <= cmd_header.clip_rect.max.x && corners.max.x >= cmd_header.clip_rect.min.x) {
                         rect_t uvs = glyph->texture_coordinates;
 
-                        if(flags & e_text_flags::outline && !shared_data->text_outline_offsets.empty()) {
-                            for(vec2_t offset : shared_data->text_outline_offsets) {
+                        if(flags & e_text_flags::outline && !parent_shared_data->text_outline_offsets.empty()) {
+                            for(vec2_t offset : parent_shared_data->text_outline_offsets) {
                                 prim_insert_idx({
                                     (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 1), (std::uint16_t)(vtx_buffer.size() + 2),
                                     (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 2), (std::uint16_t)(vtx_buffer.size() + 3)
@@ -315,8 +315,16 @@ namespace null::render {
         }
     }
 
+    void c_draw_list::draw_rect(vec2_t a, vec2_t b, color_t color, float thickness, float rounding, e_corner_flags flags) {
+        if(color.a() <= 0.f) return;
+
+        if(parent_shared_data->initialize_flags & e_draw_list_flags::anti_aliased_lines) path_rect(a + vec2_t(0.50f, 0.50f), b - vec2_t(0.50f, 0.50f), rounding, flags);
+        else path_rect(a + vec2_t(0.50f, 0.50f), b - vec2_t(0.49f, 0.49f), rounding, flags);
+        path_stroke(color, true, thickness);
+    }
+
     void c_draw_list::draw_rect_filled(vec2_t a, vec2_t b, color_t color, float rounding, e_corner_flags flags) {
-        if(color.a() == 0.f) return;
+        if(color.a() <= 0.f) return;
 
         if(rounding > 0.0f) {
             path_rect(a, b, rounding, flags);
@@ -325,9 +333,9 @@ namespace null::render {
     }
 
     void c_draw_list::draw_convex_poly_filled(std::vector<vec2_t> points, color_t color) {
-        if(points.size() < 3) return;
+        if(points.size() < 3 || color <= 0.f) return;
 
-        if(flags & e_draw_list_flags::anti_aliased_fill) {
+        if(parent_shared_data->initialize_flags & e_draw_list_flags::anti_aliased_fill) {
             std::size_t vtx_inner_idx = vtx_buffer.size();
             std::size_t vtx_outer_idx = vtx_buffer.size() + 1;
             for(int i = 2; i < points.size(); i++) prim_insert_idx({ (std::uint16_t)(vtx_inner_idx), (std::uint16_t)(vtx_inner_idx + ((i - 1) << 1)), (std::uint16_t)(vtx_inner_idx + (i << 1)) });
@@ -343,7 +351,7 @@ namespace null::render {
             for(int i0 = points.size() - 1, i1 = 0; i1 < points.size(); i0 = i1++) {
                 vec2_t p = (temp_normals[i0] + temp_normals[i1]) / 2;
                 p *= 1.f / std::min(std::powf(p.length(), 2), 0.5f);
-                p *= 0.5f; //AA_SIZE
+                p *= 0.5f; //aa_size
 
                 prim_insert_idx({
                     (std::uint16_t)(vtx_inner_idx + (i1 << 1)), (std::uint16_t)(vtx_inner_idx + (i0 << 1)), (std::uint16_t)(vtx_outer_idx + (i0 << 1)),
@@ -351,13 +359,167 @@ namespace null::render {
                     });
                 
                 prim_insert_vtx({
-                    { points[i1] - p, shared_data->font->container_atlas->texture.uv_white_pixel, color },
-                    { points[i1] + p, shared_data->font->container_atlas->texture.uv_white_pixel, color_t{ color, 0.f } }
+                    { points[i1] - p, parent_shared_data->font->container_atlas->texture.uv_white_pixel, color },
+                    { points[i1] + p, parent_shared_data->font->container_atlas->texture.uv_white_pixel, color_t{ color, 0.f } }
                     });
             }
         } else {
             for(int i = 2; i < points.size(); i++) prim_insert_idx({ (std::uint16_t)(vtx_buffer.size()), (std::uint16_t)(vtx_buffer.size() + i - 1), (std::uint16_t)(vtx_buffer.size() + i) });
-            for(vec2_t point : points) prim_add_vtx({ point, shared_data->font->container_atlas->texture.uv_white_pixel, color });
+            for(vec2_t point : points) prim_add_vtx({ point, parent_shared_data->font->container_atlas->texture.uv_white_pixel, color });
+        }
+    }
+
+    void c_draw_list::draw_poly_line(std::vector<vec2_t> points, color_t color, bool closed, float thickness) {
+        if(points.size() < 2 || color.a() <= 0.f) return;
+
+        const vec2_t opaque_uv = parent_shared_data->font->container_atlas->texture.uv_white_pixel;
+        const int count = closed ? points.size() : points.size() - 1;
+        const bool thick_line = (thickness > 1.0f);
+
+        if(false && parent_shared_data->initialize_flags & e_draw_list_flags::anti_aliased_lines) {
+            static const float aa_size = 1.0f;
+
+            thickness = std::max(thickness, 1.0f);
+            const int integer_thickness = (int)thickness;
+            const float fractional_thickness = thickness - integer_thickness;
+
+            const bool use_texture = (parent_shared_data->initialize_flags & e_draw_list_flags::anti_aliased_lines_use_texture) && (integer_thickness < 63) && (fractional_thickness <= 0.00001f);
+
+            std::vector<vec2_t> temp_normals(points.size() * ((use_texture || !thick_line) ? 3 : 5));
+            std::vector<vec2_t> temp_points(temp_normals.size() + points.size());
+
+            for(int i1 = 0; i1 < count; i1++) {
+                vec2_t p = points[(i1 + 1) == points.size() ? 0 : i1 + 1] - points[i1];
+                if(p.length() > 0.f) p *= 1.f / p.length();
+
+                temp_normals[i1] = { p.y, -p.x };
+            }
+
+            if(!closed)
+                temp_normals[points.size() - 1] = temp_normals[points.size() - 2];
+
+            if(use_texture || !thick_line) {
+                const float half_draw_size = use_texture ? ((thickness * 0.5f) + 1) : aa_size;
+                if(!closed) {
+                    temp_points[0] = points.front() + temp_normals.front() * half_draw_size;
+                    temp_points[1] = points.front() - temp_normals.front() * half_draw_size;
+                    temp_points[(points.size() - 1) * 2]        = points.back() + temp_normals[points.size() - 1] * half_draw_size;
+                    temp_points[(points.size() - 1) * 2 + 1]    = points.back() - temp_normals[points.size() - 1] * half_draw_size;
+                }
+
+                unsigned int idx = vtx_buffer.size();
+                for(int i1 = 0; i1 < count; i1++) {
+                    const int i2 = (i1 + 1) == points.size() ? 0 : i1 + 1;
+                    const unsigned int _idx = ((i1 + 1) == points.size()) ? vtx_buffer.size() : (idx + (use_texture ? 2 : 3));
+
+                    vec2_t p = (temp_normals[i1] + temp_normals[i2]) / 2;
+                    p *= 1.f / std::min(std::powf(p.length(), 2), 0.5f);
+                    p *= half_draw_size;
+
+                    temp_points[i2 * 2] = points[i2] + p;
+                    temp_points[i2 * 2 + 1] = points[i2] - p;
+
+                    if(use_texture) {
+                        prim_insert_idx({
+                            (std::uint16_t)(_idx),      (std::uint16_t)(idx),       (std::uint16_t)(idx + 1),
+                            (std::uint16_t)(_idx + 1),  (std::uint16_t)(idx + 1),   (std::uint16_t)(_idx)
+                            });
+                    } else {
+                        prim_insert_idx({
+                            (std::uint16_t)(_idx),      (std::uint16_t)(idx),       (std::uint16_t)(idx + 2),
+                            (std::uint16_t)(idx + 2),   (std::uint16_t)(_idx + 2),  (std::uint16_t)(_idx),
+                            (std::uint16_t)(_idx + 1),  (std::uint16_t)(idx + 1),   (std::uint16_t)(idx),
+                            (std::uint16_t)(idx),       (std::uint16_t)(_idx),      (std::uint16_t)(_idx + 1)
+                            });
+                    }
+
+                    idx = _idx;
+                }
+
+                if(use_texture) {
+                    rect_t tex_uvs = parent_shared_data->font->container_atlas->texture.uv_lines[integer_thickness];
+                    for(int i = 0; i < points.size(); i++) {
+                        prim_insert_vtx({
+                            { temp_points[i * 2],       tex_uvs.min, color },
+                            { temp_points[i * 2 + 1],   tex_uvs.max, color }
+                            });
+                    }
+                } else {
+                    for(int i = 0; i < points.size(); i++) {
+                        prim_insert_vtx({
+                            { points[i],                opaque_uv, color },
+                            { temp_points[i * 2],       opaque_uv, color_t{ color, 0.f } },
+                            { temp_points[i * 2 + 1],   opaque_uv, color_t{ color, 0.f } }
+                            });
+                    }
+                }
+            } else {
+                const float half_inner_thickness = (thickness - aa_size) * 0.5f;
+
+                if(!closed) {
+                    temp_points[0] = points.front() + temp_normals.front() * (half_inner_thickness + aa_size);
+                    temp_points[1] = points.front() + temp_normals.front() * (half_inner_thickness);
+                    temp_points[2] = points.front() - temp_normals.front() * (half_inner_thickness);
+                    temp_points[3] = points.front() - temp_normals.front() * (half_inner_thickness + aa_size);
+                    temp_points[(points.size() - 1) * 4]        = points.back() + temp_normals[(points.size() - 1)] * (half_inner_thickness + aa_size);
+                    temp_points[(points.size() - 1) * 4 + 1]    = points.back() + temp_normals[(points.size() - 1)] * (half_inner_thickness);
+                    temp_points[(points.size() - 1) * 4 + 2]    = points.back() - temp_normals[(points.size() - 1)] * (half_inner_thickness);
+                    temp_points[(points.size() - 1) * 4 + 3]    = points.back() - temp_normals[(points.size() - 1)] * (half_inner_thickness + aa_size);
+                }
+
+                unsigned int idx = vtx_buffer.size();
+                for(int i1 = 0; i1 < count; i1++) {
+                    const int i2 = (i1 + 1) == points.size() ? 0 : (i1 + 1);
+                    const unsigned int _idx = (i1 + 1) == points.size() ? vtx_buffer.size() : (idx + 4);
+
+                    vec2_t p = (temp_normals[i1] + temp_normals[i2]) / 2;
+                    p *= 1.f / std::min(std::powf(p.length(), 2), 0.5f);
+                    vec2_t p_out{ p * (half_inner_thickness + aa_size) }, p_in{ p * half_inner_thickness };
+                    temp_points[i2 * 4]     = points[i2] + p_out;
+                    temp_points[i2 * 4 + 1] = points[i2] + p_in;
+                    temp_points[i2 * 4 + 2] = points[i2] - p_in;
+                    temp_points[i2 * 4 + 3] = points[i2] - p_out;
+
+                    prim_insert_idx({
+                        (std::uint16_t)(_idx + 1),  (std::uint16_t)(idx + 1),   (std::uint16_t)(idx + 2),
+                        (std::uint16_t)(idx + 2),   (std::uint16_t)(_idx + 2),  (std::uint16_t)(_idx + 1),
+                        (std::uint16_t)(_idx + 1),  (std::uint16_t)(idx + 1),   (std::uint16_t)(idx),
+                        (std::uint16_t)(idx),       (std::uint16_t)(_idx),      (std::uint16_t)(_idx + 1),
+                        (std::uint16_t)(_idx + 2),  (std::uint16_t)(idx + 2),   (std::uint16_t)(idx + 3),
+                        (std::uint16_t)(idx + 3),   (std::uint16_t)(_idx + 3),  (std::uint16_t)(_idx + 2),
+                        });
+
+                    idx = _idx;
+                }
+
+                for(int i = 0; i < points.size(); i++) {
+                    prim_insert_vtx({
+                        { temp_points[i * 4],       opaque_uv, color_t(color, 0.f) },
+                        { temp_points[i * 4 + 1],   opaque_uv, color },
+                        { temp_points[i * 4 + 2],   opaque_uv, color },
+                        { temp_points[i * 4 + 3],   opaque_uv, color_t(color, 0.f) }
+                        });
+                }
+            }
+        } else {
+            for(int i1 = 0; i1 < count; i1++) {
+                const int i2 = (i1 + 1) == points.size() ? 0 : i1 + 1;
+                vec2_t p = points[i2] - points[i1];
+                if(p.length() > 0.f) p *= 1.f / p.length();
+                p *= thickness / 2;
+
+                prim_insert_idx({
+                    (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 1), (std::uint16_t)(vtx_buffer.size() + 2),
+                    (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 2), (std::uint16_t)(vtx_buffer.size() + 3)
+                    });
+
+                prim_insert_vtx({
+                    { points[i1] + vec2_t{ p.y, -p.x }, opaque_uv, color },
+                    { points[i2] + vec2_t{ p.y, -p.x }, opaque_uv, color },
+                    { points[i2] + vec2_t{ -p.y, p.x }, opaque_uv, color },
+                    { points[i1] + vec2_t{ -p.y, p.x }, opaque_uv, color }
+                    });
+            }
         }
     }
 }

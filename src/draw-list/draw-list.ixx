@@ -131,9 +131,8 @@ export namespace null {
 			};
 
 		public:
-			shared_data_t* shared_data{ };
+			shared_data_t* parent_shared_data{ &shared_data };
 
-			e_draw_list_flags flags{ };
 			std::vector<void*> texture_id_stack{ };
 			std::vector<vec2_t> path{ };
 			std::vector<rect_t> clip_rect_stack{ };
@@ -156,14 +155,13 @@ export namespace null {
 				texture_id_stack.clear();
 				path.clear();
 
-				flags = shared_data->initialize_flags;
 				cmd_header = cmd_header_t{ };
 			}
 			void shade_verts_linear_uv(vtx_buffer_t::iterator vtx_start, vtx_buffer_t::iterator vtx_end, rect_t rect, rect_t uv, bool clamp);
 			
 			void on_changed_clip_rect();
 			void push_clip_rect(rect_t rect, bool intersect_with_current_rect = false);
-			void push_clip_rect_fullscreen() { push_clip_rect(shared_data->clip_rect_fullscreen); }
+			void push_clip_rect_fullscreen() { push_clip_rect(parent_shared_data->clip_rect_fullscreen); }
 			void pop_clip_rect();
 			
 			void on_changed_texture_id();
@@ -188,12 +186,15 @@ export namespace null {
 
 			void path_rect(vec2_t a, vec2_t b, float rounding = 0.0f, e_corner_flags flags = e_corner_flags::all);
 			void path_arc_to_fast(vec2_t center, float radius, int a_min_of_12, int a_max_of_12);
-			void path_fill_convex(color_t clr) { draw_convex_poly_filled(path, clr); path.resize(0); }
+			void path_fill_convex(color_t clr) { draw_convex_poly_filled(path, clr); path.clear(); }
+			void path_stroke(color_t color, bool closed, float thickness) { draw_poly_line(path, color, closed, thickness); path.clear(); }
 
 			void draw_text(std::string str, vec2_t pos, color_t color, e_text_flags flags = e_text_flags{ }, c_font* font = nullptr, float size = 0.f) { draw_text(multicolor_text_t{ { { str , color } } }, pos, flags, font, size); }
 			void draw_text(multicolor_text_t str, vec2_t pos, e_text_flags flags = e_text_flags{ }, c_font* font = nullptr, float size = 0.f);
+			void draw_rect(vec2_t a, vec2_t b, color_t color, float thickness = 1.f, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all);
 			void draw_rect_filled(vec2_t a, vec2_t b, color_t color, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all);
 			void draw_convex_poly_filled(std::vector<vec2_t> points, color_t color);
+			void draw_poly_line(std::vector<vec2_t> points, color_t color, bool closed, float thickness = 1.f);
 		};
 
 		c_draw_list::draw_data_t draw_data{ };
