@@ -3,17 +3,18 @@ import :draw_list;
 import :font;
 
 namespace null::render {
-    void c_draw_list::draw_data_t::de_index_all_buffers() {
+    void c_draw_list::draw_data_t::deindex_all_buffers() {
         vtx_buffer_t new_vtx_buffer{ };
         total_vtx_count = total_idx_count = 0;
         for(c_draw_list* cmd_list : cmd_lists) { ;
-            if(cmd_list->idx_buffer.empty())
-                continue;
+            if(cmd_list->idx_buffer.empty()) continue;
+
             new_vtx_buffer.resize(cmd_list->idx_buffer.size());
-            for(int j = 0; j < cmd_list->idx_buffer.size(); j++)
-                new_vtx_buffer[j] = cmd_list->vtx_buffer[cmd_list->idx_buffer[j]];
+            for(int i = 0; i < cmd_list->idx_buffer.size(); i++)
+                new_vtx_buffer[i] = cmd_list->vtx_buffer[cmd_list->idx_buffer[i]];
             cmd_list->vtx_buffer.swap(new_vtx_buffer);
             cmd_list->idx_buffer.clear();
+            
             total_vtx_count += cmd_list->vtx_buffer.size();
         }
     }
@@ -189,10 +190,24 @@ namespace null::render {
             return;
         }
 
-        path.reserve(path.size() + (a_max_of_12 - a_min_of_12 + 1));
+        a_min_of_12 *= shared_data_t::arc_fast_tessellation_multiplier;
+        a_max_of_12 *= shared_data_t::arc_fast_tessellation_multiplier;
+
         for(int a = a_min_of_12; a <= a_max_of_12; a++) {
             const vec2_t& c = parent_shared_data->arc_fast_vtx[a % parent_shared_data->arc_fast_vtx.size()];
-            path.push_back(vec2_t(center.x + c.x * radius, center.y + c.y * radius));
+            path.push_back(center + c * radius);
+        }
+    }
+
+    void c_draw_list::path_arc_to(vec2_t center, float radius, float a_min, float a_max, int num_segments) {
+        if(radius == 0.0f) {
+            path.push_back(center);
+            return;
+        }
+
+        for(int i = 0; i <= num_segments; i++) {
+            const float a = a_min + ((float)i / (float)num_segments) * (a_max - a_min);
+            path.push_back(center + vec2_t{ cosf(a), sinf(a) } * radius);
         }
     }
     
@@ -210,8 +225,8 @@ namespace null::render {
 
             if(flags & e_text_flags::aligin_right) pos.x -= str_size.x;
             if(flags & e_text_flags::aligin_bottom) pos.y -= str_size.y;
-            if(flags & e_text_flags::aligin_centre_x) pos.x -= str_size.x / 2.f;
-            if(flags & e_text_flags::aligin_centre_y) pos.y -= str_size.y / 2.f;
+            if(flags & e_text_flags::aligin_center_x) pos.x -= str_size.x / 2.f;
+            if(flags & e_text_flags::aligin_center_y) pos.y -= str_size.y / 2.f;
         }
 
         pos = { std::floorf(pos.x), std::floorf(pos.y) };
@@ -305,8 +320,8 @@ namespace null::render {
                         }
                         prim_rect_uv(corners.min, corners.max, uvs.min, uvs.max, multicolor_data.second); //main text
 
-                        //Necessary for the correct drawing order of the outline and body text.
-                        //Because the outline draw call runs parallel to the body text draw calls, glyphs of new letters can overlap past ones.
+                        //necessary for the correct drawing order of the outline and body text.
+                        //because the outline draw call runs parallel to the body text draw calls, glyphs of new letters can overlap past ones.
                         vtx_offset += 4;
                     }
                 }
@@ -318,8 +333,7 @@ namespace null::render {
     void c_draw_list::draw_rect(vec2_t a, vec2_t b, color_t color, float thickness, float rounding, e_corner_flags flags) {
         if(color.a() <= 0.f) return;
 
-        if(parent_shared_data->initialize_flags & e_draw_list_flags::anti_aliased_lines) path_rect(a + vec2_t(0.50f, 0.50f), b - vec2_t(0.50f, 0.50f), rounding, flags);
-        else path_rect(a + vec2_t(0.50f, 0.50f), b - vec2_t(0.49f, 0.49f), rounding, flags);
+        path_rect(a + 0.50f, b - (parent_shared_data->initialize_flags & e_draw_list_flags::anti_aliased_lines ? 0.50f : 0.49f), rounding, flags);
         path_stroke(color, true, thickness);
     }
 
@@ -336,26 +350,25 @@ namespace null::render {
         if(points.size() < 3 || color <= 0.f) return;
 
         if(parent_shared_data->initialize_flags & e_draw_list_flags::anti_aliased_fill) {
-            std::size_t vtx_inner_idx = vtx_buffer.size();
-            std::size_t vtx_outer_idx = vtx_buffer.size() + 1;
-            for(int i = 2; i < points.size(); i++) prim_insert_idx({ (std::uint16_t)(vtx_inner_idx), (std::uint16_t)(vtx_inner_idx + ((i - 1) << 1)), (std::uint16_t)(vtx_inner_idx + (i << 1)) });
+            for(int i = 2; i < points.size(); i++) prim_insert_idx({ (std::uint16_t)(vtx_buffer.size()), (std::uint16_t)(vtx_buffer.size() + ((i - 1) << 1)), (std::uint16_t)(vtx_buffer.size() + (i << 1)) });
 
             std::vector<vec2_t> temp_normals(points.size());
             for(int i0 = points.size() - 1, i1 = 0; i1 < points.size(); i0 = i1++) {
                 vec2_t p = points[i1] - points[i0];
                 if(p.length() > 0.f) p *= 1.f / p.length();
 
-                temp_normals[i0] = { p.x, -p.y };
+                temp_normals[i0] = { p.y, -p.x };
             }
 
+            std::size_t idx = vtx_buffer.size();
             for(int i0 = points.size() - 1, i1 = 0; i1 < points.size(); i0 = i1++) {
                 vec2_t p = (temp_normals[i0] + temp_normals[i1]) / 2;
-                p *= 1.f / std::min(std::powf(p.length(), 2), 0.5f);
+                p *= 1.f / std::max(std::powf(p.length(), 2), 0.5f);
                 p *= 0.5f; //aa_size
 
                 prim_insert_idx({
-                    (std::uint16_t)(vtx_inner_idx + (i1 << 1)), (std::uint16_t)(vtx_inner_idx + (i0 << 1)), (std::uint16_t)(vtx_outer_idx + (i0 << 1)),
-                    (std::uint16_t)(vtx_outer_idx + (i0 << 1)), (std::uint16_t)(vtx_outer_idx + (i1 << 1)), (std::uint16_t)(vtx_inner_idx + (i1 << 1))
+                    (std::uint16_t)(idx + (i1 << 1)),       (std::uint16_t)(idx + (i0 << 1)),       (std::uint16_t)(idx + 1 + (i0 << 1)),
+                    (std::uint16_t)(idx + 1 + (i0 << 1)),   (std::uint16_t)(idx + 1 + (i1 << 1)),   (std::uint16_t)(idx + (i1 << 1))
                     });
                 
                 prim_insert_vtx({
@@ -372,11 +385,10 @@ namespace null::render {
     void c_draw_list::draw_poly_line(std::vector<vec2_t> points, color_t color, bool closed, float thickness) {
         if(points.size() < 2 || color.a() <= 0.f) return;
 
-        const vec2_t opaque_uv = parent_shared_data->font->container_atlas->texture.uv_white_pixel;
         const int count = closed ? points.size() : points.size() - 1;
         const bool thick_line = (thickness > 1.0f);
 
-        if(false && parent_shared_data->initialize_flags & e_draw_list_flags::anti_aliased_lines) {
+        if(parent_shared_data->initialize_flags & e_draw_list_flags::anti_aliased_lines) {
             static const float aa_size = 1.0f;
 
             thickness = std::max(thickness, 1.0f);
@@ -395,8 +407,7 @@ namespace null::render {
                 temp_normals[i1] = { p.y, -p.x };
             }
 
-            if(!closed)
-                temp_normals[points.size() - 1] = temp_normals[points.size() - 2];
+            if(!closed) *std::prev(temp_normals.end()) = *std::prev(temp_normals.end(), 2);
 
             if(use_texture || !thick_line) {
                 const float half_draw_size = use_texture ? ((thickness * 0.5f) + 1) : aa_size;
@@ -413,7 +424,7 @@ namespace null::render {
                     const unsigned int _idx = ((i1 + 1) == points.size()) ? vtx_buffer.size() : (idx + (use_texture ? 2 : 3));
 
                     vec2_t p = (temp_normals[i1] + temp_normals[i2]) / 2;
-                    p *= 1.f / std::min(std::powf(p.length(), 2), 0.5f);
+                    p *= 1.f / std::max(std::powf(p.length(), 2), 0.5f);
                     p *= half_draw_size;
 
                     temp_points[i2 * 2] = points[i2] + p;
@@ -447,9 +458,9 @@ namespace null::render {
                 } else {
                     for(int i = 0; i < points.size(); i++) {
                         prim_insert_vtx({
-                            { points[i],                opaque_uv, color },
-                            { temp_points[i * 2],       opaque_uv, color_t{ color, 0.f } },
-                            { temp_points[i * 2 + 1],   opaque_uv, color_t{ color, 0.f } }
+                            { points[i],                parent_shared_data->font->container_atlas->texture.uv_white_pixel, color },
+                            { temp_points[i * 2],       parent_shared_data->font->container_atlas->texture.uv_white_pixel, color_t{ color, 0.f } },
+                            { temp_points[i * 2 + 1],   parent_shared_data->font->container_atlas->texture.uv_white_pixel, color_t{ color, 0.f } }
                             });
                     }
                 }
@@ -473,7 +484,7 @@ namespace null::render {
                     const unsigned int _idx = (i1 + 1) == points.size() ? vtx_buffer.size() : (idx + 4);
 
                     vec2_t p = (temp_normals[i1] + temp_normals[i2]) / 2;
-                    p *= 1.f / std::min(std::powf(p.length(), 2), 0.5f);
+                    p *= 1.f / std::max(std::powf(p.length(), 2), 0.5f);
                     vec2_t p_out{ p * (half_inner_thickness + aa_size) }, p_in{ p * half_inner_thickness };
                     temp_points[i2 * 4]     = points[i2] + p_out;
                     temp_points[i2 * 4 + 1] = points[i2] + p_in;
@@ -494,10 +505,10 @@ namespace null::render {
 
                 for(int i = 0; i < points.size(); i++) {
                     prim_insert_vtx({
-                        { temp_points[i * 4],       opaque_uv, color_t(color, 0.f) },
-                        { temp_points[i * 4 + 1],   opaque_uv, color },
-                        { temp_points[i * 4 + 2],   opaque_uv, color },
-                        { temp_points[i * 4 + 3],   opaque_uv, color_t(color, 0.f) }
+                        { temp_points[i * 4],       parent_shared_data->font->container_atlas->texture.uv_white_pixel, color_t(color, 0.f) },
+                        { temp_points[i * 4 + 1],   parent_shared_data->font->container_atlas->texture.uv_white_pixel, color },
+                        { temp_points[i * 4 + 2],   parent_shared_data->font->container_atlas->texture.uv_white_pixel, color },
+                        { temp_points[i * 4 + 3],   parent_shared_data->font->container_atlas->texture.uv_white_pixel, color_t(color, 0.f) }
                         });
                 }
             }
@@ -514,12 +525,34 @@ namespace null::render {
                     });
 
                 prim_insert_vtx({
-                    { points[i1] + vec2_t{ p.y, -p.x }, opaque_uv, color },
-                    { points[i2] + vec2_t{ p.y, -p.x }, opaque_uv, color },
-                    { points[i2] + vec2_t{ -p.y, p.x }, opaque_uv, color },
-                    { points[i1] + vec2_t{ -p.y, p.x }, opaque_uv, color }
+                    { points[i1] + vec2_t{ p.y, -p.x }, parent_shared_data->font->container_atlas->texture.uv_white_pixel, color },
+                    { points[i2] + vec2_t{ p.y, -p.x }, parent_shared_data->font->container_atlas->texture.uv_white_pixel, color },
+                    { points[i2] + vec2_t{ -p.y, p.x }, parent_shared_data->font->container_atlas->texture.uv_white_pixel, color },
+                    { points[i1] + vec2_t{ -p.y, p.x }, parent_shared_data->font->container_atlas->texture.uv_white_pixel, color }
                     });
             }
         }
+    }
+
+    void c_draw_list::draw_circle(vec2_t center, color_t clr, float radius, int num_segments, float thickness) {
+        if(clr.a() <= 0.f || radius <= 0.f) return;
+
+        parent_shared_data->get_auto_circle_num_segments(num_segments, radius);
+
+        const float a_max = (std::numbers::pi * 2.f) * (num_segments - 1.f) / num_segments;
+        if(num_segments == 12) path_arc_to_fast(center, radius - 0.5f, 0, 11);
+        else path_arc_to(center, radius - 0.5f, 0.f, a_max, num_segments - 1);
+        path_stroke(clr, true, thickness);
+    }
+
+    void c_draw_list::draw_circle_filled(vec2_t center, color_t clr, float radius, int num_segments) {
+        if(clr.a() <= 0.f || radius <= 0.f) return;
+
+        parent_shared_data->get_auto_circle_num_segments(num_segments, radius);
+
+        const float a_max = (std::numbers::pi * 2.f) * (num_segments - 1.f) / num_segments;
+        if(num_segments == 12) path_arc_to_fast(center, radius, 0, 11);
+        else path_arc_to(center, radius, 0.0f, a_max, num_segments - 1);
+        path_fill_convex(clr);
     }
 }

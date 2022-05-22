@@ -36,10 +36,10 @@ export namespace null {
 		aligin_right = 1 << 1, //will be draw at pos - text_size.x
 		aligin_bottom = 1 << 2, //will be draw at pos - text_size.y
 		//align_center is calculated after the rest, so it can be combined with left and bottom
-		aligin_centre_x = 1 << 3,
-		aligin_centre_y = 1 << 4,
-		aligin_centre = aligin_centre_x | aligin_centre_y,
-		aligin_mask = aligin_centre | aligin_bottom | aligin_right
+		aligin_center_x = 1 << 3,
+		aligin_center_y = 1 << 4,
+		aligin_center = aligin_center_x | aligin_center_y,
+		aligin_mask = aligin_center | aligin_bottom | aligin_right
 	}; enum_create_bit_operators(e_text_flags, true);
 	enum_create_cast_operator(e_text_flags, -);
 
@@ -49,12 +49,17 @@ export namespace null {
 
 	namespace render {
 		struct shared_data_t {
+		public: //used instead of #define
+			static const int arc_fast_tessellation_multiplier{ 1 };
+			static const int circle_auto_segment_max{ 512 };
+
+		public:
 			std::vector<vec2_t> text_outline_offsets{ { -1, 0 }, { 0, -1 }, { 0, 1}, { 1, 0 } };
 			e_draw_list_flags initialize_flags{ };
 			c_font* font{ };
 			rect_t clip_rect_fullscreen{ };
 
-			std::array<vec2_t, 12> arc_fast_vtx{ };
+			std::array<vec2_t, 12 * arc_fast_tessellation_multiplier> arc_fast_vtx{ };
 			std::array<std::uint8_t, 64> circle_segments{ };
 			float circle_segment_max_error{ };
 			float curve_tessellation_tol{ };
@@ -75,6 +80,14 @@ export namespace null {
 					int segment_count = std::clamp((std::numbers::pi * 2.f) / std::acosf((radius - circle_segment_max_error) / radius), 12., 512.);
 					circle_segments[i] = (std::uint8_t)std::min(segment_count, 255);
 				}
+			}
+
+			void get_auto_circle_num_segments(int& num_segments, float radius) {
+				if(num_segments <= 0) {
+					const int radius_idx = (int)radius - 1;
+					if(radius_idx < circle_segments.size()) num_segments = circle_segments[radius_idx];
+					else num_segments = std::clamp((int)((std::numbers::pi * 2.0f) / acosf((radius - circle_segment_max_error) / radius)), 12, circle_auto_segment_max);
+				} else num_segments = std::clamp(num_segments, 3, circle_auto_segment_max);
 			}
 		} shared_data{ e_draw_list_flags::allow_vtx_offset };
 
@@ -106,7 +119,7 @@ export namespace null {
 
 				vec2_t window_pos{ }, window_size{ };
 
-				void de_index_all_buffers();
+				void deindex_all_buffers();
 				void add_draw_list(c_draw_list* draw_list);
 				void setup();
 
@@ -186,15 +199,18 @@ export namespace null {
 
 			void path_rect(vec2_t a, vec2_t b, float rounding = 0.0f, e_corner_flags flags = e_corner_flags::all);
 			void path_arc_to_fast(vec2_t center, float radius, int a_min_of_12, int a_max_of_12);
+			void path_arc_to(vec2_t center, float radius, float a_min, float a_max, int num_segments);
 			void path_fill_convex(color_t clr) { draw_convex_poly_filled(path, clr); path.clear(); }
 			void path_stroke(color_t color, bool closed, float thickness) { draw_poly_line(path, color, closed, thickness); path.clear(); }
 
 			void draw_text(std::string str, vec2_t pos, color_t color, e_text_flags flags = e_text_flags{ }, c_font* font = nullptr, float size = 0.f) { draw_text(multicolor_text_t{ { { str , color } } }, pos, flags, font, size); }
 			void draw_text(multicolor_text_t str, vec2_t pos, e_text_flags flags = e_text_flags{ }, c_font* font = nullptr, float size = 0.f);
-			void draw_rect(vec2_t a, vec2_t b, color_t color, float thickness = 1.f, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all);
-			void draw_rect_filled(vec2_t a, vec2_t b, color_t color, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all);
+			void draw_rect(vec2_t a, vec2_t b, color_t color, float thickness = 1.f, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all); //@todo: add rect multicolor
+			void draw_rect_filled(vec2_t a, vec2_t b, color_t color, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all); //@todo: add rect filled multicolor
 			void draw_convex_poly_filled(std::vector<vec2_t> points, color_t color);
 			void draw_poly_line(std::vector<vec2_t> points, color_t color, bool closed, float thickness = 1.f);
+			void draw_circle(vec2_t center, color_t clr, float radius, int num_segments = 0, float thickness = 1.f);
+			void draw_circle_filled(vec2_t center, color_t clr, float radius, int num_segments = 0);
 		};
 
 		c_draw_list::draw_data_t draw_data{ };

@@ -32,7 +32,7 @@ export namespace null::render {
         shared_data.clip_rect_fullscreen = rect_t(vec2_t{ 0.f }, window_size);
         shared_data.curve_tessellation_tol = 1.25f;
         shared_data.set_circle_segment_max_error(1.60f);
-        shared_data.initialize_flags |= ~e_draw_list_flags::anti_aliased_lines | ~e_draw_list_flags::anti_aliased_lines_use_texture | ~e_draw_list_flags::anti_aliased_fill;
+        shared_data.initialize_flags |= -e_draw_list_flags::anti_aliased_lines | -e_draw_list_flags::anti_aliased_lines_use_texture | -e_draw_list_flags::anti_aliased_fill;
 
         background_draw_list.reset_for_begin_render();
         background_draw_list.push_texture_id(global_atlas.texture.id);

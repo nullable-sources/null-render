@@ -148,8 +148,6 @@ namespace null::render {
         }
 
         for(build_src_t& src : src_array) {
-            src.glyphs_list.reserve(src.glyphs_count);
-
             for(std::vector<std::uint32_t>::iterator it = src.glyphs_set.begin(); it != src.glyphs_set.end(); it++) {
                 if(*it) {
                     for(std::uint32_t bit_n = 0; bit_n < 32; bit_n++) {
