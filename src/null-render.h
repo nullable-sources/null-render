@@ -1,28 +1,21 @@
 //imgui version - 1.80 WIP (https://github.com/ocornut/imgui/tree/v1.80)
-export module null.render;
-import null.sdk;
-import std.core;
+#pragma once
 
-export import :draw_list;
-export import :font;
+#include <draw-list/draw-list.h>
 
-export import :backends.directx9;
-
-export import :compressed_fonts.proggy_clean;
-
-export namespace null::render {
-    void initialize() {
+namespace null::render {
+    static void initialize() {
         background_draw_list.parent_shared_data = &shared_data;
         foreground_draw_list.parent_shared_data = &shared_data;
     }
 
-    void shutdown() {
+    static void shutdown() {
         if(global_atlas.locked && atlas_owned_by_initialize) {
             global_atlas.locked = false;
         }
     }
 
-    void begin_frame(utils::win::c_window window) {
+    static void begin_frame(utils::win::c_window window) {
         vec2_t window_size{ window.get_window_size() };
 
         global_atlas.locked = true;
@@ -46,9 +39,11 @@ export namespace null::render {
         draw_data.layers.clear();
     }
 
-    void end_frame() { global_atlas.locked = false; }
+    static void end_frame() {
+        global_atlas.locked = false;
+    }
 
-    void setup_draw_data() {
+    static void setup_draw_data() {
         draw_data.layers.clear();
 
         if(!background_draw_list.vtx_buffer.empty()) draw_data.add_draw_list(&background_draw_list);

@@ -1,8 +1,7 @@
-export module null.render:draw_list;
-import :font;
-import null.sdk;
+#pragma once
+#include <font/font.h>
 
-export namespace null {
+namespace null {
 	enum struct e_draw_list_flags {
 		anti_aliased_lines = 1 << 0,
 		anti_aliased_lines_use_texture = 1 << 1,
@@ -89,7 +88,7 @@ export namespace null {
 					else num_segments = std::clamp((int)((std::numbers::pi * 2.0f) / acosf((radius - circle_segment_max_error) / radius)), 12, circle_auto_segment_max);
 				} else num_segments = std::clamp(num_segments, 3, circle_auto_segment_max);
 			}
-		} shared_data{ e_draw_list_flags::allow_vtx_offset };
+		} inline shared_data{ e_draw_list_flags::allow_vtx_offset };
 
 		struct multicolor_text_t {
 			using data_t = std::vector<std::pair<std::string, color_t>>;
@@ -213,7 +212,7 @@ export namespace null {
 			void draw_circle_filled(vec2_t center, color_t clr, float radius, int num_segments = 0);
 		};
 
-		c_draw_list::draw_data_t draw_data{ };
-		c_draw_list background_draw_list{ }, foreground_draw_list{ };
+		inline c_draw_list::draw_data_t draw_data{ };
+		inline c_draw_list background_draw_list{ }, foreground_draw_list{ };
 	}
 }

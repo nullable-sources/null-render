@@ -21,29 +21,31 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\null-render.ixx">
+    <ClCompile Include="src\font\font.cpp">
+      <Filter>src\font</Filter>
+    </ClCompile>
+    <ClCompile Include="src\draw-list\draw-list.cpp">
+      <Filter>src\draw-list</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderers\directx9\directx9.cpp">
+      <Filter>src\renderers\directx9</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\null-render.h">
       <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\compressed-fonts\proggy-clean.ixx">
+    </ClInclude>
+    <ClInclude Include="src\renderers\directx9\directx9.h">
+      <Filter>src\renderers\directx9</Filter>
+    </ClInclude>
+    <ClInclude Include="src\font\font.h">
+      <Filter>src\font</Filter>
+    </ClInclude>
+    <ClInclude Include="src\draw-list\draw-list.h">
+      <Filter>src\draw-list</Filter>
+    </ClInclude>
+    <ClInclude Include="src\compressed-fonts\proggy-clean.h">
       <Filter>src\compressed-fonts</Filter>
-    </ClCompile>
-    <ClCompile Include="src\draw-list\draw-list.ixx">
-      <Filter>src\draw-list</Filter>
-    </ClCompile>
-    <ClCompile Include="src\font\font.cxx">
-      <Filter>src\font</Filter>
-    </ClCompile>
-    <ClCompile Include="src\font\font.ixx">
-      <Filter>src\font</Filter>
-    </ClCompile>
-    <ClCompile Include="src\draw-list\draw-list.cxx">
-      <Filter>src\draw-list</Filter>
-    </ClCompile>
-    <ClCompile Include="src\renderers\directx9\directx9.cxx">
-      <Filter>src\renderers\directx9</Filter>
-    </ClCompile>
-    <ClCompile Include="src\renderers\directx9\directx9.ixx">
-      <Filter>src\renderers\directx9</Filter>
-    </ClCompile>
+    </ClInclude>
   </ItemGroup>
 </Project>

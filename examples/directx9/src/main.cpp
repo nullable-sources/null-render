@@ -1,9 +1,5 @@
-﻿#define NOMINMAX
-#include <Windows.h>
-#pragma comment (lib,"d3d9.lib")
-#include <d3d9.h>
-import null.render;
-import null.sdk;
+﻿#include <iostream>
+#include <renderers/directx9/directx9.h>
 
 null::render::directx9::c_window window{ };
 

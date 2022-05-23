@@ -1,24 +1,21 @@
-module;
-//modules don't export #pragma :/, im fuck ghetto fix by importing a separate .h file
+#pragma once
 #pragma comment (lib,"d3d9.lib")
 #include <d3d9.h>
-export module null.render:backends.directx9;
-import :draw_list;
-import :font;
-import null.sdk;
 
-export namespace null::render::directx9 {
+#include <null-render.h>
+
+namespace null::render::directx9 {
 	struct vertex_t {
 		float pos[3]{ };
 		std::uint32_t color{ };
 		float uv[2]{ };
 	};
 
-	IDirect3DDevice9* device{ };
-	IDirect3DTexture9* font_texture{ };
-	IDirect3DVertexDeclaration9* vtx_declaration{ };
-	IDirect3DVertexBuffer9* vtx_buffer{ };
-	IDirect3DIndexBuffer9* idx_buffer{ };
+	inline IDirect3DDevice9* device{ };
+	inline IDirect3DTexture9* font_texture{ };
+	inline IDirect3DVertexDeclaration9* vtx_declaration{ };
+	inline IDirect3DVertexBuffer9* vtx_buffer{ };
+	inline IDirect3DIndexBuffer9* idx_buffer{ };
 
 	void render_draw_data(c_draw_list::draw_data_t* _draw_data = &draw_data);
 	void setup_render_state(c_draw_list::draw_data_t* _draw_data = &draw_data);
@@ -26,10 +23,10 @@ export namespace null::render::directx9 {
 	void create_device_objects();
 	void invalidate_device_objects();
 
-	void initialize(IDirect3DDevice9* _device) { device = _device; device->AddRef(); }
-	void shutdown() { invalidate_device_objects(); if(device) { device->Release(); device = nullptr; } }
+	static void initialize(IDirect3DDevice9* _device) { device = _device; device->AddRef(); }
+	static void shutdown() { invalidate_device_objects(); if(device) { device->Release(); device = nullptr; } }
 
-	void begin_frame() { if(!font_texture) create_device_objects(); }
+	static void begin_frame() { if(!font_texture) create_device_objects(); }
 	
 	class c_window : public utils::win::c_window {
 	public:

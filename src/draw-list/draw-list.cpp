@@ -1,6 +1,4 @@
-module null.render;
-import :draw_list;
-import :font;
+#include <draw-list/draw-list.h>
 
 namespace null::render {
     void c_draw_list::draw_data_t::deindex_all_buffers() {

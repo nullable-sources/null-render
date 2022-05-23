@@ -1,7 +1,4 @@
-#pragma comment (lib,"d3d9.lib")
-#include <d3d9.h>
-module null.render;
-import :backends.directx9;
+#include <renderers/directx9/directx9.h>
 
 namespace null::render::directx9 {
 	void render_draw_data(c_draw_list::draw_data_t* _draw_data) {

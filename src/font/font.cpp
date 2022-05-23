@@ -1,14 +1,5 @@
-#define _HAS_ITERATOR_DEBUGGING 0
-#define STB_TRUETYPE_IMPLEMENTATION
-#define STB_RECT_PACK_IMPLEMENTATION
-#define STBRP_STATIC
-#define STBTT_STATIC
-
-#include <stb/stb_rect_pack.h>
-#include <stb/stb_truetype.h>
-module null.render;
-import :font;
-import :draw_list;
+#include <fstream>
+#include <draw-list/draw-list.h>
 
 namespace null::render {
     void c_font::c_atlas::texture_t::render_1bpp_rect_from_string(rect_t bpp_rect, const char* in_str, char in_marker_char, std::uint8_t in_marker_pixel_value) {

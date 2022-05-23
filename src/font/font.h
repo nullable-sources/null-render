@@ -1,16 +1,14 @@
-module;
+#pragma once
 #define STB_TRUETYPE_IMPLEMENTATION
 #define STB_RECT_PACK_IMPLEMENTATION
 #define STBRP_STATIC
 #define STBTT_STATIC
 
-#include <stb/stb_rect_pack.h>
-#include <stb/stb_truetype.h>
-export module null.render:font;
-import null.sdk;
-import std.core;
+#include <stb_rect_pack.h>
+#include <stb_truetype.h>
 
-import :compressed_fonts.proggy_clean;
+#include <null-sdk.h>
+#include <compressed-fonts/proggy-clean.h>
 
 #define stb_impl_in2(x) ((i[x] << 8) + i[(x)+1])
 #define stb_impl_in3(x) ((i[x] << 16) + stb_impl_in2((x)+1))
@@ -18,7 +16,7 @@ import :compressed_fonts.proggy_clean;
 
 namespace null::render {
     namespace impl {
-        void decode85(const std::uint8_t* src, std::uint8_t* dst) {
+        static void decode85(const std::uint8_t* src, std::uint8_t* dst) {
             static auto decode85_byte = [](char c) { return c >= '\\' ? c - 36 : c - 35; };
             while(*src) {
                 std::uint32_t tmp = decode85_byte(src[0]) + 85 * (decode85_byte(src[1]) + 85 * (decode85_byte(src[2]) + 85 * (decode85_byte(src[3]) + 85 * decode85_byte(src[4]))));
@@ -29,25 +27,25 @@ namespace null::render {
         }
 
         namespace stb {
-            std::uint8_t* barrier_out_e, * barrier_out_b;
-            const std::uint8_t* barrier_in_b;
-            std::uint8_t* dout;
+            inline std::uint8_t* barrier_out_e, * barrier_out_b;
+            inline const std::uint8_t* barrier_in_b;
+            inline std::uint8_t* dout;
 
-            std::uint32_t decompress_length(const std::uint8_t* input) { return (input[8] << 24) + (input[9] << 16) + (input[10] << 8) + input[11]; }
-            void match(const std::uint8_t* data, std::uint32_t length) {
+            static std::uint32_t decompress_length(const std::uint8_t* input) { return (input[8] << 24) + (input[9] << 16) + (input[10] << 8) + input[11]; }
+            static void match(const std::uint8_t* data, std::uint32_t length) {
                 if(dout + length > barrier_out_e) throw std::runtime_error("dout + length > barrier_out_e");
                 if(data < barrier_out_b) { dout = barrier_out_e + 1; return; }
                 while(length--) *dout++ = *data++;
             }
 
-            void lit(const std::uint8_t* data, std::uint32_t length) {
+            static void lit(const std::uint8_t* data, std::uint32_t length) {
                 if(dout + length > barrier_out_e) throw std::runtime_error("dout + length > barrier_out_e");
                 if(data < barrier_in_b) { dout = barrier_out_e + 1; return; }
                 memcpy(dout, data, length);
                 dout += length;
             }
 
-            const std::uint8_t* decompress_token(const std::uint8_t* i) {
+            static const std::uint8_t* decompress_token(const std::uint8_t* i) {
                 if(*i >= 0x20) {
                     if(*i >= 0x80)       match(dout - i[1] - 1, i[0] - 0x80 + 1), i += 2;
                     else if(*i >= 0x40)  match(dout - (stb_impl_in2(0) - 0x4000 + 1), i[2] + 1), i += 3;
@@ -63,7 +61,7 @@ namespace null::render {
                 return i;
             }
 
-            std::uint32_t adler32(std::uint32_t adler32, std::uint8_t* buffer, std::uint32_t buflen) {
+            static std::uint32_t adler32(std::uint32_t adler32, std::uint8_t* buffer, std::uint32_t buflen) {
                 constexpr std::uint64_t ADLER_MOD = 65521;
                 std::uint64_t s1 = adler32 & 0xffff, s2 = adler32 >> 16;
                 std::uint64_t blocklen = buflen % 5552;
@@ -93,7 +91,7 @@ namespace null::render {
                 return (std::uint32_t)(s2 << 16) + (std::uint32_t)s1;
             }
 
-            std::uint32_t decompress(std::uint8_t* output, const std::uint8_t* i) {
+            static std::uint32_t decompress(std::uint8_t* output, const std::uint8_t* i) {
                 if(stb_impl_in4(0) != 0x57bC0000) return 0;
                 if(stb_impl_in4(4) != 0) return 0;
                 const std::uint32_t olen = decompress_length(i);
@@ -121,7 +119,7 @@ namespace null::render {
             }
         }
 
-        int get_char_from_utf8(std::uint32_t* out_char, std::string str) {
+        static int get_char_from_utf8(std::uint32_t* out_char, std::string str) {
             static const char lengths[32] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 3, 3, 4, 0 };
             static const int masks[] = { 0x00, 0x7f, 0x1f, 0x0f, 0x07 };
             static const std::uint32_t mins[] = { 0x400000, 0, 0x80, 0x800, 0x10000 };
@@ -158,7 +156,7 @@ namespace null::render {
         }
     }
 
-    export class c_font {
+    class c_font {
     public:
         struct glyph_t {
             struct config_t {
@@ -344,15 +342,15 @@ namespace null::render {
         vec2_t calc_text_size(std::string str, float custom_size = -1.f);
     };
 
-    export bool atlas_owned_by_initialize{ };
-    export c_font::c_atlas global_atlas{ };
+    inline bool atlas_owned_by_initialize{ };
+    inline c_font::c_atlas global_atlas{ };
 
-    export c_font* current_font{ }; //set only from set_current_font
-    export std::vector<c_font*> fonts{ };
-    export float font_global_scale{ };
+    inline c_font* current_font{ }; //set only from set_current_font
+    inline std::vector<c_font*> fonts{ };
+    inline float font_global_scale{ };
 
-    export c_font* get_current_font() { return current_font ? current_font : &global_atlas.fonts.front(); }
-    export void set_current_font(c_font* font);
-    export void push_font(c_font* font);
-    export void pop_font(c_font* font);
+    static c_font* get_current_font() { return current_font ? current_font : &global_atlas.fonts.front(); }
+    void set_current_font(c_font* font);
+    void push_font(c_font* font);
+    void pop_font(c_font* font);
 }
