@@ -37,7 +37,7 @@ namespace null::render {
         }
     }
 
-    void c_draw_list::shade_verts_linear_uv(vtx_buffer_t::iterator vtx_start, vtx_buffer_t::iterator vtx_end, rect_t rect, rect_t uv, bool clamp) {
+    void c_draw_list::shade_verts_linear_uv(const vtx_buffer_t::iterator& vtx_start, const vtx_buffer_t::iterator& vtx_end, const rect_t& rect, const rect_t& uv, bool clamp) {
         const vec2_t scale = vec2_t{
             rect.size().x != 0.0f ? (uv.size().x / rect.size().x) : 0.0f,
             rect.size().y != 0.0f ? (uv.size().y / rect.size().y) : 0.0f };
@@ -123,7 +123,7 @@ namespace null::render {
         }
     }
 
-    void c_draw_list::prim_rect(vec2_t a, vec2_t c, color_t color) {
+    void c_draw_list::prim_rect(const vec2_t& a, const vec2_t& c, const color_t& color) {
         prim_insert_idx({
             (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 1), (std::uint16_t)(vtx_buffer.size() + 2),
             (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 2), (std::uint16_t)(vtx_buffer.size() + 3)
@@ -137,7 +137,7 @@ namespace null::render {
             });
     }
 
-    void c_draw_list::prim_rect_uv(vec2_t a, vec2_t c, vec2_t uv_a, vec2_t uv_c, color_t color) {
+    void c_draw_list::prim_rect_uv(const vec2_t& a, const vec2_t& c, const vec2_t& uv_a, const vec2_t& uv_c, const color_t& color) {
         prim_insert_idx({
             (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 1), (std::uint16_t)(vtx_buffer.size() + 2),
             (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 2), (std::uint16_t)(vtx_buffer.size() + 3)
@@ -151,16 +151,20 @@ namespace null::render {
             });
     }
 
-    void c_draw_list::prim_quad_uv(std::array<vec2_t, 4> points, std::array<vec2_t, 4> uvs, color_t color) {
+    void c_draw_list::prim_quad_uv(const std::array<vec2_t, 4>& points, const std::array<vec2_t, 4>& uvs, const color_t& color) {
         prim_insert_idx({
             (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 1), (std::uint16_t)(vtx_buffer.size() + 2),
             (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 2), (std::uint16_t)(vtx_buffer.size() + 3)
             });
 
-        std::transform(points.begin(), points.end(), uvs.begin(), points.begin(), [&](vec2_t& point, vec2_t& uv) { prim_add_vtx({ point, uv, color }); return point; });
+        for(auto point = points.begin(), uv = uvs.begin();
+            point != points.end() && uv != uvs.end();
+            point++, uv++) {
+            prim_add_vtx({ *point, *uv, color });
+        }
     }
     
-    void c_draw_list::path_rect(vec2_t a, vec2_t b, float rounding, e_corner_flags flags) {
+    void c_draw_list::path_rect(const vec2_t& a, const vec2_t& b, float rounding, e_corner_flags flags) {
         rounding = std::min(rounding, std::fabsf(b.x - a.x) * (flags & e_corner_flags::top || flags & e_corner_flags::bot ? 0.5f : 1.f) - 1.f);
         rounding = std::min(rounding, std::fabsf(b.y - a.y) * (flags & e_corner_flags::left || flags & e_corner_flags::right ? 0.5f : 1.f) - 1.f);
 
@@ -182,7 +186,7 @@ namespace null::render {
         }
     }
 
-    void c_draw_list::path_arc_to_fast(vec2_t center, float radius, int a_min_of_12, int a_max_of_12) {
+    void c_draw_list::path_arc_to_fast(const vec2_t& center, float radius, int a_min_of_12, int a_max_of_12) {
         if(radius == 0.0f || a_min_of_12 > a_max_of_12) {
             path.push_back(center);
             return;
@@ -197,7 +201,7 @@ namespace null::render {
         }
     }
 
-    void c_draw_list::path_arc_to(vec2_t center, float radius, float a_min, float a_max, int num_segments) {
+    void c_draw_list::path_arc_to(const vec2_t& center, float radius, float a_min, float a_max, int num_segments) {
         if(radius == 0.0f) {
             path.push_back(center);
             return;
@@ -208,17 +212,17 @@ namespace null::render {
             path.push_back(center + vec2_t{ cosf(a), sinf(a) } * radius);
         }
     }
+
     
-    void c_draw_list::draw_text(multicolor_text_t str, vec2_t pos, e_text_flags flags, c_font* font, float size) {
+    void c_draw_list::draw_text(std::string_view str, vec2_t pos, const color_t& color, e_text_flags flags, c_font* font, float size) {
         font = font ? font : parent_shared_data->font;
         size = size > 0.f ? size : font->size;
 
         if(font->container_atlas->texture.id != cmd_header.texture_id)
             throw std::runtime_error("font->container_atlas->texture.id != cmd_header.texture_id");
 
-        std::string str_unite = str.unite();
         if(flags & e_text_flags::aligin_mask) {
-            vec2_t str_size = font->calc_text_size(str_unite, size);
+            vec2_t str_size = font->calc_text_size(str, size);
             if(str_size <= 0.f) return;
 
             if(flags & e_text_flags::aligin_right) pos.x -= str_size.x;
@@ -233,109 +237,134 @@ namespace null::render {
         const float scale = size / font->size;
         const float line_height = font->size * scale;
 
+        //perhaps this is useless and does not give any increase in performance, but I'm too lazy to do tests, so I'll leave it just in case
         if(pos.y + line_height < cmd_header.clip_rect.min.y) {
             while(pos.y + line_height < cmd_header.clip_rect.min.y) {
                 pos.y += line_height;
 
-                multicolor_text_t::data_t::iterator finded = std::find_if(str.data.begin(), str.data.end(), [&str_unite](multicolor_text_t::data_t::value_type& multicolor_data) {
-                    std::string::iterator new_line = std::find(multicolor_data.first.begin(), multicolor_data.first.end(), '\n');
-                    if(new_line != multicolor_data.first.end()) {
-                        multicolor_data.first.erase(multicolor_data.first.begin(), std::next(new_line));
-                        str_unite.erase(str_unite.begin(), std::find(str_unite.begin(), str_unite.end(), '\n')); //rebuilding str_unite every time is not a good idea, so change it right here
-                    }
-                    return new_line != multicolor_data.first.end();
-                    });
-
-                if(finded != str.data.end()) str.data.erase(str.data.begin(), (*finded).first.empty() ? std::next(finded) : finded);
-                else return; //if all the text is outside the clip_rect, we don't need to draw it
-            }
-        }
-
-        //a more correct solution would be text_size > clip_rect.max.y
-        //but calculating text_size each time would be too resource-intensive and unjustified
-        if(str_unite.size() > 10000) {
-            float y = pos.y;
-            while(y < cmd_header.clip_rect.max.y) {
-                y += line_height;
-                multicolor_text_t::data_t::iterator finded = std::find_if(str.data.begin(), str.data.end(), [&str_unite](multicolor_text_t::data_t::value_type& multicolor_data) {
-                    if(std::string::iterator new_line; (new_line = std::find(multicolor_data.first.begin(), multicolor_data.first.end(), '\n')) != multicolor_data.first.end()) {
-                        multicolor_data.first.erase(new_line, multicolor_data.first.end());
-                        return true;
-                    }
-                    return false;
-                    });
-
-                if(finded != str.data.end()) str.data.erase((*finded).first.empty() ? finded : std::next(finded), str.data.end());
+                std::string_view::iterator new_line = std::find(str.begin(), str.end(), '\n');
+                if(new_line != str.end()) str = str.substr(std::distance(str.begin(), new_line) + 1);
                 else return;
             }
         }
 
         int vtx_offset{ }; //offset for outline
         vec2_t draw_pos{ pos };
-        for(multicolor_text_t::data_t::value_type multicolor_data : str.data) {
-            for(std::string::iterator s = multicolor_data.first.begin(); s != multicolor_data.first.end();) {
-                std::uint32_t c = *s;
-                if(c < 0x80) s += 1;
-                else {
-                    s += impl::get_char_from_utf8(&c, std::string(s, multicolor_data.first.end()));
-                    if(c == 0) break;
-                }
+        draw_text(str, color, pos, draw_pos, font, line_height, scale, vtx_offset, flags & e_text_flags::outline);
+    }
 
-                if(c < 32) {
-                    if(c == '\n') {
-                        draw_pos.x = pos.x;
-                        draw_pos.y += line_height;
-                        if(draw_pos.y > cmd_header.clip_rect.max.y)
-                            break;
-                        continue;
-                    } if(c == '\r') continue;
-                }
+    void c_draw_list::draw_text(multicolor_text_t str, vec2_t pos, e_text_flags flags, c_font* font, float size) {
+        font = font ? font : parent_shared_data->font;
+        size = size > 0.f ? size : font->size;
 
-                const c_font::glyph_t* glyph = font->find_glyph((std::uint16_t)c);
-                if(!glyph) continue;
+        if(font->container_atlas->texture.id != cmd_header.texture_id)
+            throw std::runtime_error("font->container_atlas->texture.id != cmd_header.texture_id");
 
-                if(glyph->visible) {
-                    rect_t corners{ rect_t{ draw_pos } + glyph->corners * scale };
-                    if(corners.min.x <= cmd_header.clip_rect.max.x && corners.max.x >= cmd_header.clip_rect.min.x) {
-                        rect_t uvs = glyph->texture_coordinates;
+        if(flags & e_text_flags::aligin_mask) {
+            vec2_t str_size = font->calc_text_size(str, size);
+            if(str_size <= 0.f) return;
 
-                        if(flags & e_text_flags::outline && !parent_shared_data->text_outline_offsets.empty()) {
-                            for(vec2_t offset : parent_shared_data->text_outline_offsets) {
-                                prim_insert_idx({
-                                    (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 1), (std::uint16_t)(vtx_buffer.size() + 2),
-                                    (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 2), (std::uint16_t)(vtx_buffer.size() + 3)
-                                    });
+            if(flags & e_text_flags::aligin_right) pos.x -= str_size.x;
+            if(flags & e_text_flags::aligin_bottom) pos.y -= str_size.y;
+            if(flags & e_text_flags::aligin_center_x) pos.x -= str_size.x / 2.f;
+            if(flags & e_text_flags::aligin_center_y) pos.y -= str_size.y / 2.f;
+        }
 
-                                rect_t pos = corners + offset;
-                                prim_insert_vtx(vtx_buffer.end() - vtx_offset,
-                                    {
-                                        { pos.min,                  uvs.min,                    {0, 0, 0} },
-                                        { { pos.max.x, pos.min.y }, { uvs.max.x, uvs.min.y },   {0, 0, 0} },
-                                        { pos.max,                  uvs.max,                    {0, 0, 0} },
-                                        { { pos.min.x, pos.max.y }, { uvs.min.x, uvs.max.y },   {0, 0, 0} }
-                                    });
-                            }
-                        }
-                        prim_rect_uv(corners.min, corners.max, uvs.min, uvs.max, multicolor_data.second); //main text
+        pos = { std::floorf(pos.x), std::floorf(pos.y) };
+        if(pos.y > cmd_header.clip_rect.max.y) return;
 
-                        //necessary for the correct drawing order of the outline and body text.
-                        //because the outline draw call runs parallel to the body text draw calls, glyphs of new letters can overlap past ones.
-                        vtx_offset += 4;
+        const float scale = size / font->size;
+        const float line_height = font->size * scale;
+
+        //perhaps this is useless and does not give any increase in performance, but I'm too lazy to do tests, so I'll leave it just in case
+        if(pos.y + line_height < cmd_header.clip_rect.min.y) {
+            while(pos.y + line_height < cmd_header.clip_rect.min.y) {
+                pos.y += line_height;
+
+                multicolor_text_t::data_t::iterator finded = std::find_if(str.data.begin(), str.data.end(), [](multicolor_text_t::data_t::value_type& multicolor_data) {
+                    std::string_view::iterator new_line = std::find(multicolor_data.first.begin(), multicolor_data.first.end(), '\n');
+                    if(new_line != multicolor_data.first.end()) {
+                        multicolor_data.first = multicolor_data.first.substr(std::distance(multicolor_data.first.begin(), new_line) + 1);
+                        return true;
                     }
-                }
-                draw_pos.x += glyph->advance_x * scale;
+                    return false;
+                    });
+
+                if(finded != str.data.cend()) str.data.erase(str.data.begin(), (*finded).first.empty() ? std::next(finded) : finded);
+                else return; //if all the text is outside the clip_rect, we don't need to draw it
             }
+        }
+
+        int vtx_offset{ }; //offset for outline
+        vec2_t draw_pos{ pos };
+        for(const multicolor_text_t::data_t::value_type& multicolor_data : str.data) {
+            draw_text(multicolor_data.first, multicolor_data.second, pos, draw_pos, font, line_height, scale, vtx_offset, flags & e_text_flags::outline);
         }
     }
 
-    void c_draw_list::draw_rect(vec2_t a, vec2_t b, color_t color, float thickness, float rounding, e_corner_flags flags) {
+    void c_draw_list::draw_text(std::string_view str, const color_t& color, const vec2_t& pos, vec2_t& draw_pos, c_font* font, const float& line_height, const float& scale, int& vtx_offset, bool outline) {
+        for(std::string_view::iterator s = str.begin(); s != str.end();) {
+            std::uint32_t c = *s;
+            if(c < 0x80) s += 1;
+            else {
+                s += impl::get_char_from_utf8(&c, std::string_view{ s, str.end() });
+                if(c == 0) break;
+            }
+
+            if(c < 32) {
+                if(c == '\n') {
+                    draw_pos.x = pos.x;
+                    draw_pos.y += line_height;
+                    if(draw_pos.y > cmd_header.clip_rect.max.y)
+                        break;
+                    continue;
+                } if(c == '\r') continue;
+            }
+
+            const c_font::glyph_t* glyph = font->find_glyph((std::uint16_t)c);
+            if(!glyph) continue;
+
+            if(glyph->visible) {
+                rect_t corners{ rect_t{ draw_pos } + glyph->corners * scale };
+                if(corners.min.x <= cmd_header.clip_rect.max.x && corners.max.x >= cmd_header.clip_rect.min.x) {
+                    rect_t uvs = glyph->texture_coordinates;
+
+                    if(outline && !parent_shared_data->text_outline_offsets.empty()) {
+                        for(vec2_t offset : parent_shared_data->text_outline_offsets) {
+                            prim_insert_idx({
+                                (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 1), (std::uint16_t)(vtx_buffer.size() + 2),
+                                (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 2), (std::uint16_t)(vtx_buffer.size() + 3)
+                                });
+
+                            rect_t pos = corners + offset;
+                            prim_insert_vtx(vtx_buffer.end() - vtx_offset,
+                                {
+                                    { pos.min,                  uvs.min,                    {0, 0, 0} },
+                                    { { pos.max.x, pos.min.y }, { uvs.max.x, uvs.min.y },   {0, 0, 0} },
+                                    { pos.max,                  uvs.max,                    {0, 0, 0} },
+                                    { { pos.min.x, pos.max.y }, { uvs.min.x, uvs.max.y },   {0, 0, 0} }
+                                });
+                        }
+                    }
+                    prim_rect_uv(corners.min, corners.max, uvs.min, uvs.max, color); //main text
+
+                    //necessary for the correct drawing order of the outline and body text.
+                    //because the outline draw call runs parallel to the body text draw calls, glyphs of new letters can overlap past ones.
+                    vtx_offset += 4;
+                }
+            }
+            draw_pos.x += glyph->advance_x * scale;
+        }
+    }
+
+    void c_draw_list::draw_rect(const vec2_t& a, const vec2_t& b, const color_t& color, float thickness, float rounding, e_corner_flags flags) {
         if(color.a() <= 0.f) return;
 
         path_rect(a + 0.50f, b - (parent_shared_data->initialize_flags & e_draw_list_flags::anti_aliased_lines ? 0.50f : 0.49f), rounding, flags);
         path_stroke(color, true, thickness);
     }
 
-    void c_draw_list::draw_rect_filled(vec2_t a, vec2_t b, color_t color, float rounding, e_corner_flags flags) {
+    void c_draw_list::draw_rect_filled(const vec2_t& a, const vec2_t& b, const color_t& color, float rounding, e_corner_flags flags) {
         if(color.a() <= 0.f) return;
 
         if(rounding > 0.0f) {
@@ -344,8 +373,8 @@ namespace null::render {
         } else prim_rect(a, b, color);
     }
 
-    void c_draw_list::draw_convex_poly_filled(std::vector<vec2_t> points, color_t color) {
-        if(points.size() < 3 || color <= 0.f) return;
+    void c_draw_list::draw_convex_poly_filled(const std::vector<vec2_t>& points, const color_t& color) {
+        if(points.size() < 3 || color.a() <= 0.f) return;
 
         if(parent_shared_data->initialize_flags & e_draw_list_flags::anti_aliased_fill) {
             for(int i = 2; i < points.size(); i++) prim_insert_idx({ (std::uint16_t)(vtx_buffer.size()), (std::uint16_t)(vtx_buffer.size() + ((i - 1) << 1)), (std::uint16_t)(vtx_buffer.size() + (i << 1)) });
@@ -376,11 +405,11 @@ namespace null::render {
             }
         } else {
             for(int i = 2; i < points.size(); i++) prim_insert_idx({ (std::uint16_t)(vtx_buffer.size()), (std::uint16_t)(vtx_buffer.size() + i - 1), (std::uint16_t)(vtx_buffer.size() + i) });
-            for(vec2_t point : points) prim_add_vtx({ point, parent_shared_data->font->container_atlas->texture.uv_white_pixel, color });
+            for(const vec2_t& point : points) prim_add_vtx({ point, parent_shared_data->font->container_atlas->texture.uv_white_pixel, color });
         }
     }
 
-    void c_draw_list::draw_poly_line(std::vector<vec2_t> points, color_t color, bool closed, float thickness) {
+    void c_draw_list::draw_poly_line(const std::vector<vec2_t>& points, const color_t& color, bool closed, float thickness) {
         if(points.size() < 2 || color.a() <= 0.f) return;
 
         const int count = closed ? points.size() : points.size() - 1;
@@ -446,7 +475,7 @@ namespace null::render {
                 }
 
                 if(use_texture) {
-                    rect_t tex_uvs = parent_shared_data->font->container_atlas->texture.uv_lines[integer_thickness];
+                    const rect_t& tex_uvs = parent_shared_data->font->container_atlas->texture.uv_lines[integer_thickness];
                     for(int i = 0; i < points.size(); i++) {
                         prim_insert_vtx({
                             { temp_points[i * 2],       tex_uvs.min, color },
@@ -532,7 +561,7 @@ namespace null::render {
         }
     }
 
-    void c_draw_list::draw_circle(vec2_t center, color_t clr, float radius, int num_segments, float thickness) {
+    void c_draw_list::draw_circle(const vec2_t& center, const color_t& clr, float radius, int num_segments, float thickness) {
         if(clr.a() <= 0.f || radius <= 0.f) return;
 
         parent_shared_data->get_auto_circle_num_segments(num_segments, radius);
@@ -543,7 +572,7 @@ namespace null::render {
         path_stroke(clr, true, thickness);
     }
 
-    void c_draw_list::draw_circle_filled(vec2_t center, color_t clr, float radius, int num_segments) {
+    void c_draw_list::draw_circle_filled(const vec2_t& center, const color_t& clr, float radius, int num_segments) {
         if(clr.a() <= 0.f || radius <= 0.f) return;
 
         parent_shared_data->get_auto_circle_num_segments(num_segments, radius);

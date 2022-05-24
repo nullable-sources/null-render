@@ -15,6 +15,18 @@
 #define stb_impl_in4(x) ((i[x] << 24) + stb_impl_in3((x)+1))
 
 namespace null::render {
+    struct multicolor_text_t {
+        using data_t = std::vector<std::pair<std::string_view, color_t>>;
+        data_t data{ };
+
+        //returns a string made up of all the strings in the text
+        std::string unite() {
+            return std::accumulate(data.begin(), data.end(), std::string{ }, [=](std::string result, data_t::value_type str) {
+                return result + std::string{ str.first.begin(), str.first.end() };
+                });
+        }
+    };
+
     namespace impl {
         static void decode85(const std::uint8_t* src, std::uint8_t* dst) {
             static auto decode85_byte = [](char c) { return c >= '\\' ? c - 36 : c - 35; };
@@ -119,13 +131,13 @@ namespace null::render {
             }
         }
 
-        static int get_char_from_utf8(std::uint32_t* out_char, std::string str) {
+        static int get_char_from_utf8(std::uint32_t* out_char, std::string_view str) {
             static const char lengths[32] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 3, 3, 4, 0 };
             static const int masks[] = { 0x00, 0x7f, 0x1f, 0x0f, 0x07 };
             static const std::uint32_t mins[] = { 0x400000, 0, 0x80, 0x800, 0x10000 };
             static const int shiftc[] = { 0, 18, 12, 6, 0 };
             static const int shifte[] = { 0, 6, 4, 2, 0 };
-            int len = lengths[*(const std::uint8_t*)str.c_str() >> 3];
+            int len = lengths[*str.data() >> 3];
             int wanted = len + !len;
 
             std::array<std::uint8_t, 4> s{ 0, 0, 0, 0 };
@@ -249,7 +261,7 @@ namespace null::render {
                     if(pixels_rgba32) { free(pixels_rgba32); pixels_rgba32 = nullptr; }
                 }
 
-                void render_1bpp_rect_from_string(rect_t bpp_rect, const char* in_str, char in_marker_char, std::uint8_t in_marker_pixel_value);
+                void render_1bpp_rect_from_string(const rect_t& bpp_rect, const char* in_str, char in_marker_char, std::uint8_t in_marker_pixel_value);
                 
                 void get_data_as_rgba32();
 
@@ -278,13 +290,13 @@ namespace null::render {
 
             void pack_custom_rects(void* stbrp_context_opaque);
             void multiply_calc_lookup_table(std::array<std::uint8_t, 256>& out_table, float in_multiply_factor);
-            void multiply_rect_alpha8(std::array<std::uint8_t, 256> table, std::uint8_t* pixels, rect_t size, int stride);
+            void multiply_rect_alpha8(const std::array<std::uint8_t, 256>& table, std::uint8_t* pixels, const rect_t& size, int stride);
 
             c_font* add_font(config_t* config);
             c_font* add_font_default(config_t* config = nullptr);
             c_font* add_font_from_file_ttf(const char* filename, float size_pixels, config_t* config = nullptr, const std::uint16_t* glyph_ranges = glyph_t::ranges_default());
-            c_font* add_font_from_memory_ttf(std::vector<char> font_data, float size_pixels, config_t* config = nullptr, const std::uint16_t* glyph_ranges = glyph_t::ranges_default());
-            c_font* add_font_from_memory_compressed_ttf(std::vector<char> compressed_ttf, float size_pixels, config_t* config = nullptr, const std::uint16_t* glyph_ranges = glyph_t::ranges_default());
+            c_font* add_font_from_memory_ttf(const std::vector<char>& font_data, float size_pixels, config_t* config = nullptr, const std::uint16_t* glyph_ranges = glyph_t::ranges_default());
+            c_font* add_font_from_memory_compressed_ttf(const std::vector<char>& compressed_ttf, float size_pixels, config_t* config = nullptr, const std::uint16_t* glyph_ranges = glyph_t::ranges_default());
             c_font* add_font_from_memory_compressed_base_85_ttf(const char* compressed_font_data_base85, float size_pixels, config_t* config = nullptr, const std::uint16_t* glyph_ranges = glyph_t::ranges_default());
 
             void clear_input_data();
@@ -339,7 +351,9 @@ namespace null::render {
         float get_char_advance(std::uint16_t c) const { return ((int)c < lookup_table.advances_x.size()) ? lookup_table.advances_x[(int)c] : fallback_advance_x; }
 
         //if custom_size < 0 will be used font size
-        vec2_t calc_text_size(std::string str, float custom_size = -1.f);
+        vec2_t calc_text_size(std::string_view str, float custom_size = -1.f);
+        vec2_t calc_text_size(const multicolor_text_t& str, float custom_size = -1.f);
+        void calc_text_size(std::string_view str, vec2_t& result, vec2_t& line_size);
     };
 
     inline bool atlas_owned_by_initialize{ };

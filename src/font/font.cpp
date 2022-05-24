@@ -2,7 +2,7 @@
 #include <draw-list/draw-list.h>
 
 namespace null::render {
-    void c_font::c_atlas::texture_t::render_1bpp_rect_from_string(rect_t bpp_rect, const char* in_str, char in_marker_char, std::uint8_t in_marker_pixel_value) {
+    void c_font::c_atlas::texture_t::render_1bpp_rect_from_string(const rect_t& bpp_rect, const char* in_str, char in_marker_char, std::uint8_t in_marker_pixel_value) {
         if(bpp_rect.size() > size) throw std::runtime_error("bpp_rect.size() > size");
         if(bpp_rect.min < vec2_t{ 0.f }) throw std::runtime_error("bpp_rect.min < 0.f");
         
@@ -346,7 +346,7 @@ namespace null::render {
         }
     }
 
-    void c_font::c_atlas::multiply_rect_alpha8(std::array<std::uint8_t, 256> table, std::uint8_t* pixels, rect_t size, int stride) {
+    void c_font::c_atlas::multiply_rect_alpha8(const std::array<std::uint8_t, 256>& table, std::uint8_t* pixels, const rect_t& size, int stride) {
         std::uint8_t* data = pixels + (int)size.min.x + (int)size.min.y * stride;
         for(int j = size.max.x; j > 0; j--, data += stride)
             for(int i = 0; i < size.max.y; i++)
@@ -407,7 +407,7 @@ namespace null::render {
         return add_font_from_memory_ttf(font_file, size_pixels, config, glyph_ranges);
     }
 
-    c_font* c_font::c_atlas::add_font_from_memory_ttf(std::vector<char> font_file, float size_pixels, config_t* config, const std::uint16_t* glyph_ranges) {
+    c_font* c_font::c_atlas::add_font_from_memory_ttf(const std::vector<char>& font_file, float size_pixels, config_t* config, const std::uint16_t* glyph_ranges) {
         if(locked) throw std::runtime_error("cannot modify a locked atlas between begin_render() and end_render/render()!");
 
         config_t cfg = config ? *config : config_t();
@@ -420,7 +420,7 @@ namespace null::render {
         return add_font(&cfg);
     }
 
-    c_font* c_font::c_atlas::add_font_from_memory_compressed_ttf(std::vector<char> compressed_ttf, float size_pixels, config_t* config, const std::uint16_t* glyph_ranges) {
+    c_font* c_font::c_atlas::add_font_from_memory_compressed_ttf(const std::vector<char>& compressed_ttf, float size_pixels, config_t* config, const std::uint16_t* glyph_ranges) {
         std::vector<char> buf_decompressed_data(impl::stb::decompress_length((std::uint8_t*)compressed_ttf.data()));
         impl::stb::decompress((std::uint8_t*)buf_decompressed_data.data(), (const std::uint8_t*)compressed_ttf.data());
 
@@ -551,18 +551,40 @@ namespace null::render {
         return true;
     }
 
-    vec2_t c_font::calc_text_size(std::string str, float custom_size) {
+    vec2_t c_font::calc_text_size(std::string_view str, float custom_size) {
         custom_size = custom_size < 0.f ? size : custom_size;
 
-        vec2_t result{ };
-        vec2_t line_size{ 0, custom_size };
+        vec2_t result{ }, line_size{ 0.f, custom_size };
 
-        for(std::string::iterator s = str.begin(); s != str.end();) {
+        calc_text_size(str, result, line_size);
+
+        result.x = std::max(result.x, line_size.x);
+        if(line_size.x > 0.f || result.y == 0.f) result.y += line_size.y;
+
+        return result;
+    }
+
+    vec2_t c_font::calc_text_size(const multicolor_text_t& str, float custom_size) {
+        custom_size = custom_size < 0.f ? size : custom_size;
+
+        vec2_t result{ }, line_size{ 0.f, custom_size };
+
+        for(const multicolor_text_t::data_t::value_type& multicolor_data : str.data)
+            calc_text_size(multicolor_data.first, result, line_size);
+
+        result.x = std::max(result.x, line_size.x);
+        if(line_size.x > 0.f || result.y == 0.f) result.y += line_size.y;
+
+        return result;
+    }
+
+    void c_font::calc_text_size(std::string_view str, vec2_t& result, vec2_t& line_size) {
+        for(std::string_view::iterator s = str.begin(); s != str.end();) {
             std::uint32_t c = *s;
             if(c < 0x80) {
                 s += 1;
             } else {
-                s += impl::get_char_from_utf8(&c, std::string(s, str.end()));
+                s += impl::get_char_from_utf8(&c, std::string_view(s, str.end()));
                 if(c == 0) break;
             }
 
@@ -570,18 +592,13 @@ namespace null::render {
                 if(c == '\n') {
                     result.x = std::max(result.x, line_size.x);
                     result.y += line_size.y;
-                    line_size.x = 0;
+                    line_size.x = 0.f;
                     continue;
                 } if(c == '\r') continue;
             }
 
             line_size.x += (c < lookup_table.advances_x.size() ? lookup_table.advances_x[c] : fallback_advance_x) * scale;
         }
-
-        result.x = std::max(result.x, line_size.x);
-        if(line_size.x > 0 || result.y == 0) result.y += line_size.y;
-
-        return result;
     }
 
     void set_current_font(c_font* font) {

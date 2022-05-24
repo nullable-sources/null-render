@@ -15,7 +15,7 @@ namespace null::render {
         }
     }
 
-    static void begin_frame(utils::win::c_window window) {
+    static void begin_frame(const utils::win::c_window& window) {
         vec2_t window_size{ window.get_window_size() };
 
         global_atlas.locked = true;

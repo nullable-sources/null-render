@@ -90,18 +90,6 @@ namespace null {
 			}
 		} inline shared_data{ e_draw_list_flags::allow_vtx_offset };
 
-		struct multicolor_text_t {
-			using data_t = std::vector<std::pair<std::string, color_t>>;
-			data_t data{ };
-
-			//returns a string made up of all the strings in the text
-			std::string unite() {
-				return std::accumulate(data.begin(), data.end(), std::string{ }, [=](std::string result, data_t::value_type str) {
-					return result + str.first;
-					});
-			}
-		};
-
 		class c_draw_list {
 		public:
 			struct vertex_t {
@@ -122,7 +110,7 @@ namespace null {
 				void add_draw_list(c_draw_list* draw_list);
 				void setup();
 
-				void scale_clip_rects(vec2_t scale) {
+				void scale_clip_rects(const vec2_t& scale) {
 					for(c_draw_list* cmd_list : cmd_lists)
 						for(cmd_t& cmd : cmd_list->cmd_buffer) cmd.clip_rect *= scale;
 				}
@@ -169,7 +157,7 @@ namespace null {
 
 				cmd_header = cmd_header_t{ };
 			}
-			void shade_verts_linear_uv(vtx_buffer_t::iterator vtx_start, vtx_buffer_t::iterator vtx_end, rect_t rect, rect_t uv, bool clamp);
+			void shade_verts_linear_uv(const vtx_buffer_t::iterator& vtx_start, const vtx_buffer_t::iterator& vtx_end, const rect_t& rect, const rect_t& uv, bool clamp);
 			
 			void on_changed_clip_rect();
 			void push_clip_rect(rect_t rect, bool intersect_with_current_rect = false);
@@ -182,34 +170,35 @@ namespace null {
 
 			void on_changed_vtx_offset();
 			void vtx_check(int vtx_count);
-			void prim_add_vtx(vertex_t vtx) { vtx_check(1); vtx_buffer.push_back(vtx); }
-			void prim_insert_vtx(vtx_buffer_t::iterator place, vtx_buffer_t vtx_list) { vtx_check(vtx_list.size()); vtx_buffer.insert(place, vtx_list.begin(), vtx_list.end()); }
-			void prim_insert_vtx(vtx_buffer_t vtx_list) { prim_insert_vtx(vtx_buffer.end(), vtx_list); }
-			void prim_write_vtx(vtx_buffer_t::iterator& place, vtx_buffer_t vtx_list) { std::move(vtx_list.begin(), vtx_list.end(), place); place += vtx_list.size(); }
+			void prim_add_vtx(const vertex_t& vtx) { vtx_check(1); vtx_buffer.push_back(vtx); }
+			void prim_insert_vtx(const vtx_buffer_t::iterator& place, const vtx_buffer_t& vtx_list) { vtx_check(vtx_list.size()); vtx_buffer.insert(place, vtx_list.begin(), vtx_list.end()); }
+			void prim_insert_vtx(const vtx_buffer_t& vtx_list) { prim_insert_vtx(vtx_buffer.end(), vtx_list); }
+			void prim_write_vtx(vtx_buffer_t::iterator& place, const vtx_buffer_t& vtx_list) { std::move(vtx_list.begin(), vtx_list.end(), place); place += vtx_list.size(); }
 			
 			void prim_add_idx(std::uint16_t idx) { idx_buffer.push_back(idx); cmd_buffer.back().element_count++; }
-			void prim_insert_idx(idx_buffer_t::iterator place, idx_buffer_t idx_list) { idx_buffer.insert(place, idx_list.begin(), idx_list.end()); cmd_buffer.back().element_count += idx_list.size(); }
-			void prim_insert_idx(idx_buffer_t idx_list) { prim_insert_idx(idx_buffer.end(), idx_list); }
-			void prim_write_idx(idx_buffer_t::iterator& place, idx_buffer_t idx_list) { std::move(idx_list.begin(), idx_list.end(), place); place += idx_list.size(); cmd_buffer.back().element_count += idx_list.size(); }
+			void prim_insert_idx(const idx_buffer_t::iterator& place, const idx_buffer_t& idx_list) { idx_buffer.insert(place, idx_list.begin(), idx_list.end()); cmd_buffer.back().element_count += idx_list.size(); }
+			void prim_insert_idx(const idx_buffer_t& idx_list) { prim_insert_idx(idx_buffer.end(), idx_list); }
+			void prim_write_idx(idx_buffer_t::iterator& place, const idx_buffer_t& idx_list) { std::move(idx_list.begin(), idx_list.end(), place); place += idx_list.size(); cmd_buffer.back().element_count += idx_list.size(); }
 			
-			void prim_rect(vec2_t a, vec2_t c, color_t color);
-			void prim_rect_uv(vec2_t a, vec2_t c, vec2_t uv_a, vec2_t uv_c, color_t color);
-			void prim_quad_uv(std::array<vec2_t, 4> points, std::array<vec2_t, 4> uvs, color_t color);
+			void prim_rect(const vec2_t& a, const vec2_t& c, const color_t& color);
+			void prim_rect_uv(const vec2_t& a, const vec2_t& c, const vec2_t& uv_a, const vec2_t& uv_c, const color_t& color);
+			void prim_quad_uv(const std::array<vec2_t, 4>& points, const std::array<vec2_t, 4>& uvs, const color_t& color);
 
-			void path_rect(vec2_t a, vec2_t b, float rounding = 0.0f, e_corner_flags flags = e_corner_flags::all);
-			void path_arc_to_fast(vec2_t center, float radius, int a_min_of_12, int a_max_of_12);
-			void path_arc_to(vec2_t center, float radius, float a_min, float a_max, int num_segments);
-			void path_fill_convex(color_t clr) { draw_convex_poly_filled(path, clr); path.clear(); }
-			void path_stroke(color_t color, bool closed, float thickness) { draw_poly_line(path, color, closed, thickness); path.clear(); }
+			void path_rect(const vec2_t& a, const vec2_t& b, float rounding = 0.0f, e_corner_flags flags = e_corner_flags::all);
+			void path_arc_to_fast(const vec2_t& center, float radius, int a_min_of_12, int a_max_of_12);
+			void path_arc_to(const vec2_t& center, float radius, float a_min, float a_max, int num_segments);
+			void path_fill_convex(const color_t& clr) { draw_convex_poly_filled(path, clr); path.clear(); }
+			void path_stroke(const color_t& color, bool closed, float thickness) { draw_poly_line(path, color, closed, thickness); path.clear(); }
 
-			void draw_text(std::string str, vec2_t pos, color_t color, e_text_flags flags = e_text_flags{ }, c_font* font = nullptr, float size = 0.f) { draw_text(multicolor_text_t{ { { str , color } } }, pos, flags, font, size); }
+			void draw_text(std::string_view str, vec2_t pos, const color_t& color, e_text_flags flags = e_text_flags{ }, c_font* font = nullptr, float size = 0.f);
 			void draw_text(multicolor_text_t str, vec2_t pos, e_text_flags flags = e_text_flags{ }, c_font* font = nullptr, float size = 0.f);
-			void draw_rect(vec2_t a, vec2_t b, color_t color, float thickness = 1.f, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all); //@todo: add rect multicolor
-			void draw_rect_filled(vec2_t a, vec2_t b, color_t color, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all); //@todo: add rect filled multicolor
-			void draw_convex_poly_filled(std::vector<vec2_t> points, color_t color);
-			void draw_poly_line(std::vector<vec2_t> points, color_t color, bool closed, float thickness = 1.f);
-			void draw_circle(vec2_t center, color_t clr, float radius, int num_segments = 0, float thickness = 1.f);
-			void draw_circle_filled(vec2_t center, color_t clr, float radius, int num_segments = 0);
+			void draw_text(std::string_view str, const color_t& color, const vec2_t& pos, vec2_t& draw_pos, c_font* font, const float& line_height, const float& scale, int& vtx_offset, bool outline);
+			void draw_rect(const vec2_t& a, const vec2_t& b, const color_t& color, float thickness = 1.f, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all); //@todo: add rect multicolor
+			void draw_rect_filled(const vec2_t& a, const vec2_t& b, const color_t& color, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all); //@todo: add rect filled multicolor
+			void draw_convex_poly_filled(const std::vector<vec2_t>& points, const color_t& color);
+			void draw_poly_line(const std::vector<vec2_t>& points, const color_t& color, bool closed, float thickness = 1.f);
+			void draw_circle(const vec2_t& center, const color_t& clr, float radius, int num_segments = 0, float thickness = 1.f);
+			void draw_circle_filled(const vec2_t& center, const color_t& clr, float radius, int num_segments = 0);
 		};
 
 		inline c_draw_list::draw_data_t draw_data{ };

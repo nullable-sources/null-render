@@ -10,10 +10,9 @@ void main_loop() {
 	static const color_t color{ 100, 100, 255 };
 	
 	static const null::render::multicolor_text_t multicolor_text{ {
-		{ "multicolored ", { } },
+		{ "multicolored \n\n", { } },
 		{ "text", color }
 	} };
-
 
 	null::render::begin_frame(window);
 	{
