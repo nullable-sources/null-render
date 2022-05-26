@@ -121,7 +121,7 @@ namespace null {
 				void* texture_id{ };
 				std::uint32_t vtx_offset{ };
 
-				class_create_spaceship_operator(cmd_header_t);
+				bool operator==(const cmd_header_t&) const = default;
 			};
 
 			struct cmd_t : cmd_header_t {
