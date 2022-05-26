@@ -2,6 +2,7 @@
 #include <renderers/directx9/directx9.h>
 
 null::render::directx9::c_window window{ };
+null::render::c_draw_list custom_draw_list{ };
 
 void main_loop() {
 	static const null::e_text_flags text_flags{ null::e_text_flags::aligin_bottom | null::e_text_flags::aligin_center_x };
@@ -16,6 +17,7 @@ void main_loop() {
 
 	null::render::begin_frame(window);
 	{
+		custom_draw_list.draw_text("text drawed by custom draw_list", { 100, 10 }, { });
 		null::render::background_draw_list.draw_text(std::format("fps: {:3.0f}", 1.f / window.time_data.delta_time), { window.get_window_size().x, 10 }, { }, null::e_text_flags{ -null::e_text_flags::aligin_right | -null::e_text_flags::aligin_center_y | -null::e_text_flags::outline });
 		null::render::background_draw_list.draw_text(multicolor_text, { 10 });
 
@@ -43,6 +45,7 @@ int main(HINSTANCE instance) {
 
 		window.create();
 		null::render::initialize();
+		null::render::custom_draw_lists.push_back(&custom_draw_list);
 		
 		window.main_loop(main_loop);
 		

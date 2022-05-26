@@ -35,6 +35,12 @@ namespace null::render {
         foreground_draw_list.push_texture_id(global_atlas.texture.id);
         foreground_draw_list.push_clip_rect_fullscreen();
 
+        for(c_draw_list* draw_list : custom_draw_lists) {
+            draw_list->reset_for_begin_render();
+            draw_list->push_texture_id(global_atlas.texture.id);
+            draw_list->push_clip_rect_fullscreen();
+        }
+
         draw_data.window_size = window_size;
         draw_data.layers.clear();
     }
@@ -47,6 +53,7 @@ namespace null::render {
         draw_data.layers.clear();
 
         if(!background_draw_list.vtx_buffer.empty()) draw_data.add_draw_list(&background_draw_list);
+        for(c_draw_list* draw_list : custom_draw_lists) draw_data.add_draw_list(draw_list);
         if(!foreground_draw_list.vtx_buffer.empty()) draw_data.add_draw_list(&foreground_draw_list);
 
         draw_data.setup();
