@@ -202,7 +202,7 @@ namespace null {
 		};
 
 		inline c_draw_list::draw_data_t draw_data{ };
-		inline c_draw_list background_draw_list{ }, foreground_draw_list{ };
-		inline std::vector<c_draw_list*> custom_draw_lists{ };
+		inline c_draw_list background_layer{ }, foreground_layer{ };
+		inline std::vector<c_draw_list*> custom_layers{ };
 	}
 }

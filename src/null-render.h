@@ -4,17 +4,6 @@
 #include <draw-list/draw-list.h>
 
 namespace null::render {
-    static void initialize() {
-        background_draw_list.parent_shared_data = &shared_data;
-        foreground_draw_list.parent_shared_data = &shared_data;
-    }
-
-    static void shutdown() {
-        if(global_atlas.locked && atlas_owned_by_initialize) {
-            global_atlas.locked = false;
-        }
-    }
-
     static void begin_frame(const utils::win::c_window& window) {
         vec2_t window_size{ window.get_window_size() };
 
@@ -27,15 +16,15 @@ namespace null::render {
         shared_data.set_circle_segment_max_error(1.60f);
         shared_data.initialize_flags |= -e_draw_list_flags::anti_aliased_lines | -e_draw_list_flags::anti_aliased_lines_use_texture | -e_draw_list_flags::anti_aliased_fill;
 
-        background_draw_list.reset_for_begin_render();
-        background_draw_list.push_texture_id(global_atlas.texture.id);
-        background_draw_list.push_clip_rect_fullscreen();
+        background_layer.reset_for_begin_render();
+        background_layer.push_texture_id(global_atlas.texture.id);
+        background_layer.push_clip_rect_fullscreen();
 
-        foreground_draw_list.reset_for_begin_render();
-        foreground_draw_list.push_texture_id(global_atlas.texture.id);
-        foreground_draw_list.push_clip_rect_fullscreen();
+        foreground_layer.reset_for_begin_render();
+        foreground_layer.push_texture_id(global_atlas.texture.id);
+        foreground_layer.push_clip_rect_fullscreen();
 
-        for(c_draw_list* draw_list : custom_draw_lists) {
+        for(c_draw_list* draw_list : custom_layers) {
             draw_list->reset_for_begin_render();
             draw_list->push_texture_id(global_atlas.texture.id);
             draw_list->push_clip_rect_fullscreen();
@@ -52,9 +41,9 @@ namespace null::render {
     static void setup_draw_data() {
         draw_data.layers.clear();
 
-        if(!background_draw_list.vtx_buffer.empty()) draw_data.add_draw_list(&background_draw_list);
-        for(c_draw_list* draw_list : custom_draw_lists) draw_data.add_draw_list(draw_list);
-        if(!foreground_draw_list.vtx_buffer.empty()) draw_data.add_draw_list(&foreground_draw_list);
+        if(!background_layer.vtx_buffer.empty()) draw_data.add_draw_list(&background_layer);
+        for(c_draw_list* draw_list : custom_layers) draw_data.add_draw_list(draw_list);
+        if(!foreground_layer.vtx_buffer.empty()) draw_data.add_draw_list(&foreground_layer);
 
         draw_data.setup();
     }
