@@ -1,5 +1,6 @@
 #pragma once
 #include <font/font.h>
+#include <ranges>
 
 namespace null {
 	enum struct e_draw_list_flags {
@@ -147,7 +148,19 @@ namespace null {
 			void add_draw_cmd() { cmd_buffer.push_back({ cmd_header.clip_rect, cmd_header.texture_id, cmd_header.vtx_offset, (std::uint32_t)idx_buffer.size() }); }
 			void pop_unused_draw_cmd() { if(cmd_buffer.empty()) return; if(!cmd_buffer.back().element_count && !cmd_buffer.back().callbacks.empty()) cmd_buffer.pop_back(); }
 			
-			void reset_for_begin_render() {
+			void merge(const c_draw_list& draw_list) {
+				texture_id_stack.insert(texture_id_stack.end(), draw_list.texture_id_stack.begin(), draw_list.texture_id_stack.end());
+				path.insert(path.begin(), draw_list.path.begin(), draw_list.path.end());
+				clip_rect_stack.insert(clip_rect_stack.begin(), draw_list.clip_rect_stack.begin(), draw_list.clip_rect_stack.end());
+
+				cmd_buffer.insert(cmd_buffer.end(), draw_list.cmd_buffer.begin(), draw_list.cmd_buffer.end());
+				cmd_header = draw_list.cmd_header;
+
+				idx_buffer.insert(idx_buffer.end(), draw_list.idx_buffer.begin(), draw_list.idx_buffer.end());
+				vtx_buffer.insert(vtx_buffer.end(), draw_list.vtx_buffer.begin(), draw_list.vtx_buffer.end());
+			}
+			
+			void reset_for_begin_frame() {
 				cmd_buffer.clear(); cmd_buffer.push_back(cmd_t{ });
 				idx_buffer.clear();
 				vtx_buffer.clear();

@@ -16,16 +16,16 @@ namespace null::render {
         shared_data.set_circle_segment_max_error(1.60f);
         shared_data.initialize_flags |= -e_draw_list_flags::anti_aliased_lines | -e_draw_list_flags::anti_aliased_lines_use_texture | -e_draw_list_flags::anti_aliased_fill;
 
-        background_layer.reset_for_begin_render();
+        background_layer.reset_for_begin_frame();
         background_layer.push_texture_id(global_atlas.texture.id);
         background_layer.push_clip_rect_fullscreen();
 
-        foreground_layer.reset_for_begin_render();
+        foreground_layer.reset_for_begin_frame();
         foreground_layer.push_texture_id(global_atlas.texture.id);
         foreground_layer.push_clip_rect_fullscreen();
 
         for(c_draw_list* draw_list : custom_layers) {
-            draw_list->reset_for_begin_render();
+            draw_list->reset_for_begin_frame();
             draw_list->push_texture_id(global_atlas.texture.id);
             draw_list->push_clip_rect_fullscreen();
         }
