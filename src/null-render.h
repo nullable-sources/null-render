@@ -24,11 +24,17 @@ namespace null::render {
         foreground_layer.push_texture_id(global_atlas.texture.id);
         foreground_layer.push_clip_rect_fullscreen();
 
-        for(c_draw_list* draw_list : custom_layers) {
+        std::for_each(custom_layers.begin(), custom_layers.end(), [](c_draw_list* draw_list) {
             draw_list->reset_for_begin_frame();
             draw_list->push_texture_id(global_atlas.texture.id);
             draw_list->push_clip_rect_fullscreen();
-        }
+            });
+
+        std::for_each(fast_layers.begin(), fast_layers.end(), [](c_draw_list* draw_list) {
+            draw_list->reset_for_begin_frame();
+            draw_list->push_texture_id(global_atlas.texture.id);
+            draw_list->push_clip_rect_fullscreen();
+            }); fast_layers.clear();
 
         draw_data.window_size = window_size;
         draw_data.layers.clear();
@@ -42,9 +48,11 @@ namespace null::render {
         draw_data.layers.clear();
 
         if(!background_layer.vtx_buffer.empty()) draw_data.add_draw_list(&background_layer);
-        for(c_draw_list* draw_list : custom_layers) if(!draw_list->vtx_buffer.empty()) draw_data.add_draw_list(draw_list);
+        std::for_each(fast_layers.begin(), fast_layers.end(), [](c_draw_list* draw_list) { if(!draw_list->vtx_buffer.empty()) draw_data.add_draw_list(draw_list); });
+        std::for_each(custom_layers.begin(), custom_layers.end(), [](c_draw_list* draw_list) { if(!draw_list->vtx_buffer.empty()) draw_data.add_draw_list(draw_list); });
         if(!foreground_layer.vtx_buffer.empty()) draw_data.add_draw_list(&foreground_layer);
 
+        fast_layers.clear();
         draw_data.setup();
     }
 }

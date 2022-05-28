@@ -216,6 +216,9 @@ namespace null {
 
 		inline c_draw_list::draw_data_t draw_data{ };
 		inline c_draw_list background_layer{ }, foreground_layer{ };
-		inline std::vector<c_draw_list*> custom_layers{ };
+
+		//custom_layers does not change automatically, needed in order to create your own c_draw_list without having to change the code in begin_frame and setup_draw_data
+		//fast_layers is cleared after each call to begin_frame and setup_draw_data. Will be drawn between background_layer and custom_layers
+		inline std::vector<c_draw_list*> custom_layers{ }, fast_layers{ };
 	}
 }
