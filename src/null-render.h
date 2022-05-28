@@ -42,7 +42,7 @@ namespace null::render {
         draw_data.layers.clear();
 
         if(!background_layer.vtx_buffer.empty()) draw_data.add_draw_list(&background_layer);
-        for(c_draw_list* draw_list : custom_layers) draw_data.add_draw_list(draw_list);
+        for(c_draw_list* draw_list : custom_layers) if(!draw_list->vtx_buffer.empty()) draw_data.add_draw_list(draw_list);
         if(!foreground_layer.vtx_buffer.empty()) draw_data.add_draw_list(&foreground_layer);
 
         draw_data.setup();
