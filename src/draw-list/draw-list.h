@@ -1,6 +1,5 @@
 #pragma once
 #include <font/font.h>
-#include <ranges>
 
 namespace null {
 	enum struct e_draw_list_flags {
@@ -148,20 +147,8 @@ namespace null {
 			void add_draw_cmd() { cmd_buffer.push_back({ cmd_header.clip_rect, cmd_header.texture_id, cmd_header.vtx_offset, (std::uint32_t)idx_buffer.size() }); }
 			void pop_unused_draw_cmd() { if(cmd_buffer.empty()) return; if(!cmd_buffer.back().element_count && !cmd_buffer.back().callbacks.empty()) cmd_buffer.pop_back(); }
 			
-			void merge(const c_draw_list& draw_list) {
-				texture_id_stack.insert(texture_id_stack.end(), draw_list.texture_id_stack.begin(), draw_list.texture_id_stack.end());
-				path.insert(path.begin(), draw_list.path.begin(), draw_list.path.end());
-				clip_rect_stack.insert(clip_rect_stack.begin(), draw_list.clip_rect_stack.begin(), draw_list.clip_rect_stack.end());
-
-				cmd_buffer.insert(cmd_buffer.end(), draw_list.cmd_buffer.begin(), draw_list.cmd_buffer.end());
-				cmd_header = draw_list.cmd_header;
-
-				idx_buffer.insert(idx_buffer.end(), draw_list.idx_buffer.begin(), draw_list.idx_buffer.end());
-				vtx_buffer.insert(vtx_buffer.end(), draw_list.vtx_buffer.begin(), draw_list.vtx_buffer.end());
-			}
-			
 			void reset_for_begin_frame() {
-				cmd_buffer.clear(); cmd_buffer.push_back(cmd_t{ });
+				cmd_buffer = { cmd_t{ } };
 				idx_buffer.clear();
 				vtx_buffer.clear();
 				clip_rect_stack.clear();
@@ -195,7 +182,7 @@ namespace null {
 			
 			void prim_rect(const vec2_t& a, const vec2_t& c, const color_t& color);
 			void prim_rect_uv(const vec2_t& a, const vec2_t& c, const vec2_t& uv_a, const vec2_t& uv_c, const color_t& color);
-			void prim_quad_uv(const std::array<vec2_t, 4>& points, const std::array<vec2_t, 4>& uvs, const color_t& color);
+			void prim_quad_uv(const std::array<std::pair<vec2_t, vec2_t>, 4>& points, const color_t& color);
 
 			void path_rect(const vec2_t& a, const vec2_t& b, float rounding = 0.0f, e_corner_flags flags = e_corner_flags::all);
 			void path_arc_to_fast(const vec2_t& center, float radius, int a_min_of_12, int a_max_of_12);

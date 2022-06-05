@@ -150,7 +150,7 @@ namespace null::render::directx9 {
 		if(int result; (result = font_texture->LockRect(0, &tex_locked_rect, nullptr, 0)) != D3D_OK)
 			throw std::runtime_error(std::format("lock rect error, code {}", result));
 		
-		for(int y = 0; y < global_atlas.texture.size.y; y++)
+		for(int y : std::views::iota(0, global_atlas.texture.size.y))
 			memcpy((std::uint8_t*)tex_locked_rect.pBits + tex_locked_rect.Pitch * y, (std::uint8_t*)global_atlas.texture.pixels_rgba32 + ((int)global_atlas.texture.size.x * 4) * y, ((int)global_atlas.texture.size.x * 4));
 		
 		font_texture->UnlockRect(0);

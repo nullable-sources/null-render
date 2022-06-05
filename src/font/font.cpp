@@ -1,4 +1,3 @@
-#include <fstream>
 #include <draw-list/draw-list.h>
 
 namespace null::render {
@@ -257,7 +256,7 @@ namespace null::render {
             const float font_off_x = config.glyph_config.offset.x;
             const float font_off_y = config.glyph_config.offset.y + round(dst_font->ascent);
 
-            for(int glyph_i = 0; glyph_i < src.glyphs_count; glyph_i++) {
+            for(int glyph_i : std::views::iota( 0, src.glyphs_count )) {
                 const int codepoint = src.glyphs_list[glyph_i];
                 const stbtt_packedchar& pc = src.packed_chars[glyph_i];
                 stbtt_aligned_quad q;
@@ -277,7 +276,7 @@ namespace null::render {
         custom_rect_t* r = &custom_rects[pack_id_lines];
         if(!r->is_packed()) throw std::runtime_error("!r->is_packed()");
 
-        for(std::uint32_t n = 0; n < 64; n++) {
+        for(std::uint32_t n : std::views::iota(0, 64)) {
             std::uint32_t y = n;
             std::uint32_t line_width = n;
             std::uint32_t pad_left = (r->size.max.x - line_width) / 2;
@@ -320,13 +319,13 @@ namespace null::render {
         if(user_rects.size() < 1) throw std::runtime_error("user_rects.size() < 1");
 
         std::vector<stbrp_rect> pack_rects{ user_rects.size() };
-        for(int i = 0; i < user_rects.size(); i++) {
+        for(int i : std::views::iota(size_t{ 0 }, user_rects.size())) {
             pack_rects[i].w = user_rects[i].size.max.x;
             pack_rects[i].h = user_rects[i].size.max.y;
         }
 
         stbrp_pack_rects(pack_context, &pack_rects[0], pack_rects.size());
-        for(int i = 0; i < pack_rects.size(); i++) {
+        for(int i : std::views::iota(size_t{ 0 }, pack_rects.size())) {
             if(pack_rects[i].was_packed) {
                 user_rects[i].size.min.x = pack_rects[i].x;
                 user_rects[i].size.min.y = pack_rects[i].y;
@@ -340,7 +339,7 @@ namespace null::render {
     }
 
     void c_font::c_atlas::multiply_calc_lookup_table(std::array<std::uint8_t, 256>& out_table, float in_multiply_factor) {
-        for(std::uint32_t i = 0; i < 256; i++) {
+        for(std::uint32_t i : std::views::iota(0, 256)) {
             std::uint32_t value = (std::uint32_t)(i * in_multiply_factor);
             out_table[i] = value > 255 ? 255 : (value & 0xFF);
         }
@@ -348,9 +347,11 @@ namespace null::render {
 
     void c_font::c_atlas::multiply_rect_alpha8(const std::array<std::uint8_t, 256>& table, std::uint8_t* pixels, const rect_t& size, int stride) {
         std::uint8_t* data = pixels + (int)size.min.x + (int)size.min.y * stride;
-        for(int j = size.max.x; j > 0; j--, data += stride)
-            for(int i = 0; i < size.max.y; i++)
+        for(int j : std::views::iota(1, size.max.x + 1) | std::views::reverse) {
+            data += stride;
+            for(int i : std::views::iota(0, size.max.y))
                 data[i] = table[data[i]];
+        }
     }
 
     c_font* c_font::c_atlas::add_font(config_t* config) {
@@ -389,8 +390,7 @@ namespace null::render {
         cfg.glyph_config.offset.y = 1.0f * floor(cfg.size_pixels / 13.0f);
 
         const std::uint16_t* glyph_ranges = cfg.glyph_config.ranges ? cfg.glyph_config.ranges : glyph_t::ranges_default();
-        c_font* font = add_font_from_memory_compressed_base_85_ttf(compressed_fonts::proggy_clean, cfg.size_pixels, &cfg, glyph_ranges);
-        return font;
+        return add_font_from_memory_compressed_base_85_ttf(compressed_fonts::proggy_clean, cfg.size_pixels, &cfg, glyph_ranges);
     }
 
     c_font* c_font::c_atlas::add_font_from_file_ttf(const char* filename, float size_pixels, config_t* config, const std::uint16_t* glyph_ranges) {
@@ -434,22 +434,20 @@ namespace null::render {
     c_font* c_font::c_atlas::add_font_from_memory_compressed_base_85_ttf(const char* compressed_font_data_base85, float size_pixels, config_t* config, const std::uint16_t* glyph_ranges) {
         std::vector<char> compressed_data((((int)strlen(compressed_font_data_base85) + 4) / 5) * 4);
         impl::decode85((const std::uint8_t*)compressed_font_data_base85, (std::uint8_t*)compressed_data.data());
-        c_font* font = add_font_from_memory_compressed_ttf(compressed_data, size_pixels, config, glyph_ranges);
-        return font;
+        return add_font_from_memory_compressed_ttf(compressed_data, size_pixels, config, glyph_ranges);
     }
 
 
     void c_font::c_atlas::clear_input_data() {
         if(locked) throw std::runtime_error("cannot modify a locked atlas between begin_render() and end_render/render()!");
-        for(config_t& config : configs) {
-            if(config.owned_by_atlas) config.font = nullptr;
-        }
+        
+        std::ranges::for_each(configs, [](config_t& config) { if(config.owned_by_atlas) config.font = nullptr; });
 
-        for(c_font& font : fonts) {
-            if(font.config >= &configs.front() && font.config <= &configs.back()) {
+        std::ranges::for_each(fonts, [&](c_font& font) {
+            if(std::ranges::find_if(configs, [&font](const config_t& config) { return font.config == &config; }) != configs.end()) {
                 font.config = nullptr; font.config_count = 0;
             }
-        }
+            });
 
         configs.clear();
         custom_rects.clear();
@@ -464,8 +462,7 @@ namespace null::render {
 
     void c_font::build_lookup_table() {
         int max_codepoint = 0;
-        for(glyph_t glyph : glyphs)
-            max_codepoint = std::max(max_codepoint, (int)glyph.codepoint);
+        std::ranges::for_each(glyphs, [&](const glyph_t& glyph) {  max_codepoint = std::max(max_codepoint, (int)glyph.codepoint); });
 
         if(glyphs.size() >= 0xFFFF) throw std::runtime_error("glyphs.size() >= 0xFFFF");
         lookup_table.advances_x.clear();
@@ -474,7 +471,7 @@ namespace null::render {
         used_4k_pages_map.fill(0);
         lookup_table.resize(max_codepoint + 1);
 
-        for(int i = 0; i < glyphs.size(); i++) {
+        for(int i : std::views::iota(size_t{ 0 }, glyphs.size())) {
             int codepoint = (int)glyphs[i].codepoint;
             lookup_table.advances_x[codepoint] = glyphs[i].advance_x;
             lookup_table.indexes[codepoint] = (std::uint16_t)i;
@@ -499,9 +496,8 @@ namespace null::render {
 
         fallback_glyph = find_glyph(fallback_char, false);
         fallback_advance_x = fallback_glyph ? fallback_glyph->advance_x : 0.0f;
-        for(int i = 0; i < max_codepoint + 1; i++)
-            if(lookup_table.advances_x[i] < 0.0f)
-                lookup_table.advances_x[i] = fallback_advance_x;
+        for(int i : std::views::iota(0, max_codepoint + 1))
+            if(lookup_table.advances_x[i] < 0.0f) lookup_table.advances_x[i] = fallback_advance_x;
     }
 
     c_font::glyph_t* c_font::find_glyph(std::uint16_t c, bool fallback) {
@@ -523,8 +519,6 @@ namespace null::render {
             advance_x += cfg->glyph_config.extra_spacing.x;
         }
 
-        static std::vector<glyph_t> aye{ };
-
         glyphs.push_back({ codepoint, corners.min != corners.max, advance_x, corners, texture_coordinates });
         lookup_table.dirty = true;
     }
@@ -542,9 +536,7 @@ namespace null::render {
     }
 
     bool c_font::is_glyph_range_unused(std::uint32_t c_begin, std::uint32_t c_last) {
-        std::uint32_t page_begin = (c_begin / 4096);
-        std::uint32_t page_last = (c_last / 4096);
-        for(std::uint32_t page_n = page_begin; page_n <= page_last; page_n++)
+        for(std::uint32_t page_n : std::views::iota(c_begin / 4096, c_last / 4096 + 1))
             if((page_n >> 3) < sizeof(used_4k_pages_map))
                 if(used_4k_pages_map[page_n >> 3] & (1 << (page_n & 7)))
                     return false;
@@ -569,8 +561,9 @@ namespace null::render {
 
         vec2_t result{ }, line_size{ 0.f, custom_size };
 
-        for(const multicolor_text_t::data_t::value_type& multicolor_data : str.data)
-            calc_text_size(multicolor_data.first, result, line_size);
+        std::ranges::for_each(str.data, [&](const multicolor_text_t::data_t::value_type& data) {
+            calc_text_size(data.first, result, line_size);
+            });
 
         result.x = std::max(result.x, line_size.x);
         if(line_size.x > 0.f || result.y == 0.f) result.y += line_size.y;

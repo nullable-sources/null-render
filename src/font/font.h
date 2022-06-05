@@ -16,13 +16,13 @@
 
 namespace null::render {
     struct multicolor_text_t {
-        using data_t = std::vector<std::pair<std::string_view, color_t>>;
+        using data_t = std::vector<std::pair<std::string, color_t>>;
         data_t data{ };
 
         //returns a string made up of all the strings in the text
         std::string unite() {
             return std::accumulate(data.begin(), data.end(), std::string{ }, [=](std::string result, data_t::value_type str) {
-                return result + std::string{ str.first.begin(), str.first.end() };
+                return result + str.first;
                 });
         }
     };
