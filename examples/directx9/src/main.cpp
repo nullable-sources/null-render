@@ -21,6 +21,8 @@ void main_loop() {
 		null::render::background_layer.draw_text(std::format("fps: {:3.0f}", 1.f / window.time_data.delta_time), { window.get_window_size().x, 10 }, { }, null::e_text_flags{ -null::e_text_flags::aligin_right | -null::e_text_flags::aligin_center_y | -null::e_text_flags::outline });
 		null::render::background_layer.draw_text(multicolor_text, { 10 });
 
+		null::render::background_layer.draw_poly_line({ { 100 }, { 300 }, {300, 200} }, { }, true);
+
 		null::render::background_layer.draw_text("rect filled", { 100, 200 }, { }, text_flags);
 		null::render::background_layer.draw_rect_filled({ 50, 200 }, { 150, 300 }, color, 10.f, corner_flags);
 
@@ -48,8 +50,10 @@ int main(HINSTANCE instance) {
 		
 		window.main_loop(main_loop);
 		
+		null::render::global_atlas.clear_input_data();
+
 		window.destroy();
-	} catch(std::exception exp) {
+	} catch(const std::exception& exp) {
 		std::cout << exp.what() << std::endl;
 	}
 }

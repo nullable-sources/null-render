@@ -69,7 +69,7 @@ namespace null::render::directx9 {
 					continue;
 				}
 
-				const RECT clip_rect = { (LONG)(cmd.clip_rect.min.x - clip_off.x), (LONG)(cmd.clip_rect.min.y - clip_off.y), (LONG)(cmd.clip_rect.max.x - clip_off.x), (LONG)(cmd.clip_rect.max.y - clip_off.y) };
+				const RECT clip_rect{ (LONG)(cmd.clip_rect.min.x - clip_off.x), (LONG)(cmd.clip_rect.min.y - clip_off.y), (LONG)(cmd.clip_rect.max.x - clip_off.x), (LONG)(cmd.clip_rect.max.y - clip_off.y) };
 				device->SetTexture(0, (IDirect3DTexture9*)cmd.texture_id);
 				device->SetScissorRect(&clip_rect);
 				device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, cmd.vtx_offset + global_vtx_offset, 0, (UINT)draw_list->vtx_buffer.size(), cmd.idx_offset + global_idx_offset, cmd.element_count / 3);
@@ -87,12 +87,12 @@ namespace null::render::directx9 {
 	}
 
 	void setup_render_state(c_draw_list::draw_data_t* _draw_data) {
-		D3DVIEWPORT9 vp;
-		vp.X = vp.Y = 0;
-		vp.Width = (DWORD)_draw_data->window_size.x;
-		vp.Height = (DWORD)_draw_data->window_size.y;
-		vp.MinZ = 0.0f;
-		vp.MaxZ = 1.0f;
+		D3DVIEWPORT9 vp { 0, 0,
+			_draw_data->window_size.x,
+			_draw_data->window_size.y,
+			0.0f, 1.0f
+		};
+
 		device->SetViewport(&vp);
 
 		device->SetPixelShader(nullptr);
@@ -135,7 +135,7 @@ namespace null::render::directx9 {
 	}
 
 	void create_fonts_texture() {
-		if(!global_atlas.texture.pixels_alpha8) {
+		if(global_atlas.texture.pixels_alpha8.empty()) {
 			if(global_atlas.configs.empty()) global_atlas.add_font_default();
 			global_atlas.build_with_stb_truetype();
 		}
@@ -146,12 +146,14 @@ namespace null::render::directx9 {
 		if(device->CreateTexture(global_atlas.texture.size.x, global_atlas.texture.size.y, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &font_texture, nullptr) < 0)
 			throw std::runtime_error("cannot create font texture");
 		
-		D3DLOCKED_RECT tex_locked_rect;
-		if(int result; (result = font_texture->LockRect(0, &tex_locked_rect, nullptr, 0)) != D3D_OK)
+		D3DLOCKED_RECT tex_locked_rect{ };
+		if(int result = font_texture->LockRect(0, &tex_locked_rect, nullptr, 0); result != D3D_OK)
 			throw std::runtime_error(std::format("lock rect error, code {}", result));
 		
-		for(int y : std::views::iota(0, global_atlas.texture.size.y))
-			memcpy((std::uint8_t*)tex_locked_rect.pBits + tex_locked_rect.Pitch * y, (std::uint8_t*)global_atlas.texture.pixels_rgba32 + ((int)global_atlas.texture.size.x * 4) * y, ((int)global_atlas.texture.size.x * 4));
+		for(int y : std::views::iota(0, global_atlas.texture.size.y)) {
+			int size = global_atlas.texture.size.x * 4;
+			std::memcpy((std::uint8_t*)tex_locked_rect.pBits + tex_locked_rect.Pitch * y, (std::uint8_t*)global_atlas.texture.pixels_rgba32.data() + size * y, size);
+		}
 		
 		font_texture->UnlockRect(0);
 

@@ -64,21 +64,20 @@ namespace null {
 			float curve_tessellation_tol{ };
 
 			shared_data_t(e_draw_list_flags _initialize_flags = e_draw_list_flags{ }) : initialize_flags(_initialize_flags) {
-				for(int i = 0; i < arc_fast_vtx.size(); i++) {
+				std::ranges::for_each(std::views::iota(0, (int)arc_fast_vtx.size()), [=](const int& i) {
 					float a = (i * 2.f * std::numbers::pi) / arc_fast_vtx.size();
 					arc_fast_vtx[i] = vec2_t{ std::cosf(a), std::sinf(a) };
-				}
+					});
 			}
 
 			void set_circle_segment_max_error(float max_error) {
 				if(circle_segment_max_error == max_error) return;
 				circle_segment_max_error = max_error;
 
-				for(int i = 0; i < circle_segments.size(); i++) {
+				std::ranges::for_each(std::views::iota(0, (int)circle_segments.size()), [=](const int& i) {
 					float radius = i + 1.f;
-					int segment_count = std::clamp((std::numbers::pi * 2.f) / std::acosf((radius - circle_segment_max_error) / radius), 12., 512.);
-					circle_segments[i] = (std::uint8_t)std::min(segment_count, 255);
-				}
+					circle_segments[i] = std::min(std::clamp((std::numbers::pi * 2.f) / std::acosf((radius - circle_segment_max_error) / radius), 12., 512.), 255.);
+					});
 			}
 
 			void get_auto_circle_num_segments(int& num_segments, float radius) {
@@ -146,7 +145,7 @@ namespace null {
 		public:
 			void add_draw_cmd() { cmd_buffer.push_back({ cmd_header.clip_rect, cmd_header.texture_id, cmd_header.vtx_offset, (std::uint32_t)idx_buffer.size() }); }
 			void pop_unused_draw_cmd() { if(cmd_buffer.empty()) return; if(!cmd_buffer.back().element_count && !cmd_buffer.back().callbacks.empty()) cmd_buffer.pop_back(); }
-			
+
 			void reset_for_begin_frame() {
 				cmd_buffer = { cmd_t{ } };
 				idx_buffer.clear();
@@ -158,12 +157,12 @@ namespace null {
 				cmd_header = cmd_header_t{ };
 			}
 			void shade_verts_linear_uv(const vtx_buffer_t::iterator& vtx_start, const vtx_buffer_t::iterator& vtx_end, const rect_t& rect, const rect_t& uv, bool clamp);
-			
+
 			void on_changed_clip_rect();
 			void push_clip_rect(rect_t rect, bool intersect_with_current_rect = false);
 			void push_clip_rect_fullscreen() { push_clip_rect(parent_shared_data->clip_rect_fullscreen); }
 			void pop_clip_rect();
-			
+
 			void on_changed_texture_id();
 			void push_texture_id(void* texture_id);
 			void pop_texture_id();
@@ -174,12 +173,12 @@ namespace null {
 			void prim_insert_vtx(const vtx_buffer_t::iterator& place, const vtx_buffer_t& vtx_list) { vtx_check(vtx_list.size()); vtx_buffer.insert(place, vtx_list.begin(), vtx_list.end()); }
 			void prim_insert_vtx(const vtx_buffer_t& vtx_list) { prim_insert_vtx(vtx_buffer.end(), vtx_list); }
 			void prim_write_vtx(vtx_buffer_t::iterator& place, const vtx_buffer_t& vtx_list) { std::move(vtx_list.begin(), vtx_list.end(), place); place += vtx_list.size(); }
-			
+
 			void prim_add_idx(std::uint16_t idx) { idx_buffer.push_back(idx); cmd_buffer.back().element_count++; }
 			void prim_insert_idx(const idx_buffer_t::iterator& place, const idx_buffer_t& idx_list) { idx_buffer.insert(place, idx_list.begin(), idx_list.end()); cmd_buffer.back().element_count += idx_list.size(); }
 			void prim_insert_idx(const idx_buffer_t& idx_list) { prim_insert_idx(idx_buffer.end(), idx_list); }
 			void prim_write_idx(idx_buffer_t::iterator& place, const idx_buffer_t& idx_list) { std::move(idx_list.begin(), idx_list.end(), place); place += idx_list.size(); cmd_buffer.back().element_count += idx_list.size(); }
-			
+
 			void prim_rect(const vec2_t& a, const vec2_t& c, const color_t& color);
 			void prim_rect_uv(const vec2_t& a, const vec2_t& c, const vec2_t& uv_a, const vec2_t& uv_c, const color_t& color);
 			void prim_quad_uv(const std::array<std::pair<vec2_t, vec2_t>, 4>& points, const color_t& color);
@@ -193,6 +192,7 @@ namespace null {
 			void draw_text(std::string_view str, vec2_t pos, const color_t& color, e_text_flags flags = e_text_flags{ }, c_font* font = nullptr, float size = 0.f);
 			void draw_text(multicolor_text_t str, vec2_t pos, e_text_flags flags = e_text_flags{ }, c_font* font = nullptr, float size = 0.f);
 			void draw_text(std::string_view str, const color_t& color, const vec2_t& pos, vec2_t& draw_pos, c_font* font, const float& line_height, const float& scale, int& vtx_offset, bool outline);
+			void draw_line(const vec2_t& a, const vec2_t& b, const color_t& color, float thickness = 1.f);
 			void draw_rect(const vec2_t& a, const vec2_t& b, const color_t& color, float thickness = 1.f, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all); //@todo: add rect multicolor
 			void draw_rect_filled(const vec2_t& a, const vec2_t& b, const color_t& color, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all); //@todo: add rect filled multicolor
 			void draw_convex_poly_filled(const std::vector<vec2_t>& points, const color_t& color);

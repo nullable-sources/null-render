@@ -247,26 +247,17 @@ namespace null::render {
                 void* id{ };
                 int desired_width{ 0 }, glyph_padding{ 1 };
 
-                std::uint8_t* pixels_alpha8{ };
-                std::uint32_t* pixels_rgba32{ };
+                std::vector<std::uint8_t> pixels_alpha8{ };
+                std::vector<std::uint32_t> pixels_rgba32{ };
 
                 vec2_t size{ };
                 vec2_t uv_scale{ }, uv_white_pixel{ };
                 std::array<rect_t, 64> uv_lines{ };
-
-                ~texture_t() { clear(); }
-
-                void clear() {
-                    if(pixels_alpha8) { free(pixels_alpha8); pixels_alpha8 = nullptr; }
-                    if(pixels_rgba32) { free(pixels_rgba32); pixels_rgba32 = nullptr; }
-                }
-
-                void render_1bpp_rect_from_string(const rect_t& bpp_rect, const char* in_str, char in_marker_char, std::uint8_t in_marker_pixel_value);
                 
+                void clear() { pixels_alpha8.clear(); pixels_rgba32.clear(); }
+                bool is_built() { return !pixels_alpha8.empty() || !pixels_rgba32.empty(); }
                 void get_data_as_rgba32();
-
-                bool is_built() { return pixels_alpha8 || pixels_rgba32; }
-            };
+            } texture;
 
             bool locked{ };
             std::vector<c_font> fonts{ };
@@ -274,8 +265,6 @@ namespace null::render {
             std::vector<config_t> configs{ };
 
             int pack_id_cursors{ -1 }, pack_id_lines{ -1 };
-
-            texture_t texture{ };
 
         public:
             void setup_font(c_font* font, config_t* config, float ascent, float descent);
@@ -290,7 +279,7 @@ namespace null::render {
 
             void pack_custom_rects(void* stbrp_context_opaque);
             void multiply_calc_lookup_table(std::array<std::uint8_t, 256>& out_table, float in_multiply_factor);
-            void multiply_rect_alpha8(const std::array<std::uint8_t, 256>& table, std::uint8_t* pixels, const rect_t& size, int stride);
+            void multiply_rect_alpha8(const std::array<std::uint8_t, 256>& table, std::vector<std::uint8_t>& pixels, const rect_t& size, int stride);
 
             c_font* add_font(config_t* config);
             c_font* add_font_default(config_t* config = nullptr);
@@ -315,14 +304,12 @@ namespace null::render {
                 advances_x.resize(new_size, -1.0f);
                 indexes.resize(new_size, (std::uint16_t)-1);
             }
-        };
+        } lookup_table;
 
     private:
         std::uint16_t fallback_char{ (std::uint16_t)'?' }, ellipsis_char{ (std::uint16_t)-1 };
 
     public:
-        lookup_table_t lookup_table{ };
-
         std::vector<glyph_t> glyphs{ };
         glyph_t* fallback_glyph{ };
         float fallback_advance_x{ };
@@ -348,7 +335,7 @@ namespace null::render {
         void set_glyph_visible(std::uint16_t c, bool visible) { if(glyph_t* glyph = find_glyph(c)) glyph->visible = visible; }
 
         bool is_loaded() { return container_atlas; }
-        float get_char_advance(std::uint16_t c) const { return ((int)c < lookup_table.advances_x.size()) ? lookup_table.advances_x[(int)c] : fallback_advance_x; }
+        float get_char_advance(std::uint16_t c) const { return (c < lookup_table.advances_x.size()) ? lookup_table.advances_x[c] : fallback_advance_x; }
 
         //if custom_size < 0 will be used font size
         vec2_t calc_text_size(std::string_view str, float custom_size = -1.f);

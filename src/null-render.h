@@ -5,13 +5,13 @@
 
 namespace null::render {
     static void begin_frame(const utils::win::c_window& window) {
-        vec2_t window_size{ window.get_window_size() };
+        const vec2_t& window_size = window.get_window_size();
 
         global_atlas.locked = true;
         set_current_font(get_current_font());
         if(!current_font->is_loaded()) throw std::runtime_error("!current_font->is_loaded()");
 
-        shared_data.clip_rect_fullscreen = rect_t(vec2_t{ 0.f }, window_size);
+        shared_data.clip_rect_fullscreen = rect_t{ vec2_t{ 0.f }, window_size };
         shared_data.curve_tessellation_tol = 1.25f;
         shared_data.set_circle_segment_max_error(1.60f);
         shared_data.initialize_flags |= -e_draw_list_flags::anti_aliased_lines | -e_draw_list_flags::anti_aliased_lines_use_texture | -e_draw_list_flags::anti_aliased_fill;

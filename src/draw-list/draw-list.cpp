@@ -4,17 +4,17 @@ namespace null::render {
     void c_draw_list::draw_data_t::deindex_all_buffers() {
         vtx_buffer_t new_vtx_buffer{ };
         total_vtx_count = total_idx_count = 0;
-        std::ranges::for_each(cmd_lists, [&](c_draw_list* cmd_list) {
-            if(cmd_list->idx_buffer.empty()) return;
+        for(c_draw_list* cmd_list : cmd_lists) {
+            if(cmd_list->idx_buffer.empty()) continue;
 
             new_vtx_buffer.resize(cmd_list->idx_buffer.size());
-            for(int i : std::views::iota(size_t{ 0 }, cmd_list->idx_buffer.size()))
+            for(int i : std::views::iota((size_t)0, cmd_list->idx_buffer.size()))
                 new_vtx_buffer[i] = cmd_list->vtx_buffer[cmd_list->idx_buffer[i]];
             cmd_list->vtx_buffer.swap(new_vtx_buffer);
             cmd_list->idx_buffer.clear();
 
             total_vtx_count += cmd_list->vtx_buffer.size();
-            });
+        }
     }
 
     void c_draw_list::draw_data_t::add_draw_list(c_draw_list* draw_list) {
@@ -38,9 +38,10 @@ namespace null::render {
     }
 
     void c_draw_list::shade_verts_linear_uv(const vtx_buffer_t::iterator& vtx_start, const vtx_buffer_t::iterator& vtx_end, const rect_t& rect, const rect_t& uv, bool clamp) {
-        const vec2_t scale = vec2_t{
+        const vec2_t scale {
             rect.size().x != 0.0f ? (uv.size().x / rect.size().x) : 0.0f,
-            rect.size().y != 0.0f ? (uv.size().y / rect.size().y) : 0.0f };
+            rect.size().y != 0.0f ? (uv.size().y / rect.size().y) : 0.0f
+        };
 
         std::for_each(vtx_start, vtx_end, [&](vertex_t& vertex) {
             if(clamp) vertex.uv = std::clamp(uv.min + (vertex.pos - rect.min) * scale, std::min(uv.min, uv.max), std::max(uv.min, uv.max));
@@ -191,10 +192,9 @@ namespace null::render {
         a_min_of_12 *= shared_data_t::arc_fast_tessellation_multiplier;
         a_max_of_12 *= shared_data_t::arc_fast_tessellation_multiplier;
 
-        for(int a : std::views::iota(a_min_of_12, a_max_of_12 + 1)) {
-            const vec2_t& c = parent_shared_data->arc_fast_vtx[a % parent_shared_data->arc_fast_vtx.size()];
-            path.push_back(center + c * radius);
-        }
+        std::ranges::for_each(std::views::iota(a_min_of_12, a_max_of_12 + 1), [=](const int& a){
+            path.push_back(center + parent_shared_data->arc_fast_vtx[a % parent_shared_data->arc_fast_vtx.size()] * radius);
+            });
     }
 
     void c_draw_list::path_arc_to(const vec2_t& center, float radius, float a_min, float a_max, int num_segments) {
@@ -203,10 +203,10 @@ namespace null::render {
             return;
         }
 
-        for(int i : std::views::iota(0, num_segments + 1)) {
+        std::ranges::for_each(std::views::iota(0, num_segments + 1), [=](const int& i) {
             const float a = a_min + ((float)i / (float)num_segments) * (a_max - a_min);
-            path.push_back(center + vec2_t{ cosf(a), sinf(a) } * radius);
-        }
+            path.push_back(center + vec2_t{ cosf(a), sinf(a) } *radius);
+            });
     }
 
     
@@ -238,15 +238,14 @@ namespace null::render {
             while(pos.y + line_height < cmd_header.clip_rect.min.y) {
                 pos.y += line_height;
 
-                std::string_view::iterator new_line = std::find(str.begin(), str.end(), '\n');
+                const auto new_line = std::find(str.begin(), str.end(), '\n');
                 if(new_line != str.end()) str.remove_prefix(std::distance(str.begin(), new_line) + 1);
                 else return;
             }
         }
 
         int vtx_offset{ }; //offset for outline
-        vec2_t draw_pos{ pos };
-        draw_text(str, color, pos, draw_pos, font, line_height, scale, vtx_offset, flags & e_text_flags::outline);
+        draw_text(str, color, pos, pos, font, line_height, scale, vtx_offset, flags & e_text_flags::outline);
     }
 
     void c_draw_list::draw_text(multicolor_text_t str, vec2_t pos, e_text_flags flags, c_font* font, float size) {
@@ -277,8 +276,8 @@ namespace null::render {
             while(pos.y + line_height < cmd_header.clip_rect.min.y) {
                 pos.y += line_height;
 
-                multicolor_text_t::data_t::iterator finded = std::ranges::find_if(str.data, [](multicolor_text_t::data_t::value_type& multicolor_data) {
-                    if(std::string::iterator new_line = std::ranges::find(multicolor_data.first, '\n'); new_line != multicolor_data.first.end()) {
+                const auto finded = std::ranges::find_if(str.data, [](auto& multicolor_data) {
+                    if(auto new_line = std::ranges::find(multicolor_data.first, '\n'); new_line != multicolor_data.first.end()) {
                         multicolor_data.first.erase(multicolor_data.first.begin(), new_line + 1);
                         return true;
                     }
@@ -291,12 +290,12 @@ namespace null::render {
         }
 
         int vtx_offset{ }; //offset for outline
-        vec2_t draw_pos{ pos };
-        std::ranges::for_each(str.data, [&](const multicolor_text_t::data_t::value_type& data) { draw_text(data.first, data.second, pos, draw_pos, font, line_height, scale, vtx_offset, flags & e_text_flags::outline); });
+        vec2_t draw_pos = pos;
+        std::ranges::for_each(str.data, [&](const auto& data) { draw_text(data.first, data.second, pos, draw_pos, font, line_height, scale, vtx_offset, flags & e_text_flags::outline); });
     }
 
     void c_draw_list::draw_text(std::string_view str, const color_t& color, const vec2_t& pos, vec2_t& draw_pos, c_font* font, const float& line_height, const float& scale, int& vtx_offset, bool outline) {
-        for(std::string_view::iterator s = str.begin(); s != str.end();) {
+        for(auto s = str.begin(); s != str.end();) {
             std::uint32_t c = *s;
             if(c < 0x80) s += 1;
             else {
@@ -318,12 +317,12 @@ namespace null::render {
             if(!glyph) continue;
 
             if(glyph->visible) {
-                rect_t corners{ rect_t{ draw_pos } + glyph->corners * scale };
+                rect_t corners = rect_t{ draw_pos } + glyph->corners * scale;
                 if(corners.min.x <= cmd_header.clip_rect.max.x && corners.max.x >= cmd_header.clip_rect.min.x) {
                     rect_t uvs = glyph->texture_coordinates;
 
                     if(outline && !parent_shared_data->text_outline_offsets.empty()) {
-                        for(vec2_t offset : parent_shared_data->text_outline_offsets) {
+                        for(const vec2_t& offset : parent_shared_data->text_outline_offsets) {
                             prim_insert_idx({
                                 (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 1), (std::uint16_t)(vtx_buffer.size() + 2),
                                 (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 2), (std::uint16_t)(vtx_buffer.size() + 3)
@@ -350,6 +349,14 @@ namespace null::render {
         }
     }
 
+    void c_draw_list::draw_line(const vec2_t& a, const vec2_t& b, const color_t& color, float thickness) {
+        if(color.a() <= 0.f) return;
+
+        path.push_back(a + 0.5f);
+        path.push_back(b + 0.5f);
+        path_stroke(color, false, thickness);
+    }
+
     void c_draw_list::draw_rect(const vec2_t& a, const vec2_t& b, const color_t& color, float thickness, float rounding, e_corner_flags flags) {
         if(color.a() <= 0.f) return;
 
@@ -370,21 +377,27 @@ namespace null::render {
         if(points.size() < 3 || color.a() <= 0.f) return;
 
         if(parent_shared_data->initialize_flags & e_draw_list_flags::anti_aliased_fill) {
-            for(int i : std::views::iota(size_t{ 2 }, points.size())) prim_insert_idx({ (std::uint16_t)(vtx_buffer.size()), (std::uint16_t)(vtx_buffer.size() + ((i - 1) << 1)), (std::uint16_t)(vtx_buffer.size() + (i << 1)) });
+            static constexpr float aa_size = 1.f;
+            std::ranges::for_each(std::views::iota(2, (int)points.size()), [=](const int& i) {
+                prim_insert_idx({
+                    (std::uint16_t)(vtx_buffer.size()), (std::uint16_t)(vtx_buffer.size() + ((i - 1) << 1)), (std::uint16_t)(vtx_buffer.size() + (i << 1))
+                    });
+                });
 
             std::vector<vec2_t> temp_normals(points.size());
-            for(int i0 = points.size() - 1, i1 = 0; i1 < points.size(); i0 = i1++) {
+            for(int i0 = (int)points.size() - 1; int i1 : std::views::iota((size_t)0, points.size())) {
                 vec2_t p = points[i1] - points[i0];
                 if(p.length() > 0.f) p *= 1.f / p.length();
 
                 temp_normals[i0] = { p.y, -p.x };
+                i0 = i1;
             }
 
             std::size_t idx = vtx_buffer.size();
-            for(int i0 = points.size() - 1, i1 = 0; i1 < points.size(); i0 = i1++) {
+            for(int i0 = points.size() - 1; int i1 : std::views::iota((size_t)0, points.size())) {
                 vec2_t p = (temp_normals[i0] + temp_normals[i1]) / 2;
-                p *= 1.f / std::max(std::powf(p.length(), 2), 0.5f);
-                p *= 0.5f; //aa_size
+                p *= std::min(1.f / std::powf(p.length(), 2), 100.f);
+                p *= aa_size;
 
                 prim_insert_idx({
                     (std::uint16_t)(idx + (i1 << 1)),       (std::uint16_t)(idx + (i0 << 1)),       (std::uint16_t)(idx + 1 + (i0 << 1)),
@@ -395,9 +408,10 @@ namespace null::render {
                     { points[i1] - p, parent_shared_data->font->container_atlas->texture.uv_white_pixel, color },
                     { points[i1] + p, parent_shared_data->font->container_atlas->texture.uv_white_pixel, color_t{ color, 0.f } }
                     });
+                i0 = i1;
             }
         } else {
-            for(int i : std::views::iota(size_t{ 2 }, points.size())) prim_insert_idx({ (std::uint16_t)(vtx_buffer.size()), (std::uint16_t)(vtx_buffer.size() + i - 1), (std::uint16_t)(vtx_buffer.size() + i) });
+            for(int i : std::views::iota((size_t)2, points.size())) prim_insert_idx({ (std::uint16_t)(vtx_buffer.size()), (std::uint16_t)(vtx_buffer.size() + i - 1), (std::uint16_t)(vtx_buffer.size() + i) });
             std::ranges::for_each(points, [&](const vec2_t& point) { prim_add_vtx({ point, parent_shared_data->font->container_atlas->texture.uv_white_pixel, color }); });
         }
     }
@@ -409,22 +423,21 @@ namespace null::render {
         const bool thick_line = (thickness > 1.0f);
 
         if(parent_shared_data->initialize_flags & e_draw_list_flags::anti_aliased_lines) {
-            static const float aa_size = 1.0f;
+            static constexpr float aa_size = 1.0f;
 
             thickness = std::max(thickness, 1.0f);
-            const int integer_thickness = (int)thickness;
-            const float fractional_thickness = thickness - integer_thickness;
 
-            const bool use_texture = (parent_shared_data->initialize_flags & e_draw_list_flags::anti_aliased_lines_use_texture) && (integer_thickness < 63) && (fractional_thickness <= 0.00001f);
+            const bool use_texture = (parent_shared_data->initialize_flags & e_draw_list_flags::anti_aliased_lines_use_texture) && ((int)thickness < 63) && (thickness - (int)thickness <= 0.00001f);
 
             std::vector<vec2_t> temp_normals(points.size() * ((use_texture || !thick_line) ? 3 : 5));
             std::vector<vec2_t> temp_points(temp_normals.size() + points.size());
 
-            for(int i1 : std::views::iota(0, count)) {
-                vec2_t p = points[(i1 + 1) == points.size() ? 0 : i1 + 1] - points[i1];
-                if(p.length() > 0.f) p *= 1.f / p.length();
+            for(int i0{ }; int i1 : std::views::iota(0, count) | std::views::reverse) {
+                vec2_t delta = points[i0] - points[i1];
+                if(delta.length() > 0.f) delta *= 1.f / delta.length();
 
-                temp_normals[i1] = { p.y, -p.x };
+                temp_normals[i1] = { delta.y, -delta.x };
+                i0 = i1;
             }
 
             if(!closed) *std::prev(temp_normals.end()) = *std::prev(temp_normals.end(), 2);
@@ -444,7 +457,7 @@ namespace null::render {
                     const unsigned int _idx = ((i1 + 1) == points.size()) ? vtx_buffer.size() : (idx + (use_texture ? 2 : 3));
 
                     vec2_t p = (temp_normals[i1] + temp_normals[i2]) / 2;
-                    p *= 1.f / std::max(std::powf(p.length(), 2), 0.5f);
+                    p *= std::min(1.0f / std::powf(p.length(), 2), 100.f);
                     p *= half_draw_size;
 
                     temp_points[i2 * 2] = points[i2] + p;
@@ -468,15 +481,15 @@ namespace null::render {
                 }
 
                 if(use_texture) {
-                    const rect_t& tex_uvs = parent_shared_data->font->container_atlas->texture.uv_lines[integer_thickness];
-                    for(int i : std::views::iota(size_t{ 0 }, points.size())) {
+                    const rect_t& tex_uvs = parent_shared_data->font->container_atlas->texture.uv_lines[(int)thickness];
+                    for(int i : std::views::iota((size_t)0, points.size())) {
                         prim_insert_vtx({
                             { temp_points[i * 2],       tex_uvs.min, color },
                             { temp_points[i * 2 + 1],   tex_uvs.max, color }
                             });
                     }
                 } else {
-                    for(int i : std::views::iota(size_t{ 0 }, points.size())) {
+                    for(int i : std::views::iota((size_t)0, points.size())) {
                         prim_insert_vtx({
                             { points[i],                parent_shared_data->font->container_atlas->texture.uv_white_pixel, color },
                             { temp_points[i * 2],       parent_shared_data->font->container_atlas->texture.uv_white_pixel, color_t{ color, 0.f } },
@@ -504,7 +517,7 @@ namespace null::render {
                     const unsigned int _idx = (i1 + 1) == points.size() ? vtx_buffer.size() : (idx + 4);
 
                     vec2_t p = (temp_normals[i1] + temp_normals[i2]) / 2;
-                    p *= 1.f / std::max(std::powf(p.length(), 2), 0.5f);
+                    p *= std::min(1.f / std::powf(p.length(), 2), 100.f);
                     vec2_t p_out{ p * (half_inner_thickness + aa_size) }, p_in{ p * half_inner_thickness };
                     temp_points[i2 * 4]     = points[i2] + p_out;
                     temp_points[i2 * 4 + 1] = points[i2] + p_in;
