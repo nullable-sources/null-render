@@ -329,7 +329,7 @@ namespace null::render {
                                 });
 
                             rect_t pos = corners + offset;
-                            prim_insert_vtx(vtx_buffer.end() - vtx_offset,
+                            prim_insert_vtx(std::prev(vtx_buffer.end(), vtx_offset),
                                 {
                                     { pos.min,                  uvs.min,                    {0, 0, 0} },
                                     { { pos.max.x, pos.min.y }, { uvs.max.x, uvs.min.y },   {0, 0, 0} },
@@ -385,19 +385,19 @@ namespace null::render {
                 });
 
             std::vector<vec2_t> temp_normals(points.size());
-            for(int i0 = (int)points.size() - 1; int i1 : std::views::iota((size_t)0, points.size())) {
-                vec2_t p = points[i1] - points[i0];
-                if(p.length() > 0.f) p *= 1.f / p.length();
+            for(int i0 = points.size() - 1; int i1 : std::views::iota((size_t)0, points.size())) {
+                vec2_t delta = points[i1] - points[i0];
+                if(delta.length() > 0.f) delta *= 1.f / delta.length(); //@todo: add this in vec2_t methods
 
-                temp_normals[i0] = { p.y, -p.x };
+                temp_normals[i0] = { delta.y, -delta.x };
                 i0 = i1;
             }
 
-            std::size_t idx = vtx_buffer.size();
+            size_t idx = vtx_buffer.size();
             for(int i0 = points.size() - 1; int i1 : std::views::iota((size_t)0, points.size())) {
-                vec2_t p = (temp_normals[i0] + temp_normals[i1]) / 2;
-                p *= std::min(1.f / std::powf(p.length(), 2), 100.f);
-                p *= aa_size;
+                vec2_t delta = (temp_normals[i0] + temp_normals[i1]) / 2;
+                delta *= std::min(1.f / std::powf(delta.length(), 2), 100.f); //@todo: add this in vec2_t methods
+                delta *= aa_size;
 
                 prim_insert_idx({
                     (std::uint16_t)(idx + (i1 << 1)),       (std::uint16_t)(idx + (i0 << 1)),       (std::uint16_t)(idx + 1 + (i0 << 1)),
@@ -405,8 +405,8 @@ namespace null::render {
                     });
                 
                 prim_insert_vtx({
-                    { points[i1] - p, parent_shared_data->font->container_atlas->texture.uv_white_pixel, color },
-                    { points[i1] + p, parent_shared_data->font->container_atlas->texture.uv_white_pixel, color_t{ color, 0.f } }
+                    { points[i1] - delta, parent_shared_data->font->container_atlas->texture.uv_white_pixel, color },
+                    { points[i1] + delta, parent_shared_data->font->container_atlas->texture.uv_white_pixel, color_t{ color, 0.f } }
                     });
                 i0 = i1;
             }
@@ -429,21 +429,20 @@ namespace null::render {
 
             const bool use_texture = (parent_shared_data->initialize_flags & e_draw_list_flags::anti_aliased_lines_use_texture) && ((int)thickness < 63) && (thickness - (int)thickness <= 0.00001f);
 
-            std::vector<vec2_t> temp_normals(points.size() * ((use_texture || !thick_line) ? 3 : 5));
+            std::vector<vec2_t> temp_normals(points.size() * (use_texture || !thick_line ? 3 : 5));
             std::vector<vec2_t> temp_points(temp_normals.size() + points.size());
 
-            for(int i0{ }; int i1 : std::views::iota(0, count) | std::views::reverse) {
-                vec2_t delta = points[i0] - points[i1];
+            for(int i1 : std::views::iota(0, count)) {
+                vec2_t delta = points[i1 + 1 == points.size() ? 0 : i1 + 1] - points[i1];
                 if(delta.length() > 0.f) delta *= 1.f / delta.length();
 
                 temp_normals[i1] = { delta.y, -delta.x };
-                i0 = i1;
             }
 
             if(!closed) *std::prev(temp_normals.end()) = *std::prev(temp_normals.end(), 2);
 
             if(use_texture || !thick_line) {
-                const float half_draw_size = use_texture ? ((thickness * 0.5f) + 1) : aa_size;
+                const float half_draw_size = use_texture ? thickness * 0.5f + 1 : aa_size;
                 if(!closed) {
                     temp_points[0] = points.front() + temp_normals.front() * half_draw_size;
                     temp_points[1] = points.front() - temp_normals.front() * half_draw_size;
@@ -451,17 +450,18 @@ namespace null::render {
                     temp_points[(points.size() - 1) * 2 + 1]    = points.back() - temp_normals[points.size() - 1] * half_draw_size;
                 }
 
-                unsigned int idx = vtx_buffer.size();
+                size_t idx = vtx_buffer.size();
                 for(int i1 : std::views::iota(0, count)) {
-                    const int i2 = (i1 + 1) == points.size() ? 0 : i1 + 1;
-                    const unsigned int _idx = ((i1 + 1) == points.size()) ? vtx_buffer.size() : (idx + (use_texture ? 2 : 3));
+                    const bool last_point = i1 + 1 == points.size();
+                    const int i2 = last_point ? 0 : (i1 + 1);
+                    const unsigned int _idx = last_point ? vtx_buffer.size() : (idx + (use_texture ? 2 : 3));
 
-                    vec2_t p = (temp_normals[i1] + temp_normals[i2]) / 2;
-                    p *= std::min(1.0f / std::powf(p.length(), 2), 100.f);
-                    p *= half_draw_size;
+                    vec2_t delta = (temp_normals[i1] + temp_normals[i2]) / 2;
+                    delta *= std::min(1.0f / std::powf(delta.length(), 2), 100.f);
+                    delta *= half_draw_size;
 
-                    temp_points[i2 * 2] = points[i2] + p;
-                    temp_points[i2 * 2 + 1] = points[i2] - p;
+                    temp_points[i2 * 2] = points[i2] + delta;
+                    temp_points[i2 * 2 + 1] = points[i2] - delta;
 
                     if(use_texture) {
                         prim_insert_idx({
@@ -511,18 +511,19 @@ namespace null::render {
                     temp_points[(points.size() - 1) * 4 + 3]    = points.back() - temp_normals[(points.size() - 1)] * (half_inner_thickness + aa_size);
                 }
 
-                unsigned int idx = vtx_buffer.size();
+                size_t idx = vtx_buffer.size();
                 for(int i1 : std::views::iota(0, count)) {
-                    const int i2 = (i1 + 1) == points.size() ? 0 : (i1 + 1);
-                    const unsigned int _idx = (i1 + 1) == points.size() ? vtx_buffer.size() : (idx + 4);
+                    const bool last_point = i1 + 1 == points.size();
+                    const int i2 = last_point ? 0 : (i1 + 1);
+                    const unsigned int _idx = last_point ? vtx_buffer.size() : (idx + 4);
 
-                    vec2_t p = (temp_normals[i1] + temp_normals[i2]) / 2;
-                    p *= std::min(1.f / std::powf(p.length(), 2), 100.f);
-                    vec2_t p_out{ p * (half_inner_thickness + aa_size) }, p_in{ p * half_inner_thickness };
-                    temp_points[i2 * 4]     = points[i2] + p_out;
-                    temp_points[i2 * 4 + 1] = points[i2] + p_in;
-                    temp_points[i2 * 4 + 2] = points[i2] - p_in;
-                    temp_points[i2 * 4 + 3] = points[i2] - p_out;
+                    vec2_t delta = (temp_normals[i1] + temp_normals[i2]) / 2;
+                    delta *= std::min(1.f / std::powf(delta.length(), 2), 100.f);
+                    vec2_t out = delta * (half_inner_thickness + aa_size), in = delta * half_inner_thickness;
+                    temp_points[i2 * 4]     = points[i2] + out;
+                    temp_points[i2 * 4 + 1] = points[i2] + in;
+                    temp_points[i2 * 4 + 2] = points[i2] - in;
+                    temp_points[i2 * 4 + 3] = points[i2] - out;
 
                     prim_insert_idx({
                         (std::uint16_t)(_idx + 1),  (std::uint16_t)(idx + 1),   (std::uint16_t)(idx + 2),
@@ -536,7 +537,7 @@ namespace null::render {
                     idx = _idx;
                 }
 
-                for(int i : std::views::iota(size_t{ 0 }, points.size())) {
+                for(int i : std::views::iota((size_t)0, points.size())) {
                     prim_insert_vtx({
                         { temp_points[i * 4],       parent_shared_data->font->container_atlas->texture.uv_white_pixel, color_t(color, 0.f) },
                         { temp_points[i * 4 + 1],   parent_shared_data->font->container_atlas->texture.uv_white_pixel, color },
@@ -547,10 +548,10 @@ namespace null::render {
             }
         } else {
             for(int i1 : std::views::iota(0, count)) {
-                const int i2 = (i1 + 1) == points.size() ? 0 : i1 + 1;
-                vec2_t p = points[i2] - points[i1];
-                if(p.length() > 0.f) p *= 1.f / p.length();
-                p *= thickness / 2;
+                const int i2 = i1 + 1 == points.size() ? 0 : (i1 + 1);
+                vec2_t delta = points[i2] - points[i1];
+                if(delta.length() > 0.f) delta *= 1.f / delta.length();
+                delta *= thickness / 2;
 
                 prim_insert_idx({
                     (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 1), (std::uint16_t)(vtx_buffer.size() + 2),
@@ -558,10 +559,10 @@ namespace null::render {
                     });
 
                 prim_insert_vtx({
-                    { points[i1] + vec2_t{ p.y, -p.x }, parent_shared_data->font->container_atlas->texture.uv_white_pixel, color },
-                    { points[i2] + vec2_t{ p.y, -p.x }, parent_shared_data->font->container_atlas->texture.uv_white_pixel, color },
-                    { points[i2] + vec2_t{ -p.y, p.x }, parent_shared_data->font->container_atlas->texture.uv_white_pixel, color },
-                    { points[i1] + vec2_t{ -p.y, p.x }, parent_shared_data->font->container_atlas->texture.uv_white_pixel, color }
+                    { points[i1] + vec2_t{ delta.y, -delta.x }, parent_shared_data->font->container_atlas->texture.uv_white_pixel, color },
+                    { points[i2] + vec2_t{ delta.y, -delta.x }, parent_shared_data->font->container_atlas->texture.uv_white_pixel, color },
+                    { points[i2] + vec2_t{ -delta.y, delta.x }, parent_shared_data->font->container_atlas->texture.uv_white_pixel, color },
+                    { points[i1] + vec2_t{ -delta.y, delta.x }, parent_shared_data->font->container_atlas->texture.uv_white_pixel, color }
                     });
             }
         }
