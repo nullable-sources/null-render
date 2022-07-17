@@ -33,18 +33,14 @@ namespace null::render::directx9 {
 		std::uint16_t* idx_dst{ };
 		if(vtx_buffer->Lock(0, (UINT)(_draw_data->total_vtx_count * sizeof(vertex_t)), (void**)&vtx_dst, D3DLOCK_DISCARD) < 0) throw std::runtime_error("vtx_buffer->Lock error");
 		if(idx_buffer->Lock(0, (UINT)(_draw_data->total_idx_count * sizeof(std::uint16_t)), (void**)&idx_dst, D3DLOCK_DISCARD) < 0) throw std::runtime_error("idx_buffer->Lock error");
-
 		for(c_draw_list* cmd_list : _draw_data->cmd_lists) {
 			for(c_draw_list::vertex_t vtx_src : cmd_list->vtx_buffer) {
-				vtx_dst->pos[0] = vtx_src.pos.x;
-				vtx_dst->pos[1] = vtx_src.pos.y;
-				vtx_dst->pos[2] = 0.0f;
+				vtx_dst->pos[0] = vtx_src.pos.x; vtx_dst->pos[1] = vtx_src.pos.y; vtx_dst->pos[2] = 0.0f;
 
-				std::uint32_t clr = (std::uint32_t)vtx_src.color;
-				vtx_dst->color = (clr & 0xFF00FF00) | ((clr & 0xFF0000) >> 16) | ((clr & 0xFF) << 16);
+				std::uint32_t color = (std::uint32_t)vtx_src.color;
+				vtx_dst->color = (color & 0xFF00FF00) | ((color & 0xFF0000) >> 16) | ((color & 0xFF) << 16);
 				
-				vtx_dst->uv[0] = vtx_src.uv.x;
-				vtx_dst->uv[1] = vtx_src.uv.y;
+				vtx_dst->uv[0] = vtx_src.uv.x; vtx_dst->uv[1] = vtx_src.uv.y;
 				
 				vtx_dst++;
 			}
@@ -61,7 +57,6 @@ namespace null::render::directx9 {
 		setup_render_state();
 
 		int global_vtx_offset{ }, global_idx_offset{ };
-		vec2_t clip_off = _draw_data->window_pos;
 		for(c_draw_list* draw_list : _draw_data->cmd_lists) {
 			for(c_draw_list::cmd_t cmd : draw_list->cmd_buffer) {
 				if(cmd.callbacks.have_callback(e_cmd_callbacks::render_draw_data) && std::any_cast<bool>(cmd.callbacks.call<bool(c_draw_list::cmd_t*)>(e_cmd_callbacks::render_draw_data, &cmd))) {
@@ -69,7 +64,7 @@ namespace null::render::directx9 {
 					continue;
 				}
 
-				const RECT clip_rect{ (LONG)(cmd.clip_rect.min.x - clip_off.x), (LONG)(cmd.clip_rect.min.y - clip_off.y), (LONG)(cmd.clip_rect.max.x - clip_off.x), (LONG)(cmd.clip_rect.max.y - clip_off.y) };
+				const RECT clip_rect{ (LONG)(cmd.clip_rect.min.x - _draw_data->window_pos.x), (LONG)(cmd.clip_rect.min.y - _draw_data->window_pos.y), (LONG)(cmd.clip_rect.max.x - _draw_data->window_pos.x), (LONG)(cmd.clip_rect.max.y - _draw_data->window_pos.y) };
 				device->SetTexture(0, (IDirect3DTexture9*)cmd.texture_id);
 				device->SetScissorRect(&clip_rect);
 				device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, cmd.vtx_offset + global_vtx_offset, 0, (UINT)draw_list->vtx_buffer.size(), cmd.idx_offset + global_idx_offset, cmd.element_count / 3);
@@ -87,13 +82,13 @@ namespace null::render::directx9 {
 	}
 
 	void setup_render_state(c_draw_list::draw_data_t* _draw_data) {
-		D3DVIEWPORT9 vp { 0, 0,
+		D3DVIEWPORT9 viewport{ 0, 0,
 			_draw_data->window_size.x,
 			_draw_data->window_size.y,
 			0.0f, 1.0f
 		};
 
-		device->SetViewport(&vp);
+		device->SetViewport(&viewport);
 
 		device->SetPixelShader(nullptr);
 		device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
@@ -123,9 +118,9 @@ namespace null::render::directx9 {
 			float b = _draw_data->window_pos.y + _draw_data->window_size.y + 0.5f;
 			D3DMATRIX mat_identity = { { { 1.0f, 0.0f, 0.0f, 0.0f,  0.0f, 1.0f, 0.0f, 0.0f,  0.0f, 0.0f, 1.0f, 0.0f,  0.0f, 0.0f, 0.0f, 1.0f } } };
 			D3DMATRIX mat_projection = { { {
-				2.0f / (r - l),   0.0f,         0.0f,  0.0f,
-				0.0f,         2.0f / (t - b),   0.0f,  0.0f,
-				0.0f,         0.0f,         0.5f,  0.0f,
+				2.0f / (r - l),		0.0f,				0.0f,  0.0f,
+				0.0f,				2.0f / (t - b),		0.0f,  0.0f,
+				0.0f,				0.0f,				0.5f,  0.0f,
 				(l + r) / (l - r),  (t + b) / (b - t),  0.5f,  1.0f
 			} } };
 			device->SetTransform(D3DTS_WORLD, &mat_identity);

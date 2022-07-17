@@ -30,9 +30,8 @@ namespace null::render::directx9 {
 	
 	class c_window : public utils::win::c_window {
 	public:
-		color_t clear_color{ 20, 20, 20 };
+		color_t clear_color{ 18, 18, 18 };
 		IDirect3D9* direct3d{ };
-		IDirect3DDevice9* device{ };
 		D3DPRESENT_PARAMETERS present_parameters{
 			.BackBufferFormat{ D3DFMT_UNKNOWN },
 			.SwapEffect{ D3DSWAPEFFECT_DISCARD },
@@ -51,8 +50,6 @@ namespace null::render::directx9 {
 				throw std::runtime_error("cannot create direct3d");
 			if(direct3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, wnd_handle, D3DCREATE_HARDWARE_VERTEXPROCESSING, &present_parameters, &device) < 0)
 				throw std::runtime_error("cannot create device");
-
-			initialize(device);
 		}
 
 		void render_destroy() override {
@@ -62,6 +59,8 @@ namespace null::render::directx9 {
 
 		void render_main_loop_begin() override { begin_frame(); }
 		void render_main_loop_end() override {
+			setup_draw_data();
+
 			device->SetRenderState(D3DRS_ZENABLE, FALSE);
 			device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 			device->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
