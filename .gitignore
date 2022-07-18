@@ -1,2 +1,4 @@
 build/
+src/renderers/directx11/shaders/pixel/compiled/
+src/renderers/directx11/shaders/vertex/compiled/
 .vs/
