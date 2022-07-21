@@ -198,7 +198,7 @@ namespace null::render {
     }
 
     void c_draw_list::path_arc_to(const vec2_t& center, float radius, float a_min, float a_max, int num_segments) {
-        if(radius == 0.0f) {
+        if(radius == 0.f) {
             path.push_back(center);
             return;
         }

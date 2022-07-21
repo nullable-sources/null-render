@@ -137,7 +137,7 @@ namespace null::render {
             static const std::uint32_t mins[] = { 0x400000, 0, 0x80, 0x800, 0x10000 };
             static const int shiftc[] = { 0, 18, 12, 6, 0 };
             static const int shifte[] = { 0, 6, 4, 2, 0 };
-            int len = lengths[*str.data() >> 3];
+            int len = lengths[*(const unsigned char*)str.data() >> 3];
             int wanted = len + !len;
 
             std::array<std::uint8_t, 4> s{ 0, 0, 0, 0 };
@@ -187,6 +187,17 @@ namespace null::render {
                     0x0020, 0x00FF,
                     0,
                 }; return &ranges[0];
+            }
+
+            static const std::uint16_t* ranges_cyrillic() {
+                static const std::uint16_t ranges[] = {
+                    0x0020, 0x00FF,
+                    0x0400, 0x052F,
+                    0x2DE0, 0x2DFF,
+                    0xA640, 0xA69F,
+                    0,
+                };
+                return &ranges[0];
             }
         };
 

@@ -34,6 +34,10 @@ void main_loop() {
 
 		null::render::background_layer.draw_text("circle", { 550, 200 }, { }, text_flags);
 		null::render::background_layer.draw_circle({ 550, 250 }, color, 50, 0, 2.f);
+
+		//@note:	you can use u8"" to display cyrillic, but due to changes in the standard, you will have to cast string{ u8string.begin(), u8string.end() } each time
+		//			or you can add /utf - 8 to C/C++->command line
+		null::render::background_layer.draw_text("абвгдеёжзийклмнопрстуфхцчшщъыьэюя", { 500 }, { });
 	}
 	null::render::end_frame();
 }
@@ -42,7 +46,7 @@ int main(HINSTANCE instance) {
 	window = null::render::directx11::c_window{ instance };
 
 	try {
-		null::render::global_atlas.add_font_from_file_ttf("C:\\Windows\\fonts\\Tahoma.ttf", 13.f);
+		null::render::global_atlas.add_font_from_file_ttf("C:\\Windows\\fonts\\Tahoma.ttf", 13.f, nullptr, null::render::c_font::glyph_t::ranges_cyrillic());
 
 		window.create();
 		null::render::custom_layers.push_back(&custom_layer);
