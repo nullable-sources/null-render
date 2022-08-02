@@ -401,7 +401,7 @@ namespace null::render {
         vec2_t calc_text_size(const multicolor_text_t<string_t>& str, float custom_size = 0.f) {
             vec2_t result{ }, line_size{ 0.f, custom_size <= 0.f ? size : custom_size };
 
-            std::ranges::for_each(str.data, [&](const auto& data) { calc_text_size(data.first, result, line_size); });
+            std::ranges::for_each(str.data, [&](const auto& data) { calc_text_size(std::basic_string_view{ data.first }, result, line_size); });
 
             result.x = std::max(result.x, line_size.x);
             if(line_size.x > 0.f || result.y == 0.f) result.y += line_size.y;

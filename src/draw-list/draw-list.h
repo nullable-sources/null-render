@@ -332,7 +332,7 @@ namespace null {
 
 				int vtx_offset{ }; //@note: offset for outline
 				vec2_t draw_pos = pos;
-				std::ranges::for_each(str.data, [&](const auto& data) { draw_text(data.first, data.second, pos, draw_pos, font, line_height, scale, vtx_offset, flags & e_text_flags::outline); });
+				std::ranges::for_each(str.data, [&](const auto& data) { draw_text(std::basic_string_view{ data.first }, data.second, pos, draw_pos, font, line_height, scale, vtx_offset, flags & e_text_flags::outline); });
 			}
 		};
 
