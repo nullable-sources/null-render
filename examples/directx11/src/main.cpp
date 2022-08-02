@@ -10,7 +10,7 @@ void main_loop() {
 
 	static const color_t color{ 100, 100, 255 };
 
-	static const null::render::multicolor_text_t multicolor_text{ {
+	static const null::render::multicolor_text_t<std::string> multicolor_text{ {
 		{ "multicolored \n\n", { } },
 		{ "text", color }
 	} };
@@ -35,9 +35,9 @@ void main_loop() {
 		null::render::background_layer.draw_text("circle", { 550, 200 }, { }, text_flags);
 		null::render::background_layer.draw_circle({ 550, 250 }, color, 50, 0, 2.f);
 
-		//@note:	you can use u8"" to display cyrillic, but due to changes in the standard, you will have to cast string{ u8string.begin(), u8string.end() } each time
+		//@note:	you can use L"" to display cyrillic
 		//			or you can add /utf - 8 to C/C++->command line
-		null::render::background_layer.draw_text("абвгдеёжзийклмнопрстуфхцчшщъыьэюя", { 500 }, { });
+		null::render::background_layer.draw_text(L"абвгдеёжзийклмнопрстуфхцчшщъыьэюя", { 500 }, { });
 	}
 	null::render::end_frame();
 }

@@ -25,16 +25,16 @@ namespace null {
 	}; enum_create_bit_operators(e_corner_flags, true);
 	enum_create_cast_operator(e_corner_flags, -);
 
-	//flags for drawing text
+	//@note: flags for drawing text
 	enum class e_text_flags : std::uint32_t {
-		//the default color for the outline is black, maybe later I will add color settings, but personally I don't need it, so you can always change it in your solution
-		//you can change offsets in shared data(text_outline_offsets)
+		//@note:	the default color for the outline is black, maybe later I will add color settings, but personally I don't need it, so you can always change it in your solution
+		//			you can change offsets in shared data(text_outline_offsets)
 		outline = 1 << 0,
 
-		//default aligin is top and left
-		aligin_right = 1 << 1, //will be draw at pos - text_size.x
-		aligin_bottom = 1 << 2, //will be draw at pos - text_size.y
-		//align_center is calculated after the rest, so it can be combined with left and bottom
+		//@note: default aligin is top and left
+		aligin_right = 1 << 1, //@note: will be draw at pos - text_size.x
+		aligin_bottom = 1 << 2, //@note: will be draw at pos - text_size.y
+		//@note: align_center is calculated after the rest, so it can be combined with left and bottom
 		aligin_center_x = 1 << 3,
 		aligin_center_y = 1 << 4,
 		aligin_center = aligin_center_x | aligin_center_y,
@@ -43,12 +43,12 @@ namespace null {
 	enum_create_cast_operator(e_text_flags, -);
 
 	enum class e_cmd_callbacks {
-		render_draw_data //std::function<bool(cmd*)>, will call setup_render_state if the callback returns true
+		render_draw_data //@note: std::function<bool(cmd*)>, will call setup_render_state if the callback returns true
 	};
 
 	namespace render {
 		struct shared_data_t {
-		public: //used instead of #define
+		public: //@note: used instead of #define
 			static const int arc_fast_tessellation_multiplier{ 1 };
 			static const int circle_auto_segment_max{ 512 };
 
@@ -189,9 +189,6 @@ namespace null {
 			void path_fill_convex(const color_t& clr) { draw_convex_poly_filled(path, clr); path.clear(); }
 			void path_stroke(const color_t& color, bool closed, float thickness) { draw_poly_line(path, color, closed, thickness); path.clear(); }
 
-			void draw_text(std::string_view str, vec2_t pos, const color_t& color, e_text_flags flags = e_text_flags{ }, c_font* font = nullptr, float size = 0.f);
-			void draw_text(multicolor_text_t str, vec2_t pos, e_text_flags flags = e_text_flags{ }, c_font* font = nullptr, float size = 0.f);
-			void draw_text(std::string_view str, const color_t& color, const vec2_t& pos, vec2_t& draw_pos, c_font* font, const float& line_height, const float& scale, int& vtx_offset, bool outline);
 			void draw_line(const vec2_t& a, const vec2_t& b, const color_t& color, float thickness = 1.f);
 			void draw_rect(const vec2_t& a, const vec2_t& b, const color_t& color, float thickness = 1.f, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all); //@todo: add rect multicolor
 			void draw_rect_filled(const vec2_t& a, const vec2_t& b, const color_t& color, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all); //@todo: add rect filled multicolor
@@ -199,13 +196,151 @@ namespace null {
 			void draw_poly_line(const std::vector<vec2_t>& points, const color_t& color, bool closed, float thickness = 1.f);
 			void draw_circle(const vec2_t& center, const color_t& clr, float radius, int num_segments = 0, float thickness = 1.f);
 			void draw_circle_filled(const vec2_t& center, const color_t& clr, float radius, int num_segments = 0);
+
+			template <typename string_view_t>
+			void draw_text(string_view_t str, const color_t& color, const vec2_t& pos, vec2_t& draw_pos, c_font* font, const float& line_height, const float& scale, int& vtx_offset, bool outline) {
+				for(auto s = str.begin(); s != str.end();) {
+					std::uint32_t c{ (std::uint32_t)*s };
+					s += impl::char_converters::converter<string_view_t>::convert(c, s, str.end());
+					if(c == 0) break;
+
+					if(c == '\n') {
+						draw_pos.x = pos.x;
+						draw_pos.y += line_height;
+						if(draw_pos.y > cmd_header.clip_rect.max.y)
+							break;
+						continue;
+					} if(c == '\r') continue;
+
+					const c_font::glyph_t* glyph = font->find_glyph((std::uint16_t)c);
+					if(!glyph) continue;
+
+					if(glyph->visible) {
+						rect_t corners = rect_t{ draw_pos } + glyph->corners * scale;
+						if(corners.min.x <= cmd_header.clip_rect.max.x && corners.max.x >= cmd_header.clip_rect.min.x) {
+							rect_t uvs = glyph->texture_coordinates;
+
+							if(outline && !parent_shared_data->text_outline_offsets.empty()) {
+								for(const vec2_t& offset : parent_shared_data->text_outline_offsets) {
+									prim_insert_idx({
+										(std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 1), (std::uint16_t)(vtx_buffer.size() + 2),
+										(std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 2), (std::uint16_t)(vtx_buffer.size() + 3)
+										});
+
+									rect_t pos = corners + offset;
+									prim_insert_vtx(std::prev(vtx_buffer.end(), vtx_offset),
+										{
+											{ pos.min,                  uvs.min,                    {0, 0, 0} },
+											{ { pos.max.x, pos.min.y }, { uvs.max.x, uvs.min.y },   {0, 0, 0} },
+											{ pos.max,                  uvs.max,                    {0, 0, 0} },
+											{ { pos.min.x, pos.max.y }, { uvs.min.x, uvs.max.y },   {0, 0, 0} }
+										});
+								}
+							}
+							prim_rect_uv(corners.min, corners.max, uvs.min, uvs.max, color); //@note: main text
+
+							//@note:	necessary for the correct drawing order of the outline and body text.
+							//			because the outline draw call runs parallel to the body text draw calls, glyphs of new letters can overlap past ones.
+							vtx_offset += 4;
+						}
+					}
+					draw_pos.x += glyph->advance_x * scale;
+				}
+			}
+
+			template <typename string_view_t>
+			void draw_text(const string_view_t& str, vec2_t pos, const color_t& color, e_text_flags flags = e_text_flags{ }, c_font* font = nullptr, float size = 0.f) {
+				std::basic_string_view str_view{ str };
+				font = font ? font : parent_shared_data->font;
+				size = size > 0.f ? size : font->size;
+
+				if(font->container_atlas->texture.id != cmd_header.texture_id)
+					throw std::runtime_error("font->container_atlas->texture.id != cmd_header.texture_id");
+
+				if(flags & e_text_flags::aligin_mask) {
+					vec2_t str_size = font->calc_text_size(str, size);
+					if(str_size <= 0.f) return;
+
+					if(flags & e_text_flags::aligin_right) pos.x -= str_size.x;
+					if(flags & e_text_flags::aligin_bottom) pos.y -= str_size.y;
+					if(flags & e_text_flags::aligin_center_x) pos.x -= str_size.x / 2.f;
+					if(flags & e_text_flags::aligin_center_y) pos.y -= str_size.y / 2.f;
+				}
+
+				pos = { std::floorf(pos.x), std::floorf(pos.y) };
+				if(pos.y > cmd_header.clip_rect.max.y) return;
+
+				const float scale = size / font->size;
+				const float line_height = font->size * scale;
+
+				//@note: perhaps this is useless and does not give any increase in performance, but I'm too lazy to do tests, so I'll leave it just in case
+				if(pos.y + line_height < cmd_header.clip_rect.min.y) {
+					while(pos.y + line_height < cmd_header.clip_rect.min.y) {
+						pos.y += line_height;
+
+						const auto new_line = std::find(str_view.begin(), str_view.end(), '\n');
+						if(new_line != str_view.end()) str_view.remove_prefix(std::distance(str_view.begin(), new_line) + 1);
+						else return;
+					}
+				}
+
+				int vtx_offset{ }; //@note: offset for outline
+				draw_text(str_view, color, pos, pos, font, line_height, scale, vtx_offset, flags & e_text_flags::outline);
+			}
+
+			template <typename string_t>
+			void draw_text(multicolor_text_t<string_t> str, vec2_t pos, e_text_flags flags = e_text_flags{ }, c_font* font = nullptr, float size = 0.f) {
+				font = font ? font : parent_shared_data->font;
+				size = size > 0.f ? size : font->size;
+
+				if(font->container_atlas->texture.id != cmd_header.texture_id)
+					throw std::runtime_error("font->container_atlas->texture.id != cmd_header.texture_id");
+
+				if(flags & e_text_flags::aligin_mask) {
+					vec2_t str_size = font->calc_text_size(str, size);
+					if(str_size <= 0.f) return;
+
+					if(flags & e_text_flags::aligin_right) pos.x -= str_size.x;
+					if(flags & e_text_flags::aligin_bottom) pos.y -= str_size.y;
+					if(flags & e_text_flags::aligin_center_x) pos.x -= str_size.x / 2.f;
+					if(flags & e_text_flags::aligin_center_y) pos.y -= str_size.y / 2.f;
+				}
+
+				pos = { std::floorf(pos.x), std::floorf(pos.y) };
+				if(pos.y > cmd_header.clip_rect.max.y) return;
+
+				const float scale = size / font->size;
+				const float line_height = font->size * scale;
+
+				//@note: perhaps this is useless and does not give any increase in performance, but I'm too lazy to do tests, so I'll leave it just in case
+				if(pos.y + line_height < cmd_header.clip_rect.min.y) {
+					while(pos.y + line_height < cmd_header.clip_rect.min.y) {
+						pos.y += line_height;
+
+						const auto finded = std::ranges::find_if(str.data, [](auto& multicolor_data) {
+							if(auto new_line = std::ranges::find(multicolor_data.first, '\n'); new_line != multicolor_data.first.end()) {
+								multicolor_data.first.erase(multicolor_data.first.begin(), new_line + 1);
+								return true;
+							}
+							return false;
+							});
+
+						if(finded != str.data.cend()) str.data.erase(str.data.begin(), (*finded).first.empty() ? std::next(finded) : finded);
+						else return; //@note: if all the text is outside the clip_rect, we don't need to draw it
+					}
+				}
+
+				int vtx_offset{ }; //@note: offset for outline
+				vec2_t draw_pos = pos;
+				std::ranges::for_each(str.data, [&](const auto& data) { draw_text(data.first, data.second, pos, draw_pos, font, line_height, scale, vtx_offset, flags & e_text_flags::outline); });
+			}
 		};
 
 		inline c_draw_list::draw_data_t draw_data{ };
 		inline c_draw_list background_layer{ }, foreground_layer{ };
 
-		//custom_layers does not change automatically, needed in order to create your own c_draw_list without having to change the code in begin_frame and setup_draw_data
-		//fast_layers is cleared after each call to begin_frame and setup_draw_data. Will be drawn between background_layer and custom_layers
+		//@note:	custom_layers does not change automatically, needed in order to create your own c_draw_list without having to change the code in begin_frame and setup_draw_data
+		//			fast_layers is cleared after each call to begin_frame and setup_draw_data. Will be drawn between background_layer and custom_layers
 		inline std::vector<c_draw_list*> custom_layers{ }, fast_layers{ };
 	}
 }

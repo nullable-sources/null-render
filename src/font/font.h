@@ -15,13 +15,14 @@
 #define stb_impl_in4(x) ((i[x] << 24) + stb_impl_in3((x)+1))
 
 namespace null::render {
+    template <typename string_t>
     struct multicolor_text_t {
-        using data_t = std::vector<std::pair<std::string, color_t>>;
+        using data_t = std::vector<std::pair<string_t, color_t>>;
         data_t data{ };
 
-        //returns a string made up of all the strings in the text
-        std::string unite() {
-            return std::accumulate(data.begin(), data.end(), std::string{ }, [=](std::string result, data_t::value_type str) {
+        //@note: returns a string made up of all the strings in the text
+        string_t unite() {
+            return std::accumulate(data.begin(), data.end(), string_t{ }, [=](string_t result, data_t::value_type str) {
                 return result + str.first;
                 });
         }
@@ -165,6 +166,23 @@ namespace null::render {
             }
 
             return wanted;
+        }
+
+        namespace char_converters {
+            template <class string_t>
+            struct converter {
+                template<typename iterator_t>
+                static int convert(std::uint32_t& output_char, const iterator_t& iterator, const iterator_t& end) {
+                    return 1;
+                }
+            };
+
+            template <>
+            struct converter<std::string_view> {
+                static int convert(std::uint32_t& output_char, const std::string_view::const_iterator& iterator, const std::string_view::const_iterator& end) {
+                    return output_char < 0x80 ? 1 : get_char_from_utf8(&output_char, std::string_view{ iterator, end });
+                }
+            };
         }
     }
 
@@ -348,16 +366,54 @@ namespace null::render {
         bool is_loaded() { return container_atlas; }
         float get_char_advance(std::uint16_t c) const { return (c < lookup_table.advances_x.size()) ? lookup_table.advances_x[c] : fallback_advance_x; }
 
-        //if custom_size < 0 will be used font size
-        vec2_t calc_text_size(std::string_view str, float custom_size = -1.f);
-        vec2_t calc_text_size(const multicolor_text_t& str, float custom_size = -1.f);
-        void calc_text_size(std::string_view str, vec2_t& result, vec2_t& line_size);
+        template<typename string_view_t>
+        void calc_text_size(string_view_t str, vec2_t& result, vec2_t& line_size) {
+            for(auto s = str.begin(); s != str.end();) {
+                std::uint32_t c{ (std::uint32_t)*s };
+                s += impl::char_converters::converter<string_view_t>::convert(c, s, str.end());
+                if(c == 0) break;
+
+                if(c == '\n') {
+                    result.x = std::max(result.x, line_size.x);
+                    result.y += line_size.y;
+                    line_size.x = 0.f;
+                    continue;
+                } if(c == '\r') continue;
+
+                line_size.x += get_char_advance(c) * scale;
+            }
+        }
+
+        template<typename string_view_t>
+        vec2_t calc_text_size(string_view_t str, float custom_size = 0.f) {
+            std::basic_string_view str_view{ str };
+            vec2_t result{ }, line_size{ 0.f, custom_size = custom_size < 0.f ? size : custom_size };
+
+            calc_text_size(str_view, result, line_size);
+
+            result.x = std::max(result.x, line_size.x);
+            if(line_size.x > 0.f || result.y == 0.f) result.y += line_size.y;
+
+            return result;
+        }
+
+        template<typename string_t>
+        vec2_t calc_text_size(const multicolor_text_t<string_t>& str, float custom_size = 0.f) {
+            vec2_t result{ }, line_size{ 0.f, custom_size < 0.f ? size : custom_size };
+
+            std::ranges::for_each(str.data, [&](const auto& data) { calc_text_size(data.first, result, line_size); });
+
+            result.x = std::max(result.x, line_size.x);
+            if(line_size.x > 0.f || result.y == 0.f) result.y += line_size.y;
+
+            return result;
+        }
     };
 
     inline bool atlas_owned_by_initialize{ };
     inline c_font::c_atlas global_atlas{ };
 
-    inline c_font* current_font{ }; //set only from set_current_font
+    inline c_font* current_font{ }; //@note: set only from set_current_font
     inline std::vector<c_font*> fonts{ };
     inline float font_global_scale{ };
 

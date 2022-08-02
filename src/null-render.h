@@ -1,4 +1,4 @@
-//imgui version - 1.80 WIP (https://github.com/ocornut/imgui/tree/v1.80)
+//@credits: imgui version - 1.80 WIP (https://github.com/ocornut/imgui/tree/v1.80)
 #pragma once
 
 #include <draw-list/draw-list.h>

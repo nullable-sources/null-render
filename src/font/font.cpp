@@ -506,57 +506,6 @@ namespace null::render {
         return true;
     }
 
-    vec2_t c_font::calc_text_size(std::string_view str, float custom_size) {
-        custom_size = custom_size < 0.f ? size : custom_size;
-
-        vec2_t result{ }, line_size{ 0.f, custom_size };
-
-        calc_text_size(str, result, line_size);
-
-        result.x = std::max(result.x, line_size.x);
-        if(line_size.x > 0.f || result.y == 0.f) result.y += line_size.y;
-
-        return result;
-    }
-
-    vec2_t c_font::calc_text_size(const multicolor_text_t& str, float custom_size) {
-        custom_size = custom_size < 0.f ? size : custom_size;
-
-        vec2_t result{ }, line_size{ 0.f, custom_size };
-
-        std::ranges::for_each(str.data, [&](const auto& data) {
-            calc_text_size(data.first, result, line_size);
-            });
-
-        result.x = std::max(result.x, line_size.x);
-        if(line_size.x > 0.f || result.y == 0.f) result.y += line_size.y;
-
-        return result;
-    }
-
-    void c_font::calc_text_size(std::string_view str, vec2_t& result, vec2_t& line_size) {
-        for(auto s = str.begin(); s != str.end();) {
-            std::uint32_t c = *s;
-            if(c < 0x80) {
-                s += 1;
-            } else {
-                s += impl::get_char_from_utf8(&c, std::string_view{ s, str.end() });
-                if(c == 0) break;
-            }
-
-            if(c < 32) {
-                if(c == '\n') {
-                    result.x = std::max(result.x, line_size.x);
-                    result.y += line_size.y;
-                    line_size.x = 0.f;
-                    continue;
-                } if(c == '\r') continue;
-            }
-
-            line_size.x += (c < lookup_table.advances_x.size() ? lookup_table.advances_x[c] : fallback_advance_x) * scale;
-        }
-    }
-
     void set_current_font(c_font* font) {
         if(!font || !font->is_loaded()) throw std::runtime_error("!font || !font->is_loaded()");
         if(font->scale <= 0.f) throw std::runtime_error("font->scale <= 0.f");

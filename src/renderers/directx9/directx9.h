@@ -42,8 +42,7 @@ namespace null::render::directx9 {
 		};
 
 	public:
-		c_window() = default;
-		c_window(HINSTANCE _instance) : utils::win::c_window{ _instance } { }
+		using utils::win::c_window::c_window;
 
 		void render_create() override {
 			if(!(direct3d = Direct3DCreate9(D3D_SDK_VERSION)))

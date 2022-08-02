@@ -66,8 +66,7 @@ namespace null::render::directx11 {
 		};
 
 	public:
-		c_window() = default;
-		c_window(HINSTANCE _instance) : utils::win::c_window{ _instance } { }
+		using utils::win::c_window::c_window;
 
 		void render_create() override {
 			swap_chain_desc.OutputWindow = wnd_handle;
