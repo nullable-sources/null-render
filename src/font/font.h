@@ -387,7 +387,7 @@ namespace null::render {
         template<typename string_view_t>
         vec2_t calc_text_size(string_view_t str, float custom_size = 0.f) {
             std::basic_string_view str_view{ str };
-            vec2_t result{ }, line_size{ 0.f, custom_size = custom_size < 0.f ? size : custom_size };
+            vec2_t result{ }, line_size{ 0.f, custom_size <= 0.f ? size : custom_size };
 
             calc_text_size(str_view, result, line_size);
 
@@ -399,7 +399,7 @@ namespace null::render {
 
         template<typename string_t>
         vec2_t calc_text_size(const multicolor_text_t<string_t>& str, float custom_size = 0.f) {
-            vec2_t result{ }, line_size{ 0.f, custom_size < 0.f ? size : custom_size };
+            vec2_t result{ }, line_size{ 0.f, custom_size <= 0.f ? size : custom_size };
 
             std::ranges::for_each(str.data, [&](const auto& data) { calc_text_size(data.first, result, line_size); });
 
