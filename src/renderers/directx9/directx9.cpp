@@ -112,21 +112,10 @@ namespace null::render::directx9 {
 		device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
 
 		{
-			rect_t bounds{ rect_t{ vec2_t{ }, _draw_data->window_size } + rect_t{ 0.5f } };
-			float l = _draw_data->window_pos.x + 0.5f;
-			float r = _draw_data->window_pos.x + _draw_data->window_size.x + 0.5f;
-			float t = _draw_data->window_pos.y + 0.5f;
-			float b = _draw_data->window_pos.y + _draw_data->window_size.y + 0.5f;
+			float l{ 0.5f }, r{ _draw_data->window_size.x + 0.5f }, t{ 0.5f }, b{ _draw_data->window_size.y + 0.5f };
 
-			auto a = r - l; //_draw_data->window_size.x
-			auto ba = t - b; //-_draw_data->window_size.y
-			auto c = l + r; //_draw_data->window_size.x + 1
-			auto dasd = l - r; //-_draw_data->window_size.x
-			auto asd = t + b; //_draw_data->window_size.y + 1
-			auto daasd = b - t;//_draw_data->window_size.y
-
-			D3DMATRIX mat_identity = { { { 1.0f, 0.0f, 0.0f, 0.0f,  0.0f, 1.0f, 0.0f, 0.0f,  0.0f, 0.0f, 1.0f, 0.0f,  0.0f, 0.0f, 0.0f, 1.0f } } };
-			D3DMATRIX mat_projection = { { {
+			D3DMATRIX mat_identity{ { { 1.0f, 0.0f, 0.0f, 0.0f,  0.0f, 1.0f, 0.0f, 0.0f,  0.0f, 0.0f, 1.0f, 0.0f,  0.0f, 0.0f, 0.0f, 1.0f } } };
+			D3DMATRIX mat_projection{ { {
 				2.0f / (r - l),		0.0f,				0.0f,  0.0f,
 				0.0f,				2.0f / (t - b),		0.0f,  0.0f,
 				0.0f,				0.0f,				0.5f,  0.0f,
