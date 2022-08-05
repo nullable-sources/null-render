@@ -40,9 +40,9 @@ namespace null::render {
         }
 
         namespace stb {
-            inline std::uint8_t* barrier_out_e, * barrier_out_b;
-            inline const std::uint8_t* barrier_in_b;
-            inline std::uint8_t* dout;
+            inline std::uint8_t* barrier_out_e{ }, *barrier_out_b{ };
+            inline const std::uint8_t* barrier_in_b{ };
+            inline std::uint8_t* dout{ };
 
             static std::uint32_t decompress_length(const std::uint8_t* input) { return (input[8] << 24) + (input[9] << 16) + (input[10] << 8) + input[11]; }
             static void match(const std::uint8_t* data, std::uint32_t length) {
@@ -76,10 +76,10 @@ namespace null::render {
 
             static std::uint32_t adler32(std::uint32_t adler32, std::uint8_t* buffer, std::uint32_t buflen) {
                 constexpr std::uint64_t ADLER_MOD = 65521;
-                std::uint64_t s1 = adler32 & 0xffff, s2 = adler32 >> 16;
-                std::uint64_t blocklen = buflen % 5552;
+                std::uint64_t s1{ adler32 & 0xffff }, s2{ adler32 >> 16 };
+                std::uint64_t blocklen{ buflen % 5552 };
 
-                std::uint64_t i;
+                std::uint64_t i{ };
                 while(buflen) {
                     for(i = 0; i + 7 < blocklen; i += 8) {
                         s1 += buffer[0], s2 += s1;
@@ -107,7 +107,7 @@ namespace null::render {
             static std::uint32_t decompress(std::uint8_t* output, const std::uint8_t* i) {
                 if(stb_impl_in4(0) != 0x57bC0000) return 0;
                 if(stb_impl_in4(4) != 0) return 0;
-                const std::uint32_t olen = decompress_length(i);
+                const std::uint32_t olen{ decompress_length(i) };
                 barrier_in_b = i;
                 barrier_out_e = output + olen;
                 barrier_out_b = output;
@@ -115,7 +115,7 @@ namespace null::render {
 
                 dout = output;
                 for(;;) {
-                    const std::uint8_t* old_i = i;
+                    const std::uint8_t* old_i{ i };
                     i = decompress_token(i);
                     if(i == old_i) {
                         if(*i == 0x05 && i[1] == 0xfa) {
@@ -133,16 +133,16 @@ namespace null::render {
         }
 
         static int get_char_from_utf8(std::uint32_t* out_char, std::string_view str) {
-            static const char lengths[32] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 3, 3, 4, 0 };
-            static const int masks[] = { 0x00, 0x7f, 0x1f, 0x0f, 0x07 };
-            static const std::uint32_t mins[] = { 0x400000, 0, 0x80, 0x800, 0x10000 };
-            static const int shiftc[] = { 0, 18, 12, 6, 0 };
-            static const int shifte[] = { 0, 6, 4, 2, 0 };
-            int len = lengths[*(const unsigned char*)str.data() >> 3];
-            int wanted = len + !len;
+            static constexpr std::array<char, 32> lengths{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 3, 3, 4, 0 };
+            static constexpr std::array<int, 5> masks{ 0x00, 0x7f, 0x1f, 0x0f, 0x07 };
+            static constexpr std::array<std::uint32_t, 5> mins{ 0x400000, 0, 0x80, 0x800, 0x10000 };
+            static constexpr std::array<int, 5> shiftc{ 0, 18, 12, 6, 0 };
+            static constexpr std::array<int, 5> shifte{ 0, 6, 4, 2, 0 };
+            int len{ lengths[*(const unsigned char*)str.data() >> 3] };
+            int wanted{ len + !len };
 
-            std::array<std::uint8_t, 4> s{ 0, 0, 0, 0 };
-            for(int i = 0; i < str.size() && i < s.size(); i++)
+            std::array<std::uint8_t, 4> s{ };
+            for(int i{ 0 }; i < str.size() && i < s.size(); i++)
                 s[i] = str[i];
 
             *out_char = (std::uint32_t)(s[0] & masks[len]) << 18;
@@ -171,14 +171,14 @@ namespace null::render {
         namespace char_converters {
             template <class string_t>
             struct converter {
-                template<typename iterator_t>
+                template <typename iterator_t>
                 static int convert(std::uint32_t& output_char, const iterator_t& iterator, const iterator_t& end) {
                     return 1;
                 }
             };
 
             template <>
-            struct converter<std::string_view> {
+            struct converter<char> {
                 static int convert(std::uint32_t& output_char, const std::string_view::const_iterator& iterator, const std::string_view::const_iterator& end) {
                     return output_char < 0x80 ? 1 : get_char_from_utf8(&output_char, std::string_view{ iterator, end });
                 }
@@ -350,7 +350,7 @@ namespace null::render {
         float size{ }, scale{ 1.f };
         float ascent{ }, descent{ };
 
-        std::array<std::uint8_t, (0xFFFF + 1) / 4096 / 8> used_4k_pages_map{ };
+        std::array<std::uint8_t, 2> used_4k_pages_map{ };
 
     public:
         void build_lookup_table();
@@ -366,11 +366,11 @@ namespace null::render {
         bool is_loaded() { return container_atlas; }
         float get_char_advance(std::uint16_t c) const { return (c < lookup_table.advances_x.size()) ? lookup_table.advances_x[c] : fallback_advance_x; }
 
-        template<typename string_view_t>
-        void calc_text_size(string_view_t str, vec2_t& result, vec2_t& line_size) {
+        template <typename char_t>
+        void calc_text_size(std::basic_string_view<char_t> str, vec2_t& result, vec2_t& line_size) {
             for(auto s = str.begin(); s != str.end();) {
                 std::uint32_t c{ (std::uint32_t)*s };
-                s += impl::char_converters::converter<string_view_t>::convert(c, s, str.end());
+                s += impl::char_converters::converter<char_t>::convert(c, s, str.end());
                 if(c == 0) break;
 
                 if(c == '\n') {
@@ -384,12 +384,11 @@ namespace null::render {
             }
         }
 
-        template<typename string_view_t>
+        template <typename string_view_t>
         vec2_t calc_text_size(string_view_t str, float custom_size = 0.f) {
-            std::basic_string_view str_view{ str };
             vec2_t result{ }, line_size{ 0.f, custom_size <= 0.f ? size : custom_size };
 
-            calc_text_size(str_view, result, line_size);
+            calc_text_size(std::basic_string_view{ str }, result, line_size);
 
             result.x = std::max(result.x, line_size.x);
             if(line_size.x > 0.f || result.y == 0.f) result.y += line_size.y;
@@ -397,11 +396,11 @@ namespace null::render {
             return result;
         }
 
-        template<typename string_t>
+        template <typename string_t>
         vec2_t calc_text_size(const multicolor_text_t<string_t>& str, float custom_size = 0.f) {
             vec2_t result{ }, line_size{ 0.f, custom_size <= 0.f ? size : custom_size };
 
-            std::ranges::for_each(str.data, [&](const auto& data) { calc_text_size(std::basic_string_view{ data.first }, result, line_size); });
+            std::ranges::for_each(str.data, [&](const auto& data) { calc_text_size<string_t::value_type>(data.first, result, line_size); });
 
             result.x = std::max(result.x, line_size.x);
             if(line_size.x > 0.f || result.y == 0.f) result.y += line_size.y;

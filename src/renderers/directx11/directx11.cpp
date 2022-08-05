@@ -150,15 +150,11 @@ namespace null::render::directx11 {
 
 
         {
-            float l = _draw_data->window_pos.x;
-            float r = _draw_data->window_pos.x + _draw_data->window_size.x;
-            float t = _draw_data->window_pos.y;
-            float b = _draw_data->window_pos.y + _draw_data->window_size.y;
             float matrix[4][4] = {
-                { 2.0f / (r - l),       0.0f,               0.0f, 0.0f },
-                { 0.0f,                 2.0f / (t - b),     0.0f, 0.0f },
-                { 0.0f,                 0.0f,               0.5f, 0.0f },
-                { (r + l) / (l - r),    (t + b) / (b - t),  0.5f, 1.0f },
+                { 2.0f / _draw_data->window_size.x, 0.0f,                                   0.0f, 0.0f },
+                { 0.0f,                             -(2.0f / _draw_data->window_size.y),    0.0f, 0.0f },
+                { 0.0f,                             0.0f,                                   0.5f, 0.0f },
+                { -1,                               1,                                      0.5f, 1.0f },
             };
 
             shaders::vertex::constant vertex_const;

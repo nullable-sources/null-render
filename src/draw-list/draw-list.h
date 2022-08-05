@@ -139,7 +139,7 @@ namespace null {
 			std::vector<cmd_t> cmd_buffer{ };
 			cmd_header_t cmd_header{ };
 
-			using idx_buffer_t = std::vector<std::uint16_t>; idx_buffer_t idx_buffer{ };
+			using idx_buffer_t =std::vector<std::uint16_t>; idx_buffer_t idx_buffer{ };
 			using vtx_buffer_t = std::vector<vertex_t>; vtx_buffer_t vtx_buffer{ };
 
 		public:
@@ -197,43 +197,56 @@ namespace null {
 			void draw_circle(const vec2_t& center, const color_t& clr, float radius, int num_segments = 0, float thickness = 1.f);
 			void draw_circle_filled(const vec2_t& center, const color_t& clr, float radius, int num_segments = 0);
 
-			template <typename string_view_t>
-			void draw_text(string_view_t str, const color_t& color, const vec2_t& pos, vec2_t& draw_pos, c_font* font, const float& line_height, const float& scale, int& vtx_offset, bool outline) {
-				for(auto s = str.begin(); s != str.end();) {
-					std::uint32_t c{ (std::uint32_t)*s };
-					s += impl::char_converters::converter<string_view_t>::convert(c, s, str.end());
-					if(c == 0) break;
+			template <typename char_t>
+			vec2_t draw_text(std::basic_string_view<char_t> str, const color_t& color, vec2_t& pos, c_font* font, const float& size, int& vtx_offset, e_text_flags flags) {
+				if(flags & e_text_flags::aligin_mask) {
+					vec2_t str_size = font->calc_text_size(str, size);
+					if(str_size <= 0.f) return pos;
 
-					if(c == '\n') {
+					if(flags & e_text_flags::aligin_right) pos.x -= str_size.x;
+					if(flags & e_text_flags::aligin_bottom) pos.y -= str_size.y;
+					if(flags & e_text_flags::aligin_center_x) pos.x -= str_size.x / 2.f;
+					if(flags & e_text_flags::aligin_center_y) pos.y -= str_size.y / 2.f;
+					flags &= ~e_text_flags::aligin_mask;
+				}
+
+				vec2_t draw_pos{ std::floorf(pos.x), std::floorf(pos.y) };
+				for(auto iterator = str.begin(); iterator != str.end();) {
+					std::uint32_t symbol{ (std::uint32_t)*iterator };
+					iterator += impl::char_converters::converter<char_t>::convert(symbol, iterator, str.end());
+					if(!symbol) break;
+
+					if(symbol == '\r') continue;
+					if(symbol == '\n') {
 						draw_pos.x = pos.x;
-						draw_pos.y += line_height;
+						draw_pos.y += size;
 						if(draw_pos.y > cmd_header.clip_rect.max.y)
 							break;
 						continue;
-					} if(c == '\r') continue;
+					}
 
-					const c_font::glyph_t* glyph = font->find_glyph((std::uint16_t)c);
+					const c_font::glyph_t* glyph{ font->find_glyph((std::uint16_t)symbol) };
 					if(!glyph) continue;
 
 					if(glyph->visible) {
-						rect_t corners = rect_t{ draw_pos } + glyph->corners * scale;
+						rect_t corners{ rect_t{ draw_pos } + glyph->corners * (size / font->size) };
 						if(corners.min.x <= cmd_header.clip_rect.max.x && corners.max.x >= cmd_header.clip_rect.min.x) {
-							rect_t uvs = glyph->texture_coordinates;
+							rect_t uvs{ glyph->texture_coordinates };
 
-							if(outline && !parent_shared_data->text_outline_offsets.empty()) {
+							if(flags & e_text_flags::outline && !parent_shared_data->text_outline_offsets.empty()) {
 								for(const vec2_t& offset : parent_shared_data->text_outline_offsets) {
 									prim_insert_idx({
 										(std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 1), (std::uint16_t)(vtx_buffer.size() + 2),
 										(std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 2), (std::uint16_t)(vtx_buffer.size() + 3)
 										});
 
-									rect_t pos = corners + offset;
+									rect_t pos{ corners + offset };
 									prim_insert_vtx(std::prev(vtx_buffer.end(), vtx_offset),
 										{
-											{ pos.min,                  uvs.min,                    {0, 0, 0} },
-											{ { pos.max.x, pos.min.y }, { uvs.max.x, uvs.min.y },   {0, 0, 0} },
-											{ pos.max,                  uvs.max,                    {0, 0, 0} },
-											{ { pos.min.x, pos.max.y }, { uvs.min.x, uvs.max.y },   {0, 0, 0} }
+											{ pos.min,                  uvs.min,                    { 0, 0, 0 } },
+											{ { pos.max.x, pos.min.y }, { uvs.max.x, uvs.min.y },   { 0, 0, 0 } },
+											{ pos.max,                  uvs.max,                    { 0, 0, 0 } },
+											{ { pos.min.x, pos.max.y }, { uvs.min.x, uvs.max.y },   { 0, 0, 0 } }
 										});
 								}
 							}
@@ -244,48 +257,23 @@ namespace null {
 							vtx_offset += 4;
 						}
 					}
-					draw_pos.x += glyph->advance_x * scale;
+					draw_pos.x += glyph->advance_x * (size / font->size);
 				}
+				return draw_pos;
 			}
-
+			
 			template <typename string_view_t>
-			void draw_text(const string_view_t& str, vec2_t pos, const color_t& color, e_text_flags flags = e_text_flags{ }, c_font* font = nullptr, float size = 0.f) {
-				std::basic_string_view str_view{ str };
+			void draw_text(string_view_t str, vec2_t pos, const color_t& color, e_text_flags flags = e_text_flags{ }, c_font* font = nullptr, float size = 0.f) {
 				font = font ? font : parent_shared_data->font;
 				size = size > 0.f ? size : font->size;
 
 				if(font->container_atlas->texture.id != cmd_header.texture_id)
 					throw std::runtime_error("font->container_atlas->texture.id != cmd_header.texture_id");
 
-				if(flags & e_text_flags::aligin_mask) {
-					vec2_t str_size = font->calc_text_size(str, size);
-					if(str_size <= 0.f) return;
-
-					if(flags & e_text_flags::aligin_right) pos.x -= str_size.x;
-					if(flags & e_text_flags::aligin_bottom) pos.y -= str_size.y;
-					if(flags & e_text_flags::aligin_center_x) pos.x -= str_size.x / 2.f;
-					if(flags & e_text_flags::aligin_center_y) pos.y -= str_size.y / 2.f;
-				}
-
-				pos = { std::floorf(pos.x), std::floorf(pos.y) };
-				if(pos.y > cmd_header.clip_rect.max.y) return;
-
-				const float scale = size / font->size;
-				const float line_height = font->size * scale;
-
-				//@note: perhaps this is useless and does not give any increase in performance, but I'm too lazy to do tests, so I'll leave it just in case
-				if(pos.y + line_height < cmd_header.clip_rect.min.y) {
-					while(pos.y + line_height < cmd_header.clip_rect.min.y) {
-						pos.y += line_height;
-
-						const auto new_line = std::find(str_view.begin(), str_view.end(), '\n');
-						if(new_line != str_view.end()) str_view.remove_prefix(std::distance(str_view.begin(), new_line) + 1);
-						else return;
-					}
-				}
+				if(pos.x > cmd_header.clip_rect.max.x || pos.y > cmd_header.clip_rect.max.y) return;
 
 				int vtx_offset{ }; //@note: offset for outline
-				draw_text(str_view, color, pos, pos, font, line_height, scale, vtx_offset, flags & e_text_flags::outline);
+				draw_text(std::basic_string_view{ str }, color, pos, font, size, vtx_offset, flags);
 			}
 
 			template <typename string_t>
@@ -296,43 +284,12 @@ namespace null {
 				if(font->container_atlas->texture.id != cmd_header.texture_id)
 					throw std::runtime_error("font->container_atlas->texture.id != cmd_header.texture_id");
 
-				if(flags & e_text_flags::aligin_mask) {
-					vec2_t str_size = font->calc_text_size(str, size);
-					if(str_size <= 0.f) return;
-
-					if(flags & e_text_flags::aligin_right) pos.x -= str_size.x;
-					if(flags & e_text_flags::aligin_bottom) pos.y -= str_size.y;
-					if(flags & e_text_flags::aligin_center_x) pos.x -= str_size.x / 2.f;
-					if(flags & e_text_flags::aligin_center_y) pos.y -= str_size.y / 2.f;
-				}
-
-				pos = { std::floorf(pos.x), std::floorf(pos.y) };
-				if(pos.y > cmd_header.clip_rect.max.y) return;
-
-				const float scale = size / font->size;
-				const float line_height = font->size * scale;
-
-				//@note: perhaps this is useless and does not give any increase in performance, but I'm too lazy to do tests, so I'll leave it just in case
-				if(pos.y + line_height < cmd_header.clip_rect.min.y) {
-					while(pos.y + line_height < cmd_header.clip_rect.min.y) {
-						pos.y += line_height;
-
-						const auto finded = std::ranges::find_if(str.data, [](auto& multicolor_data) {
-							if(auto new_line = std::ranges::find(multicolor_data.first, '\n'); new_line != multicolor_data.first.end()) {
-								multicolor_data.first.erase(multicolor_data.first.begin(), new_line + 1);
-								return true;
-							}
-							return false;
-							});
-
-						if(finded != str.data.cend()) str.data.erase(str.data.begin(), (*finded).first.empty() ? std::next(finded) : finded);
-						else return; //@note: if all the text is outside the clip_rect, we don't need to draw it
-					}
-				}
+				if(pos.x > cmd_header.clip_rect.max.x || pos.y > cmd_header.clip_rect.max.y) return;
 
 				int vtx_offset{ }; //@note: offset for outline
-				vec2_t draw_pos = pos;
-				std::ranges::for_each(str.data, [&](const auto& data) { draw_text(std::basic_string_view{ data.first }, data.second, pos, draw_pos, font, line_height, scale, vtx_offset, flags & e_text_flags::outline); });
+				std::ranges::for_each(str.data, [&](const auto& data) {
+					pos = draw_text<string_t::value_type>(data.first, data.second, pos, font, size, vtx_offset, flags);
+					});
 			}
 		};
 

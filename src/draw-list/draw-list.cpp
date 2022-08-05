@@ -118,7 +118,7 @@ namespace null::render {
     }
 
     void c_draw_list::vtx_check(int vtx_count) {
-        if(sizeof(std::uint16_t) == 2 && (vtx_buffer.size() + vtx_count >= (1 << 16)) && (parent_shared_data->initialize_flags & e_draw_list_flags::allow_vtx_offset)) {
+        if((vtx_buffer.size() + vtx_count >= (1 << 16)) && (parent_shared_data->initialize_flags & e_draw_list_flags::allow_vtx_offset)) {
             cmd_header.vtx_offset = vtx_buffer.size();
             on_changed_vtx_offset();
         }

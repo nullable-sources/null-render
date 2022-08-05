@@ -7,9 +7,9 @@ null::render::c_draw_list custom_layer{ };
 void main_loop() {
 	static const null::e_text_flags text_flags{ null::e_text_flags::aligin_bottom | null::e_text_flags::aligin_center_x };
 	static const null::e_corner_flags corner_flags{ null::e_corner_flags::bot_left | null::e_corner_flags::top_right };
-	
+
 	static const color_t color{ 100, 100, 255 };
-	
+
 	static const null::render::multicolor_text_t<std::string> multicolor_text{ {
 		{ "multicolored \n\n", { } },
 		{ "text", color }
@@ -50,9 +50,9 @@ int main(HINSTANCE instance) {
 
 		window.create();
 		null::render::custom_layers.push_back(&custom_layer);
-		
+
 		window.main_loop(main_loop);
-		
+
 		null::render::global_atlas.clear_input_data();
 
 		window.destroy();

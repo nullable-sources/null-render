@@ -37,7 +37,7 @@ void main_loop() {
 
 		//@note:	you can use L"" to display cyrillic
 		//			or you can add /utf - 8 to C/C++->command line
-		null::render::background_layer.draw_text(L"абвгдеёжзийклмнопрстуфхцчшщъыьэюя", { 500 }, { });
+		null::render::background_layer.draw_text("абвгдеёжзийклмнопрстуфхцчшщъыьэюя", { 500 }, { });
 	}
 	null::render::end_frame();
 }
