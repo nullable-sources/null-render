@@ -13,24 +13,6 @@
     <Filter Include="src\compressed-fonts">
       <UniqueIdentifier>{3c42f8f7-39ef-441e-bce5-b1746945b582}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\renderers">
-      <UniqueIdentifier>{a7ae7260-bbb1-4596-a1a9-97d773e0c838}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\renderers\directx9">
-      <UniqueIdentifier>{2e0a5fba-cfec-46c8-8f09-5682795d2755}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\renderers\directx11">
-      <UniqueIdentifier>{9b12e4c5-fd46-4adb-8442-117252980d16}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\renderers\directx11\shaders">
-      <UniqueIdentifier>{813127e5-5dcb-4c3e-a712-4ccd579202c0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\renderers\directx11\shaders\pixel">
-      <UniqueIdentifier>{f9aef8e0-5419-433e-85b4-2640fb642dd9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\renderers\directx11\shaders\vertex">
-      <UniqueIdentifier>{7b341471-917a-4afc-a4dd-e1b516682321}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\font\font.cpp">
@@ -39,22 +21,10 @@
     <ClCompile Include="src\draw-list\draw-list.cpp">
       <Filter>src\draw-list</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderers\directx9\directx9.cpp">
-      <Filter>src\renderers\directx9</Filter>
-    </ClCompile>
-    <ClCompile Include="src\renderers\directx11\directx11.cpp">
-      <Filter>src\renderers\directx11</Filter>
-    </ClCompile>
-    <ClCompile Include="src\renderers\directx11\shaders\shaders.cpp">
-      <Filter>src\renderers\directx11\shaders</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\null-render.h">
       <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\renderers\directx9\directx9.h">
-      <Filter>src\renderers\directx9</Filter>
     </ClInclude>
     <ClInclude Include="src\font\font.h">
       <Filter>src\font</Filter>
@@ -65,19 +35,5 @@
     <ClInclude Include="src\compressed-fonts\proggy-clean.h">
       <Filter>src\compressed-fonts</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderers\directx11\directx11.h">
-      <Filter>src\renderers\directx11</Filter>
-    </ClInclude>
-    <ClInclude Include="src\renderers\directx11\shaders\shaders.h">
-      <Filter>src\renderers\directx11\shaders</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="src\renderers\directx11\shaders\vertex\hlsl\vertex.hlsl">
-      <Filter>src\renderers\directx11\shaders\vertex</Filter>
-    </FxCompile>
-    <FxCompile Include="src\renderers\directx11\shaders\pixel\hlsl\pixel.hlsl">
-      <Filter>src\renderers\directx11\shaders\pixel</Filter>
-    </FxCompile>
   </ItemGroup>
 </Project>

@@ -132,18 +132,19 @@ namespace null::render {
             }
         }
 
-        static int get_char_from_utf8(std::uint32_t* out_char, std::string_view str) {
+        static int get_char_from_utf8(std::uint32_t* out_char, const std::string_view::const_iterator& iterator, const std::string_view::const_iterator& end) {
             static constexpr std::array<char, 32> lengths{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 3, 3, 4, 0 };
             static constexpr std::array<int, 5> masks{ 0x00, 0x7f, 0x1f, 0x0f, 0x07 };
             static constexpr std::array<std::uint32_t, 5> mins{ 0x400000, 0, 0x80, 0x800, 0x10000 };
             static constexpr std::array<int, 5> shiftc{ 0, 18, 12, 6, 0 };
             static constexpr std::array<int, 5> shifte{ 0, 6, 4, 2, 0 };
-            int len{ lengths[*(const unsigned char*)str.data() >> 3] };
+            int len{ lengths[*(const unsigned char*)iterator._Unwrapped() >> 3] };
             int wanted{ len + !len };
 
             std::array<std::uint8_t, 4> s{ };
-            for(int i{ 0 }; i < str.size() && i < s.size(); i++)
-                s[i] = str[i];
+            for(int i{ 0 }; std::next(iterator, i) != end && i < s.size(); i++) {
+                s[i] = *std::next(iterator, i);
+            }
 
             *out_char = (std::uint32_t)(s[0] & masks[len]) << 18;
             *out_char |= (std::uint32_t)(s[1] & 0x3f) << 12;
@@ -180,7 +181,7 @@ namespace null::render {
             template <>
             struct converter<char> {
                 static int convert(std::uint32_t& output_char, const std::string_view::const_iterator& iterator, const std::string_view::const_iterator& end) {
-                    return output_char < 0x80 ? 1 : get_char_from_utf8(&output_char, std::string_view{ iterator, end });
+                    return output_char < 0x80 ? 1 : get_char_from_utf8(&output_char, iterator, end);
                 }
             };
         }
@@ -368,19 +369,20 @@ namespace null::render {
 
         template <typename char_t>
         void calc_text_size(std::basic_string_view<char_t> str, vec2_t& result, vec2_t& line_size) {
-            for(auto s = str.begin(); s != str.end();) {
-                std::uint32_t c{ (std::uint32_t)*s };
-                s += impl::char_converters::converter<char_t>::convert(c, s, str.end());
-                if(c == 0) break;
+            for(auto iterator = str.begin(); iterator != str.end();) {
+                std::uint32_t symbol{ (std::uint32_t)*iterator };
+                iterator += impl::char_converters::converter<char_t>::convert(symbol, iterator, str.end());
+                if(!symbol) break;
 
-                if(c == '\n') {
+                if(symbol == '\r') continue;
+                if(symbol == '\n') {
                     result.x = std::max(result.x, line_size.x);
                     result.y += line_size.y;
                     line_size.x = 0.f;
                     continue;
-                } if(c == '\r') continue;
+                }
 
-                line_size.x += get_char_advance(c) * scale;
+                line_size.x += get_char_advance(symbol) * scale;
             }
         }
 

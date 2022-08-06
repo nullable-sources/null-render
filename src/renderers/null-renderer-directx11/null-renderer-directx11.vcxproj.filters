@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{d11addc5-089b-4237-a3dd-c21f8f81dcf1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders">
+      <UniqueIdentifier>{2c8b535c-f26b-449a-a026-0d9dec481687}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\pixel">
+      <UniqueIdentifier>{efaeb4ef-6ef6-4f56-b182-1fabe35bfe1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\vertex">
+      <UniqueIdentifier>{2bd2b719-a66d-4a78-b8fe-bc86b6c8d065}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\null-renderer-directx11.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shaders\shaders.cpp">
+      <Filter>src\shaders</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\null-renderer-directx11.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\shaders.h">
+      <Filter>src\shaders</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="src\shaders\vertex\hlsl\vertex.hlsl">
+      <Filter>src\shaders\vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="src\shaders\pixel\hlsl\pixel.hlsl">
+      <Filter>src\shaders\pixel</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>

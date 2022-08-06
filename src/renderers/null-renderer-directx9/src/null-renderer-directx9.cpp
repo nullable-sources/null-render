@@ -1,4 +1,4 @@
-#include <renderers/directx9/directx9.h>
+#include <null-renderer-directx9.h>
 
 namespace null::render::directx9 {
 	void render_draw_data(c_draw_list::draw_data_t* _draw_data) {
@@ -35,13 +35,13 @@ namespace null::render::directx9 {
 		if(idx_buffer->Lock(0, (UINT)(_draw_data->total_idx_count * sizeof(std::uint16_t)), (void**)&idx_dst, D3DLOCK_DISCARD) < 0) throw std::runtime_error("idx_buffer->Lock error");
 		for(c_draw_list* cmd_list : _draw_data->cmd_lists) {
 			for(c_draw_list::vertex_t vtx_src : cmd_list->vtx_buffer) {
-				vtx_dst->pos[0] = vtx_src.pos.x; vtx_dst->pos[1] = vtx_src.pos.y; vtx_dst->pos[2] = 0.0f;
+				vtx_dst->pos[0] = vtx_src.pos.x; vtx_dst->pos[1] = vtx_src.pos.y;;
 
 				std::uint32_t color = (std::uint32_t)vtx_src.color;
 				vtx_dst->color = (color & 0xFF00FF00) | ((color & 0xFF0000) >> 16) | ((color & 0xFF) << 16);
-				
+
 				vtx_dst->uv[0] = vtx_src.uv.x; vtx_dst->uv[1] = vtx_src.uv.y;
-				
+
 				vtx_dst++;
 			}
 			memcpy(idx_dst, cmd_list->idx_buffer.data(), cmd_list->idx_buffer.size() * sizeof(std::uint16_t));
@@ -116,10 +116,10 @@ namespace null::render::directx9 {
 
 			D3DMATRIX mat_identity{ { { 1.0f, 0.0f, 0.0f, 0.0f,  0.0f, 1.0f, 0.0f, 0.0f,  0.0f, 0.0f, 1.0f, 0.0f,  0.0f, 0.0f, 0.0f, 1.0f } } };
 			D3DMATRIX mat_projection{ { {
-				2.0f / (r - l),		0.0f,				0.0f,  0.0f,
-				0.0f,				2.0f / (t - b),		0.0f,  0.0f,
-				0.0f,				0.0f,				0.5f,  0.0f,
-				(l + r) / (l - r),  (t + b) / (b - t),  0.5f,  1.0f
+				2.f / (r - l),		0.f,				0.f,	0.f,
+				0.f,				2.f / (t - b),		0.f,	0.f,
+				0.f,				0.f,				0.5f,	0.f,
+				(l + r) / (l - r),  (t + b) / (b - t),	0.5f,	1.f
 			} } };
 			device->SetTransform(D3DTS_WORLD, &mat_identity);
 			device->SetTransform(D3DTS_VIEW, &mat_identity);
@@ -138,16 +138,16 @@ namespace null::render::directx9 {
 		font_texture = nullptr;
 		if(device->CreateTexture(global_atlas.texture.size.x, global_atlas.texture.size.y, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &font_texture, nullptr) < 0)
 			throw std::runtime_error("cannot create font texture");
-		
+
 		D3DLOCKED_RECT tex_locked_rect{ };
 		if(int result = font_texture->LockRect(0, &tex_locked_rect, nullptr, 0); result != D3D_OK)
 			throw std::runtime_error(std::format("lock rect error, code {}", result));
-		
+
 		for(int y : std::views::iota(0, global_atlas.texture.size.y)) {
 			int size = global_atlas.texture.size.x * 4;
 			std::memcpy((std::uint8_t*)tex_locked_rect.pBits + tex_locked_rect.Pitch * y, (std::uint8_t*)global_atlas.texture.pixels_rgba32.data() + size * y, size);
 		}
-		
+
 		font_texture->UnlockRect(0);
 
 		global_atlas.texture.id = (void*)font_texture;

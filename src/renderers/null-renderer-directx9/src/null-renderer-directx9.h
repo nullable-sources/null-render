@@ -27,7 +27,7 @@ namespace null::render::directx9 {
 	static void shutdown() { invalidate_device_objects(); if(device) { device->Release(); device = nullptr; } }
 
 	static void begin_frame() { if(!font_texture) create_device_objects(); }
-	
+
 	class c_window : public utils::win::c_window {
 	public:
 		color_t clear_color{ 18, 18, 18 };

@@ -1,5 +1,5 @@
-#include <renderers/directx11/directx11.h>
-#include <renderers/directx11/shaders/shaders.h>
+#include <null-renderer-directx11.h>
+#include <shaders/shaders.h>
 
 struct directx11_state_t {
     UINT scissor_rects_count, viewports_count;
@@ -17,9 +17,9 @@ struct directx11_state_t {
     ID3D11VertexShader* vertex_shader{ };
     ID3D11GeometryShader* geometry_shader{ };
     UINT pixel_shader_instances_count{ }, vertex_shader_instances_count{ }, geometry_shader_instances_count{ };
-    ID3D11ClassInstance* pixel_shader_instances[256]{ }, *vertex_shader_instances[256]{ }, * geometry_shader_instances[256]{ };
+    ID3D11ClassInstance* pixel_shader_instances[256]{ }, * vertex_shader_instances[256]{ }, * geometry_shader_instances[256]{ };
     D3D11_PRIMITIVE_TOPOLOGY primitive_topology{ };
-    ID3D11Buffer* index_buffer{ }, *vertex_buffer{ }, *vertex_shader_constant_buffer{ };
+    ID3D11Buffer* index_buffer{ }, * vertex_buffer{ }, * vertex_shader_constant_buffer{ };
     UINT index_buffer_offset{ }, vertex_buffer_stride{ }, vertex_buffer_offset{ };
     DXGI_FORMAT index_buffer_format{ };
     ID3D11InputLayout* input_layout{ };
@@ -131,15 +131,15 @@ namespace null::render::directx11 {
         D3D11_MAPPED_SUBRESOURCE vtx_resource{ }, idx_resource{ };
         if(context->Map(vertex_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &vtx_resource) != S_OK) throw std::runtime_error("cant map vertex buffer");
         if(context->Map(index_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &idx_resource) != S_OK) throw std::runtime_error("cant map index buffer");
-        
+
         vertex_t* vtx_dst{ (vertex_t*)vtx_resource.pData };
         std::uint16_t* idx_dst{ (std::uint16_t*)idx_resource.pData };
         for(c_draw_list* cmd_list : _draw_data->cmd_lists) {
             for(c_draw_list::vertex_t& vtx_src : cmd_list->vtx_buffer) {
-                vtx_dst->pos[0] = vtx_src.pos.x; vtx_dst->pos[1] = vtx_src.pos.y; vtx_dst->pos[2] = 0.0f;
+                vtx_dst->pos[0] = vtx_src.pos.x; vtx_dst->pos[1] = vtx_src.pos.y;;
                 vtx_dst->color = (std::uint32_t)vtx_src.color;
                 vtx_dst->uv[0] = vtx_src.uv.x; vtx_dst->uv[1] = vtx_src.uv.y;
-                
+
                 vtx_dst++;
             }
             memcpy(idx_dst, cmd_list->idx_buffer.data(), cmd_list->idx_buffer.size() * sizeof(std::uint16_t));
@@ -151,10 +151,10 @@ namespace null::render::directx11 {
 
         {
             float matrix[4][4] = {
-                { 2.0f / _draw_data->window_size.x, 0.0f,                                   0.0f, 0.0f },
-                { 0.0f,                             -(2.0f / _draw_data->window_size.y),    0.0f, 0.0f },
-                { 0.0f,                             0.0f,                                   0.5f, 0.0f },
-                { -1,                               1,                                      0.5f, 1.0f },
+                { 2.f / _draw_data->window_size.x,  0.f,                                0.f,    0.f },
+                { 0.f,                              -(2.f / _draw_data->window_size.y), 0.f,    0.f },
+                { 0.f,                              0.f,                                0.5f,   0.f },
+                { -1.f,                             1,                                  0.5f,   1.f },
             };
 
             shaders::vertex::constant vertex_const;
@@ -248,7 +248,7 @@ namespace null::render::directx11 {
                 .SysMemPitch{ texture_desc.Width * 4 },
                 .SysMemSlicePitch{ 0 }
             };
-            auto a = device->CreateTexture2D(&texture_desc, &subresource, &texture);
+            device->CreateTexture2D(&texture_desc, &subresource, &texture);
 
             D3D11_SHADER_RESOURCE_VIEW_DESC shader_resource_view_desc{
                 .Format{ DXGI_FORMAT_R8G8B8A8_UNORM },
@@ -258,7 +258,7 @@ namespace null::render::directx11 {
                     .MipLevels{ texture_desc.MipLevels }
                 }
             };
-            auto c = device->CreateShaderResourceView(texture, &shader_resource_view_desc, &font_texture_view);
+            device->CreateShaderResourceView(texture, &shader_resource_view_desc, &font_texture_view);
             texture->Release();
         }
 

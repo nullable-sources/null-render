@@ -1,4 +1,4 @@
-#include <renderers/directx11/shaders/shaders.h>
+#include <shaders/shaders.h>
 
 namespace null::render::shaders {
     void setup_render_state(c_draw_list::draw_data_t* _draw_data) {

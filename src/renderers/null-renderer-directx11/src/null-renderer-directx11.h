@@ -49,7 +49,7 @@ namespace null::render::directx11 {
 					.Numerator{ 60 },
 					.Denominator{ 1 }
 				},
-				
+
 				.Format{ DXGI_FORMAT_R8G8B8A8_UNORM }
 			},
 
@@ -73,7 +73,7 @@ namespace null::render::directx11 {
 
 			D3D_FEATURE_LEVEL feature_level;
 			if(D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, std::vector<D3D_FEATURE_LEVEL>{ D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_0 }.data(), 2,
-				D3D11_SDK_VERSION, &swap_chain_desc, &swap_chain, &device, &feature_level, &context) != S_OK)
+				D3D11_SDK_VERSION, & swap_chain_desc, & swap_chain, & device, & feature_level, & context) != S_OK)
 				throw std::runtime_error("cant create device and swap chain");
 
 			create_render_target();

@@ -198,7 +198,7 @@ namespace null {
 			void draw_circle_filled(const vec2_t& center, const color_t& clr, float radius, int num_segments = 0);
 
 			template <typename char_t>
-			vec2_t draw_text(std::basic_string_view<char_t> str, const color_t& color, vec2_t& pos, c_font* font, const float& size, int& vtx_offset, e_text_flags flags) {
+			vec2_t draw_text(std::basic_string_view<char_t> str, const color_t& color, vec2_t& pos, float& new_line_pos, c_font* font, const float& size, int& vtx_offset, e_text_flags flags) {
 				if(flags & e_text_flags::aligin_mask) {
 					vec2_t str_size = font->calc_text_size(str, size);
 					if(str_size <= 0.f) return pos;
@@ -208,6 +208,8 @@ namespace null {
 					if(flags & e_text_flags::aligin_center_x) pos.x -= str_size.x / 2.f;
 					if(flags & e_text_flags::aligin_center_y) pos.y -= str_size.y / 2.f;
 					flags &= ~e_text_flags::aligin_mask;
+
+					new_line_pos = pos.x;
 				}
 
 				vec2_t draw_pos{ std::floorf(pos.x), std::floorf(pos.y) };
@@ -218,7 +220,7 @@ namespace null {
 
 					if(symbol == '\r') continue;
 					if(symbol == '\n') {
-						draw_pos.x = pos.x;
+						draw_pos.x = new_line_pos;
 						draw_pos.y += size;
 						if(draw_pos.y > cmd_header.clip_rect.max.y)
 							break;
@@ -273,7 +275,7 @@ namespace null {
 				if(pos.x > cmd_header.clip_rect.max.x || pos.y > cmd_header.clip_rect.max.y) return;
 
 				int vtx_offset{ }; //@note: offset for outline
-				draw_text(std::basic_string_view{ str }, color, pos, font, size, vtx_offset, flags);
+				draw_text(std::basic_string_view{ str }, color, pos, pos.x, font, size, vtx_offset, flags);
 			}
 
 			template <typename string_t>
@@ -287,8 +289,9 @@ namespace null {
 				if(pos.x > cmd_header.clip_rect.max.x || pos.y > cmd_header.clip_rect.max.y) return;
 
 				int vtx_offset{ }; //@note: offset for outline
+				float new_line_pos{ pos.x };
 				std::ranges::for_each(str.data, [&](const auto& data) {
-					pos = draw_text<string_t::value_type>(data.first, data.second, pos, font, size, vtx_offset, flags);
+					pos = draw_text<string_t::value_type>(data.first, data.second, pos, new_line_pos, font, size, vtx_offset, flags);
 					});
 			}
 		};
