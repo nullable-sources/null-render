@@ -22,11 +22,11 @@
     <ClCompile Include="src\null-renderer-directx9.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="$(SolutionDir)third-party\null-sdk\null-sdk.vcxproj">
+      <Project>{f7a10a5c-0fae-424b-8f2b-6cc4e4d898d1}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\null-render.vcxproj">
       <Project>{4abcf635-9767-40f9-989e-f0cdf5fb68ae}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\third-party\null-sdk\null-sdk.vcxproj">
-      <Project>{f7a10a5c-0fae-424b-8f2b-6cc4e4d898d1}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
