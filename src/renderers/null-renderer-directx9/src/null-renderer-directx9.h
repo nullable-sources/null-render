@@ -29,7 +29,7 @@ namespace null::render::directx9 {
 	static void begin_frame() { if(!font_texture) create_device_objects(); }
 
 	class c_window : public utils::win::c_window {
-	public:
+	public: using utils::win::c_window::c_window;
 		color_t clear_color{ 18, 18, 18 };
 		IDirect3D9* direct3d{ };
 		D3DPRESENT_PARAMETERS present_parameters{
@@ -42,22 +42,26 @@ namespace null::render::directx9 {
 		};
 
 	public:
-		using utils::win::c_window::c_window;
-
-		void render_create() override {
+		void on_create() override {
 			if(!(direct3d = Direct3DCreate9(D3D_SDK_VERSION)))
 				throw std::runtime_error("cannot create direct3d");
 			if(direct3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, wnd_handle, D3DCREATE_HARDWARE_VERTEXPROCESSING, &present_parameters, &device) < 0)
 				throw std::runtime_error("cannot create device");
+
+			utils::win::c_window::on_create();
 		}
 
-		void render_destroy() override {
+		void on_destroy() override {
+			utils::win::c_window::on_destroy();
 			if(device) { device->Release(); device = nullptr; }
 			if(direct3d) { direct3d->Release(); direct3d = nullptr; }
 		}
 
-		void render_main_loop_begin() override { begin_frame(); }
-		void render_main_loop_end() override {
+		void on_main_loop() override {
+			begin_frame();
+
+			utils::win::c_window::on_main_loop();
+
 			setup_draw_data();
 
 			device->SetRenderState(D3DRS_ZENABLE, FALSE);
@@ -74,7 +78,8 @@ namespace null::render::directx9 {
 				reset_device();
 		}
 
-		int render_wnd_proc(HWND _wnd_handle, UINT msg, WPARAM w_param, LPARAM l_param) override {
+		std::vector<std::any> on_wnd_proc(HWND _wnd_handle, UINT msg, WPARAM w_param, LPARAM l_param) override {
+			std::vector<std::any> callback_results{ utils::win::c_window::on_wnd_proc(_wnd_handle, msg, w_param, l_param) };
 			switch(msg) {
 				case WM_SIZE: {
 					if(device && w_param != SIZE_MINIMIZED) {
@@ -82,10 +87,10 @@ namespace null::render::directx9 {
 						present_parameters.BackBufferHeight = HIWORD(l_param);
 						reset_device();
 					}
-				} return 0;
+				} return std::vector<std::any>{ 0 };
 			}
 
-			return -1;
+			return callback_results;
 		}
 
 		void reset_device() {

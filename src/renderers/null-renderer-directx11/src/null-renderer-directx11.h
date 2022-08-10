@@ -37,7 +37,7 @@ namespace null::render::directx11 {
 	static void begin_frame() { if(!font_sampler) create_device_objects(); }
 
 	class c_window : public utils::win::c_window {
-	public:
+	public: using utils::win::c_window::c_window;
 		color_t clear_color{ 0.07f, 0.07f, 0.07f };
 
 		DXGI_SWAP_CHAIN_DESC swap_chain_desc{
@@ -66,9 +66,7 @@ namespace null::render::directx11 {
 		};
 
 	public:
-		using utils::win::c_window::c_window;
-
-		void render_create() override {
+		void on_create() override {
 			swap_chain_desc.OutputWindow = wnd_handle;
 
 			D3D_FEATURE_LEVEL feature_level;
@@ -79,17 +77,23 @@ namespace null::render::directx11 {
 			create_render_target();
 
 			initialize();
+
+			utils::win::c_window::on_create();
 		}
 
-		void render_destroy() override {
+		void on_destroy() override {
+			utils::win::c_window::on_destroy();
 			destroy_render_target();
 			if(device) { device->Release(); device = nullptr; }
 			if(context) { context->Release(); context = nullptr; }
 			if(swap_chain) { swap_chain->Release(); swap_chain = nullptr; }
 		}
 
-		void render_main_loop_begin() override { begin_frame(); }
-		void render_main_loop_end() override {
+		void on_main_loop() override {
+			begin_frame();
+
+			utils::win::c_window::on_main_loop();
+
 			setup_draw_data();
 
 			context->OMSetRenderTargets(1, &main_render_target_view, nullptr);
@@ -100,7 +104,8 @@ namespace null::render::directx11 {
 			swap_chain->Present(1, 0);
 		}
 
-		int render_wnd_proc(HWND _wnd_handle, UINT msg, WPARAM w_param, LPARAM l_param) override {
+		std::vector<std::any> on_wnd_proc(HWND _wnd_handle, UINT msg, WPARAM w_param, LPARAM l_param) override {
+			std::vector<std::any> callback_results{ utils::win::c_window::on_wnd_proc(_wnd_handle, msg, w_param, l_param) };
 			switch(msg) {
 				case WM_SIZE: {
 					if(device && w_param != SIZE_MINIMIZED) {
@@ -110,10 +115,10 @@ namespace null::render::directx11 {
 
 						create_render_target();
 					}
-				} return 0;
+				} return std::vector<std::any>{ 0 };
 			}
 
-			return -1;
+			return callback_results;
 		}
 
 		void destroy_render_target() { if(main_render_target_view) { main_render_target_view->Release(); main_render_target_view = nullptr; } }
