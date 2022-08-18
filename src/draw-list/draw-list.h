@@ -232,7 +232,7 @@ namespace null {
 
 					if(glyph->visible) {
 						rect_t corners{ rect_t{ draw_pos } + glyph->corners * (size / font->size) };
-						if(corners.min.x <= cmd_header.clip_rect.max.x && corners.max.x >= cmd_header.clip_rect.min.x) {
+						if(cmd_header.clip_rect.intersects(corners)) {
 							rect_t uvs{ glyph->texture_coordinates };
 
 							if(flags & e_text_flags::outline && !parent_shared_data->text_outline_offsets.empty()) {
@@ -266,13 +266,11 @@ namespace null {
 			
 			template <typename string_view_t>
 			void draw_text(string_view_t str, vec2_t pos, const color_t& color, e_text_flags flags = e_text_flags{ }, c_font* font = nullptr, float size = 0.f) {
-				font = font ? font : parent_shared_data->font;
-				size = size > 0.f ? size : font->size;
+				if(!font) font = parent_shared_data->font;
+				if(size <= 0) size = font->size;
 
 				if(font->container_atlas->texture.id != cmd_header.texture_id)
 					throw std::runtime_error("font->container_atlas->texture.id != cmd_header.texture_id");
-
-				if(pos.x > cmd_header.clip_rect.max.x || pos.y > cmd_header.clip_rect.max.y) return;
 
 				int vtx_offset{ }; //@note: offset for outline
 				draw_text(std::basic_string_view{ str }, color, pos, pos.x, font, size, vtx_offset, flags);
@@ -280,13 +278,11 @@ namespace null {
 
 			template <typename string_t>
 			void draw_text(multicolor_text_t<string_t> str, vec2_t pos, e_text_flags flags = e_text_flags{ }, c_font* font = nullptr, float size = 0.f) {
-				font = font ? font : parent_shared_data->font;
-				size = size > 0.f ? size : font->size;
+				if(!font) font = parent_shared_data->font;
+				if(size <= 0) size = font->size;
 
 				if(font->container_atlas->texture.id != cmd_header.texture_id)
 					throw std::runtime_error("font->container_atlas->texture.id != cmd_header.texture_id");
-
-				if(pos.x > cmd_header.clip_rect.max.x || pos.y > cmd_header.clip_rect.max.y) return;
 
 				int vtx_offset{ }; //@note: offset for outline
 				float new_line_pos{ pos.x };
