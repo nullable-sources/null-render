@@ -2,7 +2,7 @@
 
 namespace null::render {
     void c_font::c_atlas::texture_t::get_data_as_rgba32() {
-        if(pixels_alpha8.empty()) throw std::runtime_error("!pixels_alpha8");
+        if(pixels_alpha8.empty()) throw std::runtime_error{ "!pixels_alpha8" };
 
         if(pixels_rgba32.empty()) {
             pixels_rgba32.resize(size.x * size.y * 4);
@@ -36,7 +36,7 @@ namespace null::render {
     }
 
     void c_font::c_atlas::build_finish() {
-        if(texture.pixels_alpha8.empty()) throw std::runtime_error("!texture.pixels_alpha8");
+        if(texture.pixels_alpha8.empty()) throw std::runtime_error{ "!texture.pixels_alpha8" };
         render_default_texture_data();
         render_lines_texture_data();
 
@@ -44,7 +44,7 @@ namespace null::render {
             if(!rect.font || rect.glyph_id == 0)
                 continue;
 
-            if(rect.font->container_atlas != this) throw std::runtime_error("rect.font->container_atlas != this");
+            if(rect.font->container_atlas != this) throw std::runtime_error{ "rect.font->container_atlas != this" };
             rect.font->add_glyph(nullptr, rect.glyph_id, rect_t{ rect.glyph_offset, rect.glyph_offset + rect.size.max }, rect.size * texture.uv_scale, rect.glyph_advance_x);
         }
 
@@ -63,8 +63,8 @@ namespace null::render {
     }
 
     bool c_font::c_atlas::build_with_stb_truetype() {
-        if(locked) throw std::runtime_error("cannot modify a locked atlas between begin_render() and end_render/render()!");
-        if(configs.empty()) throw std::runtime_error("configs.empty()");
+        if(locked) throw std::runtime_error{ "cannot modify a locked atlas between begin_render() and end_render/render()!" };
+        if(configs.empty()) throw std::runtime_error{ "configs.empty()" };
 
         build_initialize();
 
@@ -74,16 +74,16 @@ namespace null::render {
         std::vector<build_dst_t> dst_array(fonts.size());
 
         std::ranges::transform(src_array, configs, src_array.begin(), [&](build_src_t src, config_t& config) {
-            if(!config.font) throw std::runtime_error("!cfg.font");
-            if(config.font->is_loaded() && config.font->container_atlas != this) throw std::runtime_error("cfg.font->is_loaded() && cfg.font->container_atlas != this");
+            if(!config.font) throw std::runtime_error{ "!cfg.font" };
+            if(config.font->is_loaded() && config.font->container_atlas != this) throw std::runtime_error{ "cfg.font->is_loaded() && cfg.font->container_atlas != this" };
 
             if(auto iterator = std::ranges::find_if(fonts, [=](const c_font& font) { return config.font == &font; }); iterator != fonts.end()) src.dst_index = std::distance(fonts.begin(), iterator);
-            else throw std::runtime_error("can't find font config");
+            else throw std::runtime_error{ "can't find font config" };
 
             const int font_offset = stbtt_GetFontOffsetForIndex((std::uint8_t*)config.data.data(), config.index);
-            if(font_offset < 0) throw std::runtime_error("font_data is incorrect, or font_no cannot be found.");
+            if(font_offset < 0) throw std::runtime_error{ "font_data is incorrect, or font_no cannot be found" };
             if(!stbtt_InitFont(&src.font_info, (std::uint8_t*)config.data.data(), font_offset))
-                throw std::runtime_error("!stbtt_InitFont");
+                throw std::runtime_error{ "!stbtt_InitFont" };
 
             build_dst_t& dst = dst_array[src.dst_index];
             src.src_ranges = config.glyph_config.ranges ? config.glyph_config.ranges : glyph_t::ranges_default();
@@ -127,7 +127,7 @@ namespace null::render {
             }
 
             src.glyphs_set.clear();
-            if(src.glyphs_list.size() != src.glyphs_count) throw std::runtime_error("src.glyphs_list.size() != src.glyphs_count");
+            if(src.glyphs_list.size() != src.glyphs_count) throw std::runtime_error{ "src.glyphs_list.size() != src.glyphs_count" };
         }
 
         std::vector<stbrp_rect> buf_rects(total_glyphs_count);
@@ -151,7 +151,7 @@ namespace null::render {
             for(int i : std::views::iota((size_t)0, src.glyphs_list.size())) {
                 int x0{ }, y0{ }, x1{ }, y1{ };
                 const int glyph_index_in_font{ stbtt_FindGlyphIndex(&src.font_info, src.glyphs_list[i]) };
-                if(!glyph_index_in_font) throw std::runtime_error("!glyph_index_in_font");
+                if(!glyph_index_in_font) throw std::runtime_error{ "!glyph_index_in_font" };
                 stbtt_GetGlyphBitmapBoxSubpixel(&src.font_info, glyph_index_in_font, scale * config.oversample.x, scale * config.oversample.y, 0, 0, &x0, &y0, &x1, &y1);
                 src.rects[i].w = (stbrp_coord)(x1 - x0 + texture.glyph_padding + config.oversample.x - 1);
                 src.rects[i].h = (stbrp_coord)(y1 - y0 + texture.glyph_padding + config.oversample.y - 1);
@@ -242,13 +242,13 @@ namespace null::render {
     
     void c_font::c_atlas::render_lines_texture_data() {
         custom_rect_t* rect = &custom_rects[pack_id_lines];
-        if(!rect->is_packed()) throw std::runtime_error("!rect->is_packed()");
+        if(!rect->is_packed()) throw std::runtime_error{ "!rect->is_packed()" };
 
         for(std::uint32_t n : std::views::iota(0, 64)) {
             std::uint32_t pad_left{ ((int)rect->size.max.x - n) / 2 }, pad_right{ (int)rect->size.max.x - (pad_left + n) };
 
-            if(pad_left + n + pad_right != rect->size.max.x) throw std::runtime_error("pad_left + line_width + pad_right != rect->size.max.x");
-            if(n >= rect->size.max.y) throw std::runtime_error("y >= rect->size.max.y");
+            if(pad_left + n + pad_right != rect->size.max.x) throw std::runtime_error{ "pad_left + line_width + pad_right != rect->size.max.x" };
+            if(n >= rect->size.max.y) throw std::runtime_error{ "y >= rect->size.max.y" };
             
             //@todo: get rid of memeset
             std::uint8_t* write_ptr{ &texture.pixels_alpha8[int(rect->size.min.x + ((rect->size.min.y + n) * texture.size.x))] };
@@ -264,10 +264,10 @@ namespace null::render {
 
     void c_font::c_atlas::render_default_texture_data() {
         custom_rect_t* rect = &custom_rects[pack_id_cursors];
-        if(!rect->is_packed()) throw std::runtime_error("!rect->is_packed()");
+        if(!rect->is_packed()) throw std::runtime_error{ "!rect->is_packed()" };
 
-        if(rect->size.max.x != 2) throw std::runtime_error("rect->size.max.x != 2");
-        if(rect->size.max.y != 2) throw std::runtime_error("rect->size.max.y != 2");
+        if(rect->size.max.x != 2) throw std::runtime_error{ "rect->size.max.x != 2" };
+        if(rect->size.max.y != 2) throw std::runtime_error{ "rect->size.max.y != 2" };
 
         const int offset{ (int)(rect->size.min.x + rect->size.min.y * texture.size.x) };
         texture.pixels_alpha8[offset] = texture.pixels_alpha8[offset + 1] = texture.pixels_alpha8[offset + texture.size.x] = texture.pixels_alpha8[offset + texture.size.x + 1] = 0xFF;
@@ -277,10 +277,10 @@ namespace null::render {
 
     void c_font::c_atlas::pack_custom_rects(void* stbrp_context_opaque) {
         stbrp_context* pack_context{ (stbrp_context*)stbrp_context_opaque };
-        if(!pack_context) throw std::runtime_error("pack_context == nullptr");
+        if(!pack_context) throw std::runtime_error{ "pack_context == nullptr" };
 
         std::vector<custom_rect_t>& user_rects{ custom_rects };
-        if(user_rects.empty()) throw std::runtime_error("user_rects empty");
+        if(user_rects.empty()) throw std::runtime_error{ "user_rects empty" };
 
         std::vector<stbrp_rect> pack_rects(user_rects.size());
         for(int i : std::views::iota((size_t)0, user_rects.size())) {
@@ -294,8 +294,8 @@ namespace null::render {
                 user_rects[i].size.min.x = pack_rects[i].x;
                 user_rects[i].size.min.y = pack_rects[i].y;
                 
-                if(pack_rects[i].w != user_rects[i].size.max.x) throw std::runtime_error("pack_rects[i].w != user_rects[i].size.max.x");
-                if(pack_rects[i].h != user_rects[i].size.max.y) throw std::runtime_error("pack_rects[i].h != user_rects[i].size.max.y");
+                if(pack_rects[i].w != user_rects[i].size.max.x) throw std::runtime_error{ "pack_rects[i].w != user_rects[i].size.max.x" };
+                if(pack_rects[i].h != user_rects[i].size.max.y) throw std::runtime_error{ "pack_rects[i].h != user_rects[i].size.max.y" };
 
                 texture.size.y = std::max((int)texture.size.y, pack_rects[i].y + pack_rects[i].h);
             }
@@ -318,13 +318,13 @@ namespace null::render {
     }
 
     c_font* c_font::c_atlas::add_font(config_t* config) {
-        if(locked) throw std::runtime_error("cannot modify a locked atlas between begin_render() and end_render/render()!");
-        if(config->font) throw std::runtime_error("config->font == nullptr");
-        if(config->data.empty()) throw std::runtime_error("cofig->data.empty()");
-        if(config->size_pixels <= 0.f) throw std::runtime_error("config->size_pixels <= 0.f");
+        if(locked) throw std::runtime_error{ "cannot modify a locked atlas between begin_render() and end_render/render()!" };
+        if(config->font) throw std::runtime_error{ "config->font == nullptr" };
+        if(config->data.empty()) throw std::runtime_error{ "cofig->data.empty()" };
+        if(config->size_pixels <= 0.f) throw std::runtime_error{ "config->size_pixels <= 0.f" };
 
         if(!config->merge_mode) fonts.push_back(c_font{ });
-        else if(fonts.empty()) throw std::runtime_error("cannot use merge_mode for the first font");
+        else if(fonts.empty()) throw std::runtime_error{ "cannot use merge_mode for the first font" };
 
         configs.push_back(*config);
         config_t& cfg{ configs.back() };
@@ -355,10 +355,10 @@ namespace null::render {
     }
 
     c_font* c_font::c_atlas::add_font_from_file_ttf(const char* filename, float size_pixels, config_t* config, const std::uint16_t* glyph_ranges) {
-        if(locked) throw std::runtime_error("cannot modify a locked atlas between begin_render() and end_render/render()!");
+        if(locked) throw std::runtime_error{ "cannot modify a locked atlas between begin_render() and end_render/render()!" };
         
         std::ifstream file{ filename, std::ios::in | std::ios::binary | std::ios::ate };
-        if(!file.is_open()) throw std::runtime_error("cannot open font file");
+        if(!file.is_open()) throw std::runtime_error{ "cannot open font file" };
         
         std::vector<char> font_file((std::size_t)file.tellg());
         file.seekg(0, std::ios::beg);
@@ -369,10 +369,10 @@ namespace null::render {
     }
 
     c_font* c_font::c_atlas::add_font_from_memory_ttf(const std::vector<char>& font_file, float size_pixels, config_t* config, const std::uint16_t* glyph_ranges) {
-        if(locked) throw std::runtime_error("cannot modify a locked atlas between begin_render() and end_render/render()!");
+        if(locked) throw std::runtime_error{ "cannot modify a locked atlas between begin_render() and end_render/render()!" };
 
         config_t cfg{ config ? *config : config_t{ } };
-        if(!cfg.data.empty()) throw std::runtime_error("!cfg.data.empty()");
+        if(!cfg.data.empty()) throw std::runtime_error{ "!cfg.data.empty()" };
         
         cfg.data = font_file;
         cfg.size_pixels = size_pixels;
@@ -386,7 +386,7 @@ namespace null::render {
         impl::stb::decompress((std::uint8_t*)buf_decompressed_data.data(), (const std::uint8_t*)compressed_ttf.data());
 
         config_t cfg{ config ? *config : config_t{ } };
-        if(!cfg.data.empty()) throw std::runtime_error("!cfg.data.empty()");
+        if(!cfg.data.empty()) throw std::runtime_error{ "!cfg.data.empty()" };
         cfg.owned_by_atlas = true;
 
         return add_font_from_memory_ttf(buf_decompressed_data, size_pixels, &cfg, glyph_ranges);
@@ -400,7 +400,7 @@ namespace null::render {
 
 
     void c_font::c_atlas::clear_input_data() {
-        if(locked) throw std::runtime_error("cannot modify a locked atlas between begin_render() and end_render/render()!");
+        if(locked) throw std::runtime_error{ "cannot modify a locked atlas between begin_render() and end_render/render()!" };
 
         for(config_t& config : configs) {
             if(config.owned_by_atlas) {
@@ -429,8 +429,8 @@ namespace null::render {
 
     void c_font::build_lookup_table() {
         int max_codepoint{ (int)(*std::ranges::max_element(glyphs, [](const glyph_t& a, const glyph_t& b) { return a.codepoint < b.codepoint; })).codepoint };
-        
-        if(glyphs.size() >= 0xFFFF) throw std::runtime_error("glyphs.size() >= 0xFFFF");
+
+        if(glyphs.size() >= std::numeric_limits<std::uint16_t>::max()) throw std::runtime_error{ "glyphs.size() >= 0xFFFF" };
         lookup_table = lookup_table_t{ };
         lookup_table.resize(max_codepoint + 1);
         used_4k_pages_map.fill(0);
@@ -488,7 +488,7 @@ namespace null::render {
     }
 
     void c_font::add_remap_char(std::uint16_t dst, std::uint16_t src, bool overwrite_dst) {
-        if(lookup_table.indexes.empty()) throw std::runtime_error("lookup_table.indexes.empty()");
+        if(lookup_table.indexes.empty()) throw std::runtime_error{ "lookup_table.indexes.empty()" };
 
         if(dst < lookup_table.indexes.size() && lookup_table.indexes[dst] == (std::uint16_t)-1 && !overwrite_dst) return;
         if(src >= lookup_table.indexes.size() && dst >= lookup_table.indexes.size()) return;
@@ -507,8 +507,8 @@ namespace null::render {
     }
 
     void set_current_font(c_font* font) {
-        if(!font || !font->is_loaded()) throw std::runtime_error("!font || !font->is_loaded()");
-        if(font->scale <= 0.f) throw std::runtime_error("font->scale <= 0.f");
+        if(!font || !font->is_loaded()) throw std::runtime_error{ "!font || !font->is_loaded()" };
+        if(font->scale <= 0.f) throw std::runtime_error{ "font->scale <= 0.f" };
         current_font = font;
         shared_data.font = current_font;
     }

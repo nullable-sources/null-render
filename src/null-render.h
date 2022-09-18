@@ -9,7 +9,7 @@ namespace null::render {
 
         global_atlas.locked = true;
         set_current_font(get_current_font());
-        if(!current_font->is_loaded()) throw std::runtime_error("!current_font->is_loaded()");
+        if(!current_font->is_loaded()) throw std::runtime_error{ "!current_font->is_loaded()" };
 
         shared_data.clip_rect_fullscreen = rect_t{ vec2_t{ 0.f }, window_size };
         shared_data.curve_tessellation_tol = 1.25f;

@@ -3,26 +3,26 @@
 namespace null::render::directx9 {
 	void render_draw_data(c_draw_list::draw_data_t* _draw_data) {
 		if(_draw_data->window_size <= vec2_t{ 0.f })
-			throw std::runtime_error("_draw_data->window_size <= 0.f");
+			throw std::runtime_error{ "_draw_data->window_size <= 0.f" };
 
 		static int vtx_buffer_size{ 5000 }, idx_buffer_size{ 10000 };
 		if(!vtx_buffer || vtx_buffer_size < _draw_data->total_vtx_count) {
 			if(vtx_buffer) { vtx_buffer->Release(); vtx_buffer = nullptr; }
 			vtx_buffer_size = _draw_data->total_vtx_count + 5000;
 			if(device->CreateVertexBuffer(vtx_buffer_size * sizeof(vertex_t), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, D3DPOOL_DEFAULT, &vtx_buffer, nullptr) < 0)
-				throw std::runtime_error("CreateVertexBuffer error");
+				throw std::runtime_error{ "CreateVertexBuffer error" };
 		}
 
 		if(!idx_buffer || idx_buffer_size < _draw_data->total_idx_count) {
 			if(idx_buffer) { idx_buffer->Release(); idx_buffer = nullptr; }
 			idx_buffer_size = _draw_data->total_idx_count + 10000;
 			if(device->CreateIndexBuffer(idx_buffer_size * sizeof(std::uint16_t), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, sizeof(std::uint16_t) == 2 ? D3DFMT_INDEX16 : D3DFMT_INDEX32, D3DPOOL_DEFAULT, &idx_buffer, nullptr) < 0)
-				throw std::runtime_error("CreateIndexBuffer error");
+				throw std::runtime_error{ "CreateIndexBuffer error" };
 		}
 
 		IDirect3DStateBlock9* d3d9_state_block{ };
 		if(device->CreateStateBlock(D3DSBT_ALL, &d3d9_state_block) < 0)
-			throw std::runtime_error("CreateStateBlock error");
+			throw std::runtime_error{ "CreateStateBlock error" };
 
 		D3DMATRIX last_world{ }, last_view{ }, last_projection{ };
 		device->GetTransform(D3DTS_WORLD, &last_world);
@@ -31,8 +31,8 @@ namespace null::render::directx9 {
 
 		vertex_t* vtx_dst{ };
 		std::uint16_t* idx_dst{ };
-		if(vtx_buffer->Lock(0, (UINT)(_draw_data->total_vtx_count * sizeof(vertex_t)), (void**)&vtx_dst, D3DLOCK_DISCARD) < 0) throw std::runtime_error("vtx_buffer->Lock error");
-		if(idx_buffer->Lock(0, (UINT)(_draw_data->total_idx_count * sizeof(std::uint16_t)), (void**)&idx_dst, D3DLOCK_DISCARD) < 0) throw std::runtime_error("idx_buffer->Lock error");
+		if(vtx_buffer->Lock(0, (UINT)(_draw_data->total_vtx_count * sizeof(vertex_t)), (void**)&vtx_dst, D3DLOCK_DISCARD) < 0) throw std::runtime_error{ "vtx_buffer->Lock error" };
+		if(idx_buffer->Lock(0, (UINT)(_draw_data->total_idx_count * sizeof(std::uint16_t)), (void**)&idx_dst, D3DLOCK_DISCARD) < 0) throw std::runtime_error{ "idx_buffer->Lock error" };
 		for(c_draw_list* cmd_list : _draw_data->cmd_lists) {
 			for(c_draw_list::vertex_t vtx_src : cmd_list->vtx_buffer) {
 				vtx_dst->pos[0] = vtx_src.pos.x; vtx_dst->pos[1] = vtx_src.pos.y;;
@@ -137,11 +137,11 @@ namespace null::render::directx9 {
 
 		font_texture = nullptr;
 		if(device->CreateTexture(global_atlas.texture.size.x, global_atlas.texture.size.y, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &font_texture, nullptr) < 0)
-			throw std::runtime_error("cannot create font texture");
+			throw std::runtime_error{ "cannot create font texture" };
 
 		D3DLOCKED_RECT tex_locked_rect{ };
 		if(int result = font_texture->LockRect(0, &tex_locked_rect, nullptr, 0); result != D3D_OK)
-			throw std::runtime_error(std::format("lock rect error, code {}", result));
+			throw std::runtime_error{ std::format("lock rect error, code {}", result) };
 
 		for(int y : std::views::iota(0, global_atlas.texture.size.y)) {
 			int size = global_atlas.texture.size.x * 4;

@@ -96,7 +96,7 @@ namespace null::render::directx11 {
 
     void render_draw_data(c_draw_list::draw_data_t* _draw_data) {
         if(_draw_data->window_size <= vec2_t{ 0.f })
-            throw std::runtime_error("_draw_data->window_size <= 0.f");
+            throw std::runtime_error{ "_draw_data->window_size <= 0.f" };
 
         static int vertex_buffer_size{ 5000 }, index_buffer_size{ 10000 };
         if(!vertex_buffer || vertex_buffer_size < _draw_data->total_vtx_count) {
@@ -110,7 +110,7 @@ namespace null::render::directx11 {
                 .MiscFlags{ 0 }
             };
             if(device->CreateBuffer(&buffer_desc, nullptr, &vertex_buffer) < 0)
-                throw std::runtime_error("cant create vertex buffer");
+                throw std::runtime_error{ "cant create vertex buffer" };
         }
 
         if(!index_buffer || index_buffer_size < _draw_data->total_idx_count) {
@@ -125,12 +125,12 @@ namespace null::render::directx11 {
             };
 
             if(device->CreateBuffer(&buffer_desc, nullptr, &index_buffer) < 0)
-                throw std::runtime_error("cant create index buffer");
+                throw std::runtime_error{ "cant create index buffer" };
         }
 
         D3D11_MAPPED_SUBRESOURCE vtx_resource{ }, idx_resource{ };
-        if(context->Map(vertex_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &vtx_resource) != S_OK) throw std::runtime_error("cant map vertex buffer");
-        if(context->Map(index_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &idx_resource) != S_OK) throw std::runtime_error("cant map index buffer");
+        if(context->Map(vertex_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &vtx_resource) != S_OK) throw std::runtime_error{ "cant map vertex buffer" };
+        if(context->Map(index_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &idx_resource) != S_OK) throw std::runtime_error{ "cant map index buffer" };
 
         vertex_t* vtx_dst{ (vertex_t*)vtx_resource.pData };
         std::uint16_t* idx_dst{ (std::uint16_t*)idx_resource.pData };

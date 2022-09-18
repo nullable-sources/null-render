@@ -46,13 +46,13 @@ namespace null::render {
 
             static std::uint32_t decompress_length(const std::uint8_t* input) { return (input[8] << 24) + (input[9] << 16) + (input[10] << 8) + input[11]; }
             static void match(const std::uint8_t* data, std::uint32_t length) {
-                if(dout + length > barrier_out_e) throw std::runtime_error("dout + length > barrier_out_e");
+                if(dout + length > barrier_out_e) throw std::runtime_error{ "dout + length > barrier_out_e" };
                 if(data < barrier_out_b) { dout = barrier_out_e + 1; return; }
                 while(length--) *dout++ = *data++;
             }
 
             static void lit(const std::uint8_t* data, std::uint32_t length) {
-                if(dout + length > barrier_out_e) throw std::runtime_error("dout + length > barrier_out_e");
+                if(dout + length > barrier_out_e) throw std::runtime_error{ "dout + length > barrier_out_e" };
                 if(data < barrier_in_b) { dout = barrier_out_e + 1; return; }
                 memcpy(dout, data, length);
                 dout += length;
@@ -120,14 +120,14 @@ namespace null::render {
                     if(i == old_i) {
                         if(*i == 0x05 && i[1] == 0xfa) {
                             assert(dout == output + olen);
-                            if(dout != output + olen) throw std::runtime_error("dout != output + olen");
+                            if(dout != output + olen) throw std::runtime_error{ "dout != output + olen" };
                             if(adler32(1, output, olen) != (std::uint32_t)stb_impl_in4(2))
                                 return 0;
                             return olen;
-                        } else throw std::runtime_error("decompress error");
+                        } else throw std::runtime_error{ "decompress error" };
                     }
 
-                    if(dout > output + olen) throw std::runtime_error("dout > output + olen");
+                    if(dout > output + olen) throw std::runtime_error{ "dout > output + olen" };
                 }
             }
         }
@@ -329,7 +329,7 @@ namespace null::render {
             bool dirty{ };
 
             void resize(int new_size) {
-                if(advances_x.size() != indexes.size()) throw std::runtime_error("advances_x.size() != indexes.size()");
+                if(advances_x.size() != indexes.size()) throw std::runtime_error{ "advances_x.size() != indexes.size()" };
                 if(new_size <= indexes.size()) return;
                 advances_x.resize(new_size, -1.0f);
                 indexes.resize(new_size, (std::uint16_t)-1);

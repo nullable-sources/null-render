@@ -160,6 +160,7 @@ namespace null {
 
 			void on_changed_clip_rect();
 			void push_clip_rect(rect_t rect, bool intersect_with_current_rect = false);
+			void push_clip_rect(const vec2_t& a, const vec2_t& b, bool intersect_with_current_rect = false) { push_clip_rect({ a, b }, intersect_with_current_rect); }
 			void push_clip_rect_fullscreen() { push_clip_rect(parent_shared_data->clip_rect_fullscreen); }
 			void pop_clip_rect();
 
@@ -191,7 +192,9 @@ namespace null {
 
 			void draw_line(const vec2_t& a, const vec2_t& b, const color_t& color, float thickness = 1.f);
 			void draw_rect(const vec2_t& a, const vec2_t& b, const color_t& color, float thickness = 1.f, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all); //@todo: add rect multicolor
+			void draw_rect(const rect_t& rect, const color_t& color, float thickness = 1.f, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all) { draw_rect(rect.min, rect.max, color, thickness, rounding, flags); }
 			void draw_rect_filled(const vec2_t& a, const vec2_t& b, const color_t& color, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all); //@todo: add rect filled multicolor
+			void draw_rect_filled(const rect_t& rect, const color_t& color, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all) { draw_rect_filled(rect.min, rect.max, color, rounding, flags); }
 			void draw_convex_poly_filled(const std::vector<vec2_t>& points, const color_t& color);
 			void draw_poly_line(const std::vector<vec2_t>& points, const color_t& color, bool closed, float thickness = 1.f);
 			void draw_circle(const vec2_t& center, const color_t& clr, float radius, int num_segments = 0, float thickness = 1.f);
@@ -270,7 +273,7 @@ namespace null {
 				if(size <= 0) size = font->size;
 
 				if(font->container_atlas->texture.id != cmd_header.texture_id)
-					throw std::runtime_error("font->container_atlas->texture.id != cmd_header.texture_id");
+					throw std::runtime_error{ "font->container_atlas->texture.id != cmd_header.texture_id" };
 
 				int vtx_offset{ }; //@note: offset for outline
 				draw_text(std::basic_string_view{ str }, color, pos, pos.x, font, size, vtx_offset, flags);
@@ -282,7 +285,7 @@ namespace null {
 				if(size <= 0) size = font->size;
 
 				if(font->container_atlas->texture.id != cmd_header.texture_id)
-					throw std::runtime_error("font->container_atlas->texture.id != cmd_header.texture_id");
+					throw std::runtime_error{ "font->container_atlas->texture.id != cmd_header.texture_id" };
 
 				int vtx_offset{ }; //@note: offset for outline
 				float new_line_pos{ pos.x };

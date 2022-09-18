@@ -99,12 +99,12 @@ namespace null::render::shaders {
 		}
 
 		virtual void set_shader() override {
-			if(!shader) throw std::runtime_error("shader == nullptr");
+			if(!shader) throw std::runtime_error{ "shader == nullptr" };
 			directx11::context->PSSetShader(shader, nullptr, 0);
 		}
 
 		virtual void set_constant() override {
-			if(!constant_buffer) throw std::runtime_error("constant_buffer == nullptr");
+			if(!constant_buffer) throw std::runtime_error{ "constant_buffer == nullptr" };
 			directx11::context->PSSetConstantBuffers(0, 1, &constant_buffer);
 		}
 	};

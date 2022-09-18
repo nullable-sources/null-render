@@ -21,8 +21,8 @@ namespace null::render {
         draw_list->pop_unused_draw_cmd();
         if(draw_list->cmd_buffer.empty()) return;
 
-        if(draw_list->vtx_buffer.empty()) throw std::runtime_error("vtx_buffer empty");
-        if(draw_list->idx_buffer.empty()) throw std::runtime_error("idx_buffer empty");
+        if(draw_list->vtx_buffer.empty()) throw std::runtime_error{ "vtx_buffer empty" };
+        if(draw_list->idx_buffer.empty()) throw std::runtime_error{ "idx_buffer empty" };
 
         layers.push_back(draw_list);
     }

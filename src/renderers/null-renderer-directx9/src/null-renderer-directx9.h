@@ -44,9 +44,9 @@ namespace null::render::directx9 {
 	public:
 		void on_create() override {
 			if(!(direct3d = Direct3DCreate9(D3D_SDK_VERSION)))
-				throw std::runtime_error("cannot create direct3d");
+				throw std::runtime_error{ "cannot create direct3d" };
 			if(direct3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, wnd_handle, D3DCREATE_HARDWARE_VERTEXPROCESSING, &present_parameters, &device) < 0)
-				throw std::runtime_error("cannot create device");
+				throw std::runtime_error{ "cannot create device" };
 
 			utils::win::c_window::on_create();
 		}
@@ -95,7 +95,7 @@ namespace null::render::directx9 {
 
 		void reset_device() {
 			invalidate_device_objects();
-			if(device->Reset(&present_parameters) == D3DERR_INVALIDCALL) throw std::runtime_error("d3d_device->Reset == D3DERR_INVALIDCALL");
+			if(device->Reset(&present_parameters) == D3DERR_INVALIDCALL) throw std::runtime_error{ "d3d_device->Reset == D3DERR_INVALIDCALL" };
 			create_device_objects();
 		}
 	};
