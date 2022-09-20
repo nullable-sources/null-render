@@ -12,6 +12,10 @@ I tried to translate the entire ImGui render to c++20, most likely I didn’t ge
 # supported renderers and features
 - ### directx9
     - base render
+- ### directx11
+    - base render
+- ### opengl3
+    - base render
 # dependencies
 [stb](https://github.com/nothings/stb)\
 [null-sdk](https://github.com/nullptr-sources/null-sdk)
