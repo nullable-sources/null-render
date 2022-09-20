@@ -19,80 +19,28 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="$(SolutionDir)third-party\null-sdk\null-sdk.vcxproj">
-      <Project>{f7a10a5c-0fae-424b-8f2b-6cc4e4d898d1}</Project>
-    </ProjectReference>
+    <ClCompile Include="src\null-renderer-opengl3.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\null-renderer-opengl3.h" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\..\null-render.vcxproj">
       <Project>{4abcf635-9767-40f9-989e-f0cdf5fb68ae}</Project>
     </ProjectReference>
+    <ProjectReference Include="$(SolutionDir)third-party\null-sdk\null-sdk.vcxproj">
+      <Project>{f7a10a5c-0fae-424b-8f2b-6cc4e4d898d1}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\null-renderer-directx11.cpp" />
-    <ClCompile Include="src\shaders\shaders.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\null-renderer-directx11.h" />
-    <ClInclude Include="src\shaders\shaders.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="src\shaders\pixel\hlsl\pixel.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|Win32'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|Win32'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|x64'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|x64'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='debug|x64'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='debug|x64'">4.0</ShaderModel>
-      <VariableName Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(Filename)</VariableName>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
-      </ObjectFileOutput>
-      <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename)</VariableName>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </ObjectFileOutput>
-      <VariableName Condition="'$(Configuration)|$(Platform)'=='release|x64'">%(Filename)</VariableName>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='release|x64'">
-      </ObjectFileOutput>
-      <VariableName Condition="'$(Configuration)|$(Platform)'=='debug|x64'">%(Filename)</VariableName>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
-      </ObjectFileOutput>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='release|x64'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|x64'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
-    </FxCompile>
-    <FxCompile Include="src\shaders\vertex\hlsl\vertex.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|Win32'">Vertex</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|Win32'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|x64'">Vertex</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|x64'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='debug|x64'">Vertex</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='debug|x64'">4.0</ShaderModel>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
-      </ObjectFileOutput>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </ObjectFileOutput>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='release|x64'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='release|x64'">
-      </ObjectFileOutput>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|x64'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
-      </ObjectFileOutput>
-      <VariableName Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(Filename)</VariableName>
-      <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename)</VariableName>
-      <VariableName Condition="'$(Configuration)|$(Platform)'=='release|x64'">%(Filename)</VariableName>
-      <VariableName Condition="'$(Configuration)|$(Platform)'=='debug|x64'">%(Filename)</VariableName>
-    </FxCompile>
+    <None Include="src\shaders\fragment.glsl" />
+    <None Include="src\shaders\vertex.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{d51ad3ae-de95-488a-b202-a4192f685a59}</ProjectGuid>
-    <RootNamespace>null_renderer_directx11</RootNamespace>
+    <ProjectGuid>{97a6b7ae-9878-4584-a0b8-15287db604ac}</ProjectGuid>
+    <RootNamespace>null_renderer_opengl3</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -144,25 +92,25 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)build\$(Configuration)-$(PlatformShortName)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Configuration)-$(PlatformShortName)\obj-$(ProjectName)\</IntDir>
-    <PublicIncludeDirectories>src\</PublicIncludeDirectories>
+    <PublicIncludeDirectories>src\;third-party\gl3w\</PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)build\$(Configuration)-$(PlatformShortName)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Configuration)-$(PlatformShortName)\obj-$(ProjectName)\</IntDir>
-    <PublicIncludeDirectories>src\</PublicIncludeDirectories>
+    <PublicIncludeDirectories>src\;third-party\gl3w\</PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)build\$(Configuration)-$(PlatformShortName)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Configuration)-$(PlatformShortName)\obj-$(ProjectName)\</IntDir>
-    <PublicIncludeDirectories>src\</PublicIncludeDirectories>
+    <PublicIncludeDirectories>src\;third-party\gl3w\</PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)build\$(Configuration)-$(PlatformShortName)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Configuration)-$(PlatformShortName)\obj-$(ProjectName)\</IntDir>
-    <PublicIncludeDirectories>src\</PublicIncludeDirectories>
+    <PublicIncludeDirectories>src\;third-party\gl3w\</PublicIncludeDirectories>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
     <ClCompile>
@@ -175,7 +123,7 @@
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(ProjectDir)src\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src\;$(ProjectDir)third-party\gl3w\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -196,7 +144,7 @@
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(ProjectDir)src\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src\;$(ProjectDir)third-party\gl3w\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -217,7 +165,7 @@
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(ProjectDir)src\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src\;$(ProjectDir)third-party\gl3w\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -238,7 +186,7 @@
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(ProjectDir)src\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src\;$(ProjectDir)third-party\gl3w\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
