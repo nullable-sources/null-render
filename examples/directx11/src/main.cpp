@@ -48,15 +48,12 @@ int main(HINSTANCE instance) {
 	window.callbacks.add<void()>(utils::e_window_callbacks::on_main_loop, main_loop);
 
 	try {
-		null::render::global_atlas.add_font_from_file_ttf("C:\\Windows\\fonts\\Tahoma.ttf", 13.f, nullptr, null::render::c_font::glyph_t::ranges_cyrillic());
+		null::render::atlas.add_font_from_file_ttf("C:\\Windows\\fonts\\Tahoma.ttf", 13.f, nullptr, null::render::c_font::glyph_t::ranges_cyrillic());
 
 		window.create();
 		null::render::custom_layers.push_back(&custom_layer);
 
 		window.main_loop();
-
-		null::render::global_atlas.clear_input_data();
-
 		window.destroy();
 	} catch(const std::exception& exp) {
 		std::cout << exp.what() << std::endl;

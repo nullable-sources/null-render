@@ -1,11 +1,13 @@
 #pragma once
-#define STB_TRUETYPE_IMPLEMENTATION
 #define STB_RECT_PACK_IMPLEMENTATION
 #define STBRP_STATIC
-#define STBTT_STATIC
-
 #include <stb_rect_pack.h>
-#include <stb_truetype.h>
+
+#include <ft2build.h>
+#include <freetype/freetype.h>
+#include <freetype/ftmodapi.h>
+#include <freetype/ftglyph.h>
+#include <freetype/ftsynth.h>
 
 #include <null-sdk.h>
 #include <compressed-fonts/proggy-clean.h>
@@ -187,20 +189,36 @@ namespace null::render {
         }
     }
 
+    enum class e_rasterizer_flags {
+        no_hinting = 1 << 0,
+        no_auto_hint = 1 << 1,
+        force_auto_hint = 1 << 2,
+        light_hinting = 1 << 3,
+        mono_hinting = 1 << 4,
+        bold = 1 << 5,
+        oblique = 1 << 6,
+        monochrome = 1 << 7
+    }; enum_create_bit_operators(e_rasterizer_flags, true);
+    enum_create_cast_operator(e_rasterizer_flags, -);
+
+    class c_atlas;
     class c_font {
     public:
         struct glyph_t {
+        public:
             struct config_t {
                 vec2_t offset{ }, extra_spacing{ };
                 const std::uint16_t* ranges{ };
                 float min_advance_x, max_advance_x{ std::numeric_limits<float>::max() };
             };
 
+        public:
             std::uint32_t codepoint{ 31 };
             bool visible{ true };
             float advance_x{ };
             rect_t corners{ }, texture_coordinates{ };
 
+        public:
             static const std::uint16_t* ranges_default() {
                 static const std::uint16_t ranges[] = {
                     0x0020, 0x00FF,
@@ -220,8 +238,9 @@ namespace null::render {
             }
         };
 
-    private:
+    public:
         struct config_t {
+        public:
             c_font* font{ };
             glyph_t::config_t glyph_config{ };
 
@@ -233,113 +252,42 @@ namespace null::render {
             bool pixel_snap_h{ };
             bool merge_mode{ };
 
-            std::uint32_t rasterizer_flags{ };
+            e_rasterizer_flags rasterizer_flags{ };
             float rasterizer_multiply{ 1.f };
 
             std::uint16_t ellipsis_char{ (std::uint16_t)-1 };
         };
 
-    public:
-        class c_atlas {
-        private:
-            struct build_data_t {
-                int glyphs_highest{ }, glyphs_count{ };
-                std::vector<std::uint32_t> glyphs_set{ };
-            };
-
-            struct build_src_t : build_data_t {
-                stbtt_fontinfo font_info{ };
-                stbtt_pack_range pack_range{ };
-                stbrp_rect* rects{ };
-                stbtt_packedchar* packed_chars{ };
-
-                const std::uint16_t* src_ranges{ };
-                int dst_index{ };
-                std::vector<int> glyphs_list{ };
-            };
-
-            struct build_dst_t : build_data_t {
-                int src_count{ };
-            };
-
-            struct custom_rect_t {
-                rect_t size{ vec2_t{ std::numeric_limits<std::uint16_t>::max() }, vec2_t{ 0.f } };
-                std::uint32_t glyph_id{ };
-                float glyph_advance_x{ };
-                vec2_t glyph_offset{ };
-                c_font* font{ };
-
-                bool is_packed() { return size.min.x != std::numeric_limits<std::uint16_t>::max(); }
-            };
-
-        public:
-            struct texture_t {
-                void* id{ };
-                int desired_width{ 0 }, glyph_padding{ 1 };
-
-                std::vector<std::uint8_t> pixels_alpha8{ };
-                std::vector<std::uint32_t> pixels_rgba32{ };
-
-                vec2_t size{ };
-                vec2_t uv_scale{ }, uv_white_pixel{ };
-                std::array<rect_t, 64> uv_lines{ };
-                
-                void clear() { pixels_alpha8.clear(); pixels_rgba32.clear(); }
-                bool is_built() { return !pixels_alpha8.empty() || !pixels_rgba32.empty(); }
-                void get_data_as_rgba32();
-            } texture;
-
-            bool locked{ };
-            std::vector<c_font> fonts{ };
-            std::vector<custom_rect_t> custom_rects{ };
-            std::vector<config_t> configs{ };
-
-            int pack_id_cursors{ -1 }, pack_id_lines{ -1 };
-
-        public:
-            void setup_font(c_font* font, config_t* config, float ascent, float descent);
-
-            void build_initialize();
-            void build_finish();
-
-            bool build_with_stb_truetype();
-
-            void render_lines_texture_data();
-            void render_default_texture_data();
-
-            void pack_custom_rects(void* stbrp_context_opaque);
-            void multiply_calc_lookup_table(std::array<std::uint8_t, 256>& out_table, float in_multiply_factor);
-            void multiply_rect_alpha8(const std::array<std::uint8_t, 256>& table, std::vector<std::uint8_t>& pixels, const rect_t& size, int stride);
-
-            c_font* add_font(config_t* config);
-            c_font* add_font_default(config_t* config = nullptr);
-            c_font* add_font_from_file_ttf(const char* filename, float size_pixels, config_t* config = nullptr, const std::uint16_t* glyph_ranges = glyph_t::ranges_default());
-            c_font* add_font_from_memory_ttf(const std::vector<char>& font_data, float size_pixels, config_t* config = nullptr, const std::uint16_t* glyph_ranges = glyph_t::ranges_default());
-            c_font* add_font_from_memory_compressed_ttf(const std::vector<char>& compressed_ttf, float size_pixels, config_t* config = nullptr, const std::uint16_t* glyph_ranges = glyph_t::ranges_default());
-            c_font* add_font_from_memory_compressed_base_85_ttf(const char* compressed_font_data_base85, float size_pixels, config_t* config = nullptr, const std::uint16_t* glyph_ranges = glyph_t::ranges_default());
-
-            void clear_input_data();
-            void clear_fonts();
-            void clear() { clear_input_data(); texture.clear(); clear_fonts(); }
-        };
-
         struct lookup_table_t {
+        public:
             std::vector<float> advances_x{ };
             std::vector<std::uint16_t> indexes{ };
             bool dirty{ };
 
+        public:
             void resize(int new_size) {
                 if(advances_x.size() != indexes.size()) throw std::runtime_error{ "advances_x.size() != indexes.size()" };
                 if(new_size <= indexes.size()) return;
                 advances_x.resize(new_size, -1.0f);
                 indexes.resize(new_size, (std::uint16_t)-1);
             }
-        } lookup_table;
-
-    private:
-        std::uint16_t fallback_char{ (std::uint16_t)'?' }, ellipsis_char{ (std::uint16_t)-1 };
+        };
 
     public:
+        static inline c_font* current_font{ }; //@note: set only from set_current_font
+        static inline std::vector<c_font*> fonts{ };
+        static inline float font_global_scale{ };
+
+    public:
+        static c_font* get_current_font();
+        static void set_current_font(c_font* font);
+        static void push_font(c_font* font);
+        static void pop_font(c_font* font);
+
+    public:
+        std::uint16_t fallback_char{ (std::uint16_t)'?' }, ellipsis_char{ (std::uint16_t)-1 };
+
+        lookup_table_t lookup_table{ };
         std::vector<glyph_t> glyphs{ };
         glyph_t* fallback_glyph{ };
         float fallback_advance_x{ };
@@ -411,15 +359,113 @@ namespace null::render {
         }
     };
 
-    inline bool atlas_owned_by_initialize{ };
-    inline c_font::c_atlas global_atlas{ };
+    class c_atlas {
+    private:
+        struct build_data_t {
+        public:
+            int glyphs_highest{ }, glyphs_count{ };
+            std::vector<std::uint32_t> glyphs_set{ };
+        };
 
-    inline c_font* current_font{ }; //@note: set only from set_current_font
-    inline std::vector<c_font*> fonts{ };
-    inline float font_global_scale{ };
+        struct src_glyph_t {
+        public:
+            c_font::glyph_t glyph{ };
+            std::vector<std::uint8_t> bitmap{ };
+        };
 
-    static c_font* get_current_font() { return current_font ? current_font : &global_atlas.fonts.front(); }
-    void set_current_font(c_font* font);
-    void push_font(c_font* font);
-    void pop_font(c_font* font);
+        struct build_src_t : build_data_t {
+        public:
+            struct freetype_t {
+            public:
+                struct info_t {
+                public:
+                    std::uint32_t pixel_height{ };
+                    float ascender{ }, descender{ }, line_spacing{ }, line_gap{ }, max_advance_width{ };
+                };
+
+            public:
+                info_t info{ };
+                FT_Face face{ };
+                e_rasterizer_flags rasterizer_flags{ };
+                FT_Int32 flags{ };
+                FT_Render_Mode render_mode{ };
+            };
+
+        public:
+            freetype_t freetype{ };
+            stbrp_rect* rects{ };
+
+            const std::uint16_t* src_ranges{ };
+            int dst_index{ };
+            std::vector<src_glyph_t> glyphs_list{ };
+        };
+
+        struct custom_rect_t {
+        public:
+            rect_t size{ vec2_t{ std::numeric_limits<std::uint16_t>::max() }, vec2_t{ 0.f } };
+            std::uint32_t glyph_id{ };
+            float glyph_advance_x{ };
+            vec2_t glyph_offset{ };
+            c_font* font{ };
+
+        public:
+            bool is_packed() { return size.min.x != std::numeric_limits<std::uint16_t>::max(); }
+        };
+
+    public:
+        struct texture_t {
+        public:
+            void* id{ };
+            int desired_width{ 0 }, glyph_padding{ 1 };
+
+            std::vector<std::uint8_t> pixels_alpha8{ };
+            std::vector<std::uint32_t> pixels_rgba32{ };
+
+            vec2_t size{ };
+            vec2_t uv_scale{ }, uv_white_pixel{ };
+            std::array<rect_t, 64> uv_lines{ };
+
+        public:
+            void clear() { pixels_alpha8.clear(); pixels_rgba32.clear(); }
+            bool is_built() { return !pixels_alpha8.empty() || !pixels_rgba32.empty(); }
+            void get_data_as_rgba32();
+        };
+
+    public:
+        texture_t texture{ };
+
+        bool locked{ };
+        std::vector<c_font> fonts{ };
+        std::vector<custom_rect_t> custom_rects{ };
+        std::vector<c_font::config_t> configs{ };
+
+        int pack_id_cursors{ -1 }, pack_id_lines{ -1 };
+
+    public:
+        ~c_atlas() { clear(); }
+
+    public:
+        void setup_font(c_font* font, c_font::config_t* config, float ascent, float descent);
+
+        void build_initialize();
+        void build_finish();
+
+        bool build();
+
+        void render_lines_texture_data();
+        void render_default_texture_data();
+
+        void pack_custom_rects(stbrp_context* stbrp_context_opaque);
+        void multiply_calc_lookup_table(std::array<std::uint8_t, 256>& out_table, float in_multiply_factor);
+
+        c_font* add_font(c_font::config_t* config);
+        c_font* add_font_default(c_font::config_t* config = nullptr);
+        c_font* add_font_from_file_ttf(const char* filename, float size_pixels, c_font::config_t* config = nullptr, const std::uint16_t* glyph_ranges = c_font::glyph_t::ranges_default());
+        c_font* add_font_from_memory_ttf(const std::vector<char>& font_data, float size_pixels, c_font::config_t* config = nullptr, const std::uint16_t* glyph_ranges = c_font::glyph_t::ranges_default());
+        c_font* add_font_from_memory_compressed_ttf(const std::vector<char>& compressed_ttf, float size_pixels, c_font::config_t* config = nullptr, const std::uint16_t* glyph_ranges = c_font::glyph_t::ranges_default());
+        c_font* add_font_from_memory_compressed_base_85_ttf(const char* compressed_font_data_base85, float size_pixels, c_font::config_t* config = nullptr, const std::uint16_t* glyph_ranges = c_font::glyph_t::ranges_default());
+
+        void clear_input_data();
+        void clear() { clear_input_data(); texture.clear(); fonts.clear(); }
+    } inline atlas{ };
 }

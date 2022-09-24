@@ -142,12 +142,12 @@ namespace null {
             }
 
             bool create_fonts_texture() {
-                if(global_atlas.texture.pixels_alpha8.empty()) {
-                    if(global_atlas.configs.empty()) global_atlas.add_font_default();
-                    global_atlas.build_with_stb_truetype();
+                if(atlas.texture.pixels_alpha8.empty()) {
+                    if(atlas.configs.empty()) atlas.add_font_default();
+                    atlas.build();
                 }
 
-                global_atlas.texture.get_data_as_rgba32();
+                atlas.texture.get_data_as_rgba32();
 
                 GLint last_texture;
                 glGetIntegerv(GL_TEXTURE_BINDING_2D, &last_texture);
@@ -158,9 +158,9 @@ namespace null {
 #ifdef GL_UNPACK_ROW_LENGTH
                 glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 #endif
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, global_atlas.texture.size.x, global_atlas.texture.size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, (void*)global_atlas.texture.pixels_rgba32.data());
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, atlas.texture.size.x, atlas.texture.size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, (void*)atlas.texture.pixels_rgba32.data());
 
-                global_atlas.texture.id = (void*)font_texture;
+                atlas.texture.id = (void*)font_texture;
 
                 glBindTexture(GL_TEXTURE_2D, last_texture);
 
@@ -170,7 +170,7 @@ namespace null {
             void destroy_fonts_texture() {
                 if(font_texture) {
                     glDeleteTextures(1, &font_texture);
-                    global_atlas.texture.id = nullptr;
+                    atlas.texture.id = nullptr;
                     font_texture = 0;
                 }
             }

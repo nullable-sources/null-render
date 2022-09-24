@@ -2,8 +2,8 @@
 
 namespace null::render::directx9 {
 	void render_draw_data(c_draw_list::draw_data_t* _draw_data) {
-		if(_draw_data->window_size <= vec2_t{ 0.f })
-			throw std::runtime_error{ "_draw_data->window_size <= 0.f" };
+		if(_draw_data->window_size <= 0.f)
+			return;
 
 		static int vtx_buffer_size{ 5000 }, idx_buffer_size{ 10000 };
 		if(!vtx_buffer || vtx_buffer_size < _draw_data->total_vtx_count) {
@@ -128,29 +128,29 @@ namespace null::render::directx9 {
 	}
 
 	void create_fonts_texture() {
-		if(global_atlas.texture.pixels_alpha8.empty()) {
-			if(global_atlas.configs.empty()) global_atlas.add_font_default();
-			global_atlas.build_with_stb_truetype();
+		if(atlas.texture.pixels_alpha8.empty()) {
+			if(atlas.configs.empty()) atlas.add_font_default();
+			atlas.build();
 		}
 
-		global_atlas.texture.get_data_as_rgba32();
+		atlas.texture.get_data_as_rgba32();
 
 		font_texture = nullptr;
-		if(device->CreateTexture(global_atlas.texture.size.x, global_atlas.texture.size.y, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &font_texture, nullptr) < 0)
+		if(device->CreateTexture(atlas.texture.size.x, atlas.texture.size.y, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &font_texture, nullptr) < 0)
 			throw std::runtime_error{ "cannot create font texture" };
 
 		D3DLOCKED_RECT tex_locked_rect{ };
 		if(int result = font_texture->LockRect(0, &tex_locked_rect, nullptr, 0); result != D3D_OK)
 			throw std::runtime_error{ std::format("lock rect error, code {}", result) };
 
-		for(int y : std::views::iota(0, global_atlas.texture.size.y)) {
-			int size = global_atlas.texture.size.x * 4;
-			std::memcpy((std::uint8_t*)tex_locked_rect.pBits + tex_locked_rect.Pitch * y, (std::uint8_t*)global_atlas.texture.pixels_rgba32.data() + size * y, size);
+		for(int y : std::views::iota(0, atlas.texture.size.y)) {
+			int size = atlas.texture.size.x * 4;
+			std::memcpy((std::uint8_t*)tex_locked_rect.pBits + tex_locked_rect.Pitch * y, (std::uint8_t*)atlas.texture.pixels_rgba32.data() + size * y, size);
 		}
 
 		font_texture->UnlockRect(0);
 
-		global_atlas.texture.id = (void*)font_texture;
+		atlas.texture.id = (void*)font_texture;
 	}
 
 	void create_device_objects() {
@@ -174,6 +174,6 @@ namespace null::render::directx9 {
 		if(vtx_buffer) { vtx_buffer->Release(); vtx_buffer = nullptr; }
 		if(idx_buffer) { idx_buffer->Release(); idx_buffer = nullptr; }
 		if(vtx_declaration) { vtx_declaration->Release(); vtx_declaration = nullptr; }
-		if(font_texture) { font_texture->Release(); font_texture = nullptr; global_atlas.texture.id = nullptr; }
+		if(font_texture) { font_texture->Release(); font_texture = nullptr; atlas.texture.id = nullptr; }
 	}
 }

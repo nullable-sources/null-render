@@ -95,8 +95,8 @@ namespace null::render::directx11 {
     }
 
     void render_draw_data(c_draw_list::draw_data_t* _draw_data) {
-        if(_draw_data->window_size <= vec2_t{ 0.f })
-            throw std::runtime_error{ "_draw_data->window_size <= 0.f" };
+        if(_draw_data->window_size <= 0.f)
+            return;
 
         static int vertex_buffer_size{ 5000 }, index_buffer_size{ 10000 };
         if(!vertex_buffer || vertex_buffer_size < _draw_data->total_vtx_count) {
@@ -220,17 +220,17 @@ namespace null::render::directx11 {
     }
 
     void create_fonts_texture() {
-        if(global_atlas.texture.pixels_alpha8.empty()) {
-            if(global_atlas.configs.empty()) global_atlas.add_font_default();
-            global_atlas.build_with_stb_truetype();
+        if(atlas.texture.pixels_alpha8.empty()) {
+            if(atlas.configs.empty()) atlas.add_font_default();
+            atlas.build();
         }
 
-        global_atlas.texture.get_data_as_rgba32();
+        atlas.texture.get_data_as_rgba32();
 
         {
             D3D11_TEXTURE2D_DESC texture_desc{
-                .Width{ (std::uint32_t)global_atlas.texture.size.x },
-                .Height{ (std::uint32_t)global_atlas.texture.size.y },
+                .Width{ (std::uint32_t)atlas.texture.size.x },
+                .Height{ (std::uint32_t)atlas.texture.size.y },
                 .MipLevels{ 1 },
                 .ArraySize{ 1 },
                 .Format{ DXGI_FORMAT_R8G8B8A8_UNORM },
@@ -244,7 +244,7 @@ namespace null::render::directx11 {
 
             ID3D11Texture2D* texture{ };
             D3D11_SUBRESOURCE_DATA subresource{
-                .pSysMem{ (void*)global_atlas.texture.pixels_rgba32.data() },
+                .pSysMem{ (void*)atlas.texture.pixels_rgba32.data() },
                 .SysMemPitch{ texture_desc.Width * 4 },
                 .SysMemSlicePitch{ 0 }
             };
@@ -262,7 +262,7 @@ namespace null::render::directx11 {
             texture->Release();
         }
 
-        global_atlas.texture.id = (void*)font_texture_view;
+        atlas.texture.id = (void*)font_texture_view;
 
         {
             D3D11_SAMPLER_DESC sampler_desc{
@@ -355,7 +355,7 @@ namespace null::render::directx11 {
         shaders::release_shaders();
 
         if(font_sampler) { font_sampler->Release(); font_sampler = nullptr; }
-        if(font_texture_view) { font_texture_view->Release(); font_texture_view = nullptr; global_atlas.texture.id = nullptr; }
+        if(font_texture_view) { font_texture_view->Release(); font_texture_view = nullptr; atlas.texture.id = nullptr; }
         if(index_buffer) { index_buffer->Release(); index_buffer = nullptr; }
         if(vertex_buffer) { vertex_buffer->Release(); vertex_buffer = nullptr; }
 
