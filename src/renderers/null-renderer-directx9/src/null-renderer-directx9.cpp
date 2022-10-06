@@ -58,7 +58,7 @@ namespace null::render::directx9 {
 
 		int global_vtx_offset{ }, global_idx_offset{ };
 		for(c_draw_list* draw_list : _draw_data->cmd_lists) {
-			for(c_draw_list::cmd_t cmd : draw_list->cmd_buffer) {
+			for(c_draw_list::cmd_t& cmd : draw_list->cmd_buffer) {
 				if(cmd.callbacks.have_callback(e_cmd_callbacks::render_draw_data) && std::any_cast<bool>(cmd.callbacks.call<bool(c_draw_list::cmd_t*)>(e_cmd_callbacks::render_draw_data, &cmd))) {
 					setup_render_state();
 					continue;

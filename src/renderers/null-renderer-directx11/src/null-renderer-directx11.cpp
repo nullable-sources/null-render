@@ -179,7 +179,7 @@ namespace null::render::directx11 {
                 const D3D11_RECT clip_rect{ (LONG)(cmd.clip_rect.min.x - _draw_data->window_pos.x), (LONG)(cmd.clip_rect.min.y - _draw_data->window_pos.y), (LONG)(cmd.clip_rect.max.x - _draw_data->window_pos.x), (LONG)(cmd.clip_rect.max.y - _draw_data->window_pos.y) };
                 context->RSSetScissorRects(1, &clip_rect);
 
-                ID3D11ShaderResourceView* texture_srv = (ID3D11ShaderResourceView*)cmd.texture_id;
+                ID3D11ShaderResourceView* texture_srv{ (ID3D11ShaderResourceView*)cmd.texture_id };
                 context->PSSetShaderResources(0, 1, &texture_srv);
                 context->DrawIndexed(cmd.element_count, cmd.idx_offset + global_idx_offset, cmd.vtx_offset + global_vtx_offset);
             }

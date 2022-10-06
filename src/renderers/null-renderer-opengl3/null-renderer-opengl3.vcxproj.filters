@@ -7,6 +7,9 @@
     <Filter Include="src\shaders">
       <UniqueIdentifier>{c0e43830-8e8c-4ce2-8904-7b83b5b887b8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\opengl">
+      <UniqueIdentifier>{e20a92ef-dfb8-48bb-babe-0bef3a0cc772}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\null-renderer-opengl3.cpp">
@@ -16,6 +19,9 @@
   <ItemGroup>
     <ClInclude Include="src\null-renderer-opengl3.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\opengl\opengl3.h">
+      <Filter>src\opengl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
