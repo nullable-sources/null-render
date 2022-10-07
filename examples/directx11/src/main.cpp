@@ -1,7 +1,7 @@
 ﻿#include <iostream>
 #include <null-renderer-directx11.h>
 
-null::render::directx11::c_window window{ };
+null::renderer::directx11::c_window window{ };
 null::render::c_draw_list custom_layer{ };
 
 void main_loop() {
@@ -43,7 +43,7 @@ void main_loop() {
 }
 
 int main(HINSTANCE instance) {
-	window = null::render::directx11::c_window{ instance };
+	window = null::renderer::directx11::c_window{ instance };
 
 	window.callbacks.add<void()>(utils::e_window_callbacks::on_main_loop, main_loop);
 

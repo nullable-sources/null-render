@@ -4,7 +4,7 @@
 
 #include <null-render.h>
 
-namespace null::render::directx9 {
+namespace null::renderer::directx9 {
 	struct vertex_t {
 		float pos[3]{ };
 		std::uint32_t color{ };
@@ -17,8 +17,8 @@ namespace null::render::directx9 {
 	inline IDirect3DVertexBuffer9* vtx_buffer{ };
 	inline IDirect3DIndexBuffer9* idx_buffer{ };
 
-	void render_draw_data(c_draw_list::draw_data_t* _draw_data = &draw_data);
-	void setup_render_state(c_draw_list::draw_data_t* _draw_data = &draw_data);
+	void render_draw_data(render::c_draw_list::draw_data_t* draw_data = &render::draw_data);
+	void setup_render_state(render::c_draw_list::draw_data_t* draw_data = &render::draw_data);
 	void create_fonts_texture();
 	void create_device_objects();
 	void invalidate_device_objects();
@@ -62,7 +62,7 @@ namespace null::render::directx9 {
 
 			utils::win::c_window::on_main_loop();
 
-			setup_draw_data();
+			render::setup_draw_data();
 
 			device->SetRenderState(D3DRS_ZENABLE, FALSE);
 			device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);

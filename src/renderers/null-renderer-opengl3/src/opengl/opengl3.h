@@ -1,5 +1,5 @@
 #pragma once
-#pragma comment(lib, "opengl32.lib");
+#pragma comment(lib, "opengl32.lib")
 #include <null-sdk.h>
 
 namespace opengl {

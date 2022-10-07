@@ -1,21 +1,21 @@
 #include <null-renderer-directx9.h>
 
-namespace null::render::directx9 {
-	void render_draw_data(c_draw_list::draw_data_t* _draw_data) {
-		if(_draw_data->window_size <= 0.f)
+namespace null::renderer::directx9 {
+	void render_draw_data(render::c_draw_list::draw_data_t* draw_data) {
+		if(draw_data->window_size <= 0.f)
 			return;
 
 		static int vtx_buffer_size{ 5000 }, idx_buffer_size{ 10000 };
-		if(!vtx_buffer || vtx_buffer_size < _draw_data->total_vtx_count) {
+		if(!vtx_buffer || vtx_buffer_size < draw_data->total_vtx_count) {
 			if(vtx_buffer) { vtx_buffer->Release(); vtx_buffer = nullptr; }
-			vtx_buffer_size = _draw_data->total_vtx_count + 5000;
+			vtx_buffer_size = draw_data->total_vtx_count + 5000;
 			if(device->CreateVertexBuffer(vtx_buffer_size * sizeof(vertex_t), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, D3DPOOL_DEFAULT, &vtx_buffer, nullptr) < 0)
 				throw std::runtime_error{ "CreateVertexBuffer error" };
 		}
 
-		if(!idx_buffer || idx_buffer_size < _draw_data->total_idx_count) {
+		if(!idx_buffer || idx_buffer_size < draw_data->total_idx_count) {
 			if(idx_buffer) { idx_buffer->Release(); idx_buffer = nullptr; }
-			idx_buffer_size = _draw_data->total_idx_count + 10000;
+			idx_buffer_size = draw_data->total_idx_count + 10000;
 			if(device->CreateIndexBuffer(idx_buffer_size * sizeof(std::uint16_t), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, sizeof(std::uint16_t) == 2 ? D3DFMT_INDEX16 : D3DFMT_INDEX32, D3DPOOL_DEFAULT, &idx_buffer, nullptr) < 0)
 				throw std::runtime_error{ "CreateIndexBuffer error" };
 		}
@@ -31,13 +31,13 @@ namespace null::render::directx9 {
 
 		vertex_t* vtx_dst{ };
 		std::uint16_t* idx_dst{ };
-		if(vtx_buffer->Lock(0, (UINT)(_draw_data->total_vtx_count * sizeof(vertex_t)), (void**)&vtx_dst, D3DLOCK_DISCARD) < 0) throw std::runtime_error{ "vtx_buffer->Lock error" };
-		if(idx_buffer->Lock(0, (UINT)(_draw_data->total_idx_count * sizeof(std::uint16_t)), (void**)&idx_dst, D3DLOCK_DISCARD) < 0) throw std::runtime_error{ "idx_buffer->Lock error" };
-		for(c_draw_list* cmd_list : _draw_data->cmd_lists) {
-			for(c_draw_list::vertex_t vtx_src : cmd_list->vtx_buffer) {
+		if(vtx_buffer->Lock(0, (UINT)(draw_data->total_vtx_count * sizeof(vertex_t)), (void**)&vtx_dst, D3DLOCK_DISCARD) < 0) throw std::runtime_error{ "vtx_buffer->Lock error" };
+		if(idx_buffer->Lock(0, (UINT)(draw_data->total_idx_count * sizeof(std::uint16_t)), (void**)&idx_dst, D3DLOCK_DISCARD) < 0) throw std::runtime_error{ "idx_buffer->Lock error" };
+		for(render::c_draw_list* cmd_list : draw_data->cmd_lists) {
+			for(render::c_draw_list::vertex_t vtx_src : cmd_list->vtx_buffer) {
 				vtx_dst->pos[0] = vtx_src.pos.x; vtx_dst->pos[1] = vtx_src.pos.y;;
 
-				std::uint32_t color = (std::uint32_t)vtx_src.color;
+				std::uint32_t color{ (std::uint32_t)vtx_src.color };
 				vtx_dst->color = (color & 0xFF00FF00) | ((color & 0xFF0000) >> 16) | ((color & 0xFF) << 16);
 
 				vtx_dst->uv[0] = vtx_src.uv.x; vtx_dst->uv[1] = vtx_src.uv.y;
@@ -57,14 +57,14 @@ namespace null::render::directx9 {
 		setup_render_state();
 
 		int global_vtx_offset{ }, global_idx_offset{ };
-		for(c_draw_list* draw_list : _draw_data->cmd_lists) {
-			for(c_draw_list::cmd_t& cmd : draw_list->cmd_buffer) {
-				if(cmd.callbacks.have_callback(e_cmd_callbacks::render_draw_data) && std::any_cast<bool>(cmd.callbacks.call<bool(c_draw_list::cmd_t*)>(e_cmd_callbacks::render_draw_data, &cmd))) {
+		for(render::c_draw_list* draw_list : draw_data->cmd_lists) {
+			for(render::c_draw_list::cmd_t& cmd : draw_list->cmd_buffer) {
+				if(cmd.callbacks.have_callback(e_cmd_callbacks::render_draw_data) && std::any_cast<bool>(cmd.callbacks.call<bool(render::c_draw_list::cmd_t*)>(e_cmd_callbacks::render_draw_data, &cmd))) {
 					setup_render_state();
 					continue;
 				}
 
-				const RECT clip_rect{ (LONG)(cmd.clip_rect.min.x - _draw_data->window_pos.x), (LONG)(cmd.clip_rect.min.y - _draw_data->window_pos.y), (LONG)(cmd.clip_rect.max.x - _draw_data->window_pos.x), (LONG)(cmd.clip_rect.max.y - _draw_data->window_pos.y) };
+				const RECT clip_rect{ (LONG)(cmd.clip_rect.min.x - draw_data->window_pos.x), (LONG)(cmd.clip_rect.min.y - draw_data->window_pos.y), (LONG)(cmd.clip_rect.max.x - draw_data->window_pos.x), (LONG)(cmd.clip_rect.max.y - draw_data->window_pos.y) };
 				device->SetTexture(0, (IDirect3DTexture9*)cmd.texture_id);
 				device->SetScissorRect(&clip_rect);
 				device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, cmd.vtx_offset + global_vtx_offset, 0, (UINT)draw_list->vtx_buffer.size(), cmd.idx_offset + global_idx_offset, cmd.element_count / 3);
@@ -81,10 +81,10 @@ namespace null::render::directx9 {
 		d3d9_state_block->Release();
 	}
 
-	void setup_render_state(c_draw_list::draw_data_t* _draw_data) {
+	void setup_render_state(render::c_draw_list::draw_data_t* draw_data) {
 		D3DVIEWPORT9 viewport{ 0, 0,
-			_draw_data->window_size.x,
-			_draw_data->window_size.y,
+			draw_data->window_size.x,
+			draw_data->window_size.y,
 			0.0f, 1.0f
 		};
 
@@ -112,7 +112,7 @@ namespace null::render::directx9 {
 		device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
 
 		{
-			float l{ 0.5f }, r{ _draw_data->window_size.x + 0.5f }, t{ 0.5f }, b{ _draw_data->window_size.y + 0.5f };
+			float l{ 0.5f }, r{ draw_data->window_size.x + 0.5f }, t{ 0.5f }, b{ draw_data->window_size.y + 0.5f };
 
 			D3DMATRIX mat_identity{ { { 1.0f, 0.0f, 0.0f, 0.0f,  0.0f, 1.0f, 0.0f, 0.0f,  0.0f, 0.0f, 1.0f, 0.0f,  0.0f, 0.0f, 0.0f, 1.0f } } };
 			D3DMATRIX mat_projection{ { {
@@ -128,29 +128,29 @@ namespace null::render::directx9 {
 	}
 
 	void create_fonts_texture() {
-		if(atlas.texture.pixels_alpha8.empty()) {
-			if(atlas.configs.empty()) atlas.add_font_default();
-			atlas.build();
+		if(render::atlas.texture.pixels_alpha8.empty()) {
+			if(render::atlas.configs.empty()) render::atlas.add_font_default();
+			render::atlas.build();
 		}
 
-		atlas.texture.get_data_as_rgba32();
+		render::atlas.texture.get_data_as_rgba32();
 
 		font_texture = nullptr;
-		if(device->CreateTexture(atlas.texture.size.x, atlas.texture.size.y, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &font_texture, nullptr) < 0)
+		if(device->CreateTexture(render::atlas.texture.size.x, render::atlas.texture.size.y, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &font_texture, nullptr) < 0)
 			throw std::runtime_error{ "cannot create font texture" };
 
 		D3DLOCKED_RECT tex_locked_rect{ };
 		if(int result = font_texture->LockRect(0, &tex_locked_rect, nullptr, 0); result != D3D_OK)
 			throw std::runtime_error{ std::format("lock rect error, code {}", result) };
 
-		for(int y : std::views::iota(0, atlas.texture.size.y)) {
-			int size = atlas.texture.size.x * 4;
-			std::memcpy((std::uint8_t*)tex_locked_rect.pBits + tex_locked_rect.Pitch * y, (std::uint8_t*)atlas.texture.pixels_rgba32.data() + size * y, size);
+		for(int y : std::views::iota(0, render::atlas.texture.size.y)) {
+			int size = render::atlas.texture.size.x * 4;
+			std::memcpy((std::uint8_t*)tex_locked_rect.pBits + tex_locked_rect.Pitch * y, (std::uint8_t*)render::atlas.texture.pixels_rgba32.data() + size * y, size);
 		}
 
 		font_texture->UnlockRect(0);
 
-		atlas.texture.id = (void*)font_texture;
+		render::atlas.texture.id = (void*)font_texture;
 	}
 
 	void create_device_objects() {
@@ -174,6 +174,6 @@ namespace null::render::directx9 {
 		if(vtx_buffer) { vtx_buffer->Release(); vtx_buffer = nullptr; }
 		if(idx_buffer) { idx_buffer->Release(); idx_buffer = nullptr; }
 		if(vtx_declaration) { vtx_declaration->Release(); vtx_declaration = nullptr; }
-		if(font_texture) { font_texture->Release(); font_texture = nullptr; atlas.texture.id = nullptr; }
+		if(font_texture) { font_texture->Release(); font_texture = nullptr; render::atlas.texture.id = nullptr; }
 	}
 }

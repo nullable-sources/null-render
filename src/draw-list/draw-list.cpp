@@ -233,6 +233,26 @@ namespace null::render {
         } else prim_rect(a, b, color);
     }
 
+    void c_draw_list::draw_quad(const std::array<vec2_t, 4>& points, const color_t& color, float thickness) {
+        if(color.a() <= 0.f) return;
+
+        path.push_back(points[0]);
+        path.push_back(points[1]);
+        path.push_back(points[2]);
+        path.push_back(points[3]);
+        path_stroke(color, true, thickness);
+    }
+
+    void c_draw_list::draw_quad_filled(const std::array<vec2_t, 4>& points, const color_t& color) {
+        if(color.a() <= 0.f) return;
+
+        path.push_back(points[0]);
+        path.push_back(points[1]);
+        path.push_back(points[2]);
+        path.push_back(points[3]);
+        path_fill_convex(color);
+    }
+
     void c_draw_list::draw_convex_poly_filled(const std::vector<vec2_t>& points, const color_t& color) {
         if(points.size() < 3 || color.a() <= 0.f) return;
 
@@ -446,5 +466,23 @@ namespace null::render {
         if(num_segments == 12) path_arc_to_fast(center, radius, 0, 11);
         else path_arc_to(center, radius, 0.0f, (std::numbers::pi * 2.f) * (num_segments - 1.f) / num_segments, num_segments - 1);
         path_fill_convex(clr);
+    }
+
+    void c_draw_list::draw_image(void* texture, const vec2_t& a, const vec2_t& b, const vec2_t& uv_min, const vec2_t& uv_max, const color_t& color) {
+        if(color.a() == 0.f) return;
+
+        const bool _push_texture{ texture != cmd_header.texture_id };
+        if(_push_texture) push_texture_id(texture);
+        prim_rect_uv(a, b, uv_min, uv_max, color);
+        if(_push_texture) pop_texture_id();
+    }
+
+    void c_draw_list::draw_image_quad(void* texture, const std::array<std::pair<vec2_t, vec2_t>, 4>& points_and_uvs, const color_t& color) {
+        if(color.a() == 0.f) return;
+
+        const bool _push_texture{ texture != cmd_header.texture_id };
+        if(_push_texture) push_texture_id(texture);
+        prim_quad_uv(points_and_uvs, color);
+        if(_push_texture) pop_texture_id();
     }
 }

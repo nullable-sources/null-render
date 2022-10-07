@@ -2,7 +2,7 @@
 #include <shaders/shaders.h>
 
 struct directx11_state_t {
-    UINT scissor_rects_count, viewports_count;
+    UINT scissor_rects_count{ }, viewports_count{ };
     D3D11_RECT scissor_rects[D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE]{ };
     D3D11_VIEWPORT viewports[D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE]{ };
     ID3D11RasterizerState* rasterizer_state{ };
@@ -66,7 +66,7 @@ struct directx11_state_t {
     }
 };
 
-namespace null::render::directx11 {
+namespace null::renderer::directx11 {
     void initialize(ID3D11Device* _device, ID3D11DeviceContext* _context) {
         if(_device) device = _device;
         if(_context) context = _context;
@@ -94,14 +94,14 @@ namespace null::render::directx11 {
         if(context) { context->Release(); context = nullptr; }
     }
 
-    void render_draw_data(c_draw_list::draw_data_t* _draw_data) {
-        if(_draw_data->window_size <= 0.f)
+    void render_draw_data(render::c_draw_list::draw_data_t* draw_data) {
+        if(draw_data->window_size <= 0.f)
             return;
 
         static int vertex_buffer_size{ 5000 }, index_buffer_size{ 10000 };
-        if(!vertex_buffer || vertex_buffer_size < _draw_data->total_vtx_count) {
+        if(!vertex_buffer || vertex_buffer_size < draw_data->total_vtx_count) {
             if(vertex_buffer) { vertex_buffer->Release(); vertex_buffer = nullptr; }
-            vertex_buffer_size = _draw_data->total_vtx_count + 5000;
+            vertex_buffer_size = draw_data->total_vtx_count + 5000;
             D3D11_BUFFER_DESC buffer_desc{
                 .ByteWidth{ vertex_buffer_size * sizeof(vertex_t) },
                 .Usage{ D3D11_USAGE_DYNAMIC },
@@ -113,9 +113,9 @@ namespace null::render::directx11 {
                 throw std::runtime_error{ "cant create vertex buffer" };
         }
 
-        if(!index_buffer || index_buffer_size < _draw_data->total_idx_count) {
+        if(!index_buffer || index_buffer_size < draw_data->total_idx_count) {
             if(index_buffer) { index_buffer->Release(); index_buffer = nullptr; }
-            index_buffer_size = _draw_data->total_idx_count + 10000;
+            index_buffer_size = draw_data->total_idx_count + 10000;
             D3D11_BUFFER_DESC buffer_desc{
                 .ByteWidth{ index_buffer_size * sizeof(std::uint16_t) },
                 .Usage{ D3D11_USAGE_DYNAMIC },
@@ -134,8 +134,8 @@ namespace null::render::directx11 {
 
         vertex_t* vtx_dst{ (vertex_t*)vtx_resource.pData };
         std::uint16_t* idx_dst{ (std::uint16_t*)idx_resource.pData };
-        for(c_draw_list* cmd_list : _draw_data->cmd_lists) {
-            for(c_draw_list::vertex_t& vtx_src : cmd_list->vtx_buffer) {
+        for(render::c_draw_list* cmd_list : draw_data->cmd_lists) {
+            for(render::c_draw_list::vertex_t& vtx_src : cmd_list->vtx_buffer) {
                 vtx_dst->pos[0] = vtx_src.pos.x; vtx_dst->pos[1] = vtx_src.pos.y;;
                 vtx_dst->color = (std::uint32_t)vtx_src.color;
                 vtx_dst->uv[0] = vtx_src.uv.x; vtx_dst->uv[1] = vtx_src.uv.y;
@@ -151,32 +151,32 @@ namespace null::render::directx11 {
 
         {
             float matrix[4][4] = {
-                { 2.f / _draw_data->window_size.x,  0.f,                                0.f,    0.f },
-                { 0.f,                              -(2.f / _draw_data->window_size.y), 0.f,    0.f },
+                { 2.f / draw_data->window_size.x,   0.f,                                0.f,    0.f },
+                { 0.f,                              -(2.f / draw_data->window_size.y),  0.f,    0.f },
                 { 0.f,                              0.f,                                0.5f,   0.f },
                 { -1.f,                             1,                                  0.5f,   1.f },
             };
 
-            shaders::vertex::constant vertex_const;
+            render::shaders::vertex::constant vertex_const;
             memcpy(&vertex_const.matrix, matrix, sizeof(matrix));
 
-            shaders::vertex::shader.edit_constant(vertex_const);
+            render::shaders::vertex::shader.edit_constant(vertex_const);
         }
 
         directx11_state_t directx11_state{ };
         directx11_state.save(context);
 
-        setup_render_state(_draw_data);
+        setup_render_state(draw_data);
 
         int global_idx_offset{ }, global_vtx_offset{ };
-        for(c_draw_list* cmd_list : _draw_data->cmd_lists) {
-            for(c_draw_list::cmd_t& cmd : cmd_list->cmd_buffer) {
-                if(cmd.callbacks.have_callback(e_cmd_callbacks::render_draw_data) && std::any_cast<bool>(cmd.callbacks.call<bool(c_draw_list::cmd_t*)>(e_cmd_callbacks::render_draw_data, &cmd))) {
+        for(render::c_draw_list* cmd_list : draw_data->cmd_lists) {
+            for(render::c_draw_list::cmd_t& cmd : cmd_list->cmd_buffer) {
+                if(cmd.callbacks.have_callback(e_cmd_callbacks::render_draw_data) && std::any_cast<bool>(cmd.callbacks.call<bool(render::c_draw_list::cmd_t*)>(e_cmd_callbacks::render_draw_data, &cmd))) {
                     setup_render_state();
                     continue;
                 }
 
-                const D3D11_RECT clip_rect{ (LONG)(cmd.clip_rect.min.x - _draw_data->window_pos.x), (LONG)(cmd.clip_rect.min.y - _draw_data->window_pos.y), (LONG)(cmd.clip_rect.max.x - _draw_data->window_pos.x), (LONG)(cmd.clip_rect.max.y - _draw_data->window_pos.y) };
+                const D3D11_RECT clip_rect{ (LONG)(cmd.clip_rect.min.x - draw_data->window_pos.x), (LONG)(cmd.clip_rect.min.y - draw_data->window_pos.y), (LONG)(cmd.clip_rect.max.x - draw_data->window_pos.x), (LONG)(cmd.clip_rect.max.y - draw_data->window_pos.y) };
                 context->RSSetScissorRects(1, &clip_rect);
 
                 ID3D11ShaderResourceView* texture_srv{ (ID3D11ShaderResourceView*)cmd.texture_id };
@@ -190,15 +190,15 @@ namespace null::render::directx11 {
         directx11_state.restore(context);
     }
 
-    void setup_render_state(c_draw_list::draw_data_t* _draw_data) {
+    void setup_render_state(render::c_draw_list::draw_data_t* draw_data) {
         D3D11_VIEWPORT viewport{ 0, 0,
-            _draw_data->window_size.x,
-            _draw_data->window_size.y,
+            draw_data->window_size.x,
+            draw_data->window_size.y,
             0, 1
         };
         context->RSSetViewports(1, &viewport);
 
-        shaders::setup_render_state(_draw_data);
+        render::shaders::setup_render_state(draw_data);
 
         std::uint32_t stride{ sizeof(vertex_t) };
         std::uint32_t offset{ };
@@ -220,17 +220,17 @@ namespace null::render::directx11 {
     }
 
     void create_fonts_texture() {
-        if(atlas.texture.pixels_alpha8.empty()) {
-            if(atlas.configs.empty()) atlas.add_font_default();
-            atlas.build();
+        if(render::atlas.texture.pixels_alpha8.empty()) {
+            if(render::atlas.configs.empty()) render::atlas.add_font_default();
+            render::atlas.build();
         }
 
-        atlas.texture.get_data_as_rgba32();
+        render::atlas.texture.get_data_as_rgba32();
 
         {
             D3D11_TEXTURE2D_DESC texture_desc{
-                .Width{ (std::uint32_t)atlas.texture.size.x },
-                .Height{ (std::uint32_t)atlas.texture.size.y },
+                .Width{ (std::uint32_t)render::atlas.texture.size.x },
+                .Height{ (std::uint32_t)render::atlas.texture.size.y },
                 .MipLevels{ 1 },
                 .ArraySize{ 1 },
                 .Format{ DXGI_FORMAT_R8G8B8A8_UNORM },
@@ -244,7 +244,7 @@ namespace null::render::directx11 {
 
             ID3D11Texture2D* texture{ };
             D3D11_SUBRESOURCE_DATA subresource{
-                .pSysMem{ (void*)atlas.texture.pixels_rgba32.data() },
+                .pSysMem{ (void*)render::atlas.texture.pixels_rgba32.data() },
                 .SysMemPitch{ texture_desc.Width * 4 },
                 .SysMemSlicePitch{ 0 }
             };
@@ -262,7 +262,7 @@ namespace null::render::directx11 {
             texture->Release();
         }
 
-        atlas.texture.id = (void*)font_texture_view;
+        render::atlas.texture.id = (void*)font_texture_view;
 
         {
             D3D11_SAMPLER_DESC sampler_desc{
@@ -283,7 +283,7 @@ namespace null::render::directx11 {
         if(!device) return;
         if(font_sampler) invalidate_device_objects();
 
-        shaders::create_shaders();
+        render::shaders::create_shaders();
 
         {
             D3D11_INPUT_ELEMENT_DESC local_layout[] = {
@@ -291,7 +291,7 @@ namespace null::render::directx11 {
                         { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,   0, (UINT)offsetof(vertex_t, uv),  D3D11_INPUT_PER_VERTEX_DATA, 0 },
                         { "COLOR",    0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, (UINT)offsetof(vertex_t, color), D3D11_INPUT_PER_VERTEX_DATA, 0 },
             };
-            device->CreateInputLayout(local_layout, 3, shaders::sources::vertex, sizeof(shaders::sources::vertex), &input_layout);
+            device->CreateInputLayout(local_layout, 3, render::shaders::sources::vertex, sizeof(render::shaders::sources::vertex), &input_layout);
         }
 
 
@@ -352,10 +352,10 @@ namespace null::render::directx11 {
     void invalidate_device_objects() {
         if(!device) return;
 
-        shaders::release_shaders();
+        render::shaders::release_shaders();
 
         if(font_sampler) { font_sampler->Release(); font_sampler = nullptr; }
-        if(font_texture_view) { font_texture_view->Release(); font_texture_view = nullptr; atlas.texture.id = nullptr; }
+        if(font_texture_view) { font_texture_view->Release(); font_texture_view = nullptr; render::atlas.texture.id = nullptr; }
         if(index_buffer) { index_buffer->Release(); index_buffer = nullptr; }
         if(vertex_buffer) { vertex_buffer->Release(); vertex_buffer = nullptr; }
 
