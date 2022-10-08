@@ -1,7 +1,7 @@
 #include <null-renderer-opengl3.h>
 
 namespace null::renderer {
-    void render_draw_data(draw_data_t& _draw_data) {
+    void render(draw_data_t& _draw_data) {
         if(draw_data_t::screen_size <= 0)
             return;
 
