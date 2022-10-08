@@ -4,7 +4,7 @@
 
 #include <null-render.h>
 
-namespace null::renderer::directx11 {
+namespace null::renderer {
 	struct vertex_t {
 		float pos[3]{ };
 		std::uint32_t color{ };
@@ -24,8 +24,8 @@ namespace null::renderer::directx11 {
 	inline ID3D11DepthStencilState* depth_stencil_state{ };
 	inline IDXGISwapChain* swap_chain{ };
 
-	void render_draw_data(render::c_draw_list::draw_data_t* draw_data = &render::draw_data);
-	void setup_render_state(render::c_draw_list::draw_data_t* draw_data = &render::draw_data);
+	void render(draw_data_t& _draw_data = draw_data);
+	void setup_state();
 	void create_fonts_texture();
 	void create_device_objects();
 	void invalidate_device_objects();
@@ -93,12 +93,12 @@ namespace null::renderer::directx11 {
 
 			utils::win::c_window::on_main_loop();
 
-			render::setup_draw_data();
+			setup_default_draw_data();
 
 			context->OMSetRenderTargets(1, &main_render_target_view, nullptr);
 			context->ClearRenderTargetView(main_render_target_view, clear_color.channels.data());
 
-			render_draw_data();
+			render();
 
 			swap_chain->Present(1, 0);
 		}

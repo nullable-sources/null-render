@@ -415,7 +415,7 @@ namespace null::render {
     public:
         struct texture_t {
         public:
-            void* id{ };
+            void* data{ };
             int desired_width{ 0 }, glyph_padding{ 1 };
 
             std::vector<std::uint8_t> pixels_alpha8{ };

@@ -1,8 +1,8 @@
 #include <null-renderer-opengl3.h>
 
-namespace null::renderer::opengl3 {
-    void render_draw_data(render::c_draw_list::draw_data_t* draw_data) {
-        if(draw_data->window_size <= 0)
+namespace null::renderer {
+    void render_draw_data(draw_data_t& _draw_data) {
+        if(draw_data_t::screen_size <= 0)
             return;
 
         std::uint32_t last_active_texture{ }; opengl::get_integerv(opengl::e_active_texture, (int*)&last_active_texture);
@@ -33,25 +33,25 @@ namespace null::renderer::opengl3 {
         std::uint32_t vertex_array_object{ };
         opengl::gen_vertex_arrays(1, &vertex_array_object);
 
-        setup_render_state(draw_data, vertex_array_object);
+        setup_state(vertex_array_object);
 
-        for(render::c_draw_list* draw_list : draw_data->cmd_lists) {
+        for(render::c_draw_list* draw_list : _draw_data.draw_lists) {
             std::vector<vertex_t> vertex_buffer{ };
-            std::ranges::transform(draw_list->vtx_buffer, std::back_inserter(vertex_buffer), [](render::c_draw_list::vertex_t& vtx) { return vertex_t{ vtx.pos, vtx.uv, vtx.color }; });
+            std::ranges::transform(draw_list->vtx_buffer, std::back_inserter(vertex_buffer), [](render::vertex_t& vtx) { return vertex_t{ vtx.pos, vtx.uv, vtx.color }; });
 
             opengl::buffer_data(opengl::e_array_buffer, (std::intptr_t)vertex_buffer.size() * (int)sizeof(vertex_t), (const void*)vertex_buffer.data(), opengl::e_stream_draw);
             opengl::buffer_data(opengl::e_element_array_buffer, (std::intptr_t)draw_list->idx_buffer.size() * (int)sizeof(unsigned short), (const void*)draw_list->idx_buffer.data(), opengl::e_stream_draw);
 
             for(render::c_draw_list::cmd_t& cmd : draw_list->cmd_buffer) {
-                if(cmd.callbacks.have_callback(e_cmd_callbacks::render_draw_data) && std::any_cast<bool>(cmd.callbacks.call<bool(render::c_draw_list::cmd_t*)>(e_cmd_callbacks::render_draw_data, &cmd))) {
-                    setup_render_state(draw_data, vertex_array_object);
+                if(cmd.callbacks.have_callback(render::e_cmd_callbacks::render_draw_data) && std::any_cast<bool>(cmd.callbacks.call<bool(render::c_draw_list::cmd_t*)>(render::e_cmd_callbacks::render_draw_data, &cmd))) {
+                    setup_state(vertex_array_object);
                     continue;
                 }
 
-                if(cmd.clip_rect.min < draw_data->window_size && cmd.clip_rect.max.x >= 0.0f && cmd.clip_rect.max.y >= 0.0f) {
-                    opengl::scissor((int)cmd.clip_rect.min.x, (int)(draw_data->window_size.y - cmd.clip_rect.max.y), (int)(cmd.clip_rect.size().x), (int)(cmd.clip_rect.size().y));
+                if(cmd.clip_rect.min < draw_data_t::screen_size && cmd.clip_rect.max.x >= 0.0f && cmd.clip_rect.max.y >= 0.0f) {
+                    opengl::scissor((int)cmd.clip_rect.min.x, (int)(draw_data_t::screen_size.y - cmd.clip_rect.max.y), (int)(cmd.clip_rect.size().x), (int)(cmd.clip_rect.size().y));
 
-                    opengl::bind_texture(opengl::e_texture_2d, (std::uint32_t)cmd.texture_id);
+                    opengl::bind_texture(opengl::e_texture_2d, (std::uint32_t)cmd.texture);
                     opengl::draw_elements_base_vertex(opengl::e_triangles, cmd.element_count, sizeof(std::uint16_t) == 2 ? opengl::e_unsigned_short : opengl::e_unsigned_int, (void*)(std::intptr_t)(cmd.idx_offset * sizeof(std::uint16_t)), cmd.vtx_offset);
                     opengl::draw_elements(opengl::e_triangles, cmd.element_count, sizeof(std::uint16_t) == 2 ? opengl::e_unsigned_short : opengl::e_unsigned_int, (void*)(std::intptr_t)(cmd.idx_offset * sizeof(std::uint16_t)));
                 }
@@ -82,7 +82,7 @@ namespace null::renderer::opengl3 {
         opengl::scissor(last_scissor_box[0], last_scissor_box[1], last_scissor_box[2], last_scissor_box[3]);
     }
 
-    void setup_render_state(render::c_draw_list::draw_data_t* draw_data, std::uint32_t vertex_array_object) {
+    void setup_state(std::uint32_t vertex_array_object) {
         opengl::enable(opengl::e_blend);
         opengl::blend_equation(opengl::e_func_add);
         opengl::blend_func_separate(opengl::e_src_alpha, opengl::e_one_minus_src_alpha, 1, opengl::e_one_minus_src_alpha);
@@ -95,12 +95,12 @@ namespace null::renderer::opengl3 {
         opengl::polygon_mode(opengl::e_front_and_back, opengl::e_fill);
 #endif
 
-        opengl::viewport(0, 0, draw_data->window_size.x, draw_data->window_size.y);
+        opengl::viewport(0, 0, draw_data_t::screen_size.x, draw_data_t::screen_size.y);
         matrix4x4_t ortho{ {
-            { 2.f / draw_data->window_size.x,   0.f,                                0.f,    0.f },
-            { 0.f,                              2.f / (-draw_data->window_size.y),  0.f,    0.f },
-            { 0.f,                              0.f,                                -1.f,   0.f },
-            { -1.f,                             1.f,                                0.f,    1.f }
+            { 2.f / draw_data_t::screen_size.x,0.f,                                     0.f,    0.f },
+            { 0.f,                              2.f / (-draw_data_t::screen_size.y),    0.f,    0.f },
+            { 0.f,                              0.f,                                    -1.f,   0.f },
+            { -1.f,                             1.f,                                    0.f,    1.f }
             } };
         opengl::use_program(shader_program);
         opengl::uniform1i(attribute_texture, 0);
@@ -136,7 +136,7 @@ namespace null::renderer::opengl3 {
 #endif
         opengl::tex_image2d(opengl::e_texture_2d, 0, opengl::e_rgba, render::atlas.texture.size.x, render::atlas.texture.size.y, 0, opengl::e_rgba, opengl::e_unsigned_byte, (void*)render::atlas.texture.pixels_rgba32.data());
 
-        render::atlas.texture.id = (void*)font_texture;
+        render::atlas.texture.data = (void*)font_texture;
 
         opengl::bind_texture(opengl::e_texture_2d, last_texture);
 
@@ -146,7 +146,7 @@ namespace null::renderer::opengl3 {
     void destroy_fonts_texture() {
         if(font_texture) {
             opengl::delete_textures(1, &font_texture);
-            render::atlas.texture.id = nullptr;
+            render::atlas.texture.data = nullptr;
             font_texture = 0;
         }
     }

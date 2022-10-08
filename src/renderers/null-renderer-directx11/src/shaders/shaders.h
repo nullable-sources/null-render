@@ -47,7 +47,7 @@ namespace null::render::shaders {
 			if(flags & e_shader_flags::dont_use_constant_buffer || constant_buffer != nullptr || constant_size == 0) return;
 
 			CD3D11_BUFFER_DESC desc(((constant_size + 15) / 16) * 16, D3D11_BIND_CONSTANT_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
-			renderer::directx11::device->CreateBuffer(&desc, NULL, &constant_buffer);
+			renderer::device->CreateBuffer(&desc, NULL, &constant_buffer);
 		}
 
 		virtual void set_shader() = 0;
@@ -56,9 +56,9 @@ namespace null::render::shaders {
 		template <typename constant_type>
 		void edit_constant(constant_type constant) {
 			D3D11_MAPPED_SUBRESOURCE mapped_subresource;
-			renderer::directx11::context->Map(constant_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_subresource);
+			renderer::context->Map(constant_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_subresource);
 			*(constant_type*)mapped_subresource.pData = constant;
-			renderer::directx11::context->Unmap(constant_buffer, 0);
+			renderer::context->Unmap(constant_buffer, 0);
 		}
 
 		virtual operator bool() { return shader != nullptr && (constant_buffer != nullptr && !(flags & e_shader_flags::dont_use_constant_buffer)); }
@@ -73,17 +73,17 @@ namespace null::render::shaders {
 
 		virtual void create_shader(std::vector<byte> shader_source) override {
 			if(!shader)
-				renderer::directx11::device->CreateVertexShader(shader_source.data(), shader_source.size(), 0, &shader);
+				renderer::device->CreateVertexShader(shader_source.data(), shader_source.size(), 0, &shader);
 		}
 
 		virtual void set_shader() override {
 			if(shader)
-				renderer::directx11::context->VSSetShader(shader, nullptr, 0);
+				renderer::context->VSSetShader(shader, nullptr, 0);
 		}
 
 		virtual void set_constant() override {
 			if(constant_buffer)
-				renderer::directx11::context->VSSetConstantBuffers(0, 1, &constant_buffer);
+				renderer::context->VSSetConstantBuffers(0, 1, &constant_buffer);
 		}
 	};
 
@@ -95,21 +95,21 @@ namespace null::render::shaders {
 
 		virtual void create_shader(std::vector<byte> shader_source) override {
 			if(!shader)
-				renderer::directx11::device->CreatePixelShader(shader_source.data(), shader_source.size(), 0, &shader);
+				renderer::device->CreatePixelShader(shader_source.data(), shader_source.size(), 0, &shader);
 		}
 
 		virtual void set_shader() override {
 			if(!shader) throw std::runtime_error{ "shader == nullptr" };
-			renderer::directx11::context->PSSetShader(shader, nullptr, 0);
+			renderer::context->PSSetShader(shader, nullptr, 0);
 		}
 
 		virtual void set_constant() override {
 			if(!constant_buffer) throw std::runtime_error{ "constant_buffer == nullptr" };
-			renderer::directx11::context->PSSetConstantBuffers(0, 1, &constant_buffer);
+			renderer::context->PSSetConstantBuffers(0, 1, &constant_buffer);
 		}
 	};
 
-	void setup_render_state(c_draw_list::draw_data_t* _draw_data);
+	void setup_state();
 	void create_shaders();
 	void release_shaders();
 	void win_proc();

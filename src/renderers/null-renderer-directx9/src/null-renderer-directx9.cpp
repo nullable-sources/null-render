@@ -1,21 +1,21 @@
 #include <null-renderer-directx9.h>
 
-namespace null::renderer::directx9 {
-	void render_draw_data(render::c_draw_list::draw_data_t* draw_data) {
-		if(draw_data->window_size <= 0.f)
+namespace null::renderer {
+	void render(draw_data_t& _draw_data) {
+		if(draw_data_t::screen_size <= 0.f)
 			return;
 
 		static int vtx_buffer_size{ 5000 }, idx_buffer_size{ 10000 };
-		if(!vtx_buffer || vtx_buffer_size < draw_data->total_vtx_count) {
+		if(!vtx_buffer || vtx_buffer_size < _draw_data.total_vtx_count) {
 			if(vtx_buffer) { vtx_buffer->Release(); vtx_buffer = nullptr; }
-			vtx_buffer_size = draw_data->total_vtx_count + 5000;
+			vtx_buffer_size = _draw_data.total_vtx_count + 5000;
 			if(device->CreateVertexBuffer(vtx_buffer_size * sizeof(vertex_t), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, D3DPOOL_DEFAULT, &vtx_buffer, nullptr) < 0)
 				throw std::runtime_error{ "CreateVertexBuffer error" };
 		}
 
-		if(!idx_buffer || idx_buffer_size < draw_data->total_idx_count) {
+		if(!idx_buffer || idx_buffer_size < _draw_data.total_idx_count) {
 			if(idx_buffer) { idx_buffer->Release(); idx_buffer = nullptr; }
-			idx_buffer_size = draw_data->total_idx_count + 10000;
+			idx_buffer_size = _draw_data.total_idx_count + 10000;
 			if(device->CreateIndexBuffer(idx_buffer_size * sizeof(std::uint16_t), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, sizeof(std::uint16_t) == 2 ? D3DFMT_INDEX16 : D3DFMT_INDEX32, D3DPOOL_DEFAULT, &idx_buffer, nullptr) < 0)
 				throw std::runtime_error{ "CreateIndexBuffer error" };
 		}
@@ -31,10 +31,10 @@ namespace null::renderer::directx9 {
 
 		vertex_t* vtx_dst{ };
 		std::uint16_t* idx_dst{ };
-		if(vtx_buffer->Lock(0, (UINT)(draw_data->total_vtx_count * sizeof(vertex_t)), (void**)&vtx_dst, D3DLOCK_DISCARD) < 0) throw std::runtime_error{ "vtx_buffer->Lock error" };
-		if(idx_buffer->Lock(0, (UINT)(draw_data->total_idx_count * sizeof(std::uint16_t)), (void**)&idx_dst, D3DLOCK_DISCARD) < 0) throw std::runtime_error{ "idx_buffer->Lock error" };
-		for(render::c_draw_list* cmd_list : draw_data->cmd_lists) {
-			for(render::c_draw_list::vertex_t vtx_src : cmd_list->vtx_buffer) {
+		if(vtx_buffer->Lock(0, (UINT)(_draw_data.total_vtx_count * sizeof(vertex_t)), (void**)&vtx_dst, D3DLOCK_DISCARD) < 0) throw std::runtime_error{ "vtx_buffer->Lock error" };
+		if(idx_buffer->Lock(0, (UINT)(_draw_data.total_idx_count * sizeof(std::uint16_t)), (void**)&idx_dst, D3DLOCK_DISCARD) < 0) throw std::runtime_error{ "idx_buffer->Lock error" };
+		for(render::c_draw_list* cmd_list : _draw_data.draw_lists) {
+			for(render::vertex_t vtx_src : cmd_list->vtx_buffer) {
 				vtx_dst->pos[0] = vtx_src.pos.x; vtx_dst->pos[1] = vtx_src.pos.y;;
 
 				std::uint32_t color{ (std::uint32_t)vtx_src.color };
@@ -54,18 +54,18 @@ namespace null::renderer::directx9 {
 		device->SetVertexDeclaration(vtx_declaration);
 		device->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
 
-		setup_render_state();
+		setup_state();
 
 		int global_vtx_offset{ }, global_idx_offset{ };
-		for(render::c_draw_list* draw_list : draw_data->cmd_lists) {
+		for(render::c_draw_list* draw_list : _draw_data.draw_lists) {
 			for(render::c_draw_list::cmd_t& cmd : draw_list->cmd_buffer) {
-				if(cmd.callbacks.have_callback(e_cmd_callbacks::render_draw_data) && std::any_cast<bool>(cmd.callbacks.call<bool(render::c_draw_list::cmd_t*)>(e_cmd_callbacks::render_draw_data, &cmd))) {
-					setup_render_state();
+				if(cmd.callbacks.have_callback(render::e_cmd_callbacks::render_draw_data) && std::any_cast<bool>(cmd.callbacks.call<bool(render::c_draw_list::cmd_t*)>(render::e_cmd_callbacks::render_draw_data, &cmd))) {
+					setup_state();
 					continue;
 				}
 
-				const RECT clip_rect{ (LONG)(cmd.clip_rect.min.x - draw_data->window_pos.x), (LONG)(cmd.clip_rect.min.y - draw_data->window_pos.y), (LONG)(cmd.clip_rect.max.x - draw_data->window_pos.x), (LONG)(cmd.clip_rect.max.y - draw_data->window_pos.y) };
-				device->SetTexture(0, (IDirect3DTexture9*)cmd.texture_id);
+				const RECT clip_rect{ (LONG)cmd.clip_rect.min.x, (LONG)cmd.clip_rect.min.y, (LONG)cmd.clip_rect.max.x, (LONG)cmd.clip_rect.max.y };
+				device->SetTexture(0, (IDirect3DTexture9*)font_texture);
 				device->SetScissorRect(&clip_rect);
 				device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, cmd.vtx_offset + global_vtx_offset, 0, (UINT)draw_list->vtx_buffer.size(), cmd.idx_offset + global_idx_offset, cmd.element_count / 3);
 			}
@@ -81,10 +81,10 @@ namespace null::renderer::directx9 {
 		d3d9_state_block->Release();
 	}
 
-	void setup_render_state(render::c_draw_list::draw_data_t* draw_data) {
+	void setup_state() {
 		D3DVIEWPORT9 viewport{ 0, 0,
-			draw_data->window_size.x,
-			draw_data->window_size.y,
+			draw_data_t::screen_size.x,
+			draw_data_t::screen_size.y,
 			0.0f, 1.0f
 		};
 
@@ -112,7 +112,7 @@ namespace null::renderer::directx9 {
 		device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
 
 		{
-			float l{ 0.5f }, r{ draw_data->window_size.x + 0.5f }, t{ 0.5f }, b{ draw_data->window_size.y + 0.5f };
+			float l{ 0.5f }, r{ draw_data_t::screen_size.x + 0.5f }, t{ 0.5f }, b{ draw_data_t::screen_size.y + 0.5f };
 
 			D3DMATRIX mat_identity{ { { 1.0f, 0.0f, 0.0f, 0.0f,  0.0f, 1.0f, 0.0f, 0.0f,  0.0f, 0.0f, 1.0f, 0.0f,  0.0f, 0.0f, 0.0f, 1.0f } } };
 			D3DMATRIX mat_projection{ { {
@@ -150,7 +150,7 @@ namespace null::renderer::directx9 {
 
 		font_texture->UnlockRect(0);
 
-		render::atlas.texture.id = (void*)font_texture;
+		render::atlas.texture.data = (void*)font_texture;
 	}
 
 	void create_device_objects() {
@@ -174,6 +174,6 @@ namespace null::renderer::directx9 {
 		if(vtx_buffer) { vtx_buffer->Release(); vtx_buffer = nullptr; }
 		if(idx_buffer) { idx_buffer->Release(); idx_buffer = nullptr; }
 		if(vtx_declaration) { vtx_declaration->Release(); vtx_declaration = nullptr; }
-		if(font_texture) { font_texture->Release(); font_texture = nullptr; render::atlas.texture.id = nullptr; }
+		if(font_texture) { font_texture->Release(); font_texture = nullptr; render::atlas.texture.data = nullptr; }
 	}
 }

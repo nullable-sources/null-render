@@ -88,7 +88,6 @@ namespace null::render {
         if(!font || !font->is_loaded()) throw std::runtime_error{ "!font || !font->is_loaded()" };
         if(font->scale <= 0.f) throw std::runtime_error{ "font->scale <= 0.f" };
         current_font = font;
-        shared_data.font = current_font;
     }
 
     void c_font::push_font(c_font* font) {
