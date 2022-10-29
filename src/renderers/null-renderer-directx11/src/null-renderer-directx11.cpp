@@ -136,9 +136,11 @@ namespace null::renderer {
         std::uint16_t* idx_dst{ (std::uint16_t*)idx_resource.pData };
         for(render::c_draw_list* cmd_list : _draw_data.draw_lists) {
             for(render::vertex_t& vtx_src : cmd_list->vtx_buffer) {
-                vtx_dst->pos[0] = vtx_src.pos.x; vtx_dst->pos[1] = vtx_src.pos.y;;
-                vtx_dst->color = (std::uint32_t)vtx_src.color;
-                vtx_dst->uv[0] = vtx_src.uv.x; vtx_dst->uv[1] = vtx_src.uv.y;
+                *vtx_dst = {
+                    { vtx_src.pos.x, vtx_src.pos.y, 0.f },
+                    (std::uint32_t)((vtx_src.color.a() & 0xff) << 24) | ((vtx_src.color.b() & 0xff) << 16) | ((vtx_src.color.g() & 0xff) << 8) | (vtx_src.color.r() & 0xff),
+                    { vtx_src.uv.x, vtx_src.uv.y }
+                };
 
                 vtx_dst++;
             }

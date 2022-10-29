@@ -28,8 +28,8 @@ namespace null::render::shaders {
 		ID3D11Buffer* constant_buffer{ };
 
 	public:
-		i_shader() = default;
-		i_shader(e_shader_flags _flags) : flags(_flags) { }
+		i_shader() { }
+		i_shader(e_shader_flags _flags) : flags{ _flags } { }
 		i_shader(std::vector<byte> shader_source, size_t constant_size) { create(shader_source, constant_size); }
 
 		virtual void create(std::vector<byte> shader_source, size_t constant_size = 0) {
@@ -66,36 +66,24 @@ namespace null::render::shaders {
 	};
 
 	class c_vertex_shader : public i_shader<ID3D11VertexShader> {
-	public:
-		c_vertex_shader() = default;
-		c_vertex_shader(e_shader_flags _flags) : i_shader(_flags) { }
-		c_vertex_shader(std::vector<byte> shader_source, size_t constant_size) : i_shader(shader_source, constant_size) { }
-
+	public: using i_shader::i_shader;
 		virtual void create_shader(std::vector<byte> shader_source) override {
-			if(!shader)
-				renderer::device->CreateVertexShader(shader_source.data(), shader_source.size(), 0, &shader);
+			if(!shader) renderer::device->CreateVertexShader(shader_source.data(), shader_source.size(), 0, &shader);
 		}
 
 		virtual void set_shader() override {
-			if(shader)
-				renderer::context->VSSetShader(shader, nullptr, 0);
+			if(shader) renderer::context->VSSetShader(shader, nullptr, 0);
 		}
 
 		virtual void set_constant() override {
-			if(constant_buffer)
-				renderer::context->VSSetConstantBuffers(0, 1, &constant_buffer);
+			if(constant_buffer) renderer::context->VSSetConstantBuffers(0, 1, &constant_buffer);
 		}
 	};
 
 	class c_pixel_shader : public i_shader<ID3D11PixelShader> {
-	public:
-		c_pixel_shader() = default;
-		c_pixel_shader(e_shader_flags _flags) : i_shader(_flags) { }
-		c_pixel_shader(std::vector<byte> shader_source, size_t constant_size) : i_shader(shader_source, constant_size) { }
-
+	public: using i_shader::i_shader;
 		virtual void create_shader(std::vector<byte> shader_source) override {
-			if(!shader)
-				renderer::device->CreatePixelShader(shader_source.data(), shader_source.size(), 0, &shader);
+			if(!shader) renderer::device->CreatePixelShader(shader_source.data(), shader_source.size(), 0, &shader);
 		}
 
 		virtual void set_shader() override {

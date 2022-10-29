@@ -35,12 +35,11 @@ namespace null::renderer {
 		if(idx_buffer->Lock(0, (UINT)(_draw_data.total_idx_count * sizeof(std::uint16_t)), (void**)&idx_dst, D3DLOCK_DISCARD) < 0) throw std::runtime_error{ "idx_buffer->Lock error" };
 		for(render::c_draw_list* cmd_list : _draw_data.draw_lists) {
 			for(render::vertex_t vtx_src : cmd_list->vtx_buffer) {
-				vtx_dst->pos[0] = vtx_src.pos.x; vtx_dst->pos[1] = vtx_src.pos.y;;
-
-				std::uint32_t color{ (std::uint32_t)vtx_src.color };
-				vtx_dst->color = (color & 0xFF00FF00) | ((color & 0xFF0000) >> 16) | ((color & 0xFF) << 16);
-
-				vtx_dst->uv[0] = vtx_src.uv.x; vtx_dst->uv[1] = vtx_src.uv.y;
+				*vtx_dst = {
+					{ vtx_src.pos.x, vtx_src.pos.y, 0.f },
+					D3DCOLOR_RGBA(vtx_src.color.r(), vtx_src.color.g(), vtx_src.color.b(), vtx_src.color.a()),
+					{ vtx_src.uv.x, vtx_src.uv.y }
+				};
 
 				vtx_dst++;
 			}

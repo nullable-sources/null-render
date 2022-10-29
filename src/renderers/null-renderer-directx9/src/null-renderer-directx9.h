@@ -30,7 +30,7 @@ namespace null::renderer {
 
 	class c_window : public utils::win::c_window {
 	public: using utils::win::c_window::c_window;
-		color_t clear_color{ 18, 18, 18 };
+		color_t<int> clear_color{ 18, 18, 18 };
 		IDirect3D9* direct3d{ };
 		D3DPRESENT_PARAMETERS present_parameters{
 			.BackBufferFormat{ D3DFMT_UNKNOWN },
@@ -67,8 +67,7 @@ namespace null::renderer {
 			device->SetRenderState(D3DRS_ZENABLE, FALSE);
 			device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 			device->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
-			std::uint32_t clr = (std::uint32_t)clear_color;
-			device->Clear(0, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, (clr & 0xFF00FF00) | ((clr & 0xFF0000) >> 16) | ((clr & 0xFF) << 16), 1.0f, 0);
+			device->Clear(0, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_RGBA(clear_color.r(), clear_color.g(), clear_color.b(), clear_color.a()), 1.0f, 0);
 			if(device->BeginScene() >= 0) {
 				render();
 				device->EndScene();

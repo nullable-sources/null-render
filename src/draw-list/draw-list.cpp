@@ -19,7 +19,7 @@ namespace null {
             on_change_clip_rect();
         }
 
-        void c_draw_list::add_quad_uv(const std::array<std::pair<vec2_t, vec2_t>, 4>& points, const color_t& color) {
+        void c_draw_list::add_quad_uv(const std::array<std::pair<vec2_t, vec2_t>, 4>& points, const color_t<int>& color) {
             add_idx({
                 (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 1), (std::uint16_t)(vtx_buffer.size() + 2),
                 (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 2), (std::uint16_t)(vtx_buffer.size() + 3)
@@ -72,23 +72,23 @@ namespace null {
             }
         }
 
-        void c_draw_list::draw_line(const vec2_t& a, const vec2_t& b, const color_t& color, float thickness) {
-            if(color.a() <= 0.f) return;
+        void c_draw_list::draw_line(const vec2_t& a, const vec2_t& b, const color_t<int>& color, float thickness) {
+            if(color.a() <= 0) return;
 
             pathes.push_back(a + 0.5f);
             pathes.push_back(b + 0.5f);
             path_stroke(color, false, thickness);
         }
 
-        void c_draw_list::draw_rect(const vec2_t& a, const vec2_t& b, const color_t& color, float thickness, float rounding, e_corner_flags flags) {
-            if(color.a() <= 0.f) return;
+        void c_draw_list::draw_rect(const vec2_t& a, const vec2_t& b, const color_t<int>& color, float thickness, float rounding, e_corner_flags flags) {
+            if(color.a() <= 0) return;
 
             path_rect(a + 0.50f, b - (settings.initialize_flags & e_initialize_flags::anti_aliased_lines ? 0.50f : 0.49f), rounding, flags);
             path_stroke(color, true, thickness);
         }
 
-        void c_draw_list::draw_rect_filled(const vec2_t& a, const vec2_t& b, const color_t& color, float rounding, e_corner_flags flags) {
-            if(color.a() <= 0.f) return;
+        void c_draw_list::draw_rect_filled(const vec2_t& a, const vec2_t& b, const color_t<int>& color, float rounding, e_corner_flags flags) {
+            if(color.a() <= 0) return;
 
             if(rounding > 0.0f) {
                 path_rect(a, b, rounding, flags);
@@ -96,8 +96,8 @@ namespace null {
             } else add_rect(a, b, color);
         }
 
-        void c_draw_list::draw_quad(const std::array<vec2_t, 4>& points, const color_t& color, float thickness) {
-            if(color.a() <= 0.f) return;
+        void c_draw_list::draw_quad(const std::array<vec2_t, 4>& points, const color_t<int>& color, float thickness) {
+            if(color.a() <= 0) return;
 
             pathes.push_back(points[0]);
             pathes.push_back(points[1]);
@@ -106,8 +106,8 @@ namespace null {
             path_stroke(color, true, thickness);
         }
 
-        void c_draw_list::draw_quad_filled(const std::array<vec2_t, 4>& points, const color_t& color) {
-            if(color.a() <= 0.f) return;
+        void c_draw_list::draw_quad_filled(const std::array<vec2_t, 4>& points, const color_t<int>& color) {
+            if(color.a() <= 0) return;
 
             pathes.push_back(points[0]);
             pathes.push_back(points[1]);
@@ -116,8 +116,8 @@ namespace null {
             path_fill_convex(color);
         }
 
-        void c_draw_list::draw_convex_poly_filled(const std::vector<vec2_t>& points, const color_t& color) {
-            if(points.size() < 3 || color.a() <= 0.f) return;
+        void c_draw_list::draw_convex_poly_filled(const std::vector<vec2_t>& points, const color_t<int>& color) {
+            if(points.size() < 3 || color.a() <= 0) return;
 
             if(settings.initialize_flags & e_initialize_flags::anti_aliased_fill) {
                 static constexpr float aa_size{ 1.f };
@@ -159,8 +159,8 @@ namespace null {
             }
         }
 
-        void c_draw_list::draw_poly_line(const std::vector<vec2_t>& points, const color_t& color, bool closed, float thickness) {
-            if(points.size() < 2 || color.a() <= 0.f) return;
+        void c_draw_list::draw_poly_line(const std::vector<vec2_t>& points, const color_t<int>& color, bool closed, float thickness) {
+            if(points.size() < 2 || color.a() <= 0) return;
 
             const int count{ int(closed ? points.size() : points.size() - 1) };
             const bool thick_line{ thickness > 1.0f };
@@ -310,8 +310,8 @@ namespace null {
             }
         }
 
-        void c_draw_list::draw_circle(const vec2_t& center, const color_t& clr, float radius, int num_segments, float thickness) {
-            if(clr.a() <= 0.f || radius <= 0.f) return;
+        void c_draw_list::draw_circle(const vec2_t& center, const color_t<int>& clr, float radius, int num_segments, float thickness) {
+            if(clr.a() <= 0 || radius <= 0.f) return;
 
             settings.get_auto_circle_num_segments(num_segments, radius);
 
@@ -320,8 +320,8 @@ namespace null {
             path_stroke(clr, true, thickness);
         }
 
-        void c_draw_list::draw_circle_filled(const vec2_t& center, const color_t& clr, float radius, int num_segments) {
-            if(clr.a() <= 0.f || radius <= 0.f) return;
+        void c_draw_list::draw_circle_filled(const vec2_t& center, const color_t<int>& clr, float radius, int num_segments) {
+            if(clr.a() <= 0 || radius <= 0.f) return;
 
             settings.get_auto_circle_num_segments(num_segments, radius);
 
@@ -330,8 +330,8 @@ namespace null {
             path_fill_convex(clr);
         }
 
-        void c_draw_list::draw_image(void* texture, const vec2_t& a, const vec2_t& b, const vec2_t& uv_min, const vec2_t& uv_max, const color_t& color) {
-            if(color.a() <= 0.f) return;
+        void c_draw_list::draw_image(void* texture, const vec2_t& a, const vec2_t& b, const vec2_t& uv_min, const vec2_t& uv_max, const color_t<int>& color) {
+            if(color.a() <= 0) return;
 
             const bool _push_texture{ texture != cmd_buffer.back().texture };
             if(_push_texture) push_texture(texture);
@@ -339,8 +339,8 @@ namespace null {
             if(_push_texture) pop_texture();
         }
 
-        void c_draw_list::draw_image_quad(void* texture, const std::array<std::pair<vec2_t, vec2_t>, 4>& points_and_uvs, const color_t& color) {
-            if(color.a() <= 0.f) return;
+        void c_draw_list::draw_image_quad(void* texture, const std::array<std::pair<vec2_t, vec2_t>, 4>& points_and_uvs, const color_t<int>& color) {
+            if(color.a() <= 0) return;
 
             const bool _push_texture{ texture != cmd_buffer.back().texture };
             if(_push_texture) push_texture(texture);

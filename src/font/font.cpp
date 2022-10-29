@@ -108,8 +108,8 @@ namespace null::render {
             pixels_rgba32.resize(size.x * size.y * 4);
             const std::uint8_t* src = pixels_alpha8.data();
             std::uint32_t* dst = pixels_rgba32.data();
-            for(int n : std::views::iota(1, size.x * size.y + 1) | std::views::reverse)
-                *dst++ = (std::uint32_t)color_t{ 255, 255, 255, (std::uint32_t)*src++ };
+            for(int n : std::views::iota(1, size.x* size.y + 1) | std::views::reverse)
+                *dst++ = (*src++ << 24) | 0xFFFFFF;
         }
     }
     
@@ -373,7 +373,7 @@ namespace null::render {
                         std::next(texture.pixels_alpha8.begin(), (t.y * texture.size.x) + t.x + (texture.size.x * y)));
                 }
 
-                dst_font->add_glyph(&config, (std::uint16_t)glyph.glyph.codepoint, rect_t{ glyph.glyph.texture_coordinates.min + config.glyph_config.offset + vec2_t{ 0, round(dst_font->ascent) } } + rect_t{ vec2_t{ }, glyph.glyph.corners.min }, rect_t{ t, t + glyph.glyph.corners.min } / texture.size, glyph.glyph.advance_x);
+                dst_font->add_glyph(&config, (std::uint16_t)glyph.glyph.codepoint, rect_t{ glyph.glyph.texture_coordinates.min + config.glyph_config.offset + vec2_t{ 0.f, round(dst_font->ascent) } } + rect_t{ vec2_t{ }, glyph.glyph.corners.min }, rect_t{ t, t + glyph.glyph.corners.min } / texture.size, glyph.glyph.advance_x);
             }
 
             return src;

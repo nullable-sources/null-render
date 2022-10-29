@@ -19,7 +19,7 @@
 namespace null::render {
     template <typename string_t>
     struct multicolor_text_t {
-        using data_t = std::vector<std::pair<string_t, color_t>>;
+        using data_t = std::vector<std::pair<string_t, color_t<int>>>;
         data_t data{ };
 
         //@note: returns a string made up of all the strings in the text

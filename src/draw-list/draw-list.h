@@ -49,7 +49,7 @@ namespace null {
 
 		struct vertex_t {
 			vec2_t pos{ }, uv{ };
-			color_t color{ };
+			color_t<int> color{ };
 		};
 
 		class c_draw_list {
@@ -68,7 +68,7 @@ namespace null {
 				float circle_segment_max_error{ };
 				float curve_tessellation_tol{ 1.25f };
 
-				settings_t(e_initialize_flags _initialize_flags = e_initialize_flags{ }) : initialize_flags(_initialize_flags) {
+				settings_t(e_initialize_flags _initialize_flags = e_initialize_flags{ }) : initialize_flags{ _initialize_flags } {
 					std::ranges::for_each(std::views::iota(0, (int)arc_fast_vtx.size()), [=](const int& i) {
 						float a{ float(i * 2.f * std::numbers::pi) / arc_fast_vtx.size() };
 						arc_fast_vtx[i] = vec2_t{ std::cosf(a), std::sinf(a) };
@@ -133,34 +133,34 @@ namespace null {
 			void add_idx(const std::vector<std::uint16_t>::iterator& place, const std::vector<std::uint16_t>& buffer) { cmd_buffer.back().element_count += buffer.size(); idx_buffer.insert(place, buffer.begin(), buffer.end()); }
 			void add_idx(const std::vector<std::uint16_t>& buffer) { add_idx(idx_buffer.end(), buffer); }
 
-			void add_rect(const vec2_t& a, const vec2_t& b, const color_t& color) { add_rect_uv(a, b, atlas.texture.uv_white_pixel, atlas.texture.uv_white_pixel, color); }
-			void add_rect_uv(const vec2_t& a, const vec2_t& b, const vec2_t& uv_a, const vec2_t& uv_b, const color_t& color) { add_quad_uv({ std::pair{ a, uv_a }, std::pair{ vec2_t{ b.x, a.y }, vec2_t{ uv_b.x, uv_a.y } }, std::pair{ b, uv_b }, std::pair{ vec2_t{ a.x, b.y }, vec2_t{ uv_a.x, uv_b.y } } }, color); }
-			void add_quad_uv(const std::array<std::pair<vec2_t, vec2_t>, 4>& points, const color_t& color);
+			void add_rect(const vec2_t& a, const vec2_t& b, const color_t<int>& color) { add_rect_uv(a, b, atlas.texture.uv_white_pixel, atlas.texture.uv_white_pixel, color); }
+			void add_rect_uv(const vec2_t& a, const vec2_t& b, const vec2_t& uv_a, const vec2_t& uv_b, const color_t<int>& color) { add_quad_uv({ std::pair{ a, uv_a }, std::pair{ vec2_t{ b.x, a.y }, vec2_t{ uv_b.x, uv_a.y } }, std::pair{ b, uv_b }, std::pair{ vec2_t{ a.x, b.y }, vec2_t{ uv_a.x, uv_b.y } } }, color); }
+			void add_quad_uv(const std::array<std::pair<vec2_t, vec2_t>, 4>& points, const color_t<int>& color);
 
 			void path_rect(const vec2_t& a, const vec2_t& b, float rounding = 0.0f, e_corner_flags flags = e_corner_flags::all);
 			void path_arc_to_fast(const vec2_t& center, float radius, int a_min_of_12, int a_max_of_12);
 			void path_arc_to(const vec2_t& center, float radius, float a_min, float a_max, int num_segments);
-			void path_fill_convex(const color_t& clr) { draw_convex_poly_filled(pathes, clr); pathes.clear(); }
-			void path_stroke(const color_t& color, bool closed, float thickness) { draw_poly_line(pathes, color, closed, thickness); pathes.clear(); }
+			void path_fill_convex(const color_t<int>& clr) { draw_convex_poly_filled(pathes, clr); pathes.clear(); }
+			void path_stroke(const color_t<int>& color, bool closed, float thickness) { draw_poly_line(pathes, color, closed, thickness); pathes.clear(); }
 
 		public:
-			void draw_line(const vec2_t& a, const vec2_t& b, const color_t& color, float thickness = 1.f);
-			void draw_rect(const vec2_t& a, const vec2_t& b, const color_t& color, float thickness = 1.f, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all); //@todo: add rect multicolor
-			void draw_rect(const rect_t& rect, const color_t& color, float thickness = 1.f, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all) { draw_rect(rect.min, rect.max, color, thickness, rounding, flags); }
-			void draw_rect_filled(const vec2_t& a, const vec2_t& b, const color_t& color, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all); //@todo: add rect filled multicolor
-			void draw_rect_filled(const rect_t& rect, const color_t& color, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all) { draw_rect_filled(rect.min, rect.max, color, rounding, flags); }
-			void draw_quad(const std::array<vec2_t, 4>& points, const color_t& color, float thickness = 1.f);
-			void draw_quad_filled(const std::array<vec2_t, 4>& points, const color_t& color);
-			void draw_convex_poly_filled(const std::vector<vec2_t>& points, const color_t& color);
-			void draw_poly_line(const std::vector<vec2_t>& points, const color_t& color, bool closed, float thickness = 1.f);
-			void draw_circle(const vec2_t& center, const color_t& clr, float radius, int num_segments = 0, float thickness = 1.f);
-			void draw_circle_filled(const vec2_t& center, const color_t& clr, float radius, int num_segments = 0);
-			void draw_image(void* texture, const vec2_t& a, const vec2_t& b, const vec2_t& uv_min, const vec2_t& uv_max, const color_t& color);
-			void draw_image(void* texture, const rect_t& rect, const rect_t& uvs, const color_t& color) { draw_image(texture, rect.min, rect.max, uvs.min, uvs.max, color); }
-			void draw_image_quad(void* texture, const std::array<std::pair<vec2_t, vec2_t>, 4>& points_and_uvs, const color_t& color);
+			void draw_line(const vec2_t& a, const vec2_t& b, const color_t<int>& color, float thickness = 1.f);
+			void draw_rect(const vec2_t& a, const vec2_t& b, const color_t<int>& color, float thickness = 1.f, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all); //@todo: add rect multicolor
+			void draw_rect(const rect_t& rect, const color_t<int>& color, float thickness = 1.f, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all) { draw_rect(rect.min, rect.max, color, thickness, rounding, flags); }
+			void draw_rect_filled(const vec2_t& a, const vec2_t& b, const color_t<int>& color, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all); //@todo: add rect filled multicolor
+			void draw_rect_filled(const rect_t& rect, const color_t<int>& color, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all) { draw_rect_filled(rect.min, rect.max, color, rounding, flags); }
+			void draw_quad(const std::array<vec2_t, 4>& points, const color_t<int>& color, float thickness = 1.f);
+			void draw_quad_filled(const std::array<vec2_t, 4>& points, const color_t<int>& color);
+			void draw_convex_poly_filled(const std::vector<vec2_t>& points, const color_t<int>& color);
+			void draw_poly_line(const std::vector<vec2_t>& points, const color_t<int>& color, bool closed, float thickness = 1.f);
+			void draw_circle(const vec2_t& center, const color_t<int>& clr, float radius, int num_segments = 0, float thickness = 1.f);
+			void draw_circle_filled(const vec2_t& center, const color_t<int>& clr, float radius, int num_segments = 0);
+			void draw_image(void* texture, const vec2_t& a, const vec2_t& b, const vec2_t& uv_min, const vec2_t& uv_max, const color_t<int>& color);
+			void draw_image(void* texture, const rect_t& rect, const rect_t& uvs, const color_t<int>& color) { draw_image(texture, rect.min, rect.max, uvs.min, uvs.max, color); }
+			void draw_image_quad(void* texture, const std::array<std::pair<vec2_t, vec2_t>, 4>& points_and_uvs, const color_t<int>& color);
 
 			template <typename char_t>
-			vec2_t draw_text(std::basic_string_view<char_t> str, const color_t& color, vec2_t& pos, float& new_line_pos, c_font* font, const float& size, int& vtx_offset, e_text_flags flags) {
+			vec2_t draw_text(std::basic_string_view<char_t> str, const color_t<int>& color, vec2_t& pos, float& new_line_pos, c_font* font, const float& size, int& vtx_offset, e_text_flags flags) {
 				if(flags & e_text_flags::aligin_mask) {
 					vec2_t str_size{ font->calc_text_size(str, size) };
 					if(str_size <= 0.f) return pos;
@@ -227,7 +227,7 @@ namespace null {
 			}
 
 			template <typename string_view_t>
-			void draw_text(string_view_t str, vec2_t pos, const color_t& color, e_text_flags flags = e_text_flags{ }, c_font* font = c_font::get_current_font(), float size = 0.f) {
+			void draw_text(string_view_t str, vec2_t pos, const color_t<int>& color, e_text_flags flags = e_text_flags{ }, c_font* font = c_font::get_current_font(), float size = 0.f) {
 				if(size <= 0) size = font->size;
 
 				if(cmd_buffer.back().texture != font->container_atlas->texture.data)

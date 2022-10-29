@@ -37,7 +37,7 @@ namespace null::renderer {
 
 	class c_window : public utils::win::c_window {
 	public: using utils::win::c_window::c_window;
-		color_t clear_color{ 0.07f, 0.07f, 0.07f };
+		color_t<float> clear_color{ 0.07f, 0.07f, 0.07f };
 
 		DXGI_SWAP_CHAIN_DESC swap_chain_desc{
 			.BufferDesc{

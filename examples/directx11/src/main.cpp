@@ -18,7 +18,7 @@ void main_loop() {
 	null::render::begin_frame(window);
 	{
 		custom_layer.draw_text("text drawed by custom draw_list", { 100, 10 }, { });
-		null::render::background.draw_text(std::format("[ directx11 ] fps: {:3.0f}", 1.f / window.time_data.delta_time), { window.get_window_size().x, 10 }, { }, null::render::e_text_flags{ -null::render::e_text_flags::aligin_right | -null::render::e_text_flags::aligin_center_y | -null::render::e_text_flags::outline });
+		null::render::background.draw_text(std::format("[ directx11 ] fps: {:3.0f}", 1.f / window.time_data.delta_time), { window.get_window_size().x, 10.f }, { }, null::render::e_text_flags{ -null::render::e_text_flags::aligin_right | -null::render::e_text_flags::aligin_center_y | -null::render::e_text_flags::outline });
 		null::render::background.draw_text(multicolor_text, { 10 });
 
 		null::render::background.draw_poly_line({ { 100 }, { 300 }, {300, 200} }, { }, true);
