@@ -7,7 +7,7 @@ namespace null {
 
             clear();
             textures = { atlas.texture.data };
-            clips = { { 0.f, renderer::draw_data_t::screen_size } };
+            clips = { { vec2_t{ 0.f }, renderer::draw_data_t::screen_size } };
             add_cmd();
         }
 

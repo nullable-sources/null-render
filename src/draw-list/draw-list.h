@@ -228,6 +228,7 @@ namespace null {
 
 			template <typename string_view_t>
 			void draw_text(string_view_t str, vec2_t pos, const color_t<int>& color, e_text_flags flags = e_text_flags{ }, c_font* font = c_font::get_current_font(), float size = 0.f) {
+				if(!font) return;
 				if(size <= 0) size = font->size;
 
 				if(cmd_buffer.back().texture != font->container_atlas->texture.data)
@@ -239,6 +240,7 @@ namespace null {
 
 			template <typename string_t>
 			void draw_text(multicolor_text_t<string_t> str, vec2_t pos, e_text_flags flags = e_text_flags{ }, c_font* font = c_font::get_current_font(), float size = 0.f) {
+				if(!font) return;
 				if(size <= 0) size = font->size;
 
 				if(cmd_buffer.back().texture != font->container_atlas->texture.data)
