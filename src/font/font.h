@@ -25,7 +25,7 @@ namespace null::render {
 
     public:
         multicolor_text_t() { }
-        multicolor_text_t(std::string_view str, const color_t<int>& color) : data{ { str, color } } { }
+        multicolor_text_t(const string_t& str, const color_t<int>& color) : data{ { str, color } } { }
         multicolor_text_t(const data_t& _data) : data{ _data } { }
 
     public:

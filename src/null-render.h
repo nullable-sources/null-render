@@ -7,7 +7,6 @@ namespace null::render {
         atlas.locked = true;
         c_font::set_current_font(c_font::get_current_font());
         if(!c_font::current_font->is_loaded()) throw std::runtime_error{ "!current_font->is_loaded()" };
-
         renderer::draw_data_t::screen_size = window.get_window_size();
 
         background.reset();
