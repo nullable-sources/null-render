@@ -19,8 +19,19 @@
 namespace null::render {
     template <typename string_t>
     struct multicolor_text_t {
+    public:
         using data_t = std::vector<std::pair<string_t, color_t<int>>>;
         data_t data{ };
+
+    public:
+        multicolor_text_t() { }
+        multicolor_text_t(std::string_view str, const color_t<int>& color) : data{ { str, color } } { }
+        multicolor_text_t(const data_t& _data) : data{ _data } { }
+
+    public:
+        void transform(const std::function<void(string_t&, color_t<int>&)> func) {
+            for(auto& [string, color] : data) { func(string, color); }
+        }
 
         //@note: returns a string made up of all the strings in the text
         string_t unite() {
