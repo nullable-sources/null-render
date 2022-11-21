@@ -261,7 +261,7 @@ namespace null {
 
                         vec2_t delta{ (temp_normals[i1] + temp_normals[i2]) / 2.f };
                         if(float d2{ std::powf(delta.length(), 2) }; d2 > 0.000001f) delta *= 1.f / std::min(d2, 100.f);
-                        vec2_t out = delta * (half_inner_thickness + aa_size), in = delta * half_inner_thickness;
+                        vec2_t out{ delta * (half_inner_thickness + aa_size) }, in{ delta * half_inner_thickness };
                         temp_points[i2 * 4] = points[i2] + out;
                         temp_points[i2 * 4 + 1] = points[i2] + in;
                         temp_points[i2 * 4 + 2] = points[i2] - in;

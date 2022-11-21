@@ -40,7 +40,7 @@ namespace null::render {
 
     c_font::glyph_t* c_font::find_glyph(std::uint16_t c, bool fallback) {
         if(c >= (size_t)lookup_table.indexes.size()) return fallback ? fallback_glyph : nullptr;
-        const std::uint16_t i = lookup_table.indexes[c];
+        const std::uint16_t i{ lookup_table.indexes[c] };
         if(i == (std::uint16_t)-1) return fallback ? fallback_glyph : nullptr;
         return &glyphs[i];
     }
@@ -106,9 +106,9 @@ namespace null::render {
 
         if(pixels_rgba32.empty()) {
             pixels_rgba32.resize(size.x * size.y * 4);
-            const std::uint8_t* src = pixels_alpha8.data();
-            std::uint32_t* dst = pixels_rgba32.data();
-            for(int n : std::views::iota(1, size.x* size.y + 1) | std::views::reverse)
+            const std::uint8_t* src{ pixels_alpha8.data() };
+            std::uint32_t* dst{ pixels_rgba32.data() };
+            for(int n : std::views::iota(1, size.x * size.y + 1) | std::views::reverse)
                 *dst++ = (*src++ << 24) | 0xFFFFFF;
         }
     }
@@ -390,7 +390,7 @@ namespace null::render {
     }
     
     void c_atlas::render_lines_texture_data() {
-        custom_rect_t* rect = &custom_rects[pack_id_lines];
+        custom_rect_t* rect{ &custom_rects[pack_id_lines] };
         if(!rect->is_packed()) throw std::runtime_error{ "!rect->is_packed()" };
 
         for(std::uint32_t n : std::views::iota(0, 64)) {
