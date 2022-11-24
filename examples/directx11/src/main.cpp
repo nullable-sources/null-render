@@ -15,8 +15,7 @@ void main_loop() {
 		{ "text", color }
 	} };
 
-	null::render::begin_frame(window);
-	{
+	null::render::begin_frame(window); {
 		custom_layer.draw_text("text drawed by custom draw_list", { 100, 10 }, { });
 		null::render::background.draw_text(std::format("[ directx11 ] fps: {:3.0f}", 1.f / window.time_data.delta_time), { window.get_window_size().x, 10.f }, { }, null::render::e_text_flags{ -null::render::e_text_flags::aligin_right | -null::render::e_text_flags::aligin_center_y | -null::render::e_text_flags::outline });
 		null::render::background.draw_text(multicolor_text, { 10 });
@@ -35,11 +34,13 @@ void main_loop() {
 		null::render::background.draw_text("circle", { 550, 200 }, { }, text_flags);
 		null::render::background.draw_circle({ 550, 250 }, color, 50, 0, 2.f);
 
+		null::render::background.draw_text("multicolor rect filled", { 100, 400 }, { }, text_flags);
+		null::render::background.draw_rect_filled_multicolor({ 50, 400 }, { 150, 500 }, { color_t<int>::palette_t::red, color_t<int>::palette_t::green, color_t<int>::palette_t::blue, color_t<int>::palette_t::white });
+
 		//@note:	you can use L"" to display cyrillic
 		//			or you can add /utf - 8 to C/C++->command line
 		null::render::background.draw_text("абвгдеёжзийклмнопрстуфхцчшщъыьэюя", { 500 }, { });
-	}
-	null::render::end_frame();
+	} null::render::end_frame();
 }
 
 int main(HINSTANCE instance) {
@@ -55,7 +56,7 @@ int main(HINSTANCE instance) {
 
 		window.main_loop();
 		window.destroy();
-	} catch(const std::exception& exp) {
-		std::cout << exp.what() << std::endl;
+	} catch(const std::exception& exception) {
+		std::cout << exception.what() << std::endl;
 	}
 }

@@ -96,6 +96,41 @@ namespace null {
             } else add_rect(a, b, color);
         }
 
+        void c_draw_list::draw_rect_filled_multicolor(const vec2_t& a, const vec2_t& b, const std::array<color_t<int>, 4>& colors, float rounding, e_corner_flags flags) {
+            if(std::ranges::all_of(colors, [](const color_t<int>& color) { return color.a() <= 0; })) return;
+
+            rounding = std::min(rounding, std::fabsf(b.x - a.x) * (flags & e_corner_flags::top || flags & e_corner_flags::bot ? 0.5f : 1.f) - 1.f);
+            rounding = std::min(rounding, std::fabsf(b.y - a.y) * (flags & e_corner_flags::left || flags & e_corner_flags::right ? 0.5f : 1.f) - 1.f);
+            
+            if(rounding > 0.f && flags != e_corner_flags{ }) {
+                size_t offset{ vtx_buffer.size() };
+                path_rect(a, b, rounding, flags);
+                path_fill_convex(color_t<int>::palette_t::white);
+
+                for(vertex_t& vertex : vtx_buffer | std::views::drop(offset)) { //@credits: https://github.com/ocornut/imgui/issues/3710#issuecomment-1315745540
+                    std::array<color_t<float>, 4> casted_colors{ };
+                    std::ranges::transform(colors, casted_colors.begin(), [](const color_t<int>& color) { return color; });
+
+                    vec2_t f{ std::clamp((vertex.pos - a) / (b - a), { 0.f }, { 1.f }) };
+                    color_t<float> top_delta{ casted_colors[0] + (casted_colors[1] - casted_colors[0]) * color_t<float>{ f.x } };
+                    color_t<float> bot_delta{ casted_colors[2] + (casted_colors[3] - casted_colors[2]) * color_t<float>{ f.x } };
+                    vertex.color *= color_t<float>{ top_delta + (bot_delta - top_delta) * color_t<float>{ f.y } };
+                }
+            } else {
+                add_idx({
+                    (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 1), (std::uint16_t)(vtx_buffer.size() + 2),
+                    (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 2), (std::uint16_t)(vtx_buffer.size() + 3)
+                    });
+
+                add_vtx({
+                    { a, atlas.texture.uv_white_pixel, colors[0] },
+                    { { b.x, a.y }, atlas.texture.uv_white_pixel, colors[1] },
+                    { b, atlas.texture.uv_white_pixel, colors[3] },
+                    { { a.x, b.y }, atlas.texture.uv_white_pixel, colors[2] },
+                    });
+            }
+        }
+
         void c_draw_list::draw_quad(const std::array<vec2_t, 4>& points, const color_t<int>& color, float thickness) {
             if(color.a() <= 0) return;
 
