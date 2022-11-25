@@ -143,17 +143,18 @@ namespace null {
 			void path_fill_convex(const color_t<int>& clr) { draw_convex_poly_filled(pathes, clr); pathes.clear(); }
 			void path_stroke(const color_t<int>& color, bool closed, float thickness) { draw_poly_line(pathes, color, closed, thickness); pathes.clear(); }
 
+			void repaint_rect_vertices_in_multicolor(const vec2_t& min, const vec2_t& max, const size_t& vtx_offset, const std::array<color_t<int>, 4>& colors);
+
 		public:
 			void draw_line(const vec2_t& a, const vec2_t& b, const color_t<int>& color, float thickness = 1.f);
-			void draw_rect(const vec2_t& a, const vec2_t& b, const color_t<int>& color, float thickness = 1.f, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all); //@todo: add rect multicolor
+			void draw_rect(const vec2_t& a, const vec2_t& b, const color_t<int>& color, float thickness = 1.f, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all);
 			void draw_rect(const rect_t& rect, const color_t<int>& color, float thickness = 1.f, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all) { draw_rect(rect.min, rect.max, color, thickness, rounding, flags); }
-			void draw_rect_filled(const vec2_t& a, const vec2_t& b, const color_t<int>& color, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all); //@todo: add rect filled multicolor
+			void draw_rect_multicolor(const vec2_t& a, const vec2_t& b, const std::array<color_t<int>, 4>& colors, float thickness = 1.f, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all);
+			void draw_rect_multicolor(const rect_t& rect, const std::array<color_t<int>, 4>& colors, float thickness = 1.f, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all) { draw_rect_multicolor(rect.min, rect.max, colors, thickness, rounding, flags); }
+			void draw_rect_filled(const vec2_t& a, const vec2_t& b, const color_t<int>& color, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all);
 			void draw_rect_filled(const rect_t& rect, const color_t<int>& color, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all) { draw_rect_filled(rect.min, rect.max, color, rounding, flags); }
-			
-			//@note: colors = { top left, top right, bottom left, bottom right };
 			void draw_rect_filled_multicolor(const vec2_t& a, const vec2_t& b, const std::array<color_t<int>, 4>& colors, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all);
 			void draw_rect_filled_multicolor(const rect_t& rect, const std::array<color_t<int>, 4>& colors, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all) { draw_rect_filled_multicolor(rect.min, rect.max, colors, rounding, flags); }
-			
 			void draw_quad(const std::array<vec2_t, 4>& points, const color_t<int>& color, float thickness = 1.f);
 			void draw_quad_filled(const std::array<vec2_t, 4>& points, const color_t<int>& color);
 			void draw_convex_poly_filled(const std::vector<vec2_t>& points, const color_t<int>& color);
@@ -166,7 +167,7 @@ namespace null {
 
 			template <typename char_t>
 			vec2_t draw_text(std::basic_string_view<char_t> str, const color_t<int>& color, vec2_t& pos, float& new_line_pos, c_font* font, const float& size, int& vtx_offset, e_text_flags flags) {
-				if(color.a() <= 0) return;
+				if(color.a() <= 0) return pos;
 				if(flags & e_text_flags::aligin_mask) {
 					vec2_t str_size{ font->calc_text_size(str, size) };
 					if(str_size <= 0.f) return pos;

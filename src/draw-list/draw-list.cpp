@@ -72,6 +72,18 @@ namespace null {
             }
         }
 
+        void c_draw_list::repaint_rect_vertices_in_multicolor(const vec2_t& min, const vec2_t& max, const size_t& vtx_offset, const std::array<color_t<int>, 4>& colors) {
+            std::array<color_t<float>, 4> casted_colors{ };
+            std::ranges::transform(colors, casted_colors.begin(), [](const color_t<int>& color) { return color; });
+
+            for(vertex_t& vertex : vtx_buffer | std::views::drop(vtx_offset)) { //@credits: https://github.com/ocornut/imgui/issues/3710#issuecomment-1315745540
+                vec2_t f{ std::clamp((vertex.pos - min) / (max - min), { 0.f }, { 1.f }) };
+                color_t<float> top_delta{ casted_colors[0] + (casted_colors[1] - casted_colors[0]) * color_t<float>{ f.x } };
+                color_t<float> bot_delta{ casted_colors[2] + (casted_colors[3] - casted_colors[2]) * color_t<float>{ f.x } };
+                vertex.color *= color_t<float>{ top_delta + (bot_delta - top_delta) * color_t<float>{ f.y } };
+            }
+        }
+
         void c_draw_list::draw_line(const vec2_t& a, const vec2_t& b, const color_t<int>& color, float thickness) {
             if(color.a() <= 0) return;
 
@@ -87,6 +99,23 @@ namespace null {
             path_stroke(color, true, thickness);
         }
 
+        //@note: colors = { top left, top right, bottom left, bottom right };
+        void c_draw_list::draw_rect_multicolor(const vec2_t& a, const vec2_t& b, const std::array<color_t<int>, 4>& colors, float thickness, float rounding, e_corner_flags flags) {
+            if(std::ranges::all_of(colors, [](const color_t<int>& color) { return color.a() <= 0; })) return;
+
+            size_t offset{ vtx_buffer.size() };
+            draw_rect(a, b, color_t<int>::palette_t::white, thickness, rounding, flags);
+
+            //@note: i'm sure it can be done differently, but i don't really give a fuck
+            vec2_t min{ std::numeric_limits<float>::max() }, max{ std::numeric_limits<float>::min() };
+            for(vertex_t& vertex : vtx_buffer | std::views::drop(offset)) {
+                min = math::min(vertex.pos, min);
+                max = math::max(vertex.pos, max);
+            }
+
+            repaint_rect_vertices_in_multicolor(min, max, offset, colors);
+        }
+
         void c_draw_list::draw_rect_filled(const vec2_t& a, const vec2_t& b, const color_t<int>& color, float rounding, e_corner_flags flags) {
             if(color.a() <= 0) return;
 
@@ -96,6 +125,7 @@ namespace null {
             } else add_rect(a, b, color);
         }
 
+        //@note: colors = { top left, top right, bottom left, bottom right };
         void c_draw_list::draw_rect_filled_multicolor(const vec2_t& a, const vec2_t& b, const std::array<color_t<int>, 4>& colors, float rounding, e_corner_flags flags) {
             if(std::ranges::all_of(colors, [](const color_t<int>& color) { return color.a() <= 0; })) return;
 
@@ -106,16 +136,7 @@ namespace null {
                 size_t offset{ vtx_buffer.size() };
                 path_rect(a, b, rounding, flags);
                 path_fill_convex(color_t<int>::palette_t::white);
-
-                for(vertex_t& vertex : vtx_buffer | std::views::drop(offset)) { //@credits: https://github.com/ocornut/imgui/issues/3710#issuecomment-1315745540
-                    std::array<color_t<float>, 4> casted_colors{ };
-                    std::ranges::transform(colors, casted_colors.begin(), [](const color_t<int>& color) { return color; });
-
-                    vec2_t f{ std::clamp((vertex.pos - a) / (b - a), { 0.f }, { 1.f }) };
-                    color_t<float> top_delta{ casted_colors[0] + (casted_colors[1] - casted_colors[0]) * color_t<float>{ f.x } };
-                    color_t<float> bot_delta{ casted_colors[2] + (casted_colors[3] - casted_colors[2]) * color_t<float>{ f.x } };
-                    vertex.color *= color_t<float>{ top_delta + (bot_delta - top_delta) * color_t<float>{ f.y } };
-                }
+                repaint_rect_vertices_in_multicolor(a, b, offset, colors);
             } else {
                 add_idx({
                     (std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 1), (std::uint16_t)(vtx_buffer.size() + 2),

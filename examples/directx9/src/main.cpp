@@ -20,8 +20,6 @@ void main_loop() {
 		null::render::background.draw_text(std::format("[ directx9 ] fps: {:3.0f}", 1.f / window.time_data.delta_time), { window.get_window_size().x, 10.f }, { }, null::render::e_text_flags{ -null::render::e_text_flags::aligin_right | -null::render::e_text_flags::aligin_center_y | -null::render::e_text_flags::outline });
 		null::render::background.draw_text(multicolor_text, { 10 });
 
-		null::render::background.draw_poly_line({ { 100 }, { 300 }, {300, 200} }, { }, true);
-
 		null::render::background.draw_text("rect filled", { 100, 200 }, { }, text_flags);
 		null::render::background.draw_rect_filled({ 50, 200 }, { 150, 300 }, color, 10.f, corner_flags);
 
@@ -35,7 +33,12 @@ void main_loop() {
 		null::render::background.draw_circle({ 550, 250 }, color, 50, 0, 2.f);
 
 		null::render::background.draw_text("multicolor rect filled", { 100, 400 }, { }, text_flags);
-		null::render::background.draw_rect_filled_multicolor({ 50, 400 }, { 150, 500 }, { color_t<int>::palette_t::red, color_t<int>::palette_t::green, color_t<int>::palette_t::blue, color_t<int>::palette_t::white });
+		null::render::background.draw_rect_filled_multicolor({ 50, 400 }, { 150, 500 }, { color_t<int>::palette_t::red, color_t<int>::palette_t::green, color_t<int>::palette_t::blue, color_t<int>::palette_t::white }, 10.f, corner_flags);
+
+		null::render::background.draw_text("multicolor rect", { 250, 400 }, { }, text_flags);
+		null::render::background.draw_rect_multicolor({ 200, 400 }, { 300, 500 }, { color_t<int>::palette_t::red, color_t<int>::palette_t::green, color_t<int>::palette_t::blue, color_t<int>::palette_t::white }, 2.f, 10.f, corner_flags);
+
+		null::render::background.draw_poly_line({ { 400 }, { 550, 400 }, { 550, 500 } }, { }, true);
 
 		//@note:	you can use L"" to display cyrillic
 		//			or you can add /utf - 8 to C/C++->command line
