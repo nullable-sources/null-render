@@ -237,7 +237,7 @@ namespace null {
                     temp_normals[i1] = { delta.y, -delta.x };
                 }
 
-                if(!closed) *std::prev(temp_normals.end(), points.size() - 1) = *std::prev(temp_normals.end(), points.size() - 2);
+                if(!closed) temp_normals[points.size() - 1] = temp_normals[points.size() - 2];
 
                 if(use_texture || !thick_line) {
                     const float half_draw_size{ use_texture ? thickness * 0.5f + 1 : aa_size };
