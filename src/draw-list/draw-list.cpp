@@ -29,8 +29,8 @@ namespace null {
         }
 
         void c_draw_list::path_rect(const vec2_t& a, const vec2_t& b, float rounding, e_corner_flags flags) {
-            rounding = std::min(rounding, std::fabsf(b.x - a.x) * (flags & e_corner_flags::top || flags & e_corner_flags::bot ? 0.5f : 1.f) - 1.f);
-            rounding = std::min(rounding, std::fabsf(b.y - a.y) * (flags & e_corner_flags::left || flags & e_corner_flags::right ? 0.5f : 1.f) - 1.f);
+            rounding = std::min(rounding, std::fabsf(b.x - a.x) * ((flags & e_corner_flags::top) == -e_corner_flags::top || (flags & e_corner_flags::bot) == -e_corner_flags::bot ? 0.5f : 1.f) - 1.f);
+            rounding = std::min(rounding, std::fabsf(b.y - a.y) * ((flags & e_corner_flags::left) == -e_corner_flags::left || (flags & e_corner_flags::right) == -e_corner_flags::right ? 0.5f : 1.f) - 1.f);
 
             if(rounding <= 0.0f || flags == e_corner_flags{ }) {
                 pathes.push_back(a);
@@ -150,26 +150,6 @@ namespace null {
                     { { a.x, b.y }, atlas.texture.uv_white_pixel, colors[2] },
                     });
             }
-        }
-
-        void c_draw_list::draw_quad(const std::array<vec2_t, 4>& points, const color_t<int>& color, float thickness) {
-            if(color.a() <= 0) return;
-
-            pathes.push_back(points[0]);
-            pathes.push_back(points[1]);
-            pathes.push_back(points[2]);
-            pathes.push_back(points[3]);
-            path_stroke(color, true, thickness);
-        }
-
-        void c_draw_list::draw_quad_filled(const std::array<vec2_t, 4>& points, const color_t<int>& color) {
-            if(color.a() <= 0) return;
-
-            pathes.push_back(points[0]);
-            pathes.push_back(points[1]);
-            pathes.push_back(points[2]);
-            pathes.push_back(points[3]);
-            path_fill_convex(color);
         }
 
         void c_draw_list::draw_convex_poly_filled(const std::vector<vec2_t>& points, const color_t<int>& color) {

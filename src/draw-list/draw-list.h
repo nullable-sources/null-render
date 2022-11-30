@@ -155,8 +155,6 @@ namespace null {
 			void draw_rect_filled(const rect_t& rect, const color_t<int>& color, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all) { draw_rect_filled(rect.min, rect.max, color, rounding, flags); }
 			void draw_rect_filled_multicolor(const vec2_t& a, const vec2_t& b, const std::array<color_t<int>, 4>& colors, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all);
 			void draw_rect_filled_multicolor(const rect_t& rect, const std::array<color_t<int>, 4>& colors, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all) { draw_rect_filled_multicolor(rect.min, rect.max, colors, rounding, flags); }
-			void draw_quad(const std::array<vec2_t, 4>& points, const color_t<int>& color, float thickness = 1.f);
-			void draw_quad_filled(const std::array<vec2_t, 4>& points, const color_t<int>& color);
 			void draw_convex_poly_filled(const std::vector<vec2_t>& points, const color_t<int>& color);
 			void draw_poly_line(const std::vector<vec2_t>& points, const color_t<int>& color, bool closed, float thickness = 1.f);
 			void draw_circle(const vec2_t& center, const color_t<int>& clr, float radius, int num_segments = 0, float thickness = 1.f);
