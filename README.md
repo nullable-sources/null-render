@@ -1,6 +1,6 @@
-# null-render
+﻿# null-render
 <p align="center">
-  <img width="738" height="307" src="https://user-images.githubusercontent.com/60057961/169716006-5866d678-3b92-4655-b910-156ac6995529.png">
+  <img src="https://user-images.githubusercontent.com/60057961/205475625-1f49c685-4330-47f9-b583-30c094491026.png">
 </p>
 This is an attempt to translate part of my previous null-gui project to c++20.
 
