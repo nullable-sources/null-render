@@ -103,8 +103,8 @@ namespace null::renderer {
 			swap_chain->Present(1, 0);
 		}
 
-		std::vector<std::any> on_wnd_proc(HWND _wnd_handle, UINT msg, WPARAM w_param, LPARAM l_param) override {
-			std::vector<std::any> callback_results{ utils::win::c_window::on_wnd_proc(_wnd_handle, msg, w_param, l_param) };
+		std::vector<int> on_wnd_proc(HWND _wnd_handle, UINT msg, WPARAM w_param, LPARAM l_param) override {
+			std::vector<int> callback_results{ utils::win::c_window::on_wnd_proc(_wnd_handle, msg, w_param, l_param) };
 			switch(msg) {
 				case WM_SIZE: {
 					if(device && w_param != SIZE_MINIMIZED) {
@@ -114,7 +114,7 @@ namespace null::renderer {
 
 						create_render_target();
 					}
-				} return std::vector<std::any>{ 0 };
+				} return { 0 };
 			}
 
 			return callback_results;

@@ -173,7 +173,7 @@ namespace null::renderer {
         int global_idx_offset{ }, global_vtx_offset{ };
         for(render::c_draw_list* cmd_list : _draw_data.draw_lists) {
             for(render::c_draw_list::cmd_t& cmd : cmd_list->cmd_buffer) {
-                if(cmd.callbacks.have_callback(render::e_cmd_callbacks::render_draw_data) && std::any_cast<bool>(cmd.callbacks.call<bool(render::c_draw_list::cmd_t*)>(render::e_cmd_callbacks::render_draw_data, &cmd))) {
+                if(cmd.callbacks.have_callback(render::e_cmd_callbacks::render_draw_data) && cmd.callbacks.call<bool>(render::e_cmd_callbacks::render_draw_data, &cmd)) {
                     setup_state();
                     continue;
                 }

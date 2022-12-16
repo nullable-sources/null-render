@@ -49,7 +49,7 @@ void main_loop() {
 int main(HINSTANCE instance) {
 	window = null::renderer::c_window{ instance };
 
-	window.callbacks.add<void()>(utils::win::e_window_callbacks::on_main_loop, main_loop);
+	window.callbacks.add(utils::win::e_window_callbacks::on_main_loop, main_loop);
 
 	try {
 		null::render::atlas.add_font_from_file_ttf("C:\\Windows\\fonts\\Tahoma.ttf", 13.f, nullptr, null::render::c_font::glyph_t::ranges_cyrillic());

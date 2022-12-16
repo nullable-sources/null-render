@@ -44,7 +44,7 @@ namespace null {
 		enum_create_cast_operator(e_text_flags, -);
 
 		enum class e_cmd_callbacks {
-			render_draw_data //@note: std::function<bool(cmd*)>, will call setup_render_state if the callback returns true
+			render_draw_data //@note: bool(c_draw_list::cmd_t*), will call setup_render_state if the callback returns true
 		};
 
 		struct vertex_t {
