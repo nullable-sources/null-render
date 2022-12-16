@@ -44,7 +44,7 @@ namespace null {
 		enum_create_cast_operator(e_text_flags, -);
 
 		enum class e_cmd_callbacks {
-			render_draw_data //@note: bool(c_draw_list::cmd_t*), will call setup_render_state if the callback returns true
+			on_draw_data
 		};
 
 		struct vertex_t {
@@ -99,7 +99,7 @@ namespace null {
 				void* texture{ };
 				std::uint32_t vtx_offset{ }, idx_offset{ }, element_count{ };
 
-				single_callbacks_t<e_cmd_callbacks> callbacks{ };
+				utils::callbacks_tuple_t<utils::callback_t<e_cmd_callbacks::on_draw_data, bool(c_draw_list::cmd_t&)>> callbacks{ };
 			};
 
 		public:

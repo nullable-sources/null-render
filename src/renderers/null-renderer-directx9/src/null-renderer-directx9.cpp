@@ -58,7 +58,7 @@ namespace null::renderer {
 		int global_vtx_offset{ }, global_idx_offset{ };
 		for(render::c_draw_list* draw_list : _draw_data.draw_lists) {
 			for(render::c_draw_list::cmd_t& cmd : draw_list->cmd_buffer) {
-				if(cmd.callbacks.have_callback(render::e_cmd_callbacks::render_draw_data) && cmd.callbacks.call<bool>(render::e_cmd_callbacks::render_draw_data, &cmd)) {
+				if(auto& callback{ cmd.callbacks.at<render::e_cmd_callbacks::on_draw_data>() }; !callback.empty() && callback.call(cmd)) {
 					setup_state();
 					continue;
 				}
