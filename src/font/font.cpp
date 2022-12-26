@@ -10,7 +10,7 @@ namespace null::render {
         lookup_table.resize(max_codepoint + 1);
         used_4k_pages_map.fill(0);
 
-        for(int i : std::views::iota((size_t)0, glyphs.size())) {
+        for(const int& i : std::views::iota((size_t)0, glyphs.size())) {
             int codepoint = glyphs[i].codepoint;
             lookup_table.advances_x[codepoint] = glyphs[i].advance_x;
             lookup_table.indexes[codepoint] = (std::uint16_t)i;
@@ -39,14 +39,14 @@ namespace null::render {
             if(lookup_table.advances_x[i] < 0.0f) lookup_table.advances_x[i] = fallback_advance_x;
     }
 
-    c_font::glyph_t* c_font::find_glyph(std::uint16_t c, bool fallback) {
+    c_font::glyph_t* c_font::find_glyph(const std::uint16_t& c, const bool& fallback) {
         if(c >= (size_t)lookup_table.indexes.size()) return fallback ? fallback_glyph : nullptr;
         const std::uint16_t i{ lookup_table.indexes[c] };
         if(i == (std::uint16_t)-1) return fallback ? fallback_glyph : nullptr;
         return &glyphs[i];
     }
 
-    void c_font::add_glyph(config_t* cfg, std::uint16_t codepoint, rect_t corners, rect_t texture_coordinates, float advance_x) {
+    void c_font::add_glyph(config_t* cfg, const std::uint16_t& codepoint, rect_t corners, const rect_t& texture_coordinates, float advance_x) {
         if(cfg) {
             const float advance_x_original{ advance_x };
             advance_x = std::clamp(advance_x, cfg->glyph_config.min_advance_x, cfg->glyph_config.max_advance_x);
@@ -62,7 +62,7 @@ namespace null::render {
         lookup_table.dirty = true;
     }
 
-    void c_font::add_remap_char(std::uint16_t dst, std::uint16_t src, bool overwrite_dst) {
+    void c_font::add_remap_char(const std::uint16_t& dst, const std::uint16_t& src, const bool& overwrite_dst) {
         if(lookup_table.indexes.empty()) throw std::runtime_error{ "lookup_table.indexes.empty()" };
 
         if(dst < lookup_table.indexes.size() && lookup_table.indexes[dst] == (std::uint16_t)-1 && !overwrite_dst) return;
@@ -73,8 +73,8 @@ namespace null::render {
         lookup_table.advances_x[dst] = (src < lookup_table.indexes.size()) ? lookup_table.advances_x[src] : 1.0f;
     }
 
-    bool c_font::is_glyph_range_unused(std::uint32_t c_begin, std::uint32_t c_last) {
-        for(std::uint32_t page_n : std::views::iota(c_begin / 4096, c_last / 4096 + 1)) {
+    bool c_font::is_glyph_range_unused(const std::uint32_t& c_begin, const std::uint32_t& c_last) {
+        for(const std::uint32_t& page_n : std::views::iota(c_begin / 4096, c_last / 4096 + 1)) {
             if((page_n >> 3) < 2 && used_4k_pages_map[page_n >> 3] & (1 << (page_n & 7)))
                 return false;
         }
@@ -109,12 +109,12 @@ namespace null::render {
             pixels_rgba32.resize(size.x * size.y * 4);
             const std::uint8_t* src{ pixels_alpha8.data() };
             std::uint32_t* dst{ pixels_rgba32.data() };
-            for(int n : std::views::iota(1, size.x * size.y + 1) | std::views::reverse)
+            for(const int& n : std::views::iota(1, size.x * size.y + 1) | std::views::reverse)
                 *dst++ = (*src++ << 24) | 0xFFFFFF;
         }
     }
     
-    void c_atlas::setup_font(c_font* font, c_font::config_t* config, float ascent, float descent) {
+    void c_atlas::setup_font(c_font* font, c_font::config_t* config, const float& ascent, const float& descent) {
         if(!config->merge_mode) {
             font->lookup_table.dirty = true;
             font->size = config->size_pixels;
@@ -153,7 +153,7 @@ namespace null::render {
             if(font.lookup_table.dirty) font.build_lookup_table();
             if(font.ellipsis_char != (std::uint16_t)-1) continue;
 
-            for(std::uint16_t& variant : std::vector<std::uint16_t>{ (std::uint16_t)0x2026, (std::uint16_t)0x0085 }) {
+            for(const std::uint16_t& variant : std::vector<std::uint16_t>{ (std::uint16_t)0x2026, (std::uint16_t)0x0085 }) {
                 if(font.find_glyph(variant, false)) {
                     font.ellipsis_char = variant;
                     break;
@@ -176,7 +176,7 @@ namespace null::render {
         std::vector<build_src_t> src_array{ configs.size() };
         std::vector<build_data_t> dst_array{ fonts.size() };
 
-        std::ranges::transform(src_array, configs, src_array.begin(), [&](build_src_t src, c_font::config_t& config) {
+        std::ranges::transform(src_array, configs, src_array.begin(), [&](build_src_t& src, c_font::config_t& config) {
             if(!config.font) throw std::runtime_error{ "!cfg.font" };
             if(config.font->is_loaded() && config.font->container_atlas != this) throw std::runtime_error{ "cfg.font->is_loaded() && cfg.font->container_atlas != this" };
 
@@ -235,7 +235,7 @@ namespace null::render {
             if(dst.glyphs_set.empty()) dst.glyphs_set.resize((dst.glyphs_highest + 31) >> 5, 0);
 
             for(const std::uint16_t* src_range{ src.src_ranges }; src_range[0] && src_range[1]; src_range += 2) {
-                for(std::uint32_t codepoint : std::views::iota(src_range[0], src_range[1] + (std::uint32_t)1)) {
+                for(const std::uint32_t& codepoint : std::views::iota(src_range[0], src_range[1] + (std::uint32_t)1)) {
                     if(dst.glyphs_set[codepoint >> 5] & (std::uint32_t)1 << (codepoint & 31)) continue;
                     if(!FT_Get_Char_Index(src.freetype.face, codepoint)) continue;
 
@@ -249,10 +249,10 @@ namespace null::render {
         }
 
         for(build_src_t& src : src_array) {
-            for(int idx : std::views::iota((size_t)0, src.glyphs_set.size())) {
+            for(const int& idx : std::views::iota((size_t)0, src.glyphs_set.size())) {
                 if(!src.glyphs_set[idx]) continue;
 
-                for(std::uint32_t bit_n : std::views::iota(0, 32)) {
+                for(const std::uint32_t& bit_n : std::views::iota(0, 32)) {
                     if(src.glyphs_set[idx] & ((std::uint16_t)1 << bit_n))
                         src.glyphs_list.push_back({ { ((idx) << 5) + bit_n } });
                 }
@@ -264,7 +264,7 @@ namespace null::render {
 
         int total_surface{ }, buf_rects_out_n{ };
         std::vector<stbrp_rect> buf_rects{ (size_t)total_glyphs_count };
-        std::ranges::transform(src_array, configs, src_array.begin(), [&](build_src_t src, const c_font::config_t& config) {
+        std::ranges::transform(src_array, configs, src_array.begin(), [&](build_src_t& src, const c_font::config_t& config) {
             if(!src.glyphs_count) return src;
 
             src.rects = &buf_rects[buf_rects_out_n];
@@ -274,7 +274,7 @@ namespace null::render {
             std::array<std::uint8_t, 256> multiply_table{ };
             if(multiply_enabled) multiply_calc_lookup_table(multiply_table, config.rasterizer_multiply);
 
-            for(int i : std::views::iota((size_t)0, src.glyphs_list.size())) {
+            for(const int& i : std::views::iota((size_t)0, src.glyphs_list.size())) {
                 src_glyph_t& glyph{ src.glyphs_list[i] };
 
                 std::uint32_t glyph_index{ FT_Get_Char_Index(src.freetype.face, glyph.glyph.codepoint) };
@@ -305,7 +305,7 @@ namespace null::render {
                             });
                     } break;
                     case FT_PIXEL_MODE_MONO: {
-                        for(std::uint32_t y : std::views::iota((std::uint32_t)0, ft_bitmap->rows)) {
+                        for(const std::uint32_t& y : std::views::iota((std::uint32_t)0, ft_bitmap->rows)) {
                             std::uint8_t bits{ };
                             const std::uint8_t* bits_ptr{ ft_bitmap->buffer + y * ft_bitmap->pitch };
                             for(uint32_t x{ 0 }; x < ft_bitmap->width; x++, bits <<= 1) {
@@ -342,7 +342,7 @@ namespace null::render {
 
             stbrp_pack_rects(&pack_context, src.rects, src.glyphs_count);
 
-            for(int i : std::views::iota(0, src.glyphs_count)) {
+            for(const int& i : std::views::iota(0, src.glyphs_count)) {
                 if(src.rects[i].was_packed) texture.size.y = std::max((int)texture.size.y, src.rects[i].y + src.rects[i].h);
             }
         }
@@ -351,14 +351,14 @@ namespace null::render {
         texture.uv_scale = vec2_t{ 1.f } / texture.size;
         texture.pixels_alpha8.resize(texture.size.x * texture.size.y);
 
-        std::ranges::transform(src_array, configs, src_array.begin(), [&](build_src_t src, c_font::config_t& config) {
+        std::ranges::transform(src_array, configs, src_array.begin(), [&](build_src_t& src, c_font::config_t& config) {
             if(!src.glyphs_count) return src;
 
             c_font* dst_font{ config.font };
 
             setup_font(dst_font, &config, src.freetype.info.ascender, src.freetype.info.descender);
 
-            for(int i : std::views::iota(0, src.glyphs_count)) {
+            for(const int& i : std::views::iota(0, src.glyphs_count)) {
                 src_glyph_t& glyph{ src.glyphs_list[i] };
                 stbrp_rect& pack_rect{ src.rects[i] };
                 if(!pack_rect.was_packed) throw std::runtime_error{ "!pack_rect.was_packed" };
@@ -368,7 +368,7 @@ namespace null::render {
                     throw std::runtime_error{ "info.size + texture.glyph_padding > vec2_t{ pack_rect.w, pack_rect.h }" };
                 
                 vec2_t t{ vec2_t{ pack_rect.x, pack_rect.y } + texture.glyph_padding };
-                for(int y : std::views::iota(0, glyph.glyph.corners.min.y)) {
+                for(const int& y : std::views::iota(0, glyph.glyph.corners.min.y)) {
                     std::copy(std::next(glyph.bitmap.begin(), glyph.glyph.corners.min.x * y),
                         std::next(glyph.bitmap.begin(), glyph.glyph.corners.min.x * (y + 1)),
                         std::next(texture.pixels_alpha8.begin(), (t.y * texture.size.x) + t.x + (texture.size.x * y)));
@@ -394,7 +394,7 @@ namespace null::render {
         custom_rect_t* rect{ &custom_rects[pack_id_lines] };
         if(!rect->is_packed()) throw std::runtime_error{ "!rect->is_packed()" };
 
-        for(std::uint32_t n : std::views::iota(0, 64)) {
+        for(const std::uint32_t& n : std::views::iota(0, 64)) {
             std::uint32_t pad_left{ ((int)rect->size.max.x - n) / 2 }, pad_right{ (int)rect->size.max.x - (pad_left + n) };
 
             if(pad_left + n + pad_right != rect->size.max.x) throw std::runtime_error{ "pad_left + line_width + pad_right != rect->size.max.x" };
@@ -430,13 +430,13 @@ namespace null::render {
         if(user_rects.empty()) throw std::runtime_error{ "user_rects empty" };
 
         std::vector<stbrp_rect> pack_rects{ user_rects.size() };
-        for(int i : std::views::iota((size_t)0, user_rects.size())) {
+        for(const int& i : std::views::iota((size_t)0, user_rects.size())) {
             pack_rects[i].w = user_rects[i].size.max.x;
             pack_rects[i].h = user_rects[i].size.max.y;
         }
 
         stbrp_pack_rects(stbrp_context_opaque, &pack_rects[0], pack_rects.size());
-        for(int i : std::views::iota((size_t)0, pack_rects.size())) {
+        for(const int& i : std::views::iota((size_t)0, pack_rects.size())) {
             if(pack_rects[i].was_packed) {
                 user_rects[i].size.min.x = pack_rects[i].x;
                 user_rects[i].size.min.y = pack_rects[i].y;
@@ -449,8 +449,8 @@ namespace null::render {
         }
     }
 
-    void c_atlas::multiply_calc_lookup_table(std::array<std::uint8_t, 256>& out_table, float in_multiply_factor) {
-        for(std::uint32_t i : std::views::iota(0, 256)) {
+    void c_atlas::multiply_calc_lookup_table(std::array<std::uint8_t, 256>& out_table, const float& in_multiply_factor) {
+        for(const std::uint32_t& i : std::views::iota(0, 256)) {
             std::uint32_t value{ (std::uint32_t)(i * in_multiply_factor) };
             out_table[i] = value > 255 ? 255 : (value & 0xFF);
         }
@@ -493,7 +493,7 @@ namespace null::render {
         return add_font_from_memory_compressed_base_85_ttf(compressed_fonts::proggy_clean, cfg.size_pixels, &cfg, cfg.glyph_config.ranges ? cfg.glyph_config.ranges : c_font::glyph_t::ranges_default());
     }
 
-    c_font* c_atlas::add_font_from_file_ttf(std::string_view filename, float size_pixels, c_font::config_t* config, const std::uint16_t* glyph_ranges) {
+    c_font* c_atlas::add_font_from_file_ttf(const std::string_view& filename, const float& size_pixels, c_font::config_t* config, const std::uint16_t* glyph_ranges) {
         if(locked) throw std::runtime_error{ "cannot modify a locked atlas between begin_render() and end_render/render()!" };
         
         std::ifstream file{ filename.data(), std::ios::in | std::ios::binary | std::ios::ate };
@@ -520,7 +520,7 @@ namespace null::render {
         return add_font(&cfg);
     }
 
-    c_font* c_atlas::add_font_from_memory_compressed_ttf(const std::vector<std::uint8_t>& compressed_ttf, float size_pixels, c_font::config_t* config, const std::uint16_t* glyph_ranges) {
+    c_font* c_atlas::add_font_from_memory_compressed_ttf(const std::vector<std::uint8_t>& compressed_ttf, const float& size_pixels, c_font::config_t* config, const std::uint16_t* glyph_ranges) {
         std::vector<char> buf_decompressed_data(stb::decompress_length((std::uint8_t*)compressed_ttf.data()));
         stb::decompress((std::uint8_t*)buf_decompressed_data.data(), compressed_ttf.data());
 
@@ -531,10 +531,9 @@ namespace null::render {
         return add_font_from_memory_ttf(buf_decompressed_data, size_pixels, &cfg, glyph_ranges);
     }
 
-    c_font* c_atlas::add_font_from_memory_compressed_base_85_ttf(std::string_view compressed_font_data_base85, float size_pixels, c_font::config_t* config, const std::uint16_t* glyph_ranges) {
+    c_font* c_atlas::add_font_from_memory_compressed_base_85_ttf(const std::string_view& compressed_font_data_base85, const float& size_pixels, c_font::config_t* config, const std::uint16_t* glyph_ranges) {
         return add_font_from_memory_compressed_ttf(utils::encoding::base85_t{ compressed_font_data_base85 }.decode().output, size_pixels, config, glyph_ranges);
     }
-
 
     void c_atlas::clear_input_data() {
         if(locked) throw std::runtime_error{ "cannot modify a locked atlas between begin_render() and end_render/render()!" };

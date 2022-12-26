@@ -7,7 +7,7 @@ namespace null {
 			anti_aliased_lines = 1 << 0,
 			anti_aliased_lines_use_texture = 1 << 1,
 			anti_aliased_fill = 1 << 2,
-			allow_vtx_offset
+			allow_vtx_offset = 1 << 3
 		}; enum_create_bit_operators(e_initialize_flags, true);
 		enum_create_cast_operator(e_initialize_flags, -);
 
@@ -119,8 +119,8 @@ namespace null {
 
 		public:
 			void restore_clip_rect();
-			void push_clip_rect(rect_t rect, bool intersect_with_current_rect = false);
-			void push_clip_rect(const vec2_t& a, const vec2_t& b, bool intersect_with_current_rect = false) { push_clip_rect(rect_t{ a, b }, intersect_with_current_rect); }
+			void push_clip_rect(rect_t rect, const bool& intersect_with_current_rect = false);
+			void push_clip_rect(const vec2_t& a, const vec2_t& b, const bool& intersect_with_current_rect = false) { push_clip_rect(rect_t{ a, b }, intersect_with_current_rect); }
 			void pop_clip_rect() { clips.pop_back(); on_change_clip_rect(); }
 
 			void restore_texture() { push_texture(atlas.texture.data); }
@@ -137,38 +137,38 @@ namespace null {
 			void add_rect_uv(const vec2_t& a, const vec2_t& b, const vec2_t& uv_a, const vec2_t& uv_b, const color_t<int>& color) { add_quad_uv({ std::pair{ a, uv_a }, std::pair{ vec2_t{ b.x, a.y }, vec2_t{ uv_b.x, uv_a.y } }, std::pair{ b, uv_b }, std::pair{ vec2_t{ a.x, b.y }, vec2_t{ uv_a.x, uv_b.y } } }, color); }
 			void add_quad_uv(const std::array<std::pair<vec2_t, vec2_t>, 4>& points, const color_t<int>& color);
 
-			void path_rect(const vec2_t& a, const vec2_t& b, float rounding = 0.0f, e_corner_flags flags = e_corner_flags::all);
-			void path_arc_to_fast(const vec2_t& center, float radius, int a_min_of_12, int a_max_of_12);
-			void path_arc_to(const vec2_t& center, float radius, float a_min, float a_max, int num_segments);
+			void path_rect(const vec2_t& a, const vec2_t& b, float rounding = 0.0f, const e_corner_flags& flags = e_corner_flags::all);
+			void path_arc_to_fast(const vec2_t& center, const float& radius, const int& a_min_of_12, const int& a_max_of_12);
+			void path_arc_to(const vec2_t& center, const float& radius, const float& a_min, const float& a_max, const int& num_segments);
 			void path_fill_convex(const color_t<int>& clr) { draw_convex_poly_filled(pathes, clr); pathes.clear(); }
-			void path_stroke(const color_t<int>& color, bool closed, float thickness) { draw_poly_line(pathes, color, closed, thickness); pathes.clear(); }
+			void path_stroke(const color_t<int>& color, const bool& closed, const float& thickness) { draw_poly_line(pathes, color, closed, thickness); pathes.clear(); }
 
 			void repaint_rect_vertices_in_multicolor(const vec2_t& min, const vec2_t& max, const size_t& vtx_offset, const std::array<color_t<int>, 4>& colors);
 
 		public:
-			void draw_line(const vec2_t& a, const vec2_t& b, const color_t<int>& color, float thickness = 1.f);
-			void draw_rect(const vec2_t& a, const vec2_t& b, const color_t<int>& color, float thickness = 1.f, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all);
-			void draw_rect(const rect_t& rect, const color_t<int>& color, float thickness = 1.f, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all) { draw_rect(rect.min, rect.max, color, thickness, rounding, flags); }
-			void draw_rect_multicolor(const vec2_t& a, const vec2_t& b, const std::array<color_t<int>, 4>& colors, float thickness = 1.f, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all);
-			void draw_rect_multicolor(const rect_t& rect, const std::array<color_t<int>, 4>& colors, float thickness = 1.f, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all) { draw_rect_multicolor(rect.min, rect.max, colors, thickness, rounding, flags); }
-			void draw_rect_filled(const vec2_t& a, const vec2_t& b, const color_t<int>& color, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all);
-			void draw_rect_filled(const rect_t& rect, const color_t<int>& color, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all) { draw_rect_filled(rect.min, rect.max, color, rounding, flags); }
-			void draw_rect_filled_multicolor(const vec2_t& a, const vec2_t& b, const std::array<color_t<int>, 4>& colors, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all);
-			void draw_rect_filled_multicolor(const rect_t& rect, const std::array<color_t<int>, 4>& colors, float rounding = 0.f, e_corner_flags flags = e_corner_flags::all) { draw_rect_filled_multicolor(rect.min, rect.max, colors, rounding, flags); }
+			void draw_line(const vec2_t& a, const vec2_t& b, const color_t<int>& color, const float& thickness = 1.f);
+			void draw_rect(const vec2_t& a, const vec2_t& b, const color_t<int>& color, const float& thickness = 1.f, const float& rounding = 0.f, const e_corner_flags& flags = e_corner_flags::all);
+			void draw_rect(const rect_t& rect, const color_t<int>& color, const float& thickness = 1.f, const float& rounding = 0.f, const e_corner_flags& flags = e_corner_flags::all) { draw_rect(rect.min, rect.max, color, thickness, rounding, flags); }
+			void draw_rect_multicolor(const vec2_t& a, const vec2_t& b, const std::array<color_t<int>, 4>& colors, const float& thickness = 1.f, const float& rounding = 0.f, const e_corner_flags& flags = e_corner_flags::all);
+			void draw_rect_multicolor(const rect_t& rect, const std::array<color_t<int>, 4>& colors, const float& thickness = 1.f, const float& rounding = 0.f, const e_corner_flags& flags = e_corner_flags::all) { draw_rect_multicolor(rect.min, rect.max, colors, thickness, rounding, flags); }
+			void draw_rect_filled(const vec2_t& a, const vec2_t& b, const color_t<int>& color, const float& rounding = 0.f, const e_corner_flags& flags = e_corner_flags::all);
+			void draw_rect_filled(const rect_t& rect, const color_t<int>& color, const float& rounding = 0.f, const e_corner_flags& flags = e_corner_flags::all) { draw_rect_filled(rect.min, rect.max, color, rounding, flags); }
+			void draw_rect_filled_multicolor(const vec2_t& a, const vec2_t& b, const std::array<color_t<int>, 4>& colors, float rounding = 0.f, const e_corner_flags& flags = e_corner_flags::all);
+			void draw_rect_filled_multicolor(const rect_t& rect, const std::array<color_t<int>, 4>& colors, const float& rounding = 0.f, const e_corner_flags& flags = e_corner_flags::all) { draw_rect_filled_multicolor(rect.min, rect.max, colors, rounding, flags); }
 			void draw_convex_poly_filled(const std::vector<vec2_t>& points, const color_t<int>& color);
-			void draw_poly_line(const std::vector<vec2_t>& points, const color_t<int>& color, bool closed, float thickness = 1.f);
-			void draw_circle(const vec2_t& center, const color_t<int>& clr, float radius, int num_segments = 0, float thickness = 1.f);
-			void draw_circle_filled(const vec2_t& center, const color_t<int>& clr, float radius, int num_segments = 0);
+			void draw_poly_line(const std::vector<vec2_t>& points, const color_t<int>& color, const bool& closed, float thickness = 1.f);
+			void draw_circle(const vec2_t& center, const color_t<int>& clr, const float& radius, int num_segments = 0, const float& thickness = 1.f);
+			void draw_circle_filled(const vec2_t& center, const color_t<int>& clr, const float& radius, int num_segments = 0);
 			void draw_image(void* texture, const vec2_t& a, const vec2_t& b, const vec2_t& uv_min, const vec2_t& uv_max, const color_t<int>& color);
 			void draw_image(void* texture, const rect_t& rect, const rect_t& uvs, const color_t<int>& color) { draw_image(texture, rect.min, rect.max, uvs.min, uvs.max, color); }
 			void draw_image_quad(void* texture, const std::array<std::pair<vec2_t, vec2_t>, 4>& points_and_uvs, const color_t<int>& color);
 
 			template <typename char_t>
-			vec2_t draw_text(std::basic_string_view<char_t> str, const color_t<int>& color, vec2_t& pos, float& new_line_pos, c_font* font, const float& size, int& vtx_offset, e_text_flags flags) {
-				if(color.a() <= 0) return pos;
+			void draw_text(const std::basic_string_view<char_t>& str, const color_t<int>& color, vec2_t& pos, float& new_line_pos, c_font* font, const float& size, int& vtx_offset, e_text_flags flags) {
+				if(color.a() <= 0) return;
 				if(flags & e_text_flags::aligin_mask) {
 					vec2_t str_size{ font->calc_text_size(str, size) };
-					if(str_size <= 0.f) return pos;
+					if(str_size <= 0.f) return;
 
 					if(flags & e_text_flags::aligin_right) pos.x -= str_size.x;
 					if(flags & e_text_flags::aligin_bottom) pos.y -= str_size.y;
@@ -179,7 +179,7 @@ namespace null {
 					new_line_pos = pos.x;
 				}
 
-				vec2_t draw_pos{ std::floorf(pos.x), std::floorf(pos.y) };
+				pos = math::floor(pos);
 				for(auto iterator{ str.begin() }; iterator != str.end();) {
 					std::uint32_t symbol{ (std::uint32_t)*iterator };
 					iterator += impl::char_converters::converter<char_t>::convert(symbol, iterator, str.end());
@@ -187,9 +187,9 @@ namespace null {
 
 					if(symbol == '\r') continue;
 					if(symbol == '\n') {
-						draw_pos.x = new_line_pos;
-						draw_pos.y += size;
-						if(draw_pos.y > cmd_buffer.back().clip_rect.max.y)
+						pos.x = new_line_pos;
+						pos.y += size;
+						if(pos.y > cmd_buffer.back().clip_rect.max.y)
 							break;
 						continue;
 					}
@@ -198,7 +198,7 @@ namespace null {
 					if(!glyph) continue;
 
 					if(glyph->visible) {
-						rect_t corners{ rect_t{ draw_pos } + glyph->corners * (size / font->size) };
+						rect_t corners{ rect_t{ pos } + glyph->corners * (size / font->size) };
 						if(cmd_buffer.back().clip_rect.intersects(corners)) {
 							rect_t uvs{ glyph->texture_coordinates };
 
@@ -226,13 +226,12 @@ namespace null {
 							vtx_offset += 4;
 						}
 					}
-					draw_pos.x += glyph->advance_x * (size / font->size);
+					pos.x += glyph->advance_x * (size / font->size);
 				}
-				return draw_pos;
 			}
 
 			template <typename string_view_t>
-			void draw_text(string_view_t str, vec2_t pos, const color_t<int>& color, e_text_flags flags = e_text_flags{ }, c_font* font = c_font::get_current_font(), float size = 0.f) {
+			void draw_text(const string_view_t& str, vec2_t pos, const color_t<int>& color, e_text_flags flags = e_text_flags{ }, c_font* font = c_font::get_current_font(), float size = 0.f) {
 				if(!font) return;
 				if(size <= 0) size = font->size;
 
@@ -244,7 +243,7 @@ namespace null {
 			}
 
 			template <typename string_t>
-			void draw_text(multicolor_text_t<string_t> str, vec2_t pos, e_text_flags flags = e_text_flags{ }, c_font* font = c_font::get_current_font(), float size = 0.f) {
+			void draw_text(const multicolor_text_t<string_t>& str, vec2_t pos, e_text_flags flags = e_text_flags{ }, c_font* font = c_font::get_current_font(), float size = 0.f) {
 				if(!font) return;
 				if(size <= 0) size = font->size;
 
@@ -254,14 +253,14 @@ namespace null {
 				int vtx_offset{ }; //@note: offset for outline
 				float new_line_pos{ pos.x };
 				std::ranges::for_each(str.data, [&](const auto& data) {
-					pos = draw_text<string_t::value_type>(data.first, data.second, pos, new_line_pos, font, size, vtx_offset, flags);
+					draw_text<string_t::value_type>(data.first, data.second, pos, new_line_pos, font, size, vtx_offset, flags);
 					});
 			}
 
 		public:
 			virtual void on_change_clip_rect();
 			virtual void on_change_texture();
-			virtual void on_change_vtx(int new_vtx_count);
+			virtual void on_change_vtx(const int& new_vtx_count);
 		};
 
 		inline c_draw_list background{ }, foreground{ };

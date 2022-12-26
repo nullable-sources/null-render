@@ -12,7 +12,7 @@ namespace null {
         }
 
         void c_draw_list::restore_clip_rect() { push_clip_rect(0.f, renderer::draw_data_t::screen_size); }
-        void c_draw_list::push_clip_rect(rect_t rect, bool intersect_with_current_rect) {
+        void c_draw_list::push_clip_rect(rect_t rect, const bool& intersect_with_current_rect) {
             if(intersect_with_current_rect) rect = { math::max(rect.min, clips.back().min), math::min(rect.max, clips.back().max) };
 
             clips.push_back(rect_t{ rect.min, std::max(rect.min, rect.max) });
@@ -28,7 +28,7 @@ namespace null {
             std::ranges::transform(points, std::back_inserter(vtx_buffer), [&](const std::pair<vec2_t, vec2_t>& val) { return vertex_t{ val.first, val.second, color }; });
         }
 
-        void c_draw_list::path_rect(const vec2_t& a, const vec2_t& b, float rounding, e_corner_flags flags) {
+        void c_draw_list::path_rect(const vec2_t& a, const vec2_t& b, float rounding, const e_corner_flags& flags) {
             rounding = std::min(rounding, std::fabsf(b.x - a.x) * ((flags & e_corner_flags::top) == -e_corner_flags::top || (flags & e_corner_flags::bot) == -e_corner_flags::bot ? 0.5f : 1.f) - 1.f);
             rounding = std::min(rounding, std::fabsf(b.y - a.y) * ((flags & e_corner_flags::left) == -e_corner_flags::left || (flags & e_corner_flags::right) == -e_corner_flags::right ? 0.5f : 1.f) - 1.f);
 
@@ -50,19 +50,16 @@ namespace null {
             }
         }
 
-        void c_draw_list::path_arc_to_fast(const vec2_t& center, float radius, int a_min_of_12, int a_max_of_12) {
-            if(radius == 0.0f || a_min_of_12 > a_max_of_12) pathes.push_back(center);
+        void c_draw_list::path_arc_to_fast(const vec2_t& center, const float& radius, const int& a_min_of_12, const int& a_max_of_12) {
+            if(!radius || a_min_of_12 > a_max_of_12) pathes.push_back(center);
             else {
-                a_min_of_12 *= settings_t::arc_fast_tessellation_multiplier;
-                a_max_of_12 *= settings_t::arc_fast_tessellation_multiplier;
-
-                std::ranges::for_each(std::views::iota(a_min_of_12, a_max_of_12 + 1), [=](const int& a) {
+                std::ranges::for_each(std::views::iota(a_min_of_12 * settings_t::arc_fast_tessellation_multiplier, a_max_of_12 * settings_t::arc_fast_tessellation_multiplier + 1), [=](const int& a) {
                     pathes.push_back(center + settings.arc_fast_vtx[a % settings.arc_fast_vtx.size()] * radius);
                     });
             }
         }
 
-        void c_draw_list::path_arc_to(const vec2_t& center, float radius, float a_min, float a_max, int num_segments) {
+        void c_draw_list::path_arc_to(const vec2_t& center, const float& radius, const float& a_min, const float& a_max, const int& num_segments) {
             if(radius == 0.f) pathes.push_back(center);
             else {
                 std::ranges::for_each(std::views::iota(0, num_segments + 1), [=](const int& i) {
@@ -84,7 +81,7 @@ namespace null {
             }
         }
 
-        void c_draw_list::draw_line(const vec2_t& a, const vec2_t& b, const color_t<int>& color, float thickness) {
+        void c_draw_list::draw_line(const vec2_t& a, const vec2_t& b, const color_t<int>& color, const float& thickness) {
             if(color.a() <= 0) return;
 
             pathes.push_back(a + 0.5f);
@@ -92,7 +89,7 @@ namespace null {
             path_stroke(color, false, thickness);
         }
 
-        void c_draw_list::draw_rect(const vec2_t& a, const vec2_t& b, const color_t<int>& color, float thickness, float rounding, e_corner_flags flags) {
+        void c_draw_list::draw_rect(const vec2_t& a, const vec2_t& b, const color_t<int>& color, const float& thickness, const float& rounding, const e_corner_flags& flags) {
             if(color.a() <= 0) return;
 
             path_rect(a + 0.50f, b - (settings.initialize_flags & e_initialize_flags::anti_aliased_lines ? 0.50f : 0.49f), rounding, flags);
@@ -100,7 +97,7 @@ namespace null {
         }
 
         //@note: colors = { top left, top right, bottom left, bottom right };
-        void c_draw_list::draw_rect_multicolor(const vec2_t& a, const vec2_t& b, const std::array<color_t<int>, 4>& colors, float thickness, float rounding, e_corner_flags flags) {
+        void c_draw_list::draw_rect_multicolor(const vec2_t& a, const vec2_t& b, const std::array<color_t<int>, 4>& colors, const float& thickness, const float& rounding, const e_corner_flags& flags) {
             if(std::ranges::all_of(colors, [](const color_t<int>& color) { return color.a() <= 0; })) return;
 
             size_t offset{ vtx_buffer.size() };
@@ -108,7 +105,7 @@ namespace null {
 
             //@note: i'm sure it can be done differently, but i don't really give a fuck
             vec2_t min{ std::numeric_limits<float>::max() }, max{ std::numeric_limits<float>::min() };
-            for(vertex_t& vertex : vtx_buffer | std::views::drop(offset)) {
+            for(const vertex_t& vertex : vtx_buffer | std::views::drop(offset)) {
                 min = math::min(vertex.pos, min);
                 max = math::max(vertex.pos, max);
             }
@@ -116,7 +113,7 @@ namespace null {
             repaint_rect_vertices_in_multicolor(min, max, offset, colors);
         }
 
-        void c_draw_list::draw_rect_filled(const vec2_t& a, const vec2_t& b, const color_t<int>& color, float rounding, e_corner_flags flags) {
+        void c_draw_list::draw_rect_filled(const vec2_t& a, const vec2_t& b, const color_t<int>& color, const float& rounding, const e_corner_flags& flags) {
             if(color.a() <= 0) return;
 
             if(rounding > 0.0f) {
@@ -126,11 +123,11 @@ namespace null {
         }
 
         //@note: colors = { top left, top right, bottom left, bottom right };
-        void c_draw_list::draw_rect_filled_multicolor(const vec2_t& a, const vec2_t& b, const std::array<color_t<int>, 4>& colors, float rounding, e_corner_flags flags) {
+        void c_draw_list::draw_rect_filled_multicolor(const vec2_t& a, const vec2_t& b, const std::array<color_t<int>, 4>& colors, float rounding, const e_corner_flags& flags) {
             if(std::ranges::all_of(colors, [](const color_t<int>& color) { return color.a() <= 0; })) return;
 
-            rounding = std::min(rounding, std::fabsf(b.x - a.x) * (flags & e_corner_flags::top || flags & e_corner_flags::bot ? 0.5f : 1.f) - 1.f);
-            rounding = std::min(rounding, std::fabsf(b.y - a.y) * (flags & e_corner_flags::left || flags & e_corner_flags::right ? 0.5f : 1.f) - 1.f);
+            rounding = std::min(rounding, std::fabsf(b.x - a.x) * ((flags & e_corner_flags::top) == -e_corner_flags::top || (flags & e_corner_flags::bot) == -e_corner_flags::bot ? 0.5f : 1.f) - 1.f);
+            rounding = std::min(rounding, std::fabsf(b.y - a.y) * ((flags & e_corner_flags::left) == -e_corner_flags::left || (flags & e_corner_flags::right) == -e_corner_flags::right ? 0.5f : 1.f) - 1.f);
             
             if(rounding > 0.f && flags != e_corner_flags{ }) {
                 size_t offset{ vtx_buffer.size() };
@@ -164,7 +161,7 @@ namespace null {
                     });
 
                 std::vector<vec2_t> temp_normals(points.size());
-                for(int i0{ (int)points.size() - 1 }; int i1 : std::views::iota((size_t)0, points.size())) {
+                for(int i0{ (int)points.size() - 1 }; const int& i1 : std::views::iota((size_t)0, points.size())) {
                     vec2_t delta{ points[i1] - points[i0] };
                     if(float d2{ std::powf(delta.length(), 2) }; d2 > 0.f) delta *= 1.f / std::sqrtf(d2);
 
@@ -173,7 +170,7 @@ namespace null {
                 }
 
                 size_t idx{ vtx_buffer.size() };
-                for(int i0{ (int)points.size() - 1 }; int i1 : std::views::iota((size_t)0, points.size())) {
+                for(int i0{ (int)points.size() - 1 }; const int& i1 : std::views::iota((size_t)0, points.size())) {
                     vec2_t delta{ (temp_normals[i0] + temp_normals[i1]) / 2.f };
                     if(float d2{ std::powf(delta.length(), 2) }; d2 > 0.000001f) delta *= 1.f / std::min(d2, 100.f);
                     delta *= aa_size / 2.f;
@@ -190,12 +187,12 @@ namespace null {
                     i0 = i1;
                 }
             } else {
-                for(int i : std::views::iota((size_t)2, points.size())) add_idx({ (std::uint16_t)(vtx_buffer.size()), (std::uint16_t)(vtx_buffer.size() + i - 1), (std::uint16_t)(vtx_buffer.size() + i) });
+                for(const int& i : std::views::iota((size_t)2, points.size())) add_idx({ (std::uint16_t)(vtx_buffer.size()), (std::uint16_t)(vtx_buffer.size() + i - 1), (std::uint16_t)(vtx_buffer.size() + i) });
                 std::ranges::for_each(points, [&](const vec2_t& point) { add_vtx({ { point, atlas.texture.uv_white_pixel, color } }); });
             }
         }
 
-        void c_draw_list::draw_poly_line(const std::vector<vec2_t>& points, const color_t<int>& color, bool closed, float thickness) {
+        void c_draw_list::draw_poly_line(const std::vector<vec2_t>& points, const color_t<int>& color, const bool& closed, float thickness) {
             if(points.size() < 2 || color.a() <= 0) return;
 
             const int count{ int(closed ? points.size() : points.size() - 1) };
@@ -211,7 +208,7 @@ namespace null {
                 std::vector<vec2_t> temp_normals(points.size() * (use_texture || !thick_line ? 3 : 5));
                 std::vector<vec2_t> temp_points(temp_normals.size() + points.size());
 
-                for(int i1 : std::views::iota(0, count)) {
+                for(const int& i1 : std::views::iota(0, count)) {
                     vec2_t delta{ points[i1 + 1 == points.size() ? 0 : i1 + 1] - points[i1] };
                     if(float d2{ std::powf(delta.length(), 2) }; d2 > 0.f) delta *= 1.f / std::sqrtf(d2);
                     temp_normals[i1] = { delta.y, -delta.x };
@@ -229,7 +226,7 @@ namespace null {
                     }
 
                     size_t idx{ vtx_buffer.size() };
-                    for(int i1 : std::views::iota(0, count)) {
+                    for(const int& i1 : std::views::iota(0, count)) {
                         const bool last_point{ i1 + 1 == points.size() };
                         const int i2{ last_point ? 0 : (i1 + 1) };
                         const std::uint32_t _idx{ std::uint32_t(last_point ? vtx_buffer.size() : (idx + (use_texture ? 2 : 3))) };
@@ -260,14 +257,14 @@ namespace null {
 
                     if(use_texture) {
                         const rect_t& tex_uvs{ c_font::get_current_font()->container_atlas->texture.uv_lines[(int)thickness] };
-                        for(int i : std::views::iota((size_t)0, points.size())) {
+                        for(const int& i : std::views::iota((size_t)0, points.size())) {
                             add_vtx({
                                 { temp_points[i * 2],       tex_uvs.min, color },
                                 { temp_points[i * 2 + 1],   tex_uvs.max, color }
                                 });
                         }
                     } else {
-                        for(int i : std::views::iota((size_t)0, points.size())) {
+                        for(const int& i : std::views::iota((size_t)0, points.size())) {
                             add_vtx({
                                 { points[i],                atlas.texture.uv_white_pixel, color },
                                 { temp_points[i * 2],       atlas.texture.uv_white_pixel, color_t{ color, 0.f } },
@@ -290,7 +287,7 @@ namespace null {
                     }
 
                     size_t idx{ vtx_buffer.size() };
-                    for(int i1 : std::views::iota(0, count)) {
+                    for(const int& i1 : std::views::iota(0, count)) {
                         const bool last_point{ i1 + 1 == points.size() };
                         const int i2{ last_point ? 0 : (i1 + 1) };
                         const std::uint32_t _idx{ std::uint32_t(last_point ? vtx_buffer.size() : (idx + 4)) };
@@ -315,7 +312,7 @@ namespace null {
                         idx = _idx;
                     }
 
-                    for(int i : std::views::iota((size_t)0, points.size())) {
+                    for(const int& i : std::views::iota((size_t)0, points.size())) {
                         add_vtx({
                             { temp_points[i * 4],       atlas.texture.uv_white_pixel, color_t(color, 0.f) },
                             { temp_points[i * 4 + 1],   atlas.texture.uv_white_pixel, color },
@@ -325,7 +322,7 @@ namespace null {
                     }
                 }
             } else {
-                for(int i1 : std::views::iota(0, count)) {
+                for(const int& i1 : std::views::iota(0, count)) {
                     const int i2{ i1 + 1 == points.size() ? 0 : (i1 + 1) };
                     vec2_t delta{ points[i2] - points[i1] };
                     if(float d2{ std::powf(delta.length(), 2) }; d2 > 0.f) delta *= 1.f / std::sqrtf(d2);
@@ -346,7 +343,7 @@ namespace null {
             }
         }
 
-        void c_draw_list::draw_circle(const vec2_t& center, const color_t<int>& clr, float radius, int num_segments, float thickness) {
+        void c_draw_list::draw_circle(const vec2_t& center, const color_t<int>& clr, const float& radius, int num_segments, const float& thickness) {
             if(clr.a() <= 0 || radius <= 0.f) return;
 
             settings.get_auto_circle_num_segments(num_segments, radius);
@@ -356,7 +353,7 @@ namespace null {
             path_stroke(clr, true, thickness);
         }
 
-        void c_draw_list::draw_circle_filled(const vec2_t& center, const color_t<int>& clr, float radius, int num_segments) {
+        void c_draw_list::draw_circle_filled(const vec2_t& center, const color_t<int>& clr, const float& radius, int num_segments) {
             if(clr.a() <= 0 || radius <= 0.f) return;
 
             settings.get_auto_circle_num_segments(num_segments, radius);
@@ -394,7 +391,7 @@ namespace null {
             else cmd_buffer.back().texture = textures.back();
         }
 
-        void c_draw_list::on_change_vtx(int new_vtx_count) {
+        void c_draw_list::on_change_vtx(const int& new_vtx_count) {
             if((vtx_buffer.size() + new_vtx_count >= (1 << 16)) && (settings.initialize_flags & e_initialize_flags::allow_vtx_offset)) {
                 if(cmd_buffer.back().element_count) add_cmd();
                 cmd_buffer.back().vtx_offset = vtx_buffer.size();

@@ -17,9 +17,9 @@ struct directx11_state_t {
     ID3D11VertexShader* vertex_shader{ };
     ID3D11GeometryShader* geometry_shader{ };
     UINT pixel_shader_instances_count{ }, vertex_shader_instances_count{ }, geometry_shader_instances_count{ };
-    ID3D11ClassInstance* pixel_shader_instances[256]{ }, * vertex_shader_instances[256]{ }, * geometry_shader_instances[256]{ };
+    ID3D11ClassInstance* pixel_shader_instances[256]{ }, *vertex_shader_instances[256]{ }, *geometry_shader_instances[256]{ };
     D3D11_PRIMITIVE_TOPOLOGY primitive_topology{ };
-    ID3D11Buffer* index_buffer{ }, * vertex_buffer{ }, * vertex_shader_constant_buffer{ };
+    ID3D11Buffer* index_buffer{ }, *vertex_buffer{ }, *vertex_shader_constant_buffer{ };
     UINT index_buffer_offset{ }, vertex_buffer_stride{ }, vertex_buffer_offset{ };
     DXGI_FORMAT index_buffer_format{ };
     ID3D11InputLayout* input_layout{ };
@@ -54,11 +54,11 @@ struct directx11_state_t {
         context->PSSetShaderResources(0, 1, &shader_resource); if(shader_resource) shader_resource->Release();
         context->PSSetSamplers(0, 1, &sampler); if(sampler) sampler->Release();
         context->PSSetShader(pixel_shader, pixel_shader_instances, pixel_shader_instances_count); if(pixel_shader) pixel_shader->Release();
-        for(std::uint32_t i : std::views::iota((std::uint32_t)0, pixel_shader_instances_count)) if(pixel_shader_instances[i]) pixel_shader_instances[i]->Release();
+        for(const std::uint32_t& i : std::views::iota((std::uint32_t)0, pixel_shader_instances_count)) if(pixel_shader_instances[i]) pixel_shader_instances[i]->Release();
         context->VSSetShader(vertex_shader, vertex_shader_instances, vertex_shader_instances_count); if(vertex_shader) vertex_shader->Release();
         context->VSSetConstantBuffers(0, 1, &vertex_shader_constant_buffer); if(vertex_shader_constant_buffer) vertex_shader_constant_buffer->Release();
         context->GSSetShader(geometry_shader, geometry_shader_instances, geometry_shader_instances_count); if(geometry_shader) geometry_shader->Release();
-        for(std::uint32_t i : std::views::iota((std::uint32_t)0, vertex_shader_instances_count)) if(vertex_shader_instances[i]) vertex_shader_instances[i]->Release();
+        for(const std::uint32_t& i : std::views::iota((std::uint32_t)0, vertex_shader_instances_count)) if(vertex_shader_instances[i]) vertex_shader_instances[i]->Release();
         context->IASetPrimitiveTopology(primitive_topology);
         context->IASetIndexBuffer(index_buffer, index_buffer_format, index_buffer_offset); if(index_buffer) index_buffer->Release();
         context->IASetVertexBuffers(0, 1, &vertex_buffer, &vertex_buffer_stride, &vertex_buffer_offset); if(vertex_buffer) vertex_buffer->Release();
@@ -135,7 +135,7 @@ namespace null::renderer {
         vertex_t* vtx_dst{ (vertex_t*)vtx_resource.pData };
         std::uint16_t* idx_dst{ (std::uint16_t*)idx_resource.pData };
         for(render::c_draw_list* cmd_list : _draw_data.draw_lists) {
-            for(render::vertex_t& vtx_src : cmd_list->vtx_buffer) {
+            for(const render::vertex_t& vtx_src : cmd_list->vtx_buffer) {
                 *vtx_dst = {
                     { vtx_src.pos.x, vtx_src.pos.y, 0.f },
                     (std::uint32_t)((vtx_src.color.a() & 0xff) << 24) | ((vtx_src.color.b() & 0xff) << 16) | ((vtx_src.color.g() & 0xff) << 8) | (vtx_src.color.r() & 0xff),

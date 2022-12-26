@@ -16,7 +16,7 @@ namespace null::renderer {
 	inline std::uint32_t font_texture{ };
 
 	void render(draw_data_t& _draw_data = draw_data);
-	void setup_state(std::uint32_t vertex_array_object);
+	void setup_state(const std::uint32_t& vertex_array_object);
 	bool create_fonts_texture();
 	void destroy_fonts_texture();
 	bool create_device_objects();

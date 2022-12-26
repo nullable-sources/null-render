@@ -82,7 +82,7 @@ namespace null::renderer {
         opengl::scissor(last_scissor_box[0], last_scissor_box[1], last_scissor_box[2], last_scissor_box[3]);
     }
 
-    void setup_state(std::uint32_t vertex_array_object) {
+    void setup_state(const std::uint32_t& vertex_array_object) {
         opengl::enable(opengl::e_blend);
         opengl::blend_equation(opengl::e_func_add);
         opengl::blend_func_separate(opengl::e_src_alpha, opengl::e_one_minus_src_alpha, 1, opengl::e_one_minus_src_alpha);

@@ -34,7 +34,7 @@ namespace null::renderer {
 		if(vtx_buffer->Lock(0, (UINT)(_draw_data.total_vtx_count * sizeof(vertex_t)), (void**)&vtx_dst, D3DLOCK_DISCARD) < 0) throw std::runtime_error{ "vtx_buffer->Lock error" };
 		if(idx_buffer->Lock(0, (UINT)(_draw_data.total_idx_count * sizeof(std::uint16_t)), (void**)&idx_dst, D3DLOCK_DISCARD) < 0) throw std::runtime_error{ "idx_buffer->Lock error" };
 		for(render::c_draw_list* cmd_list : _draw_data.draw_lists) {
-			for(render::vertex_t vtx_src : cmd_list->vtx_buffer) {
+			for(const render::vertex_t& vtx_src : cmd_list->vtx_buffer) {
 				*vtx_dst = {
 					{ vtx_src.pos.x, vtx_src.pos.y, 0.f },
 					D3DCOLOR_RGBA(vtx_src.color.r(), vtx_src.color.g(), vtx_src.color.b(), vtx_src.color.a()),
@@ -139,12 +139,11 @@ namespace null::renderer {
 			throw std::runtime_error{ "cannot create font texture" };
 
 		D3DLOCKED_RECT tex_locked_rect{ };
-		if(int result = font_texture->LockRect(0, &tex_locked_rect, nullptr, 0); result != D3D_OK)
+		if(int result{ font_texture->LockRect(0, &tex_locked_rect, nullptr, 0) }; result != D3D_OK)
 			throw std::runtime_error{ std::format("lock rect error, code {}", result) };
 
-		for(int y : std::views::iota(0, render::atlas.texture.size.y)) {
-			int size = render::atlas.texture.size.x * 4;
-			std::memcpy((std::uint8_t*)tex_locked_rect.pBits + tex_locked_rect.Pitch * y, (std::uint8_t*)render::atlas.texture.pixels_rgba32.data() + size * y, size);
+		for(float size{ render::atlas.texture.size.x * 4 }; const int& y : std::views::iota(0, render::atlas.texture.size.y)) {
+			std::memcpy((std::uint8_t*)tex_locked_rect.pBits + tex_locked_rect.Pitch * y, (std::uint8_t*)render::atlas.texture.pixels_rgba32.data() + (int)size * y, size);
 		}
 
 		font_texture->UnlockRect(0);

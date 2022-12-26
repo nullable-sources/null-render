@@ -169,7 +169,7 @@ namespace null::render {
             bool dirty{ };
 
         public:
-            void resize(int new_size) {
+            void resize(const int& new_size) {
                 if(advances_x.size() != indexes.size()) throw std::runtime_error{ "advances_x.size() != indexes.size()" };
                 if(new_size <= indexes.size()) return;
                 advances_x.resize(new_size, -1.0f);
@@ -208,20 +208,20 @@ namespace null::render {
     public:
         void build_lookup_table();
 
-        glyph_t* find_glyph(std::uint16_t c, bool fallback = true);
-        void add_glyph(config_t* src_config, std::uint16_t c, rect_t corners, rect_t texture_coordinates, float advance_x);
-        void add_remap_char(std::uint16_t dst, std::uint16_t src, bool overwrite_dst = true);
-        bool is_glyph_range_unused(std::uint32_t c_begin, std::uint32_t c_last);
+        glyph_t* find_glyph(const std::uint16_t& c, const bool& fallback = true);
+        void add_glyph(config_t* src_config, const std::uint16_t& c, rect_t corners, const rect_t& texture_coordinates, float advance_x);
+        void add_remap_char(const std::uint16_t& dst, const std::uint16_t& src, const bool& overwrite_dst = true);
+        bool is_glyph_range_unused(const std::uint32_t& c_begin, const std::uint32_t& c_last);
 
-        void set_fallback_char(std::uint16_t c) { fallback_char = c; build_lookup_table(); }
-        void set_glyph_visible(std::uint16_t c, bool visible) { if(glyph_t* glyph = find_glyph(c)) glyph->visible = visible; }
+        void set_fallback_char(const std::uint16_t& c) { fallback_char = c; build_lookup_table(); }
+        void set_glyph_visible(const std::uint16_t& c, const bool& visible) { if(glyph_t* glyph{ find_glyph(c) }) glyph->visible = visible; }
 
-        bool is_loaded() { return container_atlas; }
-        float get_char_advance(std::uint16_t c) const { return (c < lookup_table.advances_x.size()) ? lookup_table.advances_x[c] : fallback_advance_x; }
+        bool is_loaded() const { return container_atlas; }
+        float get_char_advance(const std::uint16_t& c) const { return (c < lookup_table.advances_x.size()) ? lookup_table.advances_x[c] : fallback_advance_x; }
 
         template <typename char_t>
-        void calc_text_size(std::basic_string_view<char_t> str, vec2_t& result, vec2_t& line_size) {
-            for(auto iterator = str.begin(); iterator != str.end();) {
+        void calc_text_size(const std::basic_string_view<char_t>& str, vec2_t& result, vec2_t& line_size) {
+            for(auto iterator{ str.begin() }; iterator != str.end();) {
                 std::uint32_t symbol{ (std::uint32_t)*iterator };
                 iterator += impl::char_converters::converter<char_t>::convert(symbol, iterator, str.end());
                 if(!symbol) break;
@@ -239,7 +239,7 @@ namespace null::render {
         }
 
         template <typename string_view_t>
-        vec2_t calc_text_size(string_view_t str, float custom_size = 0.f) {
+        vec2_t calc_text_size(const string_view_t& str, const float& custom_size = 0.f) {
             vec2_t result{ }, line_size{ 0.f, custom_size <= 0.f ? size : custom_size };
 
             calc_text_size(std::basic_string_view{ str }, result, line_size);
@@ -251,7 +251,7 @@ namespace null::render {
         }
 
         template <typename string_t>
-        vec2_t calc_text_size(const multicolor_text_t<string_t>& str, float custom_size = 0.f) {
+        vec2_t calc_text_size(const multicolor_text_t<string_t>& str, const float& custom_size = 0.f) {
             vec2_t result{ }, line_size{ 0.f, custom_size <= 0.f ? size : custom_size };
 
             std::ranges::for_each(str.data, [&](const auto& data) { calc_text_size<string_t::value_type>(data.first, result, line_size); });
@@ -313,7 +313,7 @@ namespace null::render {
             c_font* font{ };
 
         public:
-            bool is_packed() { return size.min.x != std::numeric_limits<std::uint16_t>::max(); }
+            bool is_packed() const { return size.min.x != std::numeric_limits<std::uint16_t>::max(); }
         };
 
     public:
@@ -331,7 +331,7 @@ namespace null::render {
 
         public:
             void clear() { pixels_alpha8.clear(); pixels_rgba32.clear(); }
-            bool is_built() { return !pixels_alpha8.empty() || !pixels_rgba32.empty(); }
+            bool is_built() const { return !pixels_alpha8.empty() || !pixels_rgba32.empty(); }
             void get_data_as_rgba32();
         };
 
@@ -349,7 +349,7 @@ namespace null::render {
         ~c_atlas() { clear(); }
 
     public:
-        void setup_font(c_font* font, c_font::config_t* config, float ascent, float descent);
+        void setup_font(c_font* font, c_font::config_t* config, const float& ascent, const float& descent);
 
         void build_initialize();
         void build_finish();
@@ -360,14 +360,14 @@ namespace null::render {
         void render_default_texture_data();
 
         void pack_custom_rects(stbrp_context* stbrp_context_opaque);
-        void multiply_calc_lookup_table(std::array<std::uint8_t, 256>& out_table, float in_multiply_factor);
+        void multiply_calc_lookup_table(std::array<std::uint8_t, 256>& out_table, const float& in_multiply_factor);
 
         c_font* add_font(c_font::config_t* config);
         c_font* add_font_default(c_font::config_t* config = nullptr);
-        c_font* add_font_from_file_ttf(std::string_view filename, float size_pixels, c_font::config_t* config = nullptr, const std::uint16_t* glyph_ranges = c_font::glyph_t::ranges_default());
+        c_font* add_font_from_file_ttf(const std::string_view& filename, const float& size_pixels, c_font::config_t* config = nullptr, const std::uint16_t* glyph_ranges = c_font::glyph_t::ranges_default());
         c_font* add_font_from_memory_ttf(const std::vector<char>& font_data, float size_pixels, c_font::config_t* config = nullptr, const std::uint16_t* glyph_ranges = c_font::glyph_t::ranges_default());
-        c_font* add_font_from_memory_compressed_ttf(const std::vector<std::uint8_t>& compressed_ttf, float size_pixels, c_font::config_t* config = nullptr, const std::uint16_t* glyph_ranges = c_font::glyph_t::ranges_default());
-        c_font* add_font_from_memory_compressed_base_85_ttf(std::string_view compressed_font_data_base85, float size_pixels, c_font::config_t* config = nullptr, const std::uint16_t* glyph_ranges = c_font::glyph_t::ranges_default());
+        c_font* add_font_from_memory_compressed_ttf(const std::vector<std::uint8_t>& compressed_ttf, const float& size_pixels, c_font::config_t* config = nullptr, const std::uint16_t* glyph_ranges = c_font::glyph_t::ranges_default());
+        c_font* add_font_from_memory_compressed_base_85_ttf(const std::string_view& compressed_font_data_base85, const float& size_pixels, c_font::config_t* config = nullptr, const std::uint16_t* glyph_ranges = c_font::glyph_t::ranges_default());
 
         void clear_input_data();
         void clear() { clear_input_data(); texture.clear(); fonts.clear(); }

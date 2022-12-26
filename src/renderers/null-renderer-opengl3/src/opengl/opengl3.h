@@ -2498,12 +2498,12 @@ namespace opengl {
 
 	class c_opengl_dll : public memory::c_module {
 	public: using c_module::c_module;
-		memory::c_module::i_export* find_stored_export(std::string_view _name) override {
+		memory::c_module::i_export* find_stored_export(const std::string_view& _name) override {
 			memory::c_module::i_export* finded_export{ c_module::find_stored_export(_name) };
 			return finded_export && finded_export->address ? finded_export : nullptr;
 		}
 
-		memory::address_t load_export(std::string_view _name) override {
+		memory::address_t load_export(const std::string_view& _name) override {
 			if(memory::address_t address{ c_module::load_export(_name) }; address) return address;
 			return wglGetProcAddress(_name.data());
 		}
@@ -2515,10 +2515,11 @@ namespace opengl {
 	template <typename return_t, typename ...args_t>
 	class c_opengl_export<return_t(args_t...)> : public memory::c_module::i_export {
 	public:
+		friend i_export;
 		typedef return_t(__stdcall* prototype_t)(args_t...);
 
 	public:
-		c_opengl_export(std::string_view _name) {
+		c_opengl_export(const std::string_view& _name) {
 			name = _name;
 			if(i_export* finded{ opengl32.find_stored_export(_name) }) address = (*finded).address;
 			else opengl32.stored_exports.push_back(this);

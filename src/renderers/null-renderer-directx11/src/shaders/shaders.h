@@ -9,7 +9,7 @@ namespace null::render::shaders {
 		}
 
 		#include "vertex/compiled/vertex.h"
-		static std::vector<byte>  vertex_data() {
+		static std::vector<byte> vertex_data() {
 			return std::vector<byte>{ vertex, vertex + sizeof(vertex) };
 		}
 	}
@@ -29,10 +29,10 @@ namespace null::render::shaders {
 
 	public:
 		i_shader() { }
-		i_shader(e_shader_flags _flags) : flags{ _flags } { }
-		i_shader(std::vector<byte> shader_source, size_t constant_size) { create(shader_source, constant_size); }
+		i_shader(const e_shader_flags& _flags) : flags{ _flags } { }
+		i_shader(const std::vector<byte>& shader_source, const size_t& constant_size) { create(shader_source, constant_size); }
 
-		virtual void create(std::vector<byte> shader_source, size_t constant_size = 0) {
+		virtual void create(const std::vector<byte>& shader_source, const size_t& constant_size = 0) {
 			create_shader(shader_source);
 			create_constant_buffer(constant_size);
 		}
@@ -42,8 +42,8 @@ namespace null::render::shaders {
 			if(constant_buffer) { constant_buffer->Release(); constant_buffer = nullptr; }
 		}
 
-		virtual void create_shader(std::vector<byte> shader_source) { };
-		virtual void create_constant_buffer(size_t constant_size) {
+		virtual void create_shader(const std::vector<byte>& shader_source) { };
+		virtual void create_constant_buffer(const size_t& constant_size) {
 			if(flags & e_shader_flags::dont_use_constant_buffer || constant_buffer != nullptr || constant_size == 0) return;
 
 			CD3D11_BUFFER_DESC desc(((constant_size + 15) / 16) * 16, D3D11_BIND_CONSTANT_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
@@ -67,7 +67,7 @@ namespace null::render::shaders {
 
 	class c_vertex_shader : public i_shader<ID3D11VertexShader> {
 	public: using i_shader::i_shader;
-		virtual void create_shader(std::vector<byte> shader_source) override {
+		virtual void create_shader(const std::vector<byte>& shader_source) override {
 			if(!shader) renderer::device->CreateVertexShader(shader_source.data(), shader_source.size(), 0, &shader);
 		}
 
@@ -82,7 +82,7 @@ namespace null::render::shaders {
 
 	class c_pixel_shader : public i_shader<ID3D11PixelShader> {
 	public: using i_shader::i_shader;
-		virtual void create_shader(std::vector<byte> shader_source) override {
+		virtual void create_shader(const std::vector<byte>& shader_source) override {
 			if(!shader) renderer::device->CreatePixelShader(shader_source.data(), shader_source.size(), 0, &shader);
 		}
 
