@@ -158,18 +158,14 @@ namespace null::renderer {
         int last_vertex_array;
         opengl::get_integerv(opengl::e_vertex_array_binding, &last_vertex_array);
 
-        const char* vertex_source{
-            #include <shaders/vertex.glsl>
-        };
+        null::sdk::resource_t vertex_resource{ "null-renderer:opengl:shaders:vertex", "null-renderer:opengl:resources" };
         vertex_shader = opengl::create_shader(opengl::e_vertex_shader);
-        opengl::shader_source(vertex_shader, 1, &vertex_source, nullptr);
+        opengl::shader_source(vertex_shader, 1, (const char* const*)&vertex_resource.locked_data, nullptr);
         opengl::compile_shader(vertex_shader);
 
-        const char* fragment_source{
-            #include <shaders/fragment.glsl>
-        };
+        null::sdk::resource_t fragment_resource{ "null-renderer:opengl:shaders:fragment", "null-renderer:opengl:resources" };
         frag_shader = opengl::create_shader(opengl::e_fragment_shader);
-        opengl::shader_source(frag_shader, 1, &fragment_source, nullptr);
+        opengl::shader_source(frag_shader, 1, (const char* const*)&fragment_resource.locked_data, nullptr);
         opengl::compile_shader(frag_shader);
 
         shader_program = opengl::create_program();

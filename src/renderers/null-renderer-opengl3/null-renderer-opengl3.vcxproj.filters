@@ -4,11 +4,14 @@
     <Filter Include="src">
       <UniqueIdentifier>{d11addc5-089b-4237-a3dd-c21f8f81dcf1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\shaders">
-      <UniqueIdentifier>{c0e43830-8e8c-4ce2-8904-7b83b5b887b8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\opengl">
       <UniqueIdentifier>{e20a92ef-dfb8-48bb-babe-0bef3a0cc772}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources">
+      <UniqueIdentifier>{3bc9fc43-740a-4ee6-a1b4-42b2994661ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\shaders">
+      <UniqueIdentifier>{000f1830-6ce9-47c7-8a92-40ac65d2269e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -25,11 +28,16 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\shaders\vertex.glsl">
-      <Filter>src\shaders</Filter>
+    <ResourceCompile Include="resources\null-renderer-opengl3-resources.rc">
+      <Filter>resources</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\shaders\fragment.glsl">
+      <Filter>resources\shaders</Filter>
     </None>
-    <None Include="src\shaders\fragment.glsl">
-      <Filter>src\shaders</Filter>
+    <None Include="resources\shaders\vertex.glsl">
+      <Filter>resources\shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

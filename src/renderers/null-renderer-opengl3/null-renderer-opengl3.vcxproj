@@ -34,8 +34,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\shaders\fragment.glsl" />
-    <None Include="src\shaders\vertex.glsl" />
+    <ResourceCompile Include="resources\null-renderer-opengl3-resources.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\shaders\fragment.glsl" />
+    <None Include="resources\shaders\vertex.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -93,7 +96,7 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)build\$(Configuration)-$(PlatformShortName)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Configuration)-$(PlatformShortName)\obj-$(ProjectName)\</IntDir>
-    <PublicIncludeDirectories>src\</PublicIncludeDirectories>
+    <PublicIncludeDirectories>src\;resources</PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -105,7 +108,7 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)build\$(Configuration)-$(PlatformShortName)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Configuration)-$(PlatformShortName)\obj-$(ProjectName)\</IntDir>
-    <PublicIncludeDirectories>src\</PublicIncludeDirectories>
+    <PublicIncludeDirectories>src\;resources\</PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|x64'">
     <LinkIncremental>false</LinkIncremental>

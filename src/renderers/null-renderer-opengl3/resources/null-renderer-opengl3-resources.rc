@@ -1,0 +1,2 @@
+null-renderer:opengl:shaders:fragment	null-renderer:opengl:resources	"shaders\\fragment.glsl"
+null-renderer:opengl:shaders:vertex		null-renderer:opengl:resources	"shaders\\vertex.glsl"

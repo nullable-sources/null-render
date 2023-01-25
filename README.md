@@ -16,6 +16,11 @@ I tried to translate the entire ImGui render to c++20, most likely I didn’t ge
     - base render
 - ### opengl3
     - base render
+
+# opengl3 renderer
+To connect opengl3-renderer you need:
+- project properties->resources->additional include directories: specify the path to the file "null-renderer-opengl3-resources.rc"
+- create a .rc file in the project and include "null-renderer-opengl3-resources.rc" into it
+
 # dependencies
-[stb](https://github.com/nothings/stb)\
 [null-sdk](https://github.com/nullptr-sources/null-sdk)

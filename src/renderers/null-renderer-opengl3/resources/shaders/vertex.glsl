@@ -1,4 +1,3 @@
-R"(
 #version 130
 uniform mat4 proj_mtx;
 in vec2 position;
@@ -12,4 +11,3 @@ void main() {
 	frag_color = color;
 	gl_Position = proj_mtx * vec4(position.xy,0,1);
 }
-)"
