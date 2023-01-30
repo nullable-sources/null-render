@@ -21,8 +21,8 @@ namespace null {
 
         void c_draw_list::add_quad_uv(const std::array<std::pair<vec2_t, vec2_t>, 4>& points, const color_t<int>& color) {
             add_idx({
-                vtx_buffer.size(), vtx_buffer.size() + 1, vtx_buffer.size() + 2,
-                vtx_buffer.size(), vtx_buffer.size() + 2, vtx_buffer.size() + 3
+                (std::uint32_t)vtx_buffer.size(), (std::uint32_t)vtx_buffer.size() + 1, (std::uint32_t)vtx_buffer.size() + 2,
+                (std::uint32_t)vtx_buffer.size(), (std::uint32_t)vtx_buffer.size() + 2, (std::uint32_t)vtx_buffer.size() + 3
                 });
 
             std::ranges::transform(points, std::back_inserter(vtx_buffer), [&](const std::pair<vec2_t, vec2_t>& val) { return vertex_t{ val.first, val.second, color }; });
@@ -136,8 +136,8 @@ namespace null {
                 repaint_rect_vertices_in_multicolor(a, b, offset, colors);
             } else {
                 add_idx({
-                    vtx_buffer.size(), vtx_buffer.size() + 1, vtx_buffer.size() + 2,
-                    vtx_buffer.size(), vtx_buffer.size() + 2, vtx_buffer.size() + 3
+                    (std::uint32_t)vtx_buffer.size(), (std::uint32_t)vtx_buffer.size() + 1, (std::uint32_t)vtx_buffer.size() + 2,
+                    (std::uint32_t)vtx_buffer.size(), (std::uint32_t)vtx_buffer.size() + 2, (std::uint32_t)vtx_buffer.size() + 3
                     });
 
                 add_vtx({
@@ -156,7 +156,7 @@ namespace null {
                 static constexpr float aa_size{ 1.f };
                 std::ranges::for_each(std::views::iota(2, (int)points.size()), [=](const int& i) {
                     add_idx({
-                        vtx_buffer.size(), vtx_buffer.size() + ((i - 1) << 1), vtx_buffer.size() + (i << 1)
+                        (std::uint32_t)vtx_buffer.size(), (std::uint32_t)vtx_buffer.size() + ((i - 1) << 1), (std::uint32_t)vtx_buffer.size() + (i << 1)
                         });
                     });
 
@@ -176,8 +176,8 @@ namespace null {
                     delta *= aa_size / 2.f;
 
                     add_idx({
-                        idx + (i1 << 1),       idx + (i0 << 1),       idx + 1 + (i0 << 1),
-                        idx + 1 + (i0 << 1),   idx + 1 + (i1 << 1),   idx + (i1 << 1)
+                        (std::uint32_t)idx + (i1 << 1),       (std::uint32_t)idx + (i0 << 1),       (std::uint32_t)idx + 1 + (i0 << 1),
+                        (std::uint32_t)idx + 1 + (i0 << 1),   (std::uint32_t)idx + 1 + (i1 << 1),   (std::uint32_t)idx + (i1 << 1)
                         });
 
                     add_vtx({
@@ -187,7 +187,7 @@ namespace null {
                     i0 = i1;
                 }
             } else {
-                for(const int& i : std::views::iota((size_t)2, points.size())) add_idx({ vtx_buffer.size(), vtx_buffer.size() + i - 1, vtx_buffer.size() + i });
+                for(const int& i : std::views::iota((size_t)2, points.size())) add_idx({ (std::uint32_t)vtx_buffer.size(), (std::uint32_t)vtx_buffer.size() + i - 1, (std::uint32_t)vtx_buffer.size() + i });
                 std::ranges::for_each(points, [&](const vec2_t& point) { add_vtx({ { point, atlas.texture.uv_white_pixel, color } }); });
             }
         }
@@ -240,15 +240,15 @@ namespace null {
 
                         if(use_texture) {
                             add_idx({
-                                _idx,      idx,       idx + 1,
-                                _idx + 1,  idx + 1,   _idx
+                                _idx,      (std::uint32_t)idx,       (std::uint32_t)idx + 1,
+                                _idx + 1,  (std::uint32_t)idx + 1,   _idx
                                 });
                         } else {
                             add_idx({
-                                _idx,      idx,       idx + 2,
-                                idx + 2,   _idx + 2,  _idx,
-                                _idx + 1,  idx + 1,   idx,
-                                idx,       _idx,      _idx + 1
+                                _idx,                   (std::uint32_t)idx,     (std::uint32_t)idx + 2,
+                                (std::uint32_t)idx + 2, _idx + 2,               _idx,
+                                _idx + 1,               (std::uint32_t)idx + 1, (std::uint32_t)idx,
+                                (std::uint32_t)idx,     _idx,                   _idx + 1
                                 });
                         }
 
@@ -301,12 +301,12 @@ namespace null {
                         temp_points[i2 * 4 + 3] = points[i2] - out;
 
                         add_idx({
-                            _idx + 1,  idx + 1,   idx + 2,
-                            idx + 2,   _idx + 2,  _idx + 1,
-                            _idx + 1,  idx + 1,   idx,
-                            idx,       _idx,      _idx + 1,
-                            _idx + 2,  idx + 2,   idx + 3,
-                            idx + 3,   _idx + 3,  _idx + 2,
+                            _idx + 1,               (std::uint32_t)idx + 1, (std::uint32_t)idx + 2,
+                            (std::uint32_t)idx + 2, _idx + 2,               _idx + 1,
+                            _idx + 1,               (std::uint32_t)idx + 1, (std::uint32_t)idx,
+                            (std::uint32_t)idx,     _idx,                   _idx + 1,
+                            _idx + 2,               (std::uint32_t)idx + 2, (std::uint32_t)idx + 3,
+                            (std::uint32_t)idx + 3, _idx + 3,               _idx + 2,
                             });
 
                         idx = _idx;
@@ -329,8 +329,8 @@ namespace null {
                     delta *= thickness / 2.f;
 
                     add_idx({
-                        vtx_buffer.size(), vtx_buffer.size() + 1, vtx_buffer.size() + 2,
-                        vtx_buffer.size(), vtx_buffer.size() + 2, vtx_buffer.size() + 3
+                        (std::uint32_t)vtx_buffer.size(), (std::uint32_t)vtx_buffer.size() + 1, (std::uint32_t)vtx_buffer.size() + 2,
+                        (std::uint32_t)vtx_buffer.size(), (std::uint32_t)vtx_buffer.size() + 2, (std::uint32_t)vtx_buffer.size() + 3
                         });
 
                     add_vtx({

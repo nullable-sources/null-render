@@ -204,8 +204,8 @@ namespace null {
 							if(flags & e_text_flags::outline && !settings.text_outline_offsets.empty()) {
 								for(const vec2_t& offset : settings.text_outline_offsets) {
 									add_idx({
-										vtx_buffer.size(), vtx_buffer.size() + 1, vtx_buffer.size() + 2,
-										vtx_buffer.size(), vtx_buffer.size() + 2, vtx_buffer.size() + 3
+										(std::uint32_t)vtx_buffer.size(), (std::uint32_t)vtx_buffer.size() + 1, (std::uint32_t)vtx_buffer.size() + 2,
+										(std::uint32_t)vtx_buffer.size(), (std::uint32_t)vtx_buffer.size() + 2, (std::uint32_t)vtx_buffer.size() + 3
 										});
 
 									rect_t pos{ corners + offset };
