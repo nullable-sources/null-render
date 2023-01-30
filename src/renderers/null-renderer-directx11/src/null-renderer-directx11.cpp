@@ -117,7 +117,7 @@ namespace null::renderer {
             if(index_buffer) { index_buffer->Release(); index_buffer = nullptr; }
             index_buffer_size = _draw_data.total_idx_count + 10000;
             D3D11_BUFFER_DESC buffer_desc{
-                .ByteWidth{ index_buffer_size * sizeof(std::uint16_t) },
+                .ByteWidth{ index_buffer_size * sizeof(std::uint32_t) },
                 .Usage{ D3D11_USAGE_DYNAMIC },
                 .BindFlags{ D3D11_BIND_INDEX_BUFFER },
                 .CPUAccessFlags{ D3D11_CPU_ACCESS_WRITE },
@@ -133,7 +133,7 @@ namespace null::renderer {
         if(context->Map(index_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &idx_resource) != S_OK) throw std::runtime_error{ "cant map index buffer" };
 
         vertex_t* vtx_dst{ (vertex_t*)vtx_resource.pData };
-        std::uint16_t* idx_dst{ (std::uint16_t*)idx_resource.pData };
+        std::uint32_t* idx_dst{ (std::uint32_t*)idx_resource.pData };
         for(render::c_draw_list* cmd_list : _draw_data.draw_lists) {
             for(const render::vertex_t& vtx_src : cmd_list->vtx_buffer) {
                 *vtx_dst = {
@@ -144,7 +144,7 @@ namespace null::renderer {
 
                 vtx_dst++;
             }
-            memcpy(idx_dst, cmd_list->idx_buffer.data(), cmd_list->idx_buffer.size() * sizeof(std::uint16_t));
+            memcpy(idx_dst, cmd_list->idx_buffer.data(), cmd_list->idx_buffer.size() * sizeof(std::uint32_t));
             idx_dst += cmd_list->idx_buffer.size();
         }
         context->Unmap(vertex_buffer, 0);
@@ -206,7 +206,7 @@ namespace null::renderer {
         std::uint32_t offset{ };
         context->IASetInputLayout(input_layout);
         context->IASetVertexBuffers(0, 1, &vertex_buffer, &stride, &offset);
-        context->IASetIndexBuffer(index_buffer, sizeof(std::uint16_t) == 2 ? DXGI_FORMAT_R16_UINT : DXGI_FORMAT_R32_UINT, 0);
+        context->IASetIndexBuffer(index_buffer, DXGI_FORMAT_R32_UINT, 0);
         context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
         context->PSSetSamplers(0, 1, &font_sampler);

@@ -6,8 +6,7 @@ namespace null {
 		enum struct e_initialize_flags {
 			anti_aliased_lines = 1 << 0,
 			anti_aliased_lines_use_texture = 1 << 1,
-			anti_aliased_fill = 1 << 2,
-			allow_vtx_offset = 1 << 3
+			anti_aliased_fill = 1 << 2
 		}; enum_create_bit_operators(e_initialize_flags, true);
 		enum_create_cast_operator(e_initialize_flags, -);
 
@@ -92,7 +91,7 @@ namespace null {
 						else num_segments = std::clamp((int)((std::numbers::pi * 2.0f) / acosf((radius - circle_segment_max_error) / radius)), 12, circle_auto_segment_max);
 					} else num_segments = std::clamp(num_segments, 3, circle_auto_segment_max);
 				}
-			} settings{ e_initialize_flags{ -e_initialize_flags::allow_vtx_offset | -e_initialize_flags::anti_aliased_lines | -e_initialize_flags::anti_aliased_lines_use_texture | -e_initialize_flags::anti_aliased_fill } };
+			} settings{ e_initialize_flags{ -e_initialize_flags::anti_aliased_lines | -e_initialize_flags::anti_aliased_lines_use_texture | -e_initialize_flags::anti_aliased_fill } };
 
 			struct cmd_t {
 				rect_t clip_rect{ };
@@ -110,7 +109,7 @@ namespace null {
 			std::vector<cmd_t> cmd_buffer{ };
 
 			std::vector<vertex_t> vtx_buffer{ };
-			std::vector<std::uint16_t> idx_buffer{ };
+			std::vector<std::uint32_t> idx_buffer{ };
 
 		public:
 			void add_cmd() { cmd_buffer.push_back({ clips.back(), textures.back(), 0, (std::uint32_t)idx_buffer.size() }); }
@@ -128,10 +127,10 @@ namespace null {
 			void pop_texture() { textures.pop_back(); on_change_texture(); }
 
 		public:
-			void add_vtx(const std::vector<vertex_t>::iterator& place, const std::vector<vertex_t>& buffer) { on_change_vtx(buffer.size()); vtx_buffer.insert(place, buffer.begin(), buffer.end()); }
+			void add_vtx(const std::vector<vertex_t>::iterator& place, const std::vector<vertex_t>& buffer) { vtx_buffer.insert(place, buffer.begin(), buffer.end()); }
 			void add_vtx(const std::vector<vertex_t>& buffer) { add_vtx(vtx_buffer.end(), buffer); }
-			void add_idx(const std::vector<std::uint16_t>::iterator& place, const std::vector<std::uint16_t>& buffer) { cmd_buffer.back().element_count += buffer.size(); idx_buffer.insert(place, buffer.begin(), buffer.end()); }
-			void add_idx(const std::vector<std::uint16_t>& buffer) { add_idx(idx_buffer.end(), buffer); }
+			void add_idx(const std::vector<std::uint32_t>::iterator& place, const std::vector<std::uint32_t>& buffer) { cmd_buffer.back().element_count += buffer.size(); idx_buffer.insert(place, buffer.begin(), buffer.end()); }
+			void add_idx(const std::vector<std::uint32_t>& buffer) { add_idx(idx_buffer.end(), buffer); }
 
 			void add_rect(const vec2_t& a, const vec2_t& b, const color_t<int>& color) { add_rect_uv(a, b, atlas.texture.uv_white_pixel, atlas.texture.uv_white_pixel, color); }
 			void add_rect_uv(const vec2_t& a, const vec2_t& b, const vec2_t& uv_a, const vec2_t& uv_b, const color_t<int>& color) { add_quad_uv({ std::pair{ a, uv_a }, std::pair{ vec2_t{ b.x, a.y }, vec2_t{ uv_b.x, uv_a.y } }, std::pair{ b, uv_b }, std::pair{ vec2_t{ a.x, b.y }, vec2_t{ uv_a.x, uv_b.y } } }, color); }
@@ -205,8 +204,8 @@ namespace null {
 							if(flags & e_text_flags::outline && !settings.text_outline_offsets.empty()) {
 								for(const vec2_t& offset : settings.text_outline_offsets) {
 									add_idx({
-										(std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 1), (std::uint16_t)(vtx_buffer.size() + 2),
-										(std::uint16_t)vtx_buffer.size(), (std::uint16_t)(vtx_buffer.size() + 2), (std::uint16_t)(vtx_buffer.size() + 3)
+										vtx_buffer.size(), vtx_buffer.size() + 1, vtx_buffer.size() + 2,
+										vtx_buffer.size(), vtx_buffer.size() + 2, vtx_buffer.size() + 3
 										});
 
 									rect_t pos{ corners + offset };
@@ -260,7 +259,6 @@ namespace null {
 		public:
 			virtual void on_change_clip_rect();
 			virtual void on_change_texture();
-			virtual void on_change_vtx(const int& new_vtx_count);
 		};
 
 		inline c_draw_list background{ }, foreground{ };

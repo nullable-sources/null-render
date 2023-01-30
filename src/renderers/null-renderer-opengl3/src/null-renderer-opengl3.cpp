@@ -52,8 +52,8 @@ namespace null::renderer {
                     opengl::scissor((int)cmd.clip_rect.min.x, (int)(draw_data_t::screen_size.y - cmd.clip_rect.max.y), (int)(cmd.clip_rect.size().x), (int)(cmd.clip_rect.size().y));
 
                     opengl::bind_texture(opengl::e_texture_2d, (std::uint32_t)cmd.texture);
-                    opengl::draw_elements_base_vertex(opengl::e_triangles, cmd.element_count, sizeof(std::uint16_t) == 2 ? opengl::e_unsigned_short : opengl::e_unsigned_int, (void*)(std::intptr_t)(cmd.idx_offset * sizeof(std::uint16_t)), cmd.vtx_offset);
-                    opengl::draw_elements(opengl::e_triangles, cmd.element_count, sizeof(std::uint16_t) == 2 ? opengl::e_unsigned_short : opengl::e_unsigned_int, (void*)(std::intptr_t)(cmd.idx_offset * sizeof(std::uint16_t)));
+                    opengl::draw_elements_base_vertex(opengl::e_triangles, cmd.element_count, opengl::e_unsigned_int, (void*)(std::intptr_t)(cmd.idx_offset * sizeof(std::uint32_t)), cmd.vtx_offset);
+                    opengl::draw_elements(opengl::e_triangles, cmd.element_count, opengl::e_unsigned_int, (void*)(std::intptr_t)(cmd.idx_offset * sizeof(std::uint32_t)));
                 }
             }
         }

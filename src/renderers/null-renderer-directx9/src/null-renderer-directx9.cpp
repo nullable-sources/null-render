@@ -16,7 +16,7 @@ namespace null::renderer {
 		if(!idx_buffer || idx_buffer_size < _draw_data.total_idx_count) {
 			if(idx_buffer) { idx_buffer->Release(); idx_buffer = nullptr; }
 			idx_buffer_size = _draw_data.total_idx_count + 10000;
-			if(device->CreateIndexBuffer(idx_buffer_size * sizeof(std::uint16_t), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, sizeof(std::uint16_t) == 2 ? D3DFMT_INDEX16 : D3DFMT_INDEX32, D3DPOOL_DEFAULT, &idx_buffer, nullptr) < 0)
+			if(device->CreateIndexBuffer(idx_buffer_size * sizeof(std::uint32_t), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFMT_INDEX32, D3DPOOL_DEFAULT, &idx_buffer, nullptr) < 0)
 				throw std::runtime_error{ "CreateIndexBuffer error" };
 		}
 
@@ -30,9 +30,9 @@ namespace null::renderer {
 		device->GetTransform(D3DTS_PROJECTION, &last_projection);
 
 		vertex_t* vtx_dst{ };
-		std::uint16_t* idx_dst{ };
+		std::uint32_t* idx_dst{ };
 		if(vtx_buffer->Lock(0, (UINT)(_draw_data.total_vtx_count * sizeof(vertex_t)), (void**)&vtx_dst, D3DLOCK_DISCARD) < 0) throw std::runtime_error{ "vtx_buffer->Lock error" };
-		if(idx_buffer->Lock(0, (UINT)(_draw_data.total_idx_count * sizeof(std::uint16_t)), (void**)&idx_dst, D3DLOCK_DISCARD) < 0) throw std::runtime_error{ "idx_buffer->Lock error" };
+		if(idx_buffer->Lock(0, (UINT)(_draw_data.total_idx_count * sizeof(std::uint32_t)), (void**)&idx_dst, D3DLOCK_DISCARD) < 0) throw std::runtime_error{ "idx_buffer->Lock error" };
 		for(render::c_draw_list* cmd_list : _draw_data.draw_lists) {
 			for(const render::vertex_t& vtx_src : cmd_list->vtx_buffer) {
 				*vtx_dst = {
@@ -43,7 +43,7 @@ namespace null::renderer {
 
 				vtx_dst++;
 			}
-			memcpy(idx_dst, cmd_list->idx_buffer.data(), cmd_list->idx_buffer.size() * sizeof(std::uint16_t));
+			memcpy(idx_dst, cmd_list->idx_buffer.data(), cmd_list->idx_buffer.size() * sizeof(std::uint32_t));
 			idx_dst += cmd_list->idx_buffer.size();
 		}
 		vtx_buffer->Unlock();
