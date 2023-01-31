@@ -130,7 +130,9 @@ namespace null {
 			void add_vtx(const std::vector<vertex_t>::iterator& place, const std::vector<vertex_t>& buffer) { vtx_buffer.insert(place, buffer.begin(), buffer.end()); }
 			void add_vtx(const std::vector<vertex_t>& buffer) { add_vtx(vtx_buffer.end(), buffer); }
 			void add_idx(const std::vector<std::uint32_t>::iterator& place, const std::vector<std::uint32_t>& buffer) { cmd_buffer.back().element_count += buffer.size(); idx_buffer.insert(place, buffer.begin(), buffer.end()); }
+			void add_idx(const std::vector<std::uint32_t>::iterator& place, const std::vector<std::uint32_t>& buffer, const std::uint32_t& offset) { add_idx(place, std::views::transform(buffer, [&](const std::uint32_t& idx) { return idx + offset; }) | std::ranges::to<std::vector>()); }
 			void add_idx(const std::vector<std::uint32_t>& buffer) { add_idx(idx_buffer.end(), buffer); }
+			void add_idx(const std::vector<std::uint32_t>& buffer, const std::uint32_t& offset) { add_idx(idx_buffer.end(), buffer, offset); }
 
 			void add_rect(const vec2_t& a, const vec2_t& b, const color_t<int>& color) { add_rect_uv(a, b, atlas.texture.uv_white_pixel, atlas.texture.uv_white_pixel, color); }
 			void add_rect_uv(const vec2_t& a, const vec2_t& b, const vec2_t& uv_a, const vec2_t& uv_b, const color_t<int>& color) { add_quad_uv({ std::pair{ a, uv_a }, std::pair{ vec2_t{ b.x, a.y }, vec2_t{ uv_b.x, uv_a.y } }, std::pair{ b, uv_b }, std::pair{ vec2_t{ a.x, b.y }, vec2_t{ uv_a.x, uv_b.y } } }, color); }
@@ -204,17 +206,17 @@ namespace null {
 							if(flags & e_text_flags::outline && !settings.text_outline_offsets.empty()) {
 								for(const vec2_t& offset : settings.text_outline_offsets) {
 									add_idx({
-										(std::uint32_t)vtx_buffer.size(), (std::uint32_t)vtx_buffer.size() + 1, (std::uint32_t)vtx_buffer.size() + 2,
-										(std::uint32_t)vtx_buffer.size(), (std::uint32_t)vtx_buffer.size() + 2, (std::uint32_t)vtx_buffer.size() + 3
-										});
+										0, 1, 2,
+										0, 2, 3
+										}, vtx_buffer.size());
 
 									rect_t pos{ corners + offset };
 									add_vtx(std::prev(vtx_buffer.end(), vtx_offset),
 										{
-											{ pos.min,                  uvs.min,                    { 0, 0, 0 } },
-											{ { pos.max.x, pos.min.y }, { uvs.max.x, uvs.min.y },   { 0, 0, 0 } },
-											{ pos.max,                  uvs.max,                    { 0, 0, 0 } },
-											{ { pos.min.x, pos.max.y }, { uvs.min.x, uvs.max.y },   { 0, 0, 0 } }
+											{ pos.min,                  uvs.min,                    color_t<int>::palette_t::black },
+											{ { pos.max.x, pos.min.y }, { uvs.max.x, uvs.min.y },   color_t<int>::palette_t::black },
+											{ pos.max,                  uvs.max,                    color_t<int>::palette_t::black },
+											{ { pos.min.x, pos.max.y }, { uvs.min.x, uvs.max.y },   color_t<int>::palette_t::black }
 										});
 								}
 							}

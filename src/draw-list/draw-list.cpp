@@ -21,9 +21,9 @@ namespace null {
 
         void c_draw_list::add_quad_uv(const std::array<std::pair<vec2_t, vec2_t>, 4>& points, const color_t<int>& color) {
             add_idx({
-                (std::uint32_t)vtx_buffer.size(), (std::uint32_t)vtx_buffer.size() + 1, (std::uint32_t)vtx_buffer.size() + 2,
-                (std::uint32_t)vtx_buffer.size(), (std::uint32_t)vtx_buffer.size() + 2, (std::uint32_t)vtx_buffer.size() + 3
-                });
+                0, 1, 2,
+                0, 2, 3
+                }, vtx_buffer.size());
 
             std::ranges::transform(points, std::back_inserter(vtx_buffer), [&](const std::pair<vec2_t, vec2_t>& val) { return vertex_t{ val.first, val.second, color }; });
         }
@@ -136,9 +136,9 @@ namespace null {
                 repaint_rect_vertices_in_multicolor(a, b, offset, colors);
             } else {
                 add_idx({
-                    (std::uint32_t)vtx_buffer.size(), (std::uint32_t)vtx_buffer.size() + 1, (std::uint32_t)vtx_buffer.size() + 2,
-                    (std::uint32_t)vtx_buffer.size(), (std::uint32_t)vtx_buffer.size() + 2, (std::uint32_t)vtx_buffer.size() + 3
-                    });
+                    0, 1, 2,
+                    0, 2, 3
+                    }, vtx_buffer.size());
 
                 add_vtx({
                     { a, atlas.texture.uv_white_pixel, colors[0] },
@@ -154,10 +154,8 @@ namespace null {
 
             if(settings.initialize_flags & e_initialize_flags::anti_aliased_fill) {
                 static constexpr float aa_size{ 1.f };
-                std::ranges::for_each(std::views::iota(2, (int)points.size()), [=](const int& i) {
-                    add_idx({
-                        (std::uint32_t)vtx_buffer.size(), (std::uint32_t)vtx_buffer.size() + ((i - 1) << 1), (std::uint32_t)vtx_buffer.size() + (i << 1)
-                        });
+                std::ranges::for_each(std::views::iota(2, (int)points.size()), [=](const std::uint32_t& i) {
+                    add_idx({ 0, (i - 1) << 1, i << 1 }, vtx_buffer.size());
                     });
 
                 std::vector<vec2_t> temp_normals(points.size());
@@ -170,15 +168,15 @@ namespace null {
                 }
 
                 size_t idx{ vtx_buffer.size() };
-                for(int i0{ (int)points.size() - 1 }; const int& i1 : std::views::iota((size_t)0, points.size())) {
+                for(std::uint32_t i0{ (std::uint32_t)points.size() - 1 }; const std::uint32_t& i1 : std::views::iota((size_t)0, points.size())) {
                     vec2_t delta{ (temp_normals[i0] + temp_normals[i1]) / 2.f };
                     if(float d2{ std::powf(delta.length(), 2) }; d2 > 0.000001f) delta *= 1.f / std::min(d2, 100.f);
                     delta *= aa_size / 2.f;
 
                     add_idx({
-                        (std::uint32_t)idx + (i1 << 1),       (std::uint32_t)idx + (i0 << 1),       (std::uint32_t)idx + 1 + (i0 << 1),
-                        (std::uint32_t)idx + 1 + (i0 << 1),   (std::uint32_t)idx + 1 + (i1 << 1),   (std::uint32_t)idx + (i1 << 1)
-                        });
+                        i1 << 1,        i0 << 1,        (i0 << 1) + 1,
+                        (i0 << 1) + 1,  (i1 << 1) + 1,  i1 << 1
+                        }, idx);
 
                     add_vtx({
                         { points[i1] - delta, atlas.texture.uv_white_pixel, color },
@@ -187,7 +185,7 @@ namespace null {
                     i0 = i1;
                 }
             } else {
-                for(const int& i : std::views::iota((size_t)2, points.size())) add_idx({ (std::uint32_t)vtx_buffer.size(), (std::uint32_t)vtx_buffer.size() + i - 1, (std::uint32_t)vtx_buffer.size() + i });
+                for(const std::uint32_t& i : std::views::iota((size_t)2, points.size())) add_idx({ 0, i - 1, i }, vtx_buffer.size());
                 std::ranges::for_each(points, [&](const vec2_t& point) { add_vtx({ { point, atlas.texture.uv_white_pixel, color } }); });
             }
         }
@@ -216,7 +214,7 @@ namespace null {
 
                 if(!closed) temp_normals[points.size() - 1] = temp_normals[points.size() - 2];
 
-                if(use_texture || !thick_line) {
+                if(false && (use_texture || !thick_line)) {
                     const float half_draw_size{ use_texture ? thickness * 0.5f + 1 : aa_size };
                     if(!closed) {
                         temp_points[0] = points.front() + temp_normals.front() * half_draw_size;
@@ -225,7 +223,7 @@ namespace null {
                         temp_points[(points.size() - 1) * 2 + 1] = points.back() - temp_normals[points.size() - 1] * half_draw_size;
                     }
 
-                    size_t idx{ vtx_buffer.size() };
+                    std::uint32_t idx{ (std::uint32_t)vtx_buffer.size() };
                     for(const int& i1 : std::views::iota(0, count)) {
                         const bool last_point{ i1 + 1 == points.size() };
                         const int i2{ last_point ? 0 : (i1 + 1) };
@@ -240,15 +238,15 @@ namespace null {
 
                         if(use_texture) {
                             add_idx({
-                                _idx,      (std::uint32_t)idx,       (std::uint32_t)idx + 1,
-                                _idx + 1,  (std::uint32_t)idx + 1,   _idx
+                                _idx,      idx,       idx + 1,
+                                _idx + 1,  idx + 1,   _idx
                                 });
                         } else {
                             add_idx({
-                                _idx,                   (std::uint32_t)idx,     (std::uint32_t)idx + 2,
-                                (std::uint32_t)idx + 2, _idx + 2,               _idx,
-                                _idx + 1,               (std::uint32_t)idx + 1, (std::uint32_t)idx,
-                                (std::uint32_t)idx,     _idx,                   _idx + 1
+                                _idx,       idx,        idx + 2,
+                                idx + 2,    _idx + 2,   _idx,
+                                _idx + 1,   idx + 1,    idx,
+                                idx,        _idx,       _idx + 1
                                 });
                         }
 
@@ -286,7 +284,7 @@ namespace null {
                         temp_points[(points.size() - 1) * 4 + 3] = points.back() - temp_normals[(points.size() - 1)] * (half_inner_thickness + aa_size);
                     }
 
-                    size_t idx{ vtx_buffer.size() };
+                    std::uint32_t idx{ (std::uint32_t)vtx_buffer.size() };
                     for(const int& i1 : std::views::iota(0, count)) {
                         const bool last_point{ i1 + 1 == points.size() };
                         const int i2{ last_point ? 0 : (i1 + 1) };
@@ -301,12 +299,12 @@ namespace null {
                         temp_points[i2 * 4 + 3] = points[i2] - out;
 
                         add_idx({
-                            _idx + 1,               (std::uint32_t)idx + 1, (std::uint32_t)idx + 2,
-                            (std::uint32_t)idx + 2, _idx + 2,               _idx + 1,
-                            _idx + 1,               (std::uint32_t)idx + 1, (std::uint32_t)idx,
-                            (std::uint32_t)idx,     _idx,                   _idx + 1,
-                            _idx + 2,               (std::uint32_t)idx + 2, (std::uint32_t)idx + 3,
-                            (std::uint32_t)idx + 3, _idx + 3,               _idx + 2,
+                            _idx + 1,   idx + 1,    idx + 2,
+                            idx + 2,    _idx + 2,   _idx + 1,
+                            _idx + 1,   idx + 1,    idx,
+                            idx,        _idx,       _idx + 1,
+                            _idx + 2,   idx + 2,    idx + 3,
+                            idx + 3,    _idx + 3,   _idx + 2,
                             });
 
                         idx = _idx;
@@ -329,9 +327,9 @@ namespace null {
                     delta *= thickness / 2.f;
 
                     add_idx({
-                        (std::uint32_t)vtx_buffer.size(), (std::uint32_t)vtx_buffer.size() + 1, (std::uint32_t)vtx_buffer.size() + 2,
-                        (std::uint32_t)vtx_buffer.size(), (std::uint32_t)vtx_buffer.size() + 2, (std::uint32_t)vtx_buffer.size() + 3
-                        });
+                        0, 1, 2,
+                        0, 2, 3
+                        }, vtx_buffer.size());
 
                     add_vtx({
                         { points[i1] + vec2_t{ delta.y, -delta.x }, atlas.texture.uv_white_pixel, color },
