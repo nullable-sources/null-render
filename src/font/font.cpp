@@ -46,7 +46,7 @@ namespace null::render {
         return &glyphs[i];
     }
 
-    void c_font::add_glyph(config_t* cfg, const std::uint16_t& codepoint, rect_t corners, const rect_t& texture_coordinates, float advance_x) {
+    void c_font::add_glyph(config_t* cfg, const std::uint16_t& codepoint, rect_t<float> corners, const rect_t<float>& texture_coordinates, float advance_x) {
         if(cfg) {
             const float advance_x_original{ advance_x };
             advance_x = std::clamp(advance_x, cfg->glyph_config.min_advance_x, cfg->glyph_config.max_advance_x);

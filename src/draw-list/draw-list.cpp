@@ -12,23 +12,23 @@ namespace null {
         }
 
         void c_draw_list::restore_clip_rect() { push_clip_rect(0.f, renderer::draw_data_t::screen_size); }
-        void c_draw_list::push_clip_rect(rect_t rect, const bool& intersect_with_current_rect) {
+        void c_draw_list::push_clip_rect(rect_t<float> rect, const bool& intersect_with_current_rect) {
             if(intersect_with_current_rect) rect = { math::max(rect.min, clips.back().min), math::min(rect.max, clips.back().max) };
 
             clips.push_back(rect_t{ rect.min, std::max(rect.min, rect.max) });
             on_change_clip_rect();
         }
 
-        void c_draw_list::add_quad_uv(const std::array<std::pair<vec2_t, vec2_t>, 4>& points, const color_t<int>& color) {
+        void c_draw_list::add_quad_uv(const std::array<std::pair<vec2_t<float>, vec2_t<float>>, 4>& points, const color_t<int>& color) {
             add_idx({
                 0, 1, 2,
                 0, 2, 3
                 }, vtx_buffer.size());
 
-            std::ranges::transform(points, std::back_inserter(vtx_buffer), [&](const std::pair<vec2_t, vec2_t>& val) { return vertex_t{ val.first, val.second, color }; });
+            std::ranges::transform(points, std::back_inserter(vtx_buffer), [&](const std::pair<vec2_t<float>, vec2_t<float>>& val) { return vertex_t{ val.first, val.second, color }; });
         }
 
-        void c_draw_list::path_rect(const vec2_t& a, const vec2_t& b, float rounding, const e_corner_flags& flags) {
+        void c_draw_list::path_rect(const vec2_t<float>& a, const vec2_t<float>& b, float rounding, const e_corner_flags& flags) {
             rounding = std::min(rounding, std::fabsf(b.x - a.x) * ((flags & e_corner_flags::top) == -e_corner_flags::top || (flags & e_corner_flags::bot) == -e_corner_flags::bot ? 0.5f : 1.f) - 1.f);
             rounding = std::min(rounding, std::fabsf(b.y - a.y) * ((flags & e_corner_flags::left) == -e_corner_flags::left || (flags & e_corner_flags::right) == -e_corner_flags::right ? 0.5f : 1.f) - 1.f);
 
@@ -50,7 +50,7 @@ namespace null {
             }
         }
 
-        void c_draw_list::path_arc_to_fast(const vec2_t& center, const float& radius, const int& a_min_of_12, const int& a_max_of_12) {
+        void c_draw_list::path_arc_to_fast(const vec2_t<float>& center, const float& radius, const int& a_min_of_12, const int& a_max_of_12) {
             if(!radius || a_min_of_12 > a_max_of_12) pathes.push_back(center);
             else {
                 std::ranges::for_each(std::views::iota(a_min_of_12 * settings_t::arc_fast_tessellation_multiplier, a_max_of_12 * settings_t::arc_fast_tessellation_multiplier + 1), [=](const int& a) {
@@ -59,7 +59,7 @@ namespace null {
             }
         }
 
-        void c_draw_list::path_arc_to(const vec2_t& center, const float& radius, const float& a_min, const float& a_max, const int& num_segments) {
+        void c_draw_list::path_arc_to(const vec2_t<float>& center, const float& radius, const float& a_min, const float& a_max, const int& num_segments) {
             if(radius == 0.f) pathes.push_back(center);
             else {
                 std::ranges::for_each(std::views::iota(0, num_segments + 1), [=](const int& i) {
@@ -69,7 +69,7 @@ namespace null {
             }
         }
 
-        void c_draw_list::repaint_rect_vertices_in_multicolor(const vec2_t& min, const vec2_t& max, const size_t& vtx_offset, const std::array<color_t<int>, 4>& colors) {
+        void c_draw_list::repaint_rect_vertices_in_multicolor(const vec2_t<float>& min, const vec2_t<float>& max, const size_t& vtx_offset, const std::array<color_t<int>, 4>& colors) {
             std::array<color_t<float>, 4> casted_colors{ };
             std::ranges::transform(colors, casted_colors.begin(), [](const color_t<int>& color) { return color; });
 
@@ -81,7 +81,7 @@ namespace null {
             }
         }
 
-        void c_draw_list::draw_line(const vec2_t& a, const vec2_t& b, const color_t<int>& color, const float& thickness) {
+        void c_draw_list::draw_line(const vec2_t<float>& a, const vec2_t<float>& b, const color_t<int>& color, const float& thickness) {
             if(color.a() <= 0) return;
 
             pathes.push_back(a + 0.5f);
@@ -89,7 +89,7 @@ namespace null {
             path_stroke(color, false, thickness);
         }
 
-        void c_draw_list::draw_rect(const vec2_t& a, const vec2_t& b, const color_t<int>& color, const float& thickness, const float& rounding, const e_corner_flags& flags) {
+        void c_draw_list::draw_rect(const vec2_t<float>& a, const vec2_t<float>& b, const color_t<int>& color, const float& thickness, const float& rounding, const e_corner_flags& flags) {
             if(color.a() <= 0) return;
 
             path_rect(a + 0.50f, b - (settings.initialize_flags & e_initialize_flags::anti_aliased_lines ? 0.50f : 0.49f), rounding, flags);
@@ -97,7 +97,7 @@ namespace null {
         }
 
         //@note: colors = { top left, top right, bottom left, bottom right };
-        void c_draw_list::draw_rect_multicolor(const vec2_t& a, const vec2_t& b, const std::array<color_t<int>, 4>& colors, const float& thickness, const float& rounding, const e_corner_flags& flags) {
+        void c_draw_list::draw_rect_multicolor(const vec2_t<float>& a, const vec2_t<float>& b, const std::array<color_t<int>, 4>& colors, const float& thickness, const float& rounding, const e_corner_flags& flags) {
             if(std::ranges::all_of(colors, [](const color_t<int>& color) { return color.a() <= 0; })) return;
 
             size_t offset{ vtx_buffer.size() };
@@ -113,7 +113,7 @@ namespace null {
             repaint_rect_vertices_in_multicolor(min, max, offset, colors);
         }
 
-        void c_draw_list::draw_rect_filled(const vec2_t& a, const vec2_t& b, const color_t<int>& color, const float& rounding, const e_corner_flags& flags) {
+        void c_draw_list::draw_rect_filled(const vec2_t<float>& a, const vec2_t<float>& b, const color_t<int>& color, const float& rounding, const e_corner_flags& flags) {
             if(color.a() <= 0) return;
 
             if(rounding > 0.0f) {
@@ -123,7 +123,7 @@ namespace null {
         }
 
         //@note: colors = { top left, top right, bottom left, bottom right };
-        void c_draw_list::draw_rect_filled_multicolor(const vec2_t& a, const vec2_t& b, const std::array<color_t<int>, 4>& colors, float rounding, const e_corner_flags& flags) {
+        void c_draw_list::draw_rect_filled_multicolor(const vec2_t<float>& a, const vec2_t<float>& b, const std::array<color_t<int>, 4>& colors, float rounding, const e_corner_flags& flags) {
             if(std::ranges::all_of(colors, [](const color_t<int>& color) { return color.a() <= 0; })) return;
 
             rounding = std::min(rounding, std::fabsf(b.x - a.x) * ((flags & e_corner_flags::top) == -e_corner_flags::top || (flags & e_corner_flags::bot) == -e_corner_flags::bot ? 0.5f : 1.f) - 1.f);
@@ -149,7 +149,7 @@ namespace null {
             }
         }
 
-        void c_draw_list::draw_convex_poly_filled(const std::vector<vec2_t>& points, const color_t<int>& color) {
+        void c_draw_list::draw_convex_poly_filled(const std::vector<vec2_t<float>>& points, const color_t<int>& color) {
             if(points.size() < 3 || color.a() <= 0) return;
 
             if(settings.initialize_flags & e_initialize_flags::anti_aliased_fill) {
@@ -158,7 +158,7 @@ namespace null {
                     add_idx({ 0, (i - 1) << 1, i << 1 }, vtx_buffer.size());
                     });
 
-                std::vector<vec2_t> temp_normals(points.size());
+                std::vector<vec2_t<float>> temp_normals(points.size());
                 for(int i0{ (int)points.size() - 1 }; const int& i1 : std::views::iota((size_t)0, points.size())) {
                     vec2_t delta{ points[i1] - points[i0] };
                     if(float d2{ std::powf(delta.length(), 2) }; d2 > 0.f) delta *= 1.f / std::sqrtf(d2);
@@ -186,11 +186,11 @@ namespace null {
                 }
             } else {
                 for(const std::uint32_t& i : std::views::iota((size_t)2, points.size())) add_idx({ 0, i - 1, i }, vtx_buffer.size());
-                std::ranges::for_each(points, [&](const vec2_t& point) { add_vtx({ { point, atlas.texture.uv_white_pixel, color } }); });
+                std::ranges::for_each(points, [&](const vec2_t<float>& point) { add_vtx({ { point, atlas.texture.uv_white_pixel, color } }); });
             }
         }
 
-        void c_draw_list::draw_poly_line(const std::vector<vec2_t>& points, const color_t<int>& color, const bool& closed, float thickness) {
+        void c_draw_list::draw_poly_line(const std::vector<vec2_t<float>>& points, const color_t<int>& color, const bool& closed, float thickness) {
             if(points.size() < 2 || color.a() <= 0) return;
 
             const int count{ int(closed ? points.size() : points.size() - 1) };
@@ -202,9 +202,9 @@ namespace null {
                 thickness = std::max(thickness, 1.0f);
 
                 const bool use_texture{ (settings.initialize_flags & e_initialize_flags::anti_aliased_lines_use_texture) && ((int)thickness < 63) && (thickness - (int)thickness <= 0.00001f) };
-
-                std::vector<vec2_t> temp_normals(points.size() * (use_texture || !thick_line ? 3 : 5));
-                std::vector<vec2_t> temp_points(temp_normals.size() + points.size());
+                
+                std::vector<vec2_t<float>> temp_normals(points.size() * (use_texture || !thick_line ? 3 : 5));
+                std::vector<vec2_t<float>> temp_points(temp_normals.size() + points.size());
 
                 for(const int& i1 : std::views::iota(0, count)) {
                     vec2_t delta{ points[i1 + 1 == points.size() ? 0 : i1 + 1] - points[i1] };
@@ -254,7 +254,7 @@ namespace null {
                     }
 
                     if(use_texture) {
-                        const rect_t& tex_uvs{ c_font::get_current_font()->container_atlas->texture.uv_lines[(int)thickness] };
+                        const rect_t<float>& tex_uvs{ c_font::get_current_font()->container_atlas->texture.uv_lines[(int)thickness] };
                         for(const int& i : std::views::iota((size_t)0, points.size())) {
                             add_vtx({
                                 { temp_points[i * 2],       tex_uvs.min, color },
@@ -341,7 +341,7 @@ namespace null {
             }
         }
 
-        void c_draw_list::draw_circle(const vec2_t& center, const color_t<int>& clr, const float& radius, int num_segments, const float& thickness) {
+        void c_draw_list::draw_circle(const vec2_t<float>& center, const color_t<int>& clr, const float& radius, int num_segments, const float& thickness) {
             if(clr.a() <= 0 || radius <= 0.f) return;
 
             settings.get_auto_circle_num_segments(num_segments, radius);
@@ -351,7 +351,7 @@ namespace null {
             path_stroke(clr, true, thickness);
         }
 
-        void c_draw_list::draw_circle_filled(const vec2_t& center, const color_t<int>& clr, const float& radius, int num_segments) {
+        void c_draw_list::draw_circle_filled(const vec2_t<float>& center, const color_t<int>& clr, const float& radius, int num_segments) {
             if(clr.a() <= 0 || radius <= 0.f) return;
 
             settings.get_auto_circle_num_segments(num_segments, radius);
@@ -361,7 +361,7 @@ namespace null {
             path_fill_convex(clr);
         }
 
-        void c_draw_list::draw_image(void* texture, const vec2_t& a, const vec2_t& b, const vec2_t& uv_min, const vec2_t& uv_max, const color_t<int>& color) {
+        void c_draw_list::draw_image(void* texture, const vec2_t<float>& a, const vec2_t<float>& b, const vec2_t<float>& uv_min, const vec2_t<float>& uv_max, const color_t<int>& color) {
             if(color.a() <= 0) return;
 
             const bool _push_texture{ texture != cmd_buffer.back().texture };
@@ -370,7 +370,7 @@ namespace null {
             if(_push_texture) pop_texture();
         }
 
-        void c_draw_list::draw_image_quad(void* texture, const std::array<std::pair<vec2_t, vec2_t>, 4>& points_and_uvs, const color_t<int>& color) {
+        void c_draw_list::draw_image_quad(void* texture, const std::array<std::pair<vec2_t<float>, vec2_t<float>>, 4>& points_and_uvs, const color_t<int>& color) {
             if(color.a() <= 0) return;
 
             const bool _push_texture{ texture != cmd_buffer.back().texture };

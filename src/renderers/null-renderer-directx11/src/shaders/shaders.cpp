@@ -5,15 +5,14 @@ namespace null::render::shaders {
         vertex::shader.set_shader();
 
         {
-            float matrix[4][4] = {
+            vertex::constant vertex_const{ matrix4x4_t{ {
                 { 2.f / renderer::draw_data_t::screen_size.x,   0.f,                                            0.f,    0.f },
                 { 0.f,                                          -(2.f / renderer::draw_data_t::screen_size.y),  0.f,    0.f },
                 { 0.f,                                          0.f,                                            0.5f,   0.f },
                 { -1.f,                                         1,                                              0.5f,   1.f },
-            };
+            } } };
 
-            memcpy(&vertex::constants.matrix, matrix, sizeof(matrix));
-            vertex::shader.edit_constant(vertex::constants);
+            vertex::shader.edit_constant(vertex_const);
         }
 
         vertex::shader.set_constant();

@@ -110,7 +110,14 @@ namespace null::render::shaders {
 	}
 
 	namespace vertex {
-		struct constant { float matrix[4][4]; } inline constants;
+		struct constant {
+		public:
+			float matrix[4][4]{ };
+
+		public:
+			constant() { }
+			constant(const matrix4x4_t& _matrix) { std::ranges::move(_matrix.linear_array, &matrix[0][0]); }
+		} inline constants{ };
 		inline c_vertex_shader shader{ };
 
 		static void create_shader_control() { if(!shader) shader.create(sources::vertex_data(), sizeof(constant)); }

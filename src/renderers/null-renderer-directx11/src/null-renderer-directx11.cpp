@@ -152,15 +152,12 @@ namespace null::renderer {
 
 
         {
-            float matrix[4][4] = {
+            render::shaders::vertex::constant vertex_const{ matrix4x4_t{ {
                 { 2.f / draw_data_t::screen_size.x, 0.f,                                0.f,    0.f },
                 { 0.f,                              -(2.f / draw_data_t::screen_size.y),0.f,    0.f },
                 { 0.f,                              0.f,                                0.5f,   0.f },
                 { -1.f,                             1,                                  0.5f,   1.f },
-            };
-
-            render::shaders::vertex::constant vertex_const;
-            memcpy(&vertex_const.matrix, matrix, sizeof(matrix));
+            } } };
 
             render::shaders::vertex::shader.edit_constant(vertex_const);
         }

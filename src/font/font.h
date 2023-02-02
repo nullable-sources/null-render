@@ -111,7 +111,7 @@ namespace null::render {
         struct glyph_t {
         public:
             struct config_t {
-                vec2_t offset{ }, extra_spacing{ };
+                vec2_t<float> offset{ }, extra_spacing{ };
                 const std::uint16_t* ranges{ };
                 float min_advance_x, max_advance_x{ std::numeric_limits<float>::max() };
             };
@@ -120,7 +120,7 @@ namespace null::render {
             std::uint32_t codepoint{ 31 };
             bool visible{ true };
             float advance_x{ };
-            rect_t corners{ }, texture_coordinates{ };
+            rect_t<float> corners{ }, texture_coordinates{ };
 
         public:
             static const std::uint16_t* ranges_default() {
@@ -152,7 +152,7 @@ namespace null::render {
             bool owned_by_atlas{ true };
             int index{ };
             float size_pixels{ };
-            vec2_t oversample{ 3, 1 };
+            vec2_t<float> oversample{ 3, 1 };
             bool pixel_snap_h{ };
             bool merge_mode{ };
 
@@ -209,7 +209,7 @@ namespace null::render {
         void build_lookup_table();
 
         glyph_t* find_glyph(const std::uint16_t& c, const bool& fallback = true);
-        void add_glyph(config_t* src_config, const std::uint16_t& c, rect_t corners, const rect_t& texture_coordinates, float advance_x);
+        void add_glyph(config_t* src_config, const std::uint16_t& c, rect_t<float> corners, const rect_t<float>& texture_coordinates, float advance_x);
         void add_remap_char(const std::uint16_t& dst, const std::uint16_t& src, const bool& overwrite_dst = true);
         bool is_glyph_range_unused(const std::uint32_t& c_begin, const std::uint32_t& c_last);
 
@@ -220,7 +220,7 @@ namespace null::render {
         float get_char_advance(const std::uint16_t& c) const { return (c < lookup_table.advances_x.size()) ? lookup_table.advances_x[c] : fallback_advance_x; }
 
         template <typename char_t>
-        void calc_text_size(const std::basic_string_view<char_t>& str, vec2_t& result, vec2_t& line_size) {
+        void calc_text_size(const std::basic_string_view<char_t>& str, vec2_t<float>& result, vec2_t<float>& line_size) {
             for(auto iterator{ str.begin() }; iterator != str.end();) {
                 std::uint32_t symbol{ (std::uint32_t)*iterator };
                 iterator += impl::char_converters::converter<char_t>::convert(symbol, iterator, str.end());
@@ -239,7 +239,7 @@ namespace null::render {
         }
 
         template <typename string_view_t>
-        vec2_t calc_text_size(const string_view_t& str, const float& custom_size = 0.f) {
+        vec2_t<float> calc_text_size(const string_view_t& str, const float& custom_size = 0.f) {
             vec2_t result{ }, line_size{ 0.f, custom_size <= 0.f ? size : custom_size };
 
             calc_text_size(std::basic_string_view{ str }, result, line_size);
@@ -251,7 +251,7 @@ namespace null::render {
         }
 
         template <typename string_t>
-        vec2_t calc_text_size(const multicolor_text_t<string_t>& str, const float& custom_size = 0.f) {
+        vec2_t<float> calc_text_size(const multicolor_text_t<string_t>& str, const float& custom_size = 0.f) {
             vec2_t result{ }, line_size{ 0.f, custom_size <= 0.f ? size : custom_size };
 
             std::ranges::for_each(str.data, [&](const auto& data) { calc_text_size<string_t::value_type>(data.first, result, line_size); });
@@ -306,10 +306,10 @@ namespace null::render {
 
         struct custom_rect_t {
         public:
-            rect_t size{ vec2_t{ std::numeric_limits<std::uint16_t>::max() }, vec2_t{ 0.f } };
+            rect_t<float> size{ vec2_t{ std::numeric_limits<std::uint16_t>::max() }, vec2_t{ 0.f } };
             std::uint32_t glyph_id{ };
             float glyph_advance_x{ };
-            vec2_t glyph_offset{ };
+            vec2_t<float> glyph_offset{ };
             c_font* font{ };
 
         public:
@@ -325,9 +325,9 @@ namespace null::render {
             std::vector<std::uint8_t> pixels_alpha8{ };
             std::vector<std::uint32_t> pixels_rgba32{ };
 
-            vec2_t size{ };
-            vec2_t uv_scale{ }, uv_white_pixel{ };
-            std::array<rect_t, 64> uv_lines{ };
+            vec2_t<float> size{ };
+            vec2_t<float> uv_scale{ }, uv_white_pixel{ };
+            std::array<rect_t<float>, 64> uv_lines{ };
 
         public:
             void clear() { pixels_alpha8.clear(); pixels_rgba32.clear(); }

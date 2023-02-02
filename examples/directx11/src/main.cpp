@@ -3,6 +3,7 @@
 
 null::renderer::c_window window{ };
 null::render::c_draw_list custom_layer{ };
+utils::c_cumulative_time_measurement frame_counter{ 60 };
 
 void main_loop() {
 	static const null::render::e_text_flags text_flags{ null::render::e_text_flags::aligin_bottom | null::render::e_text_flags::aligin_center_x };
@@ -17,7 +18,7 @@ void main_loop() {
 
 	null::render::begin_frame(window); {
 		custom_layer.draw_text("text drawed by custom draw_list", { 100, 10 }, { });
-		null::render::background.draw_text(std::format("[ directx11 ] fps: {:3.0f}", 1.f / window.time_data.delta_time), { window.get_window_size().x, 10.f }, { }, null::render::e_text_flags{ -null::render::e_text_flags::aligin_right | -null::render::e_text_flags::aligin_center_y | -null::render::e_text_flags::outline });
+		null::render::background.draw_text(std::format("[ directx11 ] fps: {:3.0f}", 1.f / std::chrono::duration<float>{ frame_counter.representation() }.count()), { window.get_window_size().x, 10.f }, { }, null::render::e_text_flags{ -null::render::e_text_flags::aligin_right | -null::render::e_text_flags::aligin_center_y | -null::render::e_text_flags::outline });
 		null::render::background.draw_text(multicolor_text, { 10 });
 
 		null::render::background.draw_text("rect filled", { 100, 200 }, { }, text_flags);
@@ -48,6 +49,9 @@ void main_loop() {
 
 int main(HINSTANCE instance) {
 	window = null::renderer::c_window{ instance };
+
+	window.callbacks.at<utils::win::e_window_callbacks::on_create>().add([&] { frame_counter.begin(); });
+	window.callbacks.at<utils::win::e_window_callbacks::on_main_loop>().add([&] { frame_counter.update(); });
 
 	window.callbacks.at<utils::win::e_window_callbacks::on_main_loop>().add(main_loop);
 

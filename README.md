@@ -4,8 +4,7 @@
 </p>
 This is an attempt to translate part of my previous null-gui project to c++20.
 
-At the moment, only directx9 is available, but I hope to add all the other backends (directx11, opengl) later.
-Also, after I add all the backends and rewrite the gui, shaders will be added (I hope this will be implemented closer to the middle or end of summer).
+At the moment, all more or less popular backends are implemented (dx9/dx11/opengl 3), in the future different functions will be added (shaders, maybe something else).
 
 I tried to translate the entire ImGui render to c++20, most likely I didn’t get it very well, so if you notice some c-style code in the project, or incorrect use of stl - welcome to the issue or pull request tab, I will appreciate any help.
 

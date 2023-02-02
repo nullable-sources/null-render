@@ -111,18 +111,15 @@ namespace null::renderer {
 		device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
 
 		{
-			float l{ 0.5f }, r{ draw_data_t::screen_size.x + 0.5f }, t{ 0.5f }, b{ draw_data_t::screen_size.y + 0.5f };
-
-			D3DMATRIX mat_identity{ { { 1.0f, 0.0f, 0.0f, 0.0f,  0.0f, 1.0f, 0.0f, 0.0f,  0.0f, 0.0f, 1.0f, 0.0f,  0.0f, 0.0f, 0.0f, 1.0f } } };
-			D3DMATRIX mat_projection{ { {
-				2.f / (r - l),		0.f,				0.f,	0.f,
-				0.f,				2.f / (t - b),		0.f,	0.f,
-				0.f,				0.f,				0.5f,	0.f,
-				(l + r) / (l - r),  (t + b) / (b - t),	0.5f,	1.f
-			} } };
-			device->SetTransform(D3DTS_WORLD, &mat_identity);
-			device->SetTransform(D3DTS_VIEW, &mat_identity);
-			device->SetTransform(D3DTS_PROJECTION, &mat_projection);
+			matrix4x4_t matrix{ {
+				{ 2.f / draw_data_t::screen_size.x,				0.f,										0.f,	0.f },
+				{ 0.f,											-2.f / draw_data_t::screen_size.y,			0.f,	0.f },
+				{ 0.f,											0.f,										0.5f,	0.f },
+				{ (-1.f / draw_data_t::screen_size.x) - 1.f,	(1.f / draw_data_t::screen_size.y) + 1.f,	0.5f,	1.f }
+			} };
+			device->SetTransform(D3DTS_WORLD, (D3DMATRIX*)matrix4x4_t::identity().linear_array.data());
+			device->SetTransform(D3DTS_VIEW, (D3DMATRIX*)matrix4x4_t::identity().linear_array.data());
+			device->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)matrix.linear_array.data());
 		}
 	}
 

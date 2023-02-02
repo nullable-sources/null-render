@@ -11,7 +11,7 @@
 
 namespace null::renderer {
 	struct vertex_t {
-		vec2_t pos{ }, uv{ };
+		vec2_t<float> pos{ }, uv{ };
 		std::uint32_t color{ };
 	};
 
@@ -66,14 +66,13 @@ namespace null::renderer {
 			while(!glfwWindowShouldClose(glfw_window)) {
 				glfwPollEvents();
 
-				time_data.begin_frame();
 				begin_frame();
 
 				on_main_loop();
 
 				setup_default_draw_data();
 
-				sdk::i_vec2<int> framebuffer{ };
+				vec2_t<int> framebuffer{ };
 				glfwGetFramebufferSize(glfw_window, &framebuffer.x, &framebuffer.y);
 				glViewport(0, 0, framebuffer.x, framebuffer.y);
 				glClearColor(clear_color.r(), clear_color.g(), clear_color.b(), clear_color.a());

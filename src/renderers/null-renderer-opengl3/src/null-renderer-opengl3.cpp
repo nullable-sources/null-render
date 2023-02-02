@@ -36,11 +36,10 @@ namespace null::renderer {
         setup_state(vertex_array_object);
 
         for(render::c_draw_list* draw_list : _draw_data.draw_lists) {
-            std::vector<vertex_t> vertex_buffer{ };
-            std::ranges::transform(draw_list->vtx_buffer, std::back_inserter(vertex_buffer), [](render::vertex_t& vtx) { return vertex_t{ vtx.pos, vtx.uv, (std::uint32_t)((vtx.color.a() & 0xff) << 24) | ((vtx.color.b() & 0xff) << 16) | ((vtx.color.g() & 0xff) << 8) | (vtx.color.r() & 0xff) }; });
+            std::vector<vertex_t> vertex_buffer{ draw_list->vtx_buffer | std::views::transform([](const render::vertex_t& vtx) { return vertex_t{ vtx.pos, vtx.uv, (std::uint32_t)((vtx.color.a() & 0xff) << 24) | ((vtx.color.b() & 0xff) << 16) | ((vtx.color.g() & 0xff) << 8) | (vtx.color.r() & 0xff) }; }) | std::ranges::to<std::vector>() };
 
-            opengl::buffer_data(opengl::e_array_buffer, (std::intptr_t)vertex_buffer.size() * (int)sizeof(vertex_t), (const void*)vertex_buffer.data(), opengl::e_stream_draw);
-            opengl::buffer_data(opengl::e_element_array_buffer, (std::intptr_t)draw_list->idx_buffer.size() * (int)sizeof(unsigned short), (const void*)draw_list->idx_buffer.data(), opengl::e_stream_draw);
+            opengl::buffer_data(opengl::e_array_buffer, (std::intptr_t)draw_list->vtx_buffer.size() * (int)sizeof(vertex_t), vertex_buffer.data(), opengl::e_stream_draw);
+            opengl::buffer_data(opengl::e_element_array_buffer, (std::intptr_t)draw_list->idx_buffer.size() * (int)sizeof(std::uint32_t), (const void*)draw_list->idx_buffer.data(), opengl::e_stream_draw);
 
             for(render::c_draw_list::cmd_t& cmd : draw_list->cmd_buffer) {
                 if(auto& callback{ cmd.callbacks.at<render::e_cmd_callbacks::on_draw_data>() }; !callback.empty() && callback.call(cmd)) {
@@ -53,7 +52,6 @@ namespace null::renderer {
 
                     opengl::bind_texture(opengl::e_texture_2d, (std::uint32_t)cmd.texture);
                     opengl::draw_elements_base_vertex(opengl::e_triangles, cmd.element_count, opengl::e_unsigned_int, (void*)(std::intptr_t)(cmd.idx_offset * sizeof(std::uint32_t)), cmd.vtx_offset);
-                    opengl::draw_elements(opengl::e_triangles, cmd.element_count, opengl::e_unsigned_int, (void*)(std::intptr_t)(cmd.idx_offset * sizeof(std::uint32_t)));
                 }
             }
         }
@@ -104,7 +102,7 @@ namespace null::renderer {
             } };
         opengl::use_program(shader_program);
         opengl::uniform1i(attribute_texture, 0);
-        opengl::uniform_matrix4fv(attribute_proj_mtx, 1, false, &ortho.matrix[0][0]);
+        opengl::uniform_matrix4fv(attribute_proj_mtx, 1, false, ortho.linear_array.data());
 
         opengl::bind_vertex_array(vertex_array_object);
 
