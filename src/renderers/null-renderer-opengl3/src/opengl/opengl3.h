@@ -2496,15 +2496,15 @@ namespace opengl {
 		e_framebuffer_incomplete_view_targets_ovr = 0x9633
 	};
 
-	class c_opengl_dll : public memory::c_module {
-	public: using c_module::c_module;
-		memory::c_module::i_export* find_stored_export(const std::string_view& _name) override {
-			memory::c_module::i_export* finded_export{ c_module::find_stored_export(_name) };
+	class c_opengl_dll : public memory::c_dll {
+	public: using c_dll::c_dll;
+		memory::c_dll::i_export* find_stored_export(const std::string_view& _name) override {
+			memory::c_dll::i_export* finded_export{ c_dll::find_stored_export(_name) };
 			return finded_export && finded_export->address ? finded_export : nullptr;
 		}
 
 		memory::address_t load_export(const std::string_view& _name) override {
-			if(memory::address_t address{ c_module::load_export(_name) }; address) return address;
+			if(memory::address_t address{ c_dll::load_export(_name) }; address) return address;
 			return wglGetProcAddress(_name.data());
 		}
 	} inline opengl32{ "opengl32.dll" };
@@ -2513,7 +2513,7 @@ namespace opengl {
 	class c_opengl_export;
 
 	template <typename return_t, typename ...args_t>
-	class c_opengl_export<return_t(args_t...)> : public memory::c_module::i_export {
+	class c_opengl_export<return_t(args_t...)> : public memory::c_dll::i_export {
 	public:
 		friend i_export;
 		typedef return_t(__stdcall* prototype_t)(args_t...);

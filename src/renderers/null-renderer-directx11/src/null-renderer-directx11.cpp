@@ -153,8 +153,7 @@ namespace null::renderer {
 
         setup_state();
 
-        int global_idx_offset{ }, global_vtx_offset{ };
-        for(render::c_draw_list* cmd_list : _draw_data.draw_lists) {
+        for(int global_idx_offset{ }, global_vtx_offset{ }; render::c_draw_list* cmd_list : _draw_data.draw_lists) {
             for(render::c_draw_list::cmd_t& cmd : cmd_list->cmd_buffer) {
                 if(auto& callback{ cmd.callbacks.at<render::e_cmd_callbacks::on_draw_data>() }; !callback.empty() && callback.call(cmd)) {
                     setup_state();
