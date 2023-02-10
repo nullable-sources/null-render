@@ -1,9 +1,10 @@
 //@credits: imgui version - 1.80 WIP (https://github.com/ocornut/imgui/tree/v1.80)
 #pragma once
-#include <draw-list/draw-list.h>
+#include <renderer/renderer.h>
 
 namespace null::render {
     static void begin_frame(const utils::win::c_window& window) {
+        renderer::renderer->begin_frame();
         atlas.locked = true;
         c_font::set_current_font(c_font::get_current_font());
         if(!c_font::current_font->is_loaded()) throw std::runtime_error{ "!current_font->is_loaded()" };
@@ -18,5 +19,6 @@ namespace null::render {
 
     static void end_frame() {
         atlas.locked = false;
+        renderer::renderer->end_frame();
     }
 }

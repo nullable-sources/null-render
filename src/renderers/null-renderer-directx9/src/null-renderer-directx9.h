@@ -5,32 +5,46 @@
 #include <null-render.h>
 
 namespace null::renderer {
-	struct vertex_t {
-		float pos[3]{ };
-		std::uint32_t color{ };
-		float uv[2]{ };
-	};
+	class c_directx9 : public i_renderer {
+	public:
+		struct vertex_t {
+			float pos[3]{ };
+			std::uint32_t color{ };
+			float uv[2]{ };
+		};
 
-	inline IDirect3DDevice9* device{ };
-	inline IDirect3DTexture9* font_texture{ };
-	inline IDirect3DVertexDeclaration9* vtx_declaration{ };
-	inline IDirect3DVertexBuffer9* vtx_buffer{ };
-	inline IDirect3DIndexBuffer9* idx_buffer{ };
+	public:
+		IDirect3DDevice9* device{ };
+		IDirect3DTexture9* font_texture{ };
+		IDirect3DVertexDeclaration9* vtx_declaration{ };
+		IDirect3DVertexBuffer9* vtx_buffer{ };
+		IDirect3DIndexBuffer9* idx_buffer{ };
 
-	void render(draw_data_t& _draw_data = draw_data);
-	void setup_state();
-	void create_fonts_texture();
-	void create_device_objects();
-	void invalidate_device_objects();
+	public:
+		c_directx9(IDirect3DDevice9* _device = nullptr) : device{ _device } { initialize(); }
+		~c_directx9() { shutdown(); }
 
-	static void initialize(IDirect3DDevice9* _device) { device = _device; device->AddRef(); }
-	static void shutdown() { invalidate_device_objects(); if(device) { device->Release(); device = nullptr; } }
+	public:
+		void initialize() override { if(device) device->AddRef(); }
+		void shutdown() override { destroy_objects(); if(device) { device->Release(); device = nullptr; } }
 
-	static void begin_frame() { if(!font_texture) create_device_objects(); }
+		void begin_frame() override { if(!font_texture) create_objects(); }
+		void end_frame() override { }
+
+		void render(const draw_data_t& _draw_data = draw_data) override;
+		void setup_state() override;
+
+		void create_objects() override;
+		void destroy_objects() override;
+
+	public:
+		void create_fonts_texture();
+	}; inline std::unique_ptr<c_directx9> directx9{ };
 
 	class c_window : public utils::win::c_window {
 	public: using utils::win::c_window::c_window;
 		color_t<int> clear_color{ 18, 18, 18 };
+		IDirect3DDevice9* device{ };
 		IDirect3D9* direct3d{ };
 		D3DPRESENT_PARAMETERS present_parameters{
 			.BackBufferFormat{ D3DFMT_UNKNOWN },
@@ -47,19 +61,18 @@ namespace null::renderer {
 				throw std::runtime_error{ "cannot create direct3d" };
 			if(direct3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, wnd_handle, D3DCREATE_HARDWARE_VERTEXPROCESSING, &present_parameters, &device) < 0)
 				throw std::runtime_error{ "cannot create device" };
-
+			directx9 = std::make_unique<c_directx9>(device);
+			renderer = directx9.get();
 			utils::win::c_window::on_create();
 		}
 
 		void on_destroy() override {
 			utils::win::c_window::on_destroy();
-			if(device) { device->Release(); device = nullptr; }
+			renderer->shutdown();
 			if(direct3d) { direct3d->Release(); direct3d = nullptr; }
 		}
 
 		void on_main_loop() override {
-			begin_frame();
-
 			utils::win::c_window::on_main_loop();
 
 			setup_default_draw_data();
@@ -69,7 +82,7 @@ namespace null::renderer {
 			device->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
 			device->Clear(0, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_RGBA(clear_color.r(), clear_color.g(), clear_color.b(), clear_color.a()), 1.0f, 0);
 			if(device->BeginScene() >= 0) {
-				render();
+				renderer->render();
 				device->EndScene();
 			}
 
@@ -93,9 +106,9 @@ namespace null::renderer {
 		}
 
 		void reset_device() {
-			invalidate_device_objects();
-			if(device->Reset(&present_parameters) == D3DERR_INVALIDCALL) throw std::runtime_error{ "d3d_device->Reset == D3DERR_INVALIDCALL" };
-			create_device_objects();
+			renderer->destroy_objects();
+			if(device->Reset(&present_parameters) == D3DERR_INVALIDCALL) throw std::runtime_error{ "device->Reset == D3DERR_INVALIDCALL" };
+			renderer->create_objects();
 		}
 	};
 }

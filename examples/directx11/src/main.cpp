@@ -56,7 +56,8 @@ int main(HINSTANCE instance) {
 	window.callbacks.at<utils::win::e_window_callbacks::on_main_loop>().add(main_loop);
 
 	try {
-		null::render::atlas.add_font_from_file_ttf("C:\\Windows\\fonts\\Tahoma.ttf", 13.f, nullptr, null::render::c_font::glyph_t::ranges_cyrillic());
+		null::render::c_font::config_t config{ .glyph_config{ .ranges{ null::render::c_font::glyph_t::ranges_cyrillic() } } };
+		null::render::atlas.add_font_default(&config);
 
 		window.create();
 		null::render::custom_lists.push_back(&custom_layer);

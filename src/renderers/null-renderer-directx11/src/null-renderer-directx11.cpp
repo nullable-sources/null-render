@@ -67,9 +67,7 @@ struct directx11_state_t {
 };
 
 namespace null::renderer {
-    void initialize(ID3D11Device* _device, ID3D11DeviceContext* _context) {
-        if(_device) device = _device;
-        if(_context) context = _context;
+    void c_directx11::initialize() {
         IDXGIDevice* dxg_device{ };
         IDXGIAdapter* dxgi_adapter{ };
         IDXGIFactory* local_factory{ };
@@ -87,14 +85,14 @@ namespace null::renderer {
         context->AddRef();
     }
 
-    void shutdown() {
-        invalidate_device_objects();
+    void c_directx11::shutdown() {
+        destroy_objects();
         if(factory) { factory->Release(); factory = nullptr; }
         if(device) { device->Release(); device = nullptr; }
         if(context) { context->Release(); context = nullptr; }
     }
 
-    void render(draw_data_t& _draw_data) {
+    void c_directx11::render(const draw_data_t& _draw_data) {
         if(draw_data_t::screen_size <= 0.f)
             return;
 
@@ -150,18 +148,6 @@ namespace null::renderer {
         context->Unmap(vertex_buffer, 0);
         context->Unmap(index_buffer, 0);
 
-
-        {
-            render::shaders::vertex::constant vertex_const{ matrix4x4_t{ {
-                { 2.f / draw_data_t::screen_size.x, 0.f,                                0.f,    0.f },
-                { 0.f,                              -(2.f / draw_data_t::screen_size.y),0.f,    0.f },
-                { 0.f,                              0.f,                                0.5f,   0.f },
-                { -1.f,                             1,                                  0.5f,   1.f },
-            } } };
-
-            render::shaders::vertex::shader.edit_constant(vertex_const);
-        }
-
         directx11_state_t directx11_state{ };
         directx11_state.save(context);
 
@@ -189,7 +175,7 @@ namespace null::renderer {
         directx11_state.restore(context);
     }
 
-    void setup_state() {
+    void c_directx11::setup_state() {
         D3D11_VIEWPORT viewport{ 0, 0,
             draw_data_t::screen_size.x,
             draw_data_t::screen_size.y,
@@ -218,69 +204,9 @@ namespace null::renderer {
         context->RSSetState(rasterizer_state);
     }
 
-    void create_fonts_texture() {
-        if(render::atlas.texture.pixels_alpha8.empty()) {
-            if(render::atlas.configs.empty()) render::atlas.add_font_default();
-            render::atlas.build();
-        }
-
-        render::atlas.texture.get_data_as_rgba32();
-
-        {
-            D3D11_TEXTURE2D_DESC texture_desc{
-                .Width{ (std::uint32_t)render::atlas.texture.size.x },
-                .Height{ (std::uint32_t)render::atlas.texture.size.y },
-                .MipLevels{ 1 },
-                .ArraySize{ 1 },
-                .Format{ DXGI_FORMAT_R8G8B8A8_UNORM },
-                .SampleDesc{
-                    .Count{ 1 }
-                },
-                .Usage{ D3D11_USAGE_DEFAULT },
-                .BindFlags{ D3D11_BIND_SHADER_RESOURCE },
-                .CPUAccessFlags{ 0 }
-            };
-
-            ID3D11Texture2D* texture{ };
-            D3D11_SUBRESOURCE_DATA subresource{
-                .pSysMem{ (void*)render::atlas.texture.pixels_rgba32.data() },
-                .SysMemPitch{ texture_desc.Width * 4 },
-                .SysMemSlicePitch{ 0 }
-            };
-            device->CreateTexture2D(&texture_desc, &subresource, &texture);
-
-            D3D11_SHADER_RESOURCE_VIEW_DESC shader_resource_view_desc{
-                .Format{ DXGI_FORMAT_R8G8B8A8_UNORM },
-                .ViewDimension{ D3D11_SRV_DIMENSION_TEXTURE2D },
-                .Texture2D{
-                    .MostDetailedMip{ 0 },
-                    .MipLevels{ texture_desc.MipLevels }
-                }
-            };
-            device->CreateShaderResourceView(texture, &shader_resource_view_desc, &font_texture_view);
-            texture->Release();
-        }
-
-        render::atlas.texture.data = (void*)font_texture_view;
-
-        {
-            D3D11_SAMPLER_DESC sampler_desc{
-                .Filter{ D3D11_FILTER_MIN_MAG_MIP_LINEAR },
-                .AddressU{ D3D11_TEXTURE_ADDRESS_CLAMP },
-                .AddressV{ D3D11_TEXTURE_ADDRESS_CLAMP },
-                .AddressW{ D3D11_TEXTURE_ADDRESS_WRAP },
-                .MipLODBias{ 0.f },
-                .ComparisonFunc{ D3D11_COMPARISON_ALWAYS },
-                .MinLOD{ 0.f },
-                .MaxLOD{ 0.f }
-            };
-            device->CreateSamplerState(&sampler_desc, &font_sampler);
-        }
-    }
-
-    void create_device_objects() {
+    void c_directx11::create_objects() {
         if(!device) return;
-        if(font_sampler) invalidate_device_objects();
+        if(font_sampler) destroy_objects();
 
         render::shaders::create_shaders();
 
@@ -348,7 +274,7 @@ namespace null::renderer {
         create_fonts_texture();
     }
 
-    void invalidate_device_objects() {
+    void c_directx11::destroy_objects() {
         if(!device) return;
 
         render::shaders::release_shaders();
@@ -362,5 +288,65 @@ namespace null::renderer {
         if(depth_stencil_state) { depth_stencil_state->Release(); depth_stencil_state = nullptr; }
         if(rasterizer_state) { rasterizer_state->Release(); rasterizer_state = nullptr; }
         if(input_layout) { input_layout->Release(); input_layout = nullptr; }
+    }
+
+    void c_directx11::create_fonts_texture() {
+        if(render::atlas.texture.pixels_alpha8.empty()) {
+            if(render::atlas.configs.empty()) render::atlas.add_font_default();
+            render::atlas.build();
+        }
+
+        render::atlas.texture.get_data_as_rgba32();
+
+        {
+            D3D11_TEXTURE2D_DESC texture_desc{
+                .Width{ (std::uint32_t)render::atlas.texture.size.x },
+                .Height{ (std::uint32_t)render::atlas.texture.size.y },
+                .MipLevels{ 1 },
+                .ArraySize{ 1 },
+                .Format{ DXGI_FORMAT_R8G8B8A8_UNORM },
+                .SampleDesc{
+                    .Count{ 1 }
+                },
+                .Usage{ D3D11_USAGE_DEFAULT },
+                .BindFlags{ D3D11_BIND_SHADER_RESOURCE },
+                .CPUAccessFlags{ 0 }
+            };
+
+            ID3D11Texture2D* texture{ };
+            D3D11_SUBRESOURCE_DATA subresource{
+                .pSysMem{ (void*)render::atlas.texture.pixels_rgba32.data() },
+                .SysMemPitch{ texture_desc.Width * 4 },
+                .SysMemSlicePitch{ 0 }
+            };
+            device->CreateTexture2D(&texture_desc, &subresource, &texture);
+
+            D3D11_SHADER_RESOURCE_VIEW_DESC shader_resource_view_desc{
+                .Format{ DXGI_FORMAT_R8G8B8A8_UNORM },
+                .ViewDimension{ D3D11_SRV_DIMENSION_TEXTURE2D },
+                .Texture2D{
+                    .MostDetailedMip{ 0 },
+                    .MipLevels{ texture_desc.MipLevels }
+                }
+            };
+            device->CreateShaderResourceView(texture, &shader_resource_view_desc, &font_texture_view);
+            texture->Release();
+        }
+
+        render::atlas.texture.data = (void*)font_texture_view;
+
+        {
+            D3D11_SAMPLER_DESC sampler_desc{
+                .Filter{ D3D11_FILTER_MIN_MAG_MIP_LINEAR },
+                .AddressU{ D3D11_TEXTURE_ADDRESS_CLAMP },
+                .AddressV{ D3D11_TEXTURE_ADDRESS_CLAMP },
+                .AddressW{ D3D11_TEXTURE_ADDRESS_WRAP },
+                .MipLODBias{ 0.f },
+                .ComparisonFunc{ D3D11_COMPARISON_ALWAYS },
+                .MinLOD{ 0.f },
+                .MaxLOD{ 0.f }
+            };
+            device->CreateSamplerState(&sampler_desc, &font_sampler);
+        }
     }
 }

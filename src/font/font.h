@@ -10,7 +10,6 @@
 #include <freetype/ftsynth.h>
 
 #include <null-sdk.h>
-#include <compressed-fonts/proggy-clean.h>
 
 namespace null::render {
     template <typename string_t>
@@ -367,7 +366,6 @@ namespace null::render {
         c_font* add_font_from_file_ttf(const std::string_view& filename, const float& size_pixels, c_font::config_t* config = nullptr, const std::uint16_t* glyph_ranges = c_font::glyph_t::ranges_default());
         c_font* add_font_from_memory_ttf(const std::vector<char>& font_data, float size_pixels, c_font::config_t* config = nullptr, const std::uint16_t* glyph_ranges = c_font::glyph_t::ranges_default());
         c_font* add_font_from_memory_compressed_ttf(const std::vector<std::uint8_t>& compressed_ttf, const float& size_pixels, c_font::config_t* config = nullptr, const std::uint16_t* glyph_ranges = c_font::glyph_t::ranges_default());
-        c_font* add_font_from_memory_compressed_base_85_ttf(const std::string_view& compressed_font_data_base85, const float& size_pixels, c_font::config_t* config = nullptr, const std::uint16_t* glyph_ranges = c_font::glyph_t::ranges_default());
 
         void clear_input_data();
         void clear() { clear_input_data(); texture.clear(); fonts.clear(); }

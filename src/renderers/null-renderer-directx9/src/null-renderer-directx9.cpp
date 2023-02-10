@@ -1,7 +1,7 @@
 #include <null-renderer-directx9.h>
 
 namespace null::renderer {
-	void render(draw_data_t& _draw_data) {
+	void c_directx9::render(const draw_data_t& _draw_data) {
 		if(draw_data_t::screen_size <= 0.f)
 			return;
 
@@ -55,8 +55,7 @@ namespace null::renderer {
 
 		setup_state();
 
-		int global_vtx_offset{ }, global_idx_offset{ };
-		for(render::c_draw_list* draw_list : _draw_data.draw_lists) {
+		for(int global_vtx_offset{ }, global_idx_offset{ }; render::c_draw_list * draw_list : _draw_data.draw_lists) {
 			for(render::c_draw_list::cmd_t& cmd : draw_list->cmd_buffer) {
 				if(auto& callback{ cmd.callbacks.at<render::e_cmd_callbacks::on_draw_data>() }; !callback.empty() && callback.call(cmd)) {
 					setup_state();
@@ -80,7 +79,7 @@ namespace null::renderer {
 		d3d9_state_block->Release();
 	}
 
-	void setup_state() {
+	void c_directx9::setup_state() {
 		D3DVIEWPORT9 viewport{ 0, 0,
 			draw_data_t::screen_size.x,
 			draw_data_t::screen_size.y,
@@ -111,19 +110,37 @@ namespace null::renderer {
 		device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
 
 		{
-			matrix4x4_t matrix{ {
-				{ 2.f / draw_data_t::screen_size.x,				0.f,										0.f,	0.f },
-				{ 0.f,											-2.f / draw_data_t::screen_size.y,			0.f,	0.f },
-				{ 0.f,											0.f,										0.5f,	0.f },
-				{ (-1.f / draw_data_t::screen_size.x) - 1.f,	(1.f / draw_data_t::screen_size.y) + 1.f,	0.5f,	1.f }
-			} };
 			device->SetTransform(D3DTS_WORLD, (D3DMATRIX*)matrix4x4_t::identity().linear_array.data());
 			device->SetTransform(D3DTS_VIEW, (D3DMATRIX*)matrix4x4_t::identity().linear_array.data());
-			device->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)matrix.linear_array.data());
+			device->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)matrix4x4_t::project_ortho(0.5f, draw_data_t::screen_size.x + 0.5f, draw_data_t::screen_size.y + 0.5f, 0.5f, -10000.f, 10000.f).linear_array.data());
 		}
 	}
 
-	void create_fonts_texture() {
+	void c_directx9::create_objects() {
+		if(!device) return;
+		create_fonts_texture();
+
+		if(!vtx_declaration) {
+			constexpr D3DVERTEXELEMENT9 elements[]{
+				{ 0, 0, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0 },
+				{ 0, 8, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 },
+				{ 0, 16, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0 },
+				D3DDECL_END()
+			};
+			device->CreateVertexDeclaration(elements, &vtx_declaration);
+		}
+	}
+
+	void c_directx9::destroy_objects() {
+		if(!device) return;
+
+		if(vtx_buffer) { vtx_buffer->Release(); vtx_buffer = nullptr; }
+		if(idx_buffer) { idx_buffer->Release(); idx_buffer = nullptr; }
+		if(vtx_declaration) { vtx_declaration->Release(); vtx_declaration = nullptr; }
+		if(font_texture) { font_texture->Release(); font_texture = nullptr; render::atlas.texture.data = nullptr; }
+	}
+
+	void c_directx9::create_fonts_texture() {
 		if(render::atlas.texture.pixels_alpha8.empty()) {
 			if(render::atlas.configs.empty()) render::atlas.add_font_default();
 			render::atlas.build();
@@ -146,29 +163,5 @@ namespace null::renderer {
 		font_texture->UnlockRect(0);
 
 		render::atlas.texture.data = (void*)font_texture;
-	}
-
-	void create_device_objects() {
-		if(!device) return;
-		create_fonts_texture();
-
-		if(!vtx_declaration) {
-			constexpr D3DVERTEXELEMENT9 elements[]{
-				{ 0, 0, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0 },
-				{ 0, 8, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 },
-				{ 0, 16, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0 },
-				D3DDECL_END()
-			};
-			device->CreateVertexDeclaration(elements, &vtx_declaration);
-		}
-	}
-
-	void invalidate_device_objects() {
-		if(!device) return;
-
-		if(vtx_buffer) { vtx_buffer->Release(); vtx_buffer = nullptr; }
-		if(idx_buffer) { idx_buffer->Release(); idx_buffer = nullptr; }
-		if(vtx_declaration) { vtx_declaration->Release(); vtx_declaration = nullptr; }
-		if(font_texture) { font_texture->Release(); font_texture = nullptr; render::atlas.texture.data = nullptr; }
 	}
 }

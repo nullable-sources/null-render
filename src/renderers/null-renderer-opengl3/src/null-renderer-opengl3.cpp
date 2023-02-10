@@ -1,7 +1,7 @@
 #include <null-renderer-opengl3.h>
 
 namespace null::renderer {
-    void render(draw_data_t& _draw_data) {
+    void c_opengl3::render(const draw_data_t& _draw_data) {
         if(draw_data_t::screen_size <= 0)
             return;
 
@@ -30,10 +30,9 @@ namespace null::renderer {
         bool last_enable_scissor_test{ opengl::is_enabled(opengl::e_scissor_test) };
         bool last_enable_primitive_restart{ opengl::is_enabled(opengl::e_primitive_restart) };
 
-        std::uint32_t vertex_array_object{ };
         opengl::gen_vertex_arrays(1, &vertex_array_object);
 
-        setup_state(vertex_array_object);
+        setup_state();
 
         for(render::c_draw_list* draw_list : _draw_data.draw_lists) {
             std::vector<vertex_t> vertex_buffer{ draw_list->vtx_buffer | std::views::transform([](const render::vertex_t& vtx) { return vertex_t{ vtx.pos, vtx.uv, (std::uint32_t)((vtx.color.a() & 0xff) << 24) | ((vtx.color.b() & 0xff) << 16) | ((vtx.color.g() & 0xff) << 8) | (vtx.color.r() & 0xff) }; }) | std::ranges::to<std::vector>() };
@@ -43,7 +42,7 @@ namespace null::renderer {
 
             for(render::c_draw_list::cmd_t& cmd : draw_list->cmd_buffer) {
                 if(auto& callback{ cmd.callbacks.at<render::e_cmd_callbacks::on_draw_data>() }; !callback.empty() && callback.call(cmd)) {
-                    setup_state(vertex_array_object);
+                    setup_state();
                     continue;
                 }
 
@@ -80,7 +79,7 @@ namespace null::renderer {
         opengl::scissor(last_scissor_box[0], last_scissor_box[1], last_scissor_box[2], last_scissor_box[3]);
     }
 
-    void setup_state(const std::uint32_t& vertex_array_object) {
+    void c_opengl3::setup_state() {
         opengl::enable(opengl::e_blend);
         opengl::blend_equation(opengl::e_func_add);
         opengl::blend_func_separate(opengl::e_src_alpha, opengl::e_one_minus_src_alpha, 1, opengl::e_one_minus_src_alpha);
@@ -94,15 +93,9 @@ namespace null::renderer {
 #endif
 
         opengl::viewport(0, 0, draw_data_t::screen_size.x, draw_data_t::screen_size.y);
-        matrix4x4_t ortho{ {
-            { 2.f / draw_data_t::screen_size.x,0.f,                                     0.f,    0.f },
-            { 0.f,                              2.f / (-draw_data_t::screen_size.y),    0.f,    0.f },
-            { 0.f,                              0.f,                                    -1.f,   0.f },
-            { -1.f,                             1.f,                                    0.f,    1.f }
-            } };
         opengl::use_program(shader_program);
         opengl::uniform1i(attribute_texture, 0);
-        opengl::uniform_matrix4fv(attribute_proj_mtx, 1, false, ortho.linear_array.data());
+        opengl::uniform_matrix4fv(attribute_proj_mtx, 1, false, matrix4x4_t::project_ortho(0.f, draw_data_t::screen_size.x, draw_data_t::screen_size.y, 0.f, -10000.f, 10000.f).linear_array.data());
 
         opengl::bind_vertex_array(vertex_array_object);
 
@@ -116,40 +109,7 @@ namespace null::renderer {
         opengl::vertex_attrib_pointer(attribute_color, 4, opengl::e_unsigned_byte, true, sizeof(vertex_t), (void*)offsetof(vertex_t, color));
     }
 
-    bool create_fonts_texture() {
-        if(render::atlas.texture.pixels_alpha8.empty()) {
-            if(render::atlas.configs.empty()) render::atlas.add_font_default();
-            render::atlas.build();
-        }
-
-        render::atlas.texture.get_data_as_rgba32();
-
-        int last_texture{ }; opengl::get_integerv(opengl::e_texture_binding_2d, &last_texture);
-        opengl::gen_textures(1, &font_texture);
-        opengl::bind_texture(opengl::e_texture_2d, font_texture);
-        opengl::tex_parameteri(opengl::e_texture_2d, opengl::e_texture_min_filter, opengl::e_linear);
-        opengl::tex_parameteri(opengl::e_texture_2d, opengl::e_texture_mag_filter, opengl::e_linear);
-#ifdef opengl_unpack_row_length
-        opengl::pixel_storei(opengl::e_unpack_row_length, 0);
-#endif
-        opengl::tex_image2d(opengl::e_texture_2d, 0, opengl::e_rgba, render::atlas.texture.size.x, render::atlas.texture.size.y, 0, opengl::e_rgba, opengl::e_unsigned_byte, (void*)render::atlas.texture.pixels_rgba32.data());
-
-        render::atlas.texture.data = (void*)font_texture;
-
-        opengl::bind_texture(opengl::e_texture_2d, last_texture);
-
-        return true;
-    }
-
-    void destroy_fonts_texture() {
-        if(font_texture) {
-            opengl::delete_textures(1, &font_texture);
-            render::atlas.texture.data = nullptr;
-            font_texture = 0;
-        }
-    }
-
-    bool create_device_objects() {
+    void c_opengl3::create_objects() {
         int last_texture, last_array_buffer;
         opengl::get_integerv(opengl::e_texture_binding_2d, &last_texture);
         opengl::get_integerv(opengl::e_array_buffer_binding, &last_array_buffer);
@@ -185,11 +145,9 @@ namespace null::renderer {
         opengl::bind_texture(opengl::e_texture_2d, last_texture);
         opengl::bind_buffer(opengl::e_array_buffer, last_array_buffer);
         opengl::bind_vertex_array(last_vertex_array);
-
-        return true;
     }
 
-    void destroy_device_objects() {
+    void c_opengl3::destroy_objects() {
         if(vbo_handle) { opengl::delete_buffers(1, &vbo_handle); vbo_handle = 0; }
         if(elements_handle) { opengl::delete_buffers(1, &elements_handle); elements_handle = 0; }
         if(shader_program && vertex_shader) { opengl::detach_shader(shader_program, vertex_shader); }
@@ -199,5 +157,38 @@ namespace null::renderer {
         if(shader_program) { opengl::delete_program(shader_program); shader_program = 0; }
 
         destroy_fonts_texture();
+    }
+
+    bool c_opengl3::create_fonts_texture() {
+        if(render::atlas.texture.pixels_alpha8.empty()) {
+            if(render::atlas.configs.empty()) render::atlas.add_font_default();
+            render::atlas.build();
+        }
+
+        render::atlas.texture.get_data_as_rgba32();
+
+        int last_texture{ }; opengl::get_integerv(opengl::e_texture_binding_2d, &last_texture);
+        opengl::gen_textures(1, &font_texture);
+        opengl::bind_texture(opengl::e_texture_2d, font_texture);
+        opengl::tex_parameteri(opengl::e_texture_2d, opengl::e_texture_min_filter, opengl::e_linear);
+        opengl::tex_parameteri(opengl::e_texture_2d, opengl::e_texture_mag_filter, opengl::e_linear);
+#ifdef opengl_unpack_row_length
+        opengl::pixel_storei(opengl::e_unpack_row_length, 0);
+#endif
+        opengl::tex_image2d(opengl::e_texture_2d, 0, opengl::e_rgba, render::atlas.texture.size.x, render::atlas.texture.size.y, 0, opengl::e_rgba, opengl::e_unsigned_byte, (void*)render::atlas.texture.pixels_rgba32.data());
+
+        render::atlas.texture.data = (void*)font_texture;
+
+        opengl::bind_texture(opengl::e_texture_2d, last_texture);
+
+        return true;
+    }
+
+    void c_opengl3::destroy_fonts_texture() {
+        if(font_texture) {
+            opengl::delete_textures(1, &font_texture);
+            render::atlas.texture.data = nullptr;
+            font_texture = 0;
+        }
     }
 }

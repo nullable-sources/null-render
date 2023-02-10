@@ -10,25 +10,39 @@
 #include <null-render.h>
 
 namespace null::renderer {
-	struct vertex_t {
-		vec2_t<float> pos{ }, uv{ };
-		std::uint32_t color{ };
-	};
+	class c_opengl3 : public i_renderer {
+	public:
+		struct vertex_t {
+			vec2_t<float> pos{ }, uv{ };
+			std::uint32_t color{ };
+		};
 
-	inline std::uint32_t shader_program{ }, vertex_shader{ }, frag_shader{ };
-	inline int attribute_texture{ }, attribute_proj_mtx{ };
-	inline std::uint32_t attribute_position{ }, attribute_uv{ }, attribute_color{ };
-	inline std::uint32_t vbo_handle{ }, elements_handle{ };
-	inline std::uint32_t font_texture{ };
+	public:
+		std::uint32_t shader_program{ }, vertex_shader{ }, frag_shader{ };
+		int attribute_texture{ }, attribute_proj_mtx{ };
+		std::uint32_t attribute_position{ }, attribute_uv{ }, attribute_color{ };
+		std::uint32_t vbo_handle{ }, elements_handle{ };
+		std::uint32_t font_texture{ };
 
-	void render(draw_data_t& _draw_data = draw_data);
-	void setup_state(const std::uint32_t& vertex_array_object);
-	bool create_fonts_texture();
-	void destroy_fonts_texture();
-	bool create_device_objects();
-	void destroy_device_objects();
+		std::uint32_t vertex_array_object{ };
 
-	static void begin_frame() { if(!shader_program) create_device_objects(); }
+	public:
+		void initialize() override { }
+		void shutdown() override { }
+
+		void begin_frame() override { if(!shader_program) create_objects(); }
+		void end_frame() override { }
+
+		void render(const draw_data_t& _draw_data = draw_data) override;
+		void setup_state() override;
+
+		void create_objects() override;
+		void destroy_objects() override;
+
+	public:
+		bool create_fonts_texture();
+		void destroy_fonts_texture();
+	}; inline std::unique_ptr<c_opengl3> opengl3{ };
 
 #ifdef null_renderer_use_glfw
 	class c_window : public utils::win::c_window {
@@ -50,6 +64,9 @@ namespace null::renderer {
 
 			wnd_handle = glfwGetWin32Window(glfw_window);
 
+			opengl3 = std::make_unique<c_opengl3>();
+			renderer = opengl3.get();
+
 			on_create();
 			return true;
 		}
@@ -66,8 +83,6 @@ namespace null::renderer {
 			while(!glfwWindowShouldClose(glfw_window)) {
 				glfwPollEvents();
 
-				begin_frame();
-
 				on_main_loop();
 
 				setup_default_draw_data();
@@ -77,7 +92,7 @@ namespace null::renderer {
 				glViewport(0, 0, framebuffer.x, framebuffer.y);
 				glClearColor(clear_color.r(), clear_color.g(), clear_color.b(), clear_color.a());
 				glClear(GL_COLOR_BUFFER_BIT);
-				render();
+				renderer->render();
 
 				glfwSwapBuffers(glfw_window);
 			}

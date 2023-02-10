@@ -5,12 +5,7 @@ namespace null::render::shaders {
         vertex::shader.set_shader();
 
         {
-            vertex::constant vertex_const{ matrix4x4_t{ {
-                { 2.f / renderer::draw_data_t::screen_size.x,   0.f,                                            0.f,    0.f },
-                { 0.f,                                          -(2.f / renderer::draw_data_t::screen_size.y),  0.f,    0.f },
-                { 0.f,                                          0.f,                                            0.5f,   0.f },
-                { -1.f,                                         1,                                              0.5f,   1.f },
-            } } };
+            vertex::constant vertex_const{ matrix4x4_t::project_ortho(0.f, renderer::draw_data_t::screen_size.x, renderer::draw_data_t::screen_size.y, 0.f, -10000.f, 10000.f) };
 
             vertex::shader.edit_constant(vertex_const);
         }

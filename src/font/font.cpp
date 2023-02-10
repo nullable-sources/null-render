@@ -488,9 +488,9 @@ namespace null::render {
         }
         if(cfg.size_pixels <= 0.0f) cfg.size_pixels = 13.0f * 1.0f;
         cfg.ellipsis_char = (std::uint16_t)0x0085;
-        cfg.glyph_config.offset.y = 1.0f * floor(cfg.size_pixels / 13.0f);
+        cfg.glyph_config.offset.y = 1.0f * std::floor(cfg.size_pixels / 13.0f);
 
-        return add_font_from_memory_compressed_base_85_ttf(compressed_fonts::proggy_clean, cfg.size_pixels, &cfg, cfg.glyph_config.ranges ? cfg.glyph_config.ranges : c_font::glyph_t::ranges_default());
+        return add_font_from_file_ttf(std::format("{}\\fonts\\Tahoma.ttf", std::getenv("windir")), cfg.size_pixels, &cfg, cfg.glyph_config.ranges ? cfg.glyph_config.ranges : c_font::glyph_t::ranges_default());
     }
 
     c_font* c_atlas::add_font_from_file_ttf(const std::string_view& filename, const float& size_pixels, c_font::config_t* config, const std::uint16_t* glyph_ranges) {
@@ -529,10 +529,6 @@ namespace null::render {
         cfg.owned_by_atlas = true;
 
         return add_font_from_memory_ttf(buf_decompressed_data, size_pixels, &cfg, glyph_ranges);
-    }
-
-    c_font* c_atlas::add_font_from_memory_compressed_base_85_ttf(const std::string_view& compressed_font_data_base85, const float& size_pixels, c_font::config_t* config, const std::uint16_t* glyph_ranges) {
-        return add_font_from_memory_compressed_ttf(utils::encoding::base85_t{ compressed_font_data_base85 }.decode().output, size_pixels, config, glyph_ranges);
     }
 
     void c_atlas::clear_input_data() {

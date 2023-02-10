@@ -5,40 +5,55 @@
 #include <null-render.h>
 
 namespace null::renderer {
-	struct vertex_t {
-		float pos[3]{ };
-		std::uint32_t color{ };
-		float uv[2]{ };
-	};
+	class c_directx11 : public i_renderer {
+	public:
+		struct vertex_t {
+			float pos[3]{ };
+			std::uint32_t color{ };
+			float uv[2]{ };
+		};
 
-	inline ID3D11RenderTargetView* main_render_target_view{ };
-	inline ID3D11Device* device{ };
-	inline ID3D11DeviceContext* context{ };
-	inline IDXGIFactory* factory{ };
-	inline ID3D11Buffer* vertex_buffer{ }, *index_buffer{ };
-	inline ID3D11InputLayout* input_layout{ };
-	inline ID3D11SamplerState* font_sampler{ };
-	inline ID3D11ShaderResourceView* font_texture_view{ };
-	inline ID3D11RasterizerState* rasterizer_state{ };
-	inline ID3D11BlendState* blend_state{ };
-	inline ID3D11DepthStencilState* depth_stencil_state{ };
-	inline IDXGISwapChain* swap_chain{ };
+	public:
+		ID3D11Device* device{ };
+		ID3D11DeviceContext* context{ };
+		IDXGIFactory* factory{ };
+		ID3D11Buffer* vertex_buffer{ }, * index_buffer{ };
+		ID3D11InputLayout* input_layout{ };
+		ID3D11SamplerState* font_sampler{ };
+		ID3D11ShaderResourceView* font_texture_view{ };
+		ID3D11RasterizerState* rasterizer_state{ };
+		ID3D11BlendState* blend_state{ };
+		ID3D11DepthStencilState* depth_stencil_state{ };
+	
+	public:
+		c_directx11(ID3D11Device* _device = nullptr, ID3D11DeviceContext* _context = nullptr) : device{ _device }, context{ _context } { initialize(); }
+		~c_directx11() { shutdown(); }
 
-	void render(draw_data_t& _draw_data = draw_data);
-	void setup_state();
-	void create_fonts_texture();
-	void create_device_objects();
-	void invalidate_device_objects();
+	public:
+		void initialize() override;
+		void shutdown() override;
 
-	void initialize(ID3D11Device* _device = nullptr, ID3D11DeviceContext* _context = nullptr);
-	void shutdown();
+		void begin_frame() override { if(!font_sampler) create_objects(); }
+		void end_frame() override { }
 
-	static void begin_frame() { if(!font_sampler) create_device_objects(); }
+		void render(const draw_data_t& _draw_data = draw_data) override;
+		void setup_state() override;
+
+		void create_objects() override;
+		void destroy_objects() override;
+
+	public:
+		void create_fonts_texture();
+	}; inline std::unique_ptr<c_directx11> directx11{ };
 
 	class c_window : public utils::win::c_window {
 	public: using utils::win::c_window::c_window;
 		color_t<float> clear_color{ 0.07f, 0.07f, 0.07f };
 
+		ID3D11Device* device{ };
+		ID3D11DeviceContext* context{ };
+		IDXGISwapChain* swap_chain{ };
+		ID3D11RenderTargetView* render_target{ };
 		DXGI_SWAP_CHAIN_DESC swap_chain_desc{
 			.BufferDesc{
 				.Width{ 0 },
@@ -70,12 +85,13 @@ namespace null::renderer {
 
 			D3D_FEATURE_LEVEL feature_level;
 			if(D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, std::vector<D3D_FEATURE_LEVEL>{ D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_0 }.data(), 2,
-				D3D11_SDK_VERSION, & swap_chain_desc, & swap_chain, & device, & feature_level, & context) != S_OK)
+				D3D11_SDK_VERSION, & swap_chain_desc, & swap_chain, &device, & feature_level, &context) != S_OK)
 				throw std::runtime_error{ "cant create device and swap chain" };
 
 			create_render_target();
 
-			initialize();
+			directx11 = std::make_unique<c_directx11>(device, context);
+			renderer = directx11.get();
 
 			utils::win::c_window::on_create();
 		}
@@ -83,22 +99,19 @@ namespace null::renderer {
 		void on_destroy() override {
 			utils::win::c_window::on_destroy();
 			destroy_render_target();
-			if(device) { device->Release(); device = nullptr; }
-			if(context) { context->Release(); context = nullptr; }
+			renderer->shutdown();
 			if(swap_chain) { swap_chain->Release(); swap_chain = nullptr; }
 		}
 
 		void on_main_loop() override {
-			begin_frame();
-
 			utils::win::c_window::on_main_loop();
 
 			setup_default_draw_data();
 
-			context->OMSetRenderTargets(1, &main_render_target_view, nullptr);
-			context->ClearRenderTargetView(main_render_target_view, clear_color.channels.data());
+			context->OMSetRenderTargets(1, &render_target, nullptr);
+			context->ClearRenderTargetView(render_target, clear_color.channels.data());
 
-			render();
+			renderer->render();
 
 			swap_chain->Present(1, 0);
 		}
@@ -120,11 +133,11 @@ namespace null::renderer {
 			return callback_results;
 		}
 
-		void destroy_render_target() { if(main_render_target_view) { main_render_target_view->Release(); main_render_target_view = nullptr; } }
+		void destroy_render_target() { if(render_target) { render_target->Release(); render_target = nullptr; } }
 		void create_render_target() {
 			ID3D11Texture2D* back_buffer{ };
 			swap_chain->GetBuffer(0, IID_PPV_ARGS(&back_buffer));
-			device->CreateRenderTargetView(back_buffer, nullptr, &main_render_target_view);
+			device->CreateRenderTargetView(back_buffer, nullptr, &render_target);
 			back_buffer->Release();
 		}
 	};
