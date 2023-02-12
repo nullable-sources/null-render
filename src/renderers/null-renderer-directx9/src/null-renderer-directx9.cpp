@@ -63,7 +63,7 @@ namespace null::renderer {
 				}
 
 				const RECT clip_rect{ (LONG)cmd.clip_rect.min.x, (LONG)cmd.clip_rect.min.y, (LONG)cmd.clip_rect.max.x, (LONG)cmd.clip_rect.max.y };
-				device->SetTexture(0, (IDirect3DTexture9*)font_texture);
+				device->SetTexture(0, (IDirect3DTexture9*)cmd.texture);
 				device->SetScissorRect(&clip_rect);
 				device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, cmd.vtx_offset + global_vtx_offset, 0, (UINT)draw_list->vtx_buffer.size(), cmd.idx_offset + global_idx_offset, cmd.element_count / 3);
 			}
