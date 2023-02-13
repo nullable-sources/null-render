@@ -13,6 +13,9 @@
     <Filter Include="src\renderer">
       <UniqueIdentifier>{8b3fca09-81cb-4a8f-8f2c-631dc7ce18de}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\geometry-buffer">
+      <UniqueIdentifier>{5b50301d-d78d-4c6b-8385-5191cc788a49}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\font\font.cpp">
@@ -23,6 +26,9 @@
     </ClCompile>
     <ClCompile Include="src\renderer\renderer.cpp">
       <Filter>src\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\geometry-buffer\geometry-buffer.cpp">
+      <Filter>src\geometry-buffer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -38,5 +44,16 @@
     <ClInclude Include="src\renderer\renderer.h">
       <Filter>src\renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\geometry-buffer\geometry-buffer.h">
+      <Filter>src\geometry-buffer</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\draw-list\draw-list.inl">
+      <Filter>src\draw-list</Filter>
+    </None>
+    <None Include="src\font\font.inl">
+      <Filter>src\font</Filter>
+    </None>
   </ItemGroup>
 </Project>

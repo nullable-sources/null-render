@@ -17,11 +17,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "directx11", "examples\direc
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "renderers", "renderers", "{EC753036-4399-4DD8-890B-CA8F184A0608}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "null-renderer-directx9", "src\renderers\null-renderer-directx9\null-renderer-directx9.vcxproj", "{95843DE7-57A5-4B57-B7F2-7A60B0115992}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "null-renderer-directx9", "src\renderer\null-renderer-directx9\null-renderer-directx9.vcxproj", "{95843DE7-57A5-4B57-B7F2-7A60B0115992}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "null-renderer-directx11", "src\renderers\null-renderer-directx11\null-renderer-directx11.vcxproj", "{D51AD3AE-DE95-488A-B202-A4192F685A59}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "null-renderer-directx11", "src\renderer\null-renderer-directx11\null-renderer-directx11.vcxproj", "{D51AD3AE-DE95-488A-B202-A4192F685A59}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "null-renderer-opengl3", "src\renderers\null-renderer-opengl3\null-renderer-opengl3.vcxproj", "{97A6B7AE-9878-4584-A0B8-15287DB604AC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "null-renderer-opengl3", "src\renderer\null-renderer-opengl3\null-renderer-opengl3.vcxproj", "{97A6B7AE-9878-4584-A0B8-15287DB604AC}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "opengl", "examples\opengl\opengl.vcxproj", "{1D6ABA22-DE9B-4397-B258-5F5BA1588C9D}"
 EndProject

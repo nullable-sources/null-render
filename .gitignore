@@ -1,5 +1,5 @@
 build/
 .vs/
 *.user
-src/renderers/null-renderer-directx11/src/shaders/pixel/compiled/
-src/renderers/null-renderer-directx11/src/shaders/vertex/compiled/
+src/renderer/null-renderer-directx11/src/shaders/pixel/compiled/
+src/renderer/null-renderer-directx11/src/shaders/vertex/compiled/

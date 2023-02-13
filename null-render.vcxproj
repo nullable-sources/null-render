@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="src\draw-list\draw-list.cpp" />
     <ClCompile Include="src\font\font.cpp" />
+    <ClCompile Include="src\geometry-buffer\geometry-buffer.cpp" />
     <ClCompile Include="src\renderer\renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -31,8 +32,13 @@
   <ItemGroup>
     <ClInclude Include="src\draw-list\draw-list.h" />
     <ClInclude Include="src\font\font.h" />
+    <ClInclude Include="src\geometry-buffer\geometry-buffer.h" />
     <ClInclude Include="src\null-render.h" />
     <ClInclude Include="src\renderer\renderer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\draw-list\draw-list.inl" />
+    <None Include="src\font\font.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
