@@ -239,7 +239,8 @@ namespace null::render {
 				throw std::runtime_error{ "cmd_buffer.back().texture != font->container_atlas->texture.data" };
 
 			int vtx_offset{ }; //@note: offset for outline
-			draw_text(std::basic_string_view{ str }, color, pos, pos.x, font, size, vtx_offset, flags);
+			float new_line_pos{ pos.x };
+			draw_text(std::basic_string_view{ str }, color, pos, new_line_pos, font, size, vtx_offset, flags);
 		}
 
 		template <typename string_t>
