@@ -1,5 +1,6 @@
 build/
 .vs/
 *.user
-src/renderer/null-renderer-directx11/src/shaders/pixel/compiled/
+src/renderer/null-renderer-directx11/src/shaders/pixel-sampler/compiled/
+src/renderer/null-renderer-directx11/src/shaders/pixel-without-sampler/compiled/
 src/renderer/null-renderer-directx11/src/shaders/vertex/compiled/

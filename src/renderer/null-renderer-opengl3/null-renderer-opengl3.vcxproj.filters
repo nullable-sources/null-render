@@ -10,8 +10,20 @@
     <Filter Include="resources">
       <UniqueIdentifier>{3bc9fc43-740a-4ee6-a1b4-42b2994661ec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resources\shaders">
-      <UniqueIdentifier>{000f1830-6ce9-47c7-8a92-40ac65d2269e}</UniqueIdentifier>
+    <Filter Include="src\shaders">
+      <UniqueIdentifier>{7ece53da-1030-4628-9f2b-ad283852bc40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\general-texture">
+      <UniqueIdentifier>{98702e17-2602-4106-b8c6-90e47c02c069}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\general-color">
+      <UniqueIdentifier>{5ee0845e-3281-4c6f-9241-37a1ce5587ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\general-color\glsl">
+      <UniqueIdentifier>{dbb562e1-e9aa-4cf9-a2e3-cb5a118f048e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\general-texture\glsl">
+      <UniqueIdentifier>{7a177bff-2cb0-4229-83c1-ef9a00936bc0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -26,6 +38,15 @@
     <ClInclude Include="src\opengl\opengl3.h">
       <Filter>src\opengl</Filter>
     </ClInclude>
+    <ClInclude Include="src\shaders\shaders.h">
+      <Filter>src\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\general-color\general-color.h">
+      <Filter>src\shaders\general-color</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\general-texture\general-texture.h">
+      <Filter>src\shaders\general-texture</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resources\null-renderer-opengl3-resources.rc">
@@ -33,11 +54,17 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="resources\shaders\fragment.glsl">
-      <Filter>resources\shaders</Filter>
+    <None Include="src\shaders\general-color\glsl\vertex-color.glsl">
+      <Filter>src\shaders\general-color\glsl</Filter>
     </None>
-    <None Include="resources\shaders\vertex.glsl">
-      <Filter>resources\shaders</Filter>
+    <None Include="src\shaders\general-color\glsl\fragment-color.glsl">
+      <Filter>src\shaders\general-color\glsl</Filter>
+    </None>
+    <None Include="src\shaders\general-texture\glsl\fragment-texture.glsl">
+      <Filter>src\shaders\general-texture\glsl</Filter>
+    </None>
+    <None Include="src\shaders\general-texture\glsl\vertex-texture.glsl">
+      <Filter>src\shaders\general-texture\glsl</Filter>
     </None>
   </ItemGroup>
 </Project>

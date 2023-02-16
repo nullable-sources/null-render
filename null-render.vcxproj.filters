@@ -4,9 +4,6 @@
     <Filter Include="src">
       <UniqueIdentifier>{d11addc5-089b-4237-a3dd-c21f8f81dcf1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\draw-list">
-      <UniqueIdentifier>{d437ce68-0d2a-4aae-856f-6b39d4fc45f7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\font">
       <UniqueIdentifier>{eda5cc7f-ea04-4b39-84c1-023faa3fb642}</UniqueIdentifier>
     </Filter>
@@ -14,15 +11,12 @@
       <UniqueIdentifier>{8b3fca09-81cb-4a8f-8f2c-631dc7ce18de}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\geometry-buffer">
-      <UniqueIdentifier>{5b50301d-d78d-4c6b-8385-5191cc788a49}</UniqueIdentifier>
+      <UniqueIdentifier>{d437ce68-0d2a-4aae-856f-6b39d4fc45f7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\font\font.cpp">
       <Filter>src\font</Filter>
-    </ClCompile>
-    <ClCompile Include="src\draw-list\draw-list.cpp">
-      <Filter>src\draw-list</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\renderer.cpp">
       <Filter>src\renderer</Filter>
@@ -38,9 +32,6 @@
     <ClInclude Include="src\font\font.h">
       <Filter>src\font</Filter>
     </ClInclude>
-    <ClInclude Include="src\draw-list\draw-list.h">
-      <Filter>src\draw-list</Filter>
-    </ClInclude>
     <ClInclude Include="src\renderer\renderer.h">
       <Filter>src\renderer</Filter>
     </ClInclude>
@@ -49,11 +40,11 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\draw-list\draw-list.inl">
-      <Filter>src\draw-list</Filter>
-    </None>
     <None Include="src\font\font.inl">
       <Filter>src\font</Filter>
+    </None>
+    <None Include="src\geometry-buffer\geometry-buffer.inl">
+      <Filter>src\geometry-buffer</Filter>
     </None>
   </ItemGroup>
 </Project>

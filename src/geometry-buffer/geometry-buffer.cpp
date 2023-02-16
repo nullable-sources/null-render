@@ -1,55 +1,28 @@
-#include <geometry-buffer/geometry-buffer.h>
+#include <null-render.h>
 
 namespace null::render {
-    void c_geometry_buffer::path_rect(const vec2_t<float>& a, const vec2_t<float>& b, float rounding, const e_corner_flags& flags) {
-        rounding = std::min(rounding, std::fabsf(b.x - a.x) * ((flags & e_corner_flags::top) == -e_corner_flags::top || (flags & e_corner_flags::bot) == -e_corner_flags::bot ? 0.5f : 1.f) - 1.f);
-        rounding = std::min(rounding, std::fabsf(b.y - a.y) * ((flags & e_corner_flags::left) == -e_corner_flags::left || (flags & e_corner_flags::right) == -e_corner_flags::right ? 0.5f : 1.f) - 1.f);
+    void c_geometry_buffer::reset() {
+        settings.set_circle_segment_max_error(1.60f);
 
-        if(rounding <= 0.0f || flags == e_corner_flags{ }) {
-            pathes.push_back(a);
-            pathes.push_back({ b.x, a.y });
-            pathes.push_back(b);
-            pathes.push_back({ a.x, b.y });
-        } else {
-            float rounding_tl{ flags & e_corner_flags::top_left ? rounding : 0.f };
-            float rounding_tr{ flags & e_corner_flags::top_right ? rounding : 0.f };
-            float rounding_br{ flags & e_corner_flags::bot_right ? rounding : 0.f };
-            float rounding_bl{ flags & e_corner_flags::bot_left ? rounding : 0.f };
-
-            path_arc_to_fast(a + rounding_tl, rounding_tl, 6, 9);
-            path_arc_to_fast(vec2_t{ b.x, a.y } + vec2_t{ -rounding_tr, rounding_tr }, rounding_tr, 9, 12);
-            path_arc_to_fast(b - rounding_br, rounding_br, 0, 3);
-            path_arc_to_fast(vec2_t{ a.x, b.y } + vec2_t{ rounding_bl, -rounding_bl }, rounding_bl, 3, 6);
-        }
+        clear();
+        textures = { nullptr };
+        clips = { { vec2_t{ 0.f }, shared::viewport } };
+        add_cmd();
     }
 
-    void c_geometry_buffer::path_arc_to_fast(const vec2_t<float>& center, const float& radius, const int& a_min_of_12, const int& a_max_of_12) {
-        if(!radius || a_min_of_12 > a_max_of_12) pathes.push_back(center);
-        else {
-            std::ranges::for_each(std::views::iota(a_min_of_12 * settings_t::arc_fast_tessellation_multiplier, a_max_of_12 * settings_t::arc_fast_tessellation_multiplier + 1), [=](const int& a) {
-                pathes.push_back(center + settings.arc_fast_vtx[a % settings.arc_fast_vtx.size()] * radius);
-                });
-        }
-    }
+    void c_geometry_buffer::restore_clip_rect() { push_clip_rect({ 0.f }, shared::viewport); }
+    void c_geometry_buffer::push_clip_rect(rect_t<float> rect, const bool& intersect_with_current_rect) {
+        if(intersect_with_current_rect) rect = { math::max(rect.min, clips.back().min), math::min(rect.max, clips.back().max) };
 
-    void c_geometry_buffer::path_arc_to(const vec2_t<float>& center, const float& radius, const float& a_min, const float& a_max, const int& num_segments) {
-        if(radius == 0.f) pathes.push_back(center);
-        else {
-            std::ranges::for_each(std::views::iota(0, num_segments + 1), [=](const int& i) {
-                const float a{ a_min + ((float)i / (float)num_segments) * (a_max - a_min) };
-                pathes.push_back(center + vec2_t{ cosf(a), sinf(a) } *radius);
-                });
-        }
+        clips.push_back(rect_t{ rect.min, std::max(rect.min, rect.max) });
+        on_change_clip_rect();
     }
 
     void c_geometry_buffer::repaint_rect_vertices_in_multicolor(const vec2_t<float>& min, const vec2_t<float>& max, const size_t& vtx_offset, const std::array<color_t<int>, 4>& colors) {
-        std::array<color_t<float>, 4> casted_colors{ };
-        std::ranges::transform(colors, casted_colors.begin(), [](const color_t<int>& color) { return color; });
-
         for(vertex_t& vertex : vtx_buffer | std::views::drop(vtx_offset)) { //@credits: https://github.com/ocornut/imgui/issues/3710#issuecomment-1315745540
             vec2_t f{ std::clamp((vertex.pos - min) / (max - min), { 0.f }, { 1.f }) };
-            color_t<float> top_delta{ casted_colors[0] + (casted_colors[1] - casted_colors[0]) * color_t<float>{ f.x } };
-            color_t<float> bot_delta{ casted_colors[2] + (casted_colors[3] - casted_colors[2]) * color_t<float>{ f.x } };
+            color_t<float> top_delta{ colors[0] + (colors[1] - colors[0]) * color_t<float>{ f.x } };
+            color_t<float> bot_delta{ colors[2] + (colors[3] - colors[2]) * color_t<float>{ f.x } };
             vertex.color *= color_t<float>{ top_delta + (bot_delta - top_delta) * color_t<float>{ f.y } };
         }
     }
@@ -57,19 +30,17 @@ namespace null::render {
     void c_geometry_buffer::add_rect(const vec2_t<float>& a, const vec2_t<float>& b, const color_t<int>& color, const float& thickness, const float& rounding, const e_corner_flags& flags) {
         if(color.a() <= 0) return;
 
-        path_rect(a + 0.50f, b - (settings.initialize_flags & e_initialize_flags::anti_aliased_lines ? 0.50f : 0.49f), rounding, flags);
-        path_stroke(color, true, thickness);
+        add_poly_line(geometry_utils::build_rect_path(settings, a + 0.5f, b - (settings.initialize_flags & e_initialize_flags::anti_aliased_lines ? 0.50f : 0.49f), rounding, flags), color, true, thickness);
     }
 
     void c_geometry_buffer::add_rect_filled(const vec2_t<float>& a, const vec2_t<float>& b, const color_t<int>& color, const float& rounding, const e_corner_flags& flags) {
         if(color.a() <= 0) return;
 
         if(rounding > 0.0f) {
-            path_rect(a, b, rounding, flags);
-            path_fill_convex(color);
+            add_convex_poly_filled(geometry_utils::build_rect_path(settings, a, b, rounding, flags), color);
         } else {
-            add_idx(geometry_utils::quad_indicies, vtx_buffer.size());
-            add_vtx(geometry_utils::build_rect_vertex(a, b, atlas.texture.uv_white_pixel, atlas.texture.uv_white_pixel, color));
+            add_idx(geometry_utils::quad_indexes, vtx_buffer.size());
+            add_vtx(geometry_utils::build_rect_vertex(a, b, { }, { }, color));
         }
     }
 
@@ -94,35 +65,19 @@ namespace null::render {
     void c_geometry_buffer::add_rect_filled_multicolor(const vec2_t<float>& a, const vec2_t<float>& b, const std::array<color_t<int>, 4>& colors, float rounding, const e_corner_flags& flags) {
         if(std::ranges::all_of(colors, [](const color_t<int>& color) { return color.a() <= 0; })) return;
 
-        rounding = std::min(rounding, std::fabsf(b.x - a.x) * ((flags & e_corner_flags::top) == -e_corner_flags::top || (flags & e_corner_flags::bot) == -e_corner_flags::bot ? 0.5f : 1.f) - 1.f);
-        rounding = std::min(rounding, std::fabsf(b.y - a.y) * ((flags & e_corner_flags::left) == -e_corner_flags::left || (flags & e_corner_flags::right) == -e_corner_flags::right ? 0.5f : 1.f) - 1.f);
-
         if(rounding > 0.f && flags != e_corner_flags{ }) {
             size_t offset{ vtx_buffer.size() };
-            path_rect(a, b, rounding, flags);
-            path_fill_convex(color_t<int>::palette_t::white);
+            add_rect_filled(a, b, color_t<int>::palette_t::white, rounding, flags);
             repaint_rect_vertices_in_multicolor(a, b, offset, colors);
         } else {
-            add_idx({
-                0, 1, 2,
-                0, 2, 3
-                }, vtx_buffer.size());
-
-            add_vtx({
-                { a, atlas.texture.uv_white_pixel, colors[0] },
-                { { b.x, a.y }, atlas.texture.uv_white_pixel, colors[1] },
-                { b, atlas.texture.uv_white_pixel, colors[3] },
-                { { a.x, b.y }, atlas.texture.uv_white_pixel, colors[2] },
-                });
+            add_idx(geometry_utils::quad_indexes, vtx_buffer.size());
+            add_vtx(geometry_utils::build_rect_vertex(a, b, { }, { }, colors));
         }
     }
 
     void c_geometry_buffer::add_line(const vec2_t<float>& a, const vec2_t<float>& b, const color_t<int>& color, const float& thickness) {
         if(color.a() <= 0) return;
-
-        pathes.push_back(a + 0.5f);
-        pathes.push_back(b + 0.5f);
-        path_stroke(color, false, thickness);
+        add_poly_line({ a + 0.5f, b + 0.5f }, color, false, thickness);
     }
 
     void c_geometry_buffer::add_poly_line(const std::vector<vec2_t<float>>& points, const color_t<int>& color, const bool& closed, float thickness) {
@@ -149,7 +104,7 @@ namespace null::render {
 
             if(!closed) temp_normals[points.size() - 1] = temp_normals[points.size() - 2];
 
-            if(false && (use_texture || !thick_line)) {
+            if(use_texture || !thick_line) {
                 const float half_draw_size{ use_texture ? thickness * 0.5f + 1 : aa_size };
                 if(!closed) {
                     temp_points[0] = points.front() + temp_normals.front() * half_draw_size;
@@ -157,6 +112,9 @@ namespace null::render {
                     temp_points[(points.size() - 1) * 2] = points.back() + temp_normals[points.size() - 1] * half_draw_size;
                     temp_points[(points.size() - 1) * 2 + 1] = points.back() - temp_normals[points.size() - 1] * half_draw_size;
                 }
+
+                bool _push_texture{ use_texture && cmd_buffer.back().texture != c_font::get_current_font()->container_atlas->texture.data };
+                if(_push_texture) push_texture(c_font::get_current_font()->container_atlas->texture.data);
 
                 std::uint32_t idx{ (std::uint32_t)vtx_buffer.size() };
                 for(const int& i1 : std::views::iota(0, count)) {
@@ -199,12 +157,14 @@ namespace null::render {
                 } else {
                     for(const int& i : std::views::iota((size_t)0, points.size())) {
                         add_vtx({
-                            { points[i],                atlas.texture.uv_white_pixel, color },
-                            { temp_points[i * 2],       atlas.texture.uv_white_pixel, color_t{ color, 0.f } },
-                            { temp_points[i * 2 + 1],   atlas.texture.uv_white_pixel, color_t{ color, 0.f } }
+                            { points[i],                color },
+                            { temp_points[i * 2],       color_t{ color, 0.f } },
+                            { temp_points[i * 2 + 1],   color_t{ color, 0.f } }
                             });
                     }
                 }
+
+                if(_push_texture) pop_texture();
             } else {
                 const float half_inner_thickness{ (thickness - aa_size) * 0.5f };
 
@@ -247,10 +207,10 @@ namespace null::render {
 
                 for(const int& i : std::views::iota((size_t)0, points.size())) {
                     add_vtx({
-                        { temp_points[i * 4],       atlas.texture.uv_white_pixel, color_t(color, 0.f) },
-                        { temp_points[i * 4 + 1],   atlas.texture.uv_white_pixel, color },
-                        { temp_points[i * 4 + 2],   atlas.texture.uv_white_pixel, color },
-                        { temp_points[i * 4 + 3],   atlas.texture.uv_white_pixel, color_t(color, 0.f) }
+                        { temp_points[i * 4],       color_t(color, 0.f) },
+                        { temp_points[i * 4 + 1],   color },
+                        { temp_points[i * 4 + 2],   color },
+                        { temp_points[i * 4 + 3],   color_t(color, 0.f) }
                         });
                 }
             }
@@ -261,36 +221,30 @@ namespace null::render {
                 if(float d2{ std::powf(delta.length(), 2) }; d2 > 0.f) delta *= 1.f / std::sqrtf(d2);
                 delta *= thickness / 2.f;
 
-                add_idx(geometry_utils::quad_indicies, vtx_buffer.size());
+                add_idx(geometry_utils::quad_indexes, vtx_buffer.size());
 
                 add_vtx({
-                    { points[i1] + vec2_t{ delta.y, -delta.x }, atlas.texture.uv_white_pixel, color },
-                    { points[i2] + vec2_t{ delta.y, -delta.x }, atlas.texture.uv_white_pixel, color },
-                    { points[i2] + vec2_t{ -delta.y, delta.x }, atlas.texture.uv_white_pixel, color },
-                    { points[i1] + vec2_t{ -delta.y, delta.x }, atlas.texture.uv_white_pixel, color }
+                    { points[i1] + vec2_t{ delta.y, -delta.x }, color },
+                    { points[i2] + vec2_t{ delta.y, -delta.x }, color },
+                    { points[i2] + vec2_t{ -delta.y, delta.x }, color },
+                    { points[i1] + vec2_t{ -delta.y, delta.x }, color }
                     });
             }
         }
     }
-    
-    void c_geometry_buffer::add_circle(const vec2_t<float>& center, const color_t<int>& clr, const float& radius, int num_segments, const float& thickness) {
-        if(clr.a() <= 0 || radius <= 0.f) return;
+
+    void c_geometry_buffer::add_circle(const vec2_t<float>& center, const color_t<int>& color, const float& radius, int num_segments, const float& thickness) {
+        if(color.a() <= 0 || radius <= 0.f) return;
 
         settings.get_auto_circle_num_segments(num_segments, radius);
-
-        if(num_segments == 12) path_arc_to_fast(center, radius - 0.5f, 0, 11);
-        else path_arc_to(center, radius - 0.5f, 0.f, (std::numbers::pi * 2.f) * (num_segments - 1.f) / num_segments, num_segments - 1);
-        path_stroke(clr, true, thickness);
+        add_poly_line(num_segments == 12 ? geometry_utils::build_arc_to_fast_path(center, radius - 0.5f, 0, 11, settings) : geometry_utils::build_arc_to_path(center, radius - 0.5f, 0.f, (std::numbers::pi * 2.f) * (num_segments - 1.f) / num_segments, num_segments - 1), color, true, thickness);
     }
 
-    void c_geometry_buffer::add_circle_filled(const vec2_t<float>& center, const color_t<int>& clr, const float& radius, int num_segments) {
-        if(clr.a() <= 0 || radius <= 0.f) return;
+    void c_geometry_buffer::add_circle_filled(const vec2_t<float>& center, const color_t<int>& color, const float& radius, int num_segments) {
+        if(color.a() <= 0 || radius <= 0.f) return;
 
         settings.get_auto_circle_num_segments(num_segments, radius);
-
-        if(num_segments == 12) path_arc_to_fast(center, radius, 0, 11);
-        else path_arc_to(center, radius, 0.0f, (std::numbers::pi * 2.f) * (num_segments - 1.f) / num_segments, num_segments - 1);
-        path_fill_convex(clr);
+        add_convex_poly_filled(num_segments == 12 ? geometry_utils::build_arc_to_fast_path(center, radius, 0, 11, settings) : geometry_utils::build_arc_to_path(center, radius, 0.0f, (std::numbers::pi * 2.f) * (num_segments - 1.f) / num_segments, num_segments - 1), color);
     }
 
     void c_geometry_buffer::add_convex_poly_filled(const std::vector<vec2_t<float>>& points, const color_t<int>& color) {
@@ -302,17 +256,17 @@ namespace null::render {
                 add_idx({ 0, (i - 1) << 1, i << 1 }, vtx_buffer.size());
                 });
 
-            std::vector<vec2_t<float>> temp_normals(points.size());
-            for(int i0{ (int)points.size() - 1 }; const int& i1 : std::views::iota((size_t)0, points.size())) {
+            std::vector<vec2_t<float>> temp_normals{ };
+            for(size_t i0{ points.size() - 1 }; const size_t& i1 : std::views::iota(size_t{ }, points.size())) {
                 vec2_t delta{ points[i1] - points[i0] };
                 if(float d2{ std::powf(delta.length(), 2) }; d2 > 0.f) delta *= 1.f / std::sqrtf(d2);
 
-                temp_normals[i0] = { delta.y, -delta.x };
+                temp_normals.push_back({ delta.y, -delta.x });
                 i0 = i1;
             }
 
             size_t idx{ vtx_buffer.size() };
-            for(std::uint32_t i0{ (std::uint32_t)points.size() - 1 }; const std::uint32_t & i1 : std::views::iota((size_t)0, points.size())) {
+            for(std::uint32_t i0{ (std::uint32_t)points.size() - 1 }; const std::uint32_t& i1 : std::views::iota(size_t{ }, points.size())) {
                 vec2_t delta{ (temp_normals[i0] + temp_normals[i1]) / 2.f };
                 if(float d2{ std::powf(delta.length(), 2) }; d2 > 0.000001f) delta *= 1.f / std::min(d2, 100.f);
                 delta *= aa_size / 2.f;
@@ -323,14 +277,98 @@ namespace null::render {
                     }, idx);
 
                 add_vtx({
-                    { points[i1] - delta, atlas.texture.uv_white_pixel, color },
-                    { points[i1] + delta, atlas.texture.uv_white_pixel, color_t{ color, 0.f } }
+                    { points[i1] - delta, color },
+                    { points[i1] + delta, color_t{ color, 0.f } }
                     });
                 i0 = i1;
             }
         } else {
             for(const std::uint32_t& i : std::views::iota((size_t)2, points.size())) add_idx({ 0, i - 1, i }, vtx_buffer.size());
-            std::ranges::for_each(points, [&](const vec2_t<float>& point) { add_vtx({ { point, atlas.texture.uv_white_pixel, color } }); });
+            std::ranges::for_each(points, [&](const vec2_t<float>& point) { add_vtx({ { point, color } }); });
+        }
+    }
+
+    void c_geometry_buffer::add_image(void* texture, const vec2_t<float>& a, const vec2_t<float>& b, const vec2_t<float>& uv_min, const vec2_t<float>& uv_max, const color_t<int>& color) {
+        if(color.a() <= 0) return;
+
+        bool _push_texture{ texture != cmd_buffer.back().texture };
+        if(_push_texture) push_texture(texture);
+        
+        add_idx(geometry_utils::quad_indexes, vtx_buffer.size());
+        add_vtx(geometry_utils::build_rect_vertex(a, b, uv_min, uv_max, color));
+
+        if(_push_texture) pop_texture();
+    }
+
+    void c_geometry_buffer::add_image_quad(void* texture, const std::array<std::pair<vec2_t<float>, vec2_t<float>>, 4>& points_and_uvs, const color_t<int>& color) {
+        if(color.a() <= 0) return;
+
+        bool _push_texture{ texture != cmd_buffer.back().texture };
+        if(_push_texture) push_texture(texture);
+
+        add_idx(geometry_utils::quad_indexes, vtx_buffer.size());
+        std::ranges::transform(points_and_uvs, std::back_inserter(vtx_buffer), [&](const auto& pos_and_uv) { return vertex_t{ pos_and_uv.first, pos_and_uv.second, color }; });
+
+        if(_push_texture) pop_texture();
+    }
+
+    void c_geometry_buffer::on_change_clip_rect() {
+        if(cmd_buffer.back().element_count && cmd_buffer.back().clip_rect != clips.back()) add_cmd();
+        else cmd_buffer.back().clip_rect = clips.back();
+    }
+
+    void c_geometry_buffer::on_change_texture() {
+        if(cmd_buffer.back().element_count && cmd_buffer.back().texture != textures.back()) add_cmd();
+        else cmd_buffer.back().texture = textures.back();
+    }
+
+    namespace geometry_utils {
+        std::vector<vertex_t> build_rect_vertex(const vec2_t<float>& a, const vec2_t<float>& b, const vec2_t<float>& uv_a, const vec2_t<float>& uv_b, const std::array<color_t<int>, 4>& colors) {
+            return {
+                { a, uv_a, colors[0] },
+                { { b.x, a.y }, { uv_b.x, uv_a.y }, colors[1] },
+                { b, uv_b, colors[2] },
+                { { a.x, b.y }, { uv_a.x, uv_b.y }, colors[3] }
+            };
+        }
+
+        std::vector<vec2_t<float>> build_arc_to_fast_path(const vec2_t<float>& center, const float& radius, const int& a_min_of_12, const int& a_max_of_12, const c_geometry_buffer::settings_t& settings) {
+            if(!radius || a_min_of_12 > a_max_of_12) return { center };
+            else {
+                return std::views::iota(a_min_of_12 * c_geometry_buffer::settings_t::arc_fast_tessellation_multiplier, a_max_of_12 * c_geometry_buffer::settings_t::arc_fast_tessellation_multiplier + 1)
+                    | std::views::transform([&](const int& a) { return vec2_t<float>{ center + settings.arc_fast_vtx[a % settings.arc_fast_vtx.size()] * radius }; })
+                    | std::ranges::to<std::vector>();
+            }
+        }
+
+        std::vector<vec2_t<float>> build_arc_to_path(const vec2_t<float>& center, const float& radius, const float& a_min, const float& a_max, const int& num_segments) {
+            if(radius == 0.f) return { center };
+            else {
+                return std::views::iota(0, num_segments + 1)
+                    | std::views::transform([&](const int& i) { const float a{ a_min + ((float)i / (float)num_segments) * (a_max - a_min) }; return vec2_t<float>{ center + vec2_t{ cosf(a), sinf(a) } *radius }; })
+                    | std::ranges::to<std::vector>();
+            }
+        }
+
+        std::vector<vec2_t<float>> build_rect_path(const c_geometry_buffer::settings_t& settings, const vec2_t<float>& a, const vec2_t<float>& b, float rounding, const e_corner_flags& flags) {
+            rounding = std::min(rounding, std::fabsf(b.x - a.x) * ((flags & e_corner_flags::top) == -e_corner_flags::top || (flags & e_corner_flags::bot) == -e_corner_flags::bot ? 0.5f : 1.f) - 1.f);
+            rounding = std::min(rounding, std::fabsf(b.y - a.y) * ((flags & e_corner_flags::left) == -e_corner_flags::left || (flags & e_corner_flags::right) == -e_corner_flags::right ? 0.5f : 1.f) - 1.f);
+
+            if(rounding <= 0.0f || flags == e_corner_flags{ }) {
+                return { a, { b.x, a.y }, b, { a.x, a.y } };
+            } else {
+                float rounding_tl{ flags & e_corner_flags::top_left ? rounding : 0.f };
+                float rounding_tr{ flags & e_corner_flags::top_right ? rounding : 0.f };
+                float rounding_br{ flags & e_corner_flags::bot_right ? rounding : 0.f };
+                float rounding_bl{ flags & e_corner_flags::bot_left ? rounding : 0.f };
+
+                return std::vector{
+                    build_arc_to_fast_path(a + rounding_tl, rounding_tl, 6, 9, settings),
+                    build_arc_to_fast_path(vec2_t{ b.x, a.y } + vec2_t{ -rounding_tr, rounding_tr }, rounding_tr, 9, 12, settings),
+                    build_arc_to_fast_path(b - rounding_br, rounding_br, 0, 3, settings),
+                    build_arc_to_fast_path(vec2_t{ a.x, b.y } + vec2_t{ rounding_bl, -rounding_bl }, rounding_bl, 3, 6, settings)
+                } | std::views::join | std::ranges::to<std::vector>();
+            }
         }
     }
 }

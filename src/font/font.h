@@ -286,7 +286,7 @@ namespace null::render {
             std::vector<std::uint32_t> pixels_rgba32{ };
 
             vec2_t<float> size{ };
-            vec2_t<float> uv_scale{ }, uv_white_pixel{ };
+            vec2_t<float> uv_scale{ };
             std::array<rect_t<float>, 64> uv_lines{ };
 
         public:

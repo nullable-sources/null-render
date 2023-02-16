@@ -18,9 +18,6 @@ namespace null::renderer {
 		};
 
 	public:
-		std::uint32_t shader_program{ }, vertex_shader{ }, frag_shader{ };
-		int attribute_texture{ }, attribute_proj_mtx{ };
-		std::uint32_t attribute_position{ }, attribute_uv{ }, attribute_color{ };
 		std::uint32_t vbo_handle{ }, elements_handle{ };
 		std::uint32_t font_texture{ };
 
@@ -30,10 +27,10 @@ namespace null::renderer {
 		void initialize() override { }
 		void shutdown() override { }
 
-		void begin_frame() override { if(!shader_program) create_objects(); }
+		void begin_frame() override { if(!font_texture) create_objects(); }
 		void end_frame() override { }
 
-		void render(const draw_data_t& _draw_data = draw_data) override;
+		void render(const compiled_geometry_data_t& _compiled_geometry_data = compiled_geometry_data) override;
 		void setup_state() override;
 
 		void create_objects() override;
@@ -60,7 +57,7 @@ namespace null::renderer {
 			if(!(glfw_window = glfwCreateWindow(size.x, size.y, name.c_str(), NULL, NULL))) throw std::runtime_error{ "cant create glfw window" };
 			glfwSetWindowPos(glfw_window, pos.x, pos.y);
 			glfwMakeContextCurrent(glfw_window);
-			glfwSwapInterval(1);
+			glfwSwapInterval(0);
 
 			wnd_handle = glfwGetWin32Window(glfw_window);
 
@@ -85,7 +82,7 @@ namespace null::renderer {
 
 				on_main_loop();
 
-				setup_default_draw_data();
+				compile_default_geometry_data();
 
 				vec2_t<int> framebuffer{ };
 				glfwGetFramebufferSize(glfw_window, &framebuffer.x, &framebuffer.y);

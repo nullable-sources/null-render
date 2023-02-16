@@ -1,21 +1,21 @@
 #include <null-renderer-directx9.h>
 
 namespace null::renderer {
-	void c_directx9::render(const draw_data_t& _draw_data) {
-		if(draw_data_t::screen_size <= 0.f)
+	void c_directx9::render(const compiled_geometry_data_t& _compiled_geometry_data) {
+		if(render::shared::viewport <= 0.f)
 			return;
 
 		static int vtx_buffer_size{ 5000 }, idx_buffer_size{ 10000 };
-		if(!vtx_buffer || vtx_buffer_size < _draw_data.total_vtx_count) {
+		if(!vtx_buffer || vtx_buffer_size < _compiled_geometry_data.total_vtx_count) {
 			if(vtx_buffer) { vtx_buffer->Release(); vtx_buffer = nullptr; }
-			vtx_buffer_size = _draw_data.total_vtx_count + 5000;
+			vtx_buffer_size = _compiled_geometry_data.total_vtx_count + 5000;
 			if(device->CreateVertexBuffer(vtx_buffer_size * sizeof(vertex_t), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, D3DPOOL_DEFAULT, &vtx_buffer, nullptr) < 0)
 				throw std::runtime_error{ "CreateVertexBuffer error" };
 		}
 
-		if(!idx_buffer || idx_buffer_size < _draw_data.total_idx_count) {
+		if(!idx_buffer || idx_buffer_size < _compiled_geometry_data.total_idx_count) {
 			if(idx_buffer) { idx_buffer->Release(); idx_buffer = nullptr; }
-			idx_buffer_size = _draw_data.total_idx_count + 10000;
+			idx_buffer_size = _compiled_geometry_data.total_idx_count + 10000;
 			if(device->CreateIndexBuffer(idx_buffer_size * sizeof(std::uint32_t), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFMT_INDEX32, D3DPOOL_DEFAULT, &idx_buffer, nullptr) < 0)
 				throw std::runtime_error{ "CreateIndexBuffer error" };
 		}
@@ -31,20 +31,20 @@ namespace null::renderer {
 
 		vertex_t* vtx_dst{ };
 		std::uint32_t* idx_dst{ };
-		if(vtx_buffer->Lock(0, (UINT)(_draw_data.total_vtx_count * sizeof(vertex_t)), (void**)&vtx_dst, D3DLOCK_DISCARD) < 0) throw std::runtime_error{ "vtx_buffer->Lock error" };
-		if(idx_buffer->Lock(0, (UINT)(_draw_data.total_idx_count * sizeof(std::uint32_t)), (void**)&idx_dst, D3DLOCK_DISCARD) < 0) throw std::runtime_error{ "idx_buffer->Lock error" };
-		for(render::c_draw_list* cmd_list : _draw_data.draw_lists) {
-			for(const render::vertex_t& vtx_src : cmd_list->vtx_buffer) {
+		if(vtx_buffer->Lock(0, (UINT)(_compiled_geometry_data.total_vtx_count * sizeof(vertex_t)), (void**)&vtx_dst, D3DLOCK_DISCARD) < 0) throw std::runtime_error{ "vtx_buffer->Lock error" };
+		if(idx_buffer->Lock(0, (UINT)(_compiled_geometry_data.total_idx_count * sizeof(std::uint32_t)), (void**)&idx_dst, D3DLOCK_DISCARD) < 0) throw std::runtime_error{ "idx_buffer->Lock error" };
+		for(render::c_geometry_buffer* geometry_buffer : _compiled_geometry_data.geometry_buffers) {
+			for(const render::vertex_t& vertex : geometry_buffer->vtx_buffer) {
 				*vtx_dst = {
-					{ vtx_src.pos.x, vtx_src.pos.y, 0.f },
-					D3DCOLOR_RGBA(vtx_src.color.r(), vtx_src.color.g(), vtx_src.color.b(), vtx_src.color.a()),
-					{ vtx_src.uv.x, vtx_src.uv.y }
+					{ vertex.pos.x, vertex.pos.y, 0.f },
+					D3DCOLOR_RGBA(vertex.color.r(), vertex.color.g(), vertex.color.b(), vertex.color.a()),
+					{ vertex.uv.x, vertex.uv.y }
 				};
 
 				vtx_dst++;
 			}
-			memcpy(idx_dst, cmd_list->idx_buffer.data(), cmd_list->idx_buffer.size() * sizeof(std::uint32_t));
-			idx_dst += cmd_list->idx_buffer.size();
+			memcpy(idx_dst, geometry_buffer->idx_buffer.data(), geometry_buffer->idx_buffer.size() * sizeof(std::uint32_t));
+			idx_dst += geometry_buffer->idx_buffer.size();
 		}
 		vtx_buffer->Unlock();
 		idx_buffer->Unlock();
@@ -55,9 +55,9 @@ namespace null::renderer {
 
 		setup_state();
 
-		for(int global_vtx_offset{ }, global_idx_offset{ }; render::c_draw_list * draw_list : _draw_data.draw_lists) {
-			for(render::c_draw_list::cmd_t& cmd : draw_list->cmd_buffer) {
-				if(auto& callback{ cmd.callbacks.at<render::e_cmd_callbacks::on_draw_data>() }; !callback.empty() && callback.call(cmd)) {
+		for(int global_vtx_offset{ }, global_idx_offset{ }; render::c_geometry_buffer* geometry_buffer : _compiled_geometry_data.geometry_buffers) {
+			for(render::c_geometry_buffer::cmd_t& cmd : geometry_buffer->cmd_buffer) {
+				if(auto& callback{ cmd.callbacks.at<render::e_cmd_callbacks::on_draw>() }; !callback.empty() && callback.call(cmd)) {
 					setup_state();
 					continue;
 				}
@@ -65,10 +65,10 @@ namespace null::renderer {
 				const RECT clip_rect{ (LONG)cmd.clip_rect.min.x, (LONG)cmd.clip_rect.min.y, (LONG)cmd.clip_rect.max.x, (LONG)cmd.clip_rect.max.y };
 				device->SetTexture(0, (IDirect3DTexture9*)cmd.texture);
 				device->SetScissorRect(&clip_rect);
-				device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, cmd.vtx_offset + global_vtx_offset, 0, (UINT)draw_list->vtx_buffer.size(), cmd.idx_offset + global_idx_offset, cmd.element_count / 3);
+				device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, global_vtx_offset, 0, (UINT)geometry_buffer->vtx_buffer.size(), global_idx_offset, cmd.element_count / 3);
+				global_idx_offset += cmd.element_count;
 			}
-			global_idx_offset += draw_list->idx_buffer.size();
-			global_vtx_offset += draw_list->vtx_buffer.size();
+			global_vtx_offset += geometry_buffer->vtx_buffer.size();
 		}
 
 		device->SetTransform(D3DTS_WORLD, &last_world);
@@ -81,8 +81,8 @@ namespace null::renderer {
 
 	void c_directx9::setup_state() {
 		D3DVIEWPORT9 viewport{ 0, 0,
-			draw_data_t::screen_size.x,
-			draw_data_t::screen_size.y,
+			render::shared::viewport.x,
+			render::shared::viewport.y,
 			0.0f, 1.0f
 		};
 
@@ -112,7 +112,7 @@ namespace null::renderer {
 		{
 			device->SetTransform(D3DTS_WORLD, (D3DMATRIX*)matrix4x4_t::identity().linear_array.data());
 			device->SetTransform(D3DTS_VIEW, (D3DMATRIX*)matrix4x4_t::identity().linear_array.data());
-			device->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)matrix4x4_t::project_ortho(0.5f, draw_data_t::screen_size.x + 0.5f, draw_data_t::screen_size.y + 0.5f, 0.5f, -10000.f, 10000.f).linear_array.data());
+			device->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)matrix4x4_t::project_ortho(0.5f, render::shared::viewport.x + 0.5f, render::shared::viewport.y + 0.5f, 0.5f, -10000.f, 10000.f).linear_array.data());
 		}
 	}
 

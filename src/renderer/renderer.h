@@ -1,21 +1,18 @@
 #pragma once
-#include <draw-list/draw-list.h>
+#include <geometry-buffer/geometry-buffer.h>
 
 namespace null::renderer {
-	struct draw_data_t {
+	struct compiled_geometry_data_t {
 	public:
-		static inline vec2_t screen_size{ };
-
-	public:
-		std::vector<render::c_draw_list*> draw_lists{ };
+		std::vector<render::c_geometry_buffer*> geometry_buffers{ };
 		int total_idx_count{ }, total_vtx_count{ };
 
 	public:
-		void add_draw_list(render::c_draw_list* draw_list);
+		void add_geometry_buffer(render::c_geometry_buffer* geometry_buffer);
 		void setup();
-	} inline draw_data{ };
+	} inline compiled_geometry_data{ };
 
-	void setup_default_draw_data();
+	void compile_default_geometry_data();
 
 	class i_renderer {
 	public:
@@ -25,7 +22,7 @@ namespace null::renderer {
 		virtual void begin_frame() = 0;
 		virtual void end_frame() = 0;
 
-		virtual void render(const draw_data_t& draw_data = draw_data) = 0;
+		virtual void render(const compiled_geometry_data_t& _compiled_geometry_data = compiled_geometry_data) = 0;
 		virtual void setup_state() = 0;
 
 		virtual void create_objects() = 0;

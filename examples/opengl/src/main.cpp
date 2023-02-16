@@ -3,7 +3,7 @@
 #include <null-renderer-opengl3.h>
 
 null::renderer::c_window window{ };
-null::render::c_draw_list custom_layer{ };
+null::render::c_geometry_buffer custom_buffer{ };
 utils::c_cumulative_time_measurement frame_counter{ 60 };
 
 void main_loop() {
@@ -18,8 +18,8 @@ void main_loop() {
 	} };
 
 	null::render::begin_frame(window); {
-		custom_layer.add_text("text drawed by custom draw_list", { 100, 10 }, { });
-		null::render::background.add_text(std::format("[ opengl3 ] fps: {:3.0f}", 1.f / std::chrono::duration<float>{ frame_counter.representation() }.count()), { window.get_window_size().x, 10.f }, { }, null::render::e_text_flags{ -null::render::e_text_flags::aligin_right | -null::render::e_text_flags::aligin_center_y | -null::render::e_text_flags::outline });
+		custom_buffer.add_text("text drawed by custom geometry buffer", { 100, 10 }, { });
+		null::render::background.add_text(std::format("[ opengl3 ] fps: {:3.0f}", 1.f / std::chrono::duration<float>{ frame_counter.representation() }.count()), { (float)window.get_window_size().x, 10.f }, { }, null::render::e_text_flags{ -null::render::e_text_flags::aligin_right | -null::render::e_text_flags::aligin_center_y | -null::render::e_text_flags::outline });
 		null::render::background.add_text(multicolor_text, { 10 });
 
 		null::render::background.add_text("rect filled", { 100, 200 }, { }, text_flags);
@@ -45,6 +45,7 @@ void main_loop() {
 		//@note:	you can use L"" to display cyrillic
 		//			or you can add /utf - 8 to C/C++->command line
 		null::render::background.add_text("абвгдеёжзийклмнопрстуфхцчшщъыьэюя", { 500 }, { });
+
 	} null::render::end_frame();
 }
 
@@ -59,7 +60,7 @@ int main() {
 		null::render::atlas.add_font_default(&config);
 
 		window.create();
-		null::render::custom_lists.push_back(&custom_layer);
+		null::render::custom_buffers.push_back(&custom_buffer);
 
 		window.main_loop();
 		window.destroy();

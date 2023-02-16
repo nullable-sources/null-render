@@ -1,8 +1,10 @@
 #include <null-renderer-opengl3.h>
+#include <shaders/general-texture/general-texture.h>
+#include <shaders/general-color/general-color.h>
 
 namespace null::renderer {
-    void c_opengl3::render(const draw_data_t& _draw_data) {
-        if(draw_data_t::screen_size <= 0)
+    void c_opengl3::render(const compiled_geometry_data_t& _compiled_geometry_data) {
+        if(render::shared::viewport <= 0)
             return;
 
         std::uint32_t last_active_texture{ }; opengl::get_integerv(opengl::e_active_texture, (int*)&last_active_texture);
@@ -34,24 +36,29 @@ namespace null::renderer {
 
         setup_state();
 
-        for(render::c_draw_list* draw_list : _draw_data.draw_lists) {
-            std::vector<vertex_t> vertex_buffer{ draw_list->vtx_buffer | std::views::transform([](const render::vertex_t& vtx) { return vertex_t{ vtx.pos, vtx.uv, (std::uint32_t)((vtx.color.a() & 0xff) << 24) | ((vtx.color.b() & 0xff) << 16) | ((vtx.color.g() & 0xff) << 8) | (vtx.color.r() & 0xff) }; }) | std::ranges::to<std::vector>() };
+        for(render::c_geometry_buffer* geometry_buffer : _compiled_geometry_data.geometry_buffers) {
+            std::vector<vertex_t> vertex_buffer{ geometry_buffer->vtx_buffer | std::views::transform([](const render::vertex_t& vtx) { return vertex_t{ vtx.pos, vtx.uv, (std::uint32_t)((vtx.color.a() & 0xff) << 24) | ((vtx.color.b() & 0xff) << 16) | ((vtx.color.g() & 0xff) << 8) | (vtx.color.r() & 0xff) }; }) | std::ranges::to<std::vector>() };
 
-            opengl::buffer_data(opengl::e_array_buffer, (std::intptr_t)draw_list->vtx_buffer.size() * (int)sizeof(vertex_t), vertex_buffer.data(), opengl::e_stream_draw);
-            opengl::buffer_data(opengl::e_element_array_buffer, (std::intptr_t)draw_list->idx_buffer.size() * (int)sizeof(std::uint32_t), (const void*)draw_list->idx_buffer.data(), opengl::e_stream_draw);
+            opengl::buffer_data(opengl::e_array_buffer, (std::intptr_t)geometry_buffer->vtx_buffer.size() * (int)sizeof(vertex_t), vertex_buffer.data(), opengl::e_stream_draw);
+            opengl::buffer_data(opengl::e_element_array_buffer, (std::intptr_t)geometry_buffer->idx_buffer.size() * (int)sizeof(std::uint32_t), (const void*)geometry_buffer->idx_buffer.data(), opengl::e_stream_draw);
 
-            for(render::c_draw_list::cmd_t& cmd : draw_list->cmd_buffer) {
-                if(auto& callback{ cmd.callbacks.at<render::e_cmd_callbacks::on_draw_data>() }; !callback.empty() && callback.call(cmd)) {
+            std::uint32_t idx_offset{ };
+            for(render::c_geometry_buffer::cmd_t& cmd : geometry_buffer->cmd_buffer) {
+                if(auto& callback{ cmd.callbacks.at<render::e_cmd_callbacks::on_draw>() }; !callback.empty() && callback.call(cmd)) {
                     setup_state();
                     continue;
                 }
 
-                if(cmd.clip_rect.min < draw_data_t::screen_size && cmd.clip_rect.max.x >= 0.0f && cmd.clip_rect.max.y >= 0.0f) {
-                    opengl::scissor((int)cmd.clip_rect.min.x, (int)(draw_data_t::screen_size.y - cmd.clip_rect.max.y), (int)(cmd.clip_rect.size().x), (int)(cmd.clip_rect.size().y));
+                opengl::scissor((int)cmd.clip_rect.min.x, (int)(render::shared::viewport.y - cmd.clip_rect.max.y), (int)(cmd.clip_rect.size().x), (int)(cmd.clip_rect.size().y));
 
+                if(!cmd.texture) render::shaders::general_color.use();
+                else {
+                    render::shaders::general_texture.use();
                     opengl::bind_texture(opengl::e_texture_2d, (std::uint32_t)cmd.texture);
-                    opengl::draw_elements_base_vertex(opengl::e_triangles, cmd.element_count, opengl::e_unsigned_int, (void*)(std::intptr_t)(cmd.idx_offset * sizeof(std::uint32_t)), cmd.vtx_offset);
                 }
+
+                opengl::draw_elements_base_vertex(opengl::e_triangles, cmd.element_count, opengl::e_unsigned_int, (void*)(std::intptr_t)(idx_offset * sizeof(std::uint32_t)), 0);
+                idx_offset += cmd.element_count;
             }
         }
 
@@ -92,50 +99,26 @@ namespace null::renderer {
         opengl::polygon_mode(opengl::e_front_and_back, opengl::e_fill);
 #endif
 
-        opengl::viewport(0, 0, draw_data_t::screen_size.x, draw_data_t::screen_size.y);
-        opengl::use_program(shader_program);
-        opengl::uniform1i(attribute_texture, 0);
-        opengl::uniform_matrix4fv(attribute_proj_mtx, 1, false, matrix4x4_t::project_ortho(0.f, draw_data_t::screen_size.x, draw_data_t::screen_size.y, 0.f, -10000.f, 10000.f).linear_array.data());
-
+        opengl::viewport(0.f, 0.f, render::shared::viewport.x, render::shared::viewport.y);
+        
         opengl::bind_vertex_array(vertex_array_object);
-
+       
         opengl::bind_buffer(opengl::e_array_buffer, vbo_handle);
         opengl::bind_buffer(opengl::e_element_array_buffer, elements_handle);
-        opengl::enable_vertex_attrib_array(attribute_position);
-        opengl::enable_vertex_attrib_array(attribute_uv);
-        opengl::enable_vertex_attrib_array(attribute_color);
-        opengl::vertex_attrib_pointer(attribute_position, 2, opengl::e_float, false, sizeof(vertex_t), (void*)offsetof(vertex_t, pos));
-        opengl::vertex_attrib_pointer(attribute_uv, 2, opengl::e_float, false, sizeof(vertex_t), (void*)offsetof(vertex_t, uv));
-        opengl::vertex_attrib_pointer(attribute_color, 4, opengl::e_unsigned_byte, true, sizeof(vertex_t), (void*)offsetof(vertex_t, color));
+        
+        render::shaders::general_color.setup_state();
+        render::shaders::general_texture.setup_state();
     }
 
     void c_opengl3::create_objects() {
-        int last_texture, last_array_buffer;
+        int last_texture{ }, last_array_buffer{ };
         opengl::get_integerv(opengl::e_texture_binding_2d, &last_texture);
         opengl::get_integerv(opengl::e_array_buffer_binding, &last_array_buffer);
-        int last_vertex_array;
+        int last_vertex_array{ };
         opengl::get_integerv(opengl::e_vertex_array_binding, &last_vertex_array);
 
-        memory::resource_t vertex_resource{ "null-renderer:opengl:shaders:vertex", "null-renderer:opengl:resources" };
-        vertex_shader = opengl::create_shader(opengl::e_vertex_shader);
-        opengl::shader_source(vertex_shader, 1, (const char* const*)&vertex_resource.load().locked_data, nullptr);
-        opengl::compile_shader(vertex_shader);
-
-        memory::resource_t fragment_resource{ "null-renderer:opengl:shaders:fragment", "null-renderer:opengl:resources" };
-        frag_shader = opengl::create_shader(opengl::e_fragment_shader);
-        opengl::shader_source(frag_shader, 1, (const char* const*)&fragment_resource.load().locked_data, nullptr);
-        opengl::compile_shader(frag_shader);
-
-        shader_program = opengl::create_program();
-        opengl::attach_shader(shader_program, vertex_shader);
-        opengl::attach_shader(shader_program, frag_shader);
-        opengl::link_program(shader_program);
-
-        attribute_texture = opengl::get_uniform_location(shader_program, "sampler");
-        attribute_proj_mtx = opengl::get_uniform_location(shader_program, "proj_mtx");
-        attribute_position = opengl::get_attrib_location(shader_program, "position");
-        attribute_uv = opengl::get_attrib_location(shader_program, "uv");
-        attribute_color = opengl::get_attrib_location(shader_program, "color");
+        render::shaders::general_color.create();
+        render::shaders::general_texture.create();
 
         opengl::gen_buffers(1, &vbo_handle);
         opengl::gen_buffers(1, &elements_handle);
@@ -150,11 +133,9 @@ namespace null::renderer {
     void c_opengl3::destroy_objects() {
         if(vbo_handle) { opengl::delete_buffers(1, &vbo_handle); vbo_handle = 0; }
         if(elements_handle) { opengl::delete_buffers(1, &elements_handle); elements_handle = 0; }
-        if(shader_program && vertex_shader) { opengl::detach_shader(shader_program, vertex_shader); }
-        if(shader_program && frag_shader) { opengl::detach_shader(shader_program, frag_shader); }
-        if(vertex_shader) { opengl::delete_shader(vertex_shader); vertex_shader = 0; }
-        if(frag_shader) { opengl::delete_shader(frag_shader); frag_shader = 0; }
-        if(shader_program) { opengl::delete_program(shader_program); shader_program = 0; }
+        
+        render::shaders::general_color.destroy();
+        render::shaders::general_texture.destroy();
 
         destroy_fonts_texture();
     }

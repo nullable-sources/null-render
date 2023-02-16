@@ -7,11 +7,23 @@
     <Filter Include="src\shaders">
       <UniqueIdentifier>{2c8b535c-f26b-449a-a026-0d9dec481687}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\shaders\pixel">
-      <UniqueIdentifier>{efaeb4ef-6ef6-4f56-b182-1fabe35bfe1b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\shaders\vertex">
       <UniqueIdentifier>{2bd2b719-a66d-4a78-b8fe-bc86b6c8d065}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\pixel-without-sampler">
+      <UniqueIdentifier>{4b1cd3f7-0b81-4487-8ffc-548660dfbbab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\pixel-sampler">
+      <UniqueIdentifier>{efaeb4ef-6ef6-4f56-b182-1fabe35bfe1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\pixel-sampler\hlsl">
+      <UniqueIdentifier>{7cb3974d-1995-4135-81f6-57e98f5a7a8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\pixel-without-sampler\hlsl">
+      <UniqueIdentifier>{5ff8bc12-556a-4f22-a3d9-91cded82cf46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\vertex\hlsl">
+      <UniqueIdentifier>{fb3074d1-21b4-49d7-bd73-5cfa3ccfde3a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -21,6 +33,15 @@
     <ClCompile Include="src\shaders\shaders.cpp">
       <Filter>src\shaders</Filter>
     </ClCompile>
+    <ClCompile Include="src\shaders\pixel-sampler\pixel-sampler.cpp">
+      <Filter>src\shaders\pixel-sampler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shaders\vertex\vertex.cpp">
+      <Filter>src\shaders\vertex</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shaders\pixel-without-sampler\pixel-without-sampler.cpp">
+      <Filter>src\shaders\pixel-without-sampler</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\null-renderer-directx11.h">
@@ -29,13 +50,25 @@
     <ClInclude Include="src\shaders\shaders.h">
       <Filter>src\shaders</Filter>
     </ClInclude>
+    <ClInclude Include="src\shaders\pixel-sampler\pixel-sampler.h">
+      <Filter>src\shaders\pixel-sampler</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\vertex\vertex.h">
+      <Filter>src\shaders\vertex</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\pixel-without-sampler\pixel-without-sampler.h">
+      <Filter>src\shaders\pixel-without-sampler</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="src\shaders\vertex\hlsl\vertex.hlsl">
-      <Filter>src\shaders\vertex</Filter>
+    <FxCompile Include="src\shaders\pixel-sampler\hlsl\pixel-sampler.hlsl">
+      <Filter>src\shaders\pixel-sampler\hlsl</Filter>
     </FxCompile>
-    <FxCompile Include="src\shaders\pixel\hlsl\pixel.hlsl">
-      <Filter>src\shaders\pixel</Filter>
+    <FxCompile Include="src\shaders\pixel-without-sampler\hlsl\pixel-without-sampler.hlsl">
+      <Filter>src\shaders\pixel-without-sampler\hlsl</Filter>
+    </FxCompile>
+    <FxCompile Include="src\shaders\vertex\hlsl\vertex.hlsl">
+      <Filter>src\shaders\vertex\hlsl</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

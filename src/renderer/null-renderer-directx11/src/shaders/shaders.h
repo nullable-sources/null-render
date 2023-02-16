@@ -1,126 +1,145 @@
+#pragma once
 #include <null-renderer-directx11.h>
 
-//@note: i'm too lazy to rewrite this now, so i'll do it later
 namespace null::render::shaders {
 	namespace sources {
-		#include "pixel/compiled/pixel.h"
-		static std::vector<byte> pixel_data() {
-			return std::vector<byte>{ pixel, pixel + sizeof(pixel) };
+		namespace pixel_sampler {
+			#include "pixel-sampler/compiled/pixel-sampler.h"
+			static std::vector<std::uint8_t> data() {
+				return std::vector<std::uint8_t>{ shader_data, shader_data + sizeof(shader_data) };
+			}
 		}
 
-		#include "vertex/compiled/vertex.h"
-		static std::vector<byte> vertex_data() {
-			return std::vector<byte>{ vertex, vertex + sizeof(vertex) };
+		namespace pixel_without_sampler {
+			#include "pixel-without-sampler/compiled/pixel-without-sampler.h"
+			static std::vector<std::uint8_t> data() {
+				return std::vector<std::uint8_t>{ shader_data, shader_data + sizeof(shader_data) };
+			}
+		}
+
+		namespace vertex {
+			#include "vertex/compiled/vertex.h"
+			static std::vector<std::uint8_t> data() {
+				return std::vector<std::uint8_t>{ shader_data, shader_data + sizeof(shader_data) };
+			}
 		}
 	}
-
-	enum class e_shader_flags {
-		dont_use_constant_buffer = 1 << 0
-	}; enum_create_bit_operators(e_shader_flags, true);
-	enum_create_cast_operator(e_shader_flags, -);
-
-	template <typename shader_type>
+	
 	class i_shader {
 	public:
-		e_shader_flags flags{ };
+		class i_native_wrapper {
+		public:
+			i_native_wrapper() { }
 
-		shader_type* shader{ };
-		ID3D11Buffer* constant_buffer{ };
+		public:
+			virtual void create(const std::vector<std::uint8_t>& source) = 0;
+			virtual void destroy() = 0;
+
+			virtual void set() = 0;
+
+		public:
+			virtual operator bool() const = 0;
+		};
+
+		template <typename constant_t>
+		class i_constant_wrapper {
+		public:
+			ID3D11Buffer* constant_buffer{ };
+
+		public:
+			virtual void create() {
+				D3D11_BUFFER_DESC desc{
+					.ByteWidth{ ((sizeof(constant_t) + 15) / 16) * 16 },
+					.Usage{ D3D11_USAGE_DYNAMIC },
+					.BindFlags{ D3D11_BIND_CONSTANT_BUFFER },
+					.CPUAccessFlags{ D3D11_CPU_ACCESS_WRITE }
+				};
+				renderer::directx11->device->CreateBuffer(&desc, NULL, &constant_buffer);
+			}
+
+			virtual void destroy() { if(constant_buffer) { constant_buffer->Release(); constant_buffer = nullptr; } }
+
+			virtual void edit_constant(const constant_t& constant) {
+				D3D11_MAPPED_SUBRESOURCE mapped_subresource{ };
+				renderer::directx11->context->Map(constant_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_subresource);
+				*(constant_t*)mapped_subresource.pData = constant;
+				renderer::directx11->context->Unmap(constant_buffer, 0);
+			}
+
+			virtual void set() = 0;
+
+		public:
+			operator bool() const { return constant_buffer; }
+		};
 
 	public:
-		i_shader() { }
-		i_shader(const e_shader_flags& _flags) : flags{ _flags } { }
-		i_shader(const std::vector<byte>& shader_source, const size_t& constant_size) { create(shader_source, constant_size); }
+		virtual void create() { }
+		virtual void destroy() { }
 
-		virtual void create(const std::vector<byte>& shader_source, const size_t& constant_size = 0) {
-			create_shader(shader_source);
-			create_constant_buffer(constant_size);
-		}
+		virtual void setup_state() { }
 
-		virtual void release() {
-			if(shader) { shader->Release(); shader = nullptr; }
-			if(constant_buffer) { constant_buffer->Release(); constant_buffer = nullptr; }
-		}
+		virtual void begin_frame() { }
+		virtual void end_frame() { }
 
-		virtual void create_shader(const std::vector<byte>& shader_source) { };
-		virtual void create_constant_buffer(const size_t& constant_size) {
-			if(flags & e_shader_flags::dont_use_constant_buffer || constant_buffer != nullptr || constant_size == 0) return;
+		virtual void set() { }
 
-			CD3D11_BUFFER_DESC desc(((constant_size + 15) / 16) * 16, D3D11_BIND_CONSTANT_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
-			renderer::directx11->device->CreateBuffer(&desc, NULL, &constant_buffer);
-		}
+		virtual void wnd_proc() { }
 
-		virtual void set_shader() = 0;
-		virtual void set_constant() = 0;
-
-		template <typename constant_type>
-		void edit_constant(constant_type constant) {
-			D3D11_MAPPED_SUBRESOURCE mapped_subresource;
-			renderer::directx11->context->Map(constant_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_subresource);
-			*(constant_type*)mapped_subresource.pData = constant;
-			renderer::directx11->context->Unmap(constant_buffer, 0);
-		}
-
-		virtual operator bool() { return shader != nullptr && (constant_buffer != nullptr && !(flags & e_shader_flags::dont_use_constant_buffer)); }
-		virtual bool operator!() { return shader == nullptr || (constant_buffer == nullptr && !(flags & e_shader_flags::dont_use_constant_buffer)); }
+	public:
+		virtual operator bool() const = 0;
 	};
 
-	class c_vertex_shader : public i_shader<ID3D11VertexShader> {
-	public: using i_shader::i_shader;
-		virtual void create_shader(const std::vector<byte>& shader_source) override {
-			if(!shader) renderer::directx11->device->CreateVertexShader(shader_source.data(), shader_source.size(), 0, &shader);
-		}
-
-		virtual void set_shader() override {
-			if(shader) renderer::directx11->context->VSSetShader(shader, nullptr, 0);
-		}
-
-		virtual void set_constant() override {
-			if(constant_buffer) renderer::directx11->context->VSSetConstantBuffers(0, 1, &constant_buffer);
-		}
-	};
-
-	class c_pixel_shader : public i_shader<ID3D11PixelShader> {
-	public: using i_shader::i_shader;
-		virtual void create_shader(const std::vector<byte>& shader_source) override {
-			if(!shader) renderer::directx11->device->CreatePixelShader(shader_source.data(), shader_source.size(), 0, &shader);
-		}
-
-		virtual void set_shader() override {
-			if(!shader) throw std::runtime_error{ "shader == nullptr" };
-			renderer::directx11->context->PSSetShader(shader, nullptr, 0);
-		}
-
-		virtual void set_constant() override {
-			if(!constant_buffer) throw std::runtime_error{ "constant_buffer == nullptr" };
-			renderer::directx11->context->PSSetConstantBuffers(0, 1, &constant_buffer);
-		}
-	};
-
-	void setup_state();
-	void create_shaders();
-	void release_shaders();
-	void win_proc();
-
-	namespace pixel {
-		inline c_pixel_shader shader{ e_shader_flags::dont_use_constant_buffer };
-
-		static void create_shader_control() { if(!shader) shader.create(sources::pixel_data()); }
-		static void release_shader_control() { if(shader) shader.release(); }
-	}
-
-	namespace vertex {
-		struct constant {
+	class c_pixel_shader : public i_shader {
+	public:
+		class c_native_wrapper : public i_native_wrapper {
 		public:
-			float matrix[4][4]{ };
+			ID3D11PixelShader* shader{ };
 
 		public:
-			constant() { }
-			constant(const matrix4x4_t& _matrix) { std::ranges::move(_matrix.linear_array, &matrix[0][0]); }
-		} inline constants{ };
-		inline c_vertex_shader shader{ };
+			c_native_wrapper() { }
+			c_native_wrapper(const std::vector<std::uint8_t>& source) { create(source); }
 
-		static void create_shader_control() { if(!shader) shader.create(sources::vertex_data(), sizeof(constant)); }
-		static void release_shader_control() { if(shader) shader.release(); }
-	}
+		public:
+			virtual void create(const std::vector<std::uint8_t>& source) override { if(!shader) renderer::directx11->device->CreatePixelShader(source.data(), source.size(), 0, &shader); }
+			virtual void destroy() { if(shader) { shader->Release(); shader = nullptr; } }
+
+			virtual void set() override { if(shader) renderer::directx11->context->PSSetShader(shader, nullptr, 0); }
+
+		public:
+			virtual operator bool() const override { return shader; }
+		};
+
+		template <typename constant_t>
+		class c_constant_wrapper : public i_constant_wrapper<constant_t> {
+		public:
+			void set() override { renderer::directx11->context->PSSetConstantBuffers(0, 1, &this->constant_buffer); }
+		};
+	};
+
+	class c_vertex_shader : public i_shader {
+	public:
+		class c_native_wrapper : public i_native_wrapper {
+		public:
+			ID3D11VertexShader* shader{ };
+
+		public:
+			c_native_wrapper() { }
+			c_native_wrapper(const std::vector<std::uint8_t>& source) { create(source); }
+
+		public:
+			virtual void create(const std::vector<std::uint8_t>& source) override { if(!shader) renderer::directx11->device->CreateVertexShader(source.data(), source.size(), 0, &shader); }
+			virtual void destroy() { if(shader) { shader->Release(); shader = nullptr; } }
+
+			virtual void set() override { if(shader) renderer::directx11->context->VSSetShader(shader, nullptr, 0); }
+
+		public:
+			virtual operator bool() const override { return shader; }
+		};
+
+		template <typename constant_t>
+		class c_constant_wrapper : public i_constant_wrapper<constant_t> {
+		public:
+			virtual void set() override { renderer::directx11->context->VSSetConstantBuffers(0, 1, &this->constant_buffer); }
+		};
+	};
 }

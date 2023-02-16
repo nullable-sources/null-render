@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="debug|Win32">
@@ -24,6 +24,9 @@
   <ItemGroup>
     <ClInclude Include="src\null-renderer-opengl3.h" />
     <ClInclude Include="src\opengl\opengl3.h" />
+    <ClInclude Include="src\shaders\general-color\general-color.h" />
+    <ClInclude Include="src\shaders\general-texture\general-texture.h" />
+    <ClInclude Include="src\shaders\shaders.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\null-render.vcxproj">
@@ -37,8 +40,10 @@
     <ResourceCompile Include="resources\null-renderer-opengl3-resources.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="resources\shaders\fragment.glsl" />
-    <None Include="resources\shaders\vertex.glsl" />
+    <None Include="src\shaders\general-color\glsl\fragment-color.glsl" />
+    <None Include="src\shaders\general-color\glsl\vertex-color.glsl" />
+    <None Include="src\shaders\general-texture\glsl\fragment-texture.glsl" />
+    <None Include="src\shaders\general-texture\glsl\vertex-texture.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

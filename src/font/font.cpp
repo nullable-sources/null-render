@@ -1,5 +1,5 @@
 #include <stb-decompress.h>
-#include <draw-list/draw-list.h>
+#include <geometry-buffer/geometry-buffer.h>
 
 namespace null::render {
     void c_font::build_lookup_table() {
@@ -127,11 +127,11 @@ namespace null::render {
     
     void c_atlas::build_initialize() {
         if(pack_id_cursors < 0) {
-            custom_rects.push_back(custom_rect_t{ rect_t{ vec2_t{ std::numeric_limits<std::uint16_t>::max() } , vec2_t{ 2 } } });
+            custom_rects.push_back(custom_rect_t{ rect_t<float>{ vec2_t{ std::numeric_limits<std::uint16_t>::max() } , vec2_t{ 2.f } } });
             pack_id_cursors = custom_rects.size() - 1;
         }
         if(pack_id_lines < 0) {
-            custom_rects.push_back(custom_rect_t{ rect_t{ vec2_t{ std::numeric_limits<std::uint16_t>::max() } , vec2_t{ 65, 64 } } });
+            custom_rects.push_back(custom_rect_t{ rect_t<float>{ vec2_t{ std::numeric_limits<std::uint16_t>::max() } , vec2_t{ 65.f, 64.f } } });
             pack_id_lines = custom_rects.size() - 1;
         }
     }
@@ -367,7 +367,7 @@ namespace null::render {
                 if(glyph.glyph.corners.min + texture.glyph_padding > vec2_t{ pack_rect.w, pack_rect.h })
                     throw std::runtime_error{ "info.size + texture.glyph_padding > vec2_t{ pack_rect.w, pack_rect.h }" };
                 
-                vec2_t t{ vec2_t{ pack_rect.x, pack_rect.y } + texture.glyph_padding };
+                vec2_t<float> t{ vec2_t{ pack_rect.x, pack_rect.y } + texture.glyph_padding };
                 for(const int& y : std::views::iota(0, glyph.glyph.corners.min.y)) {
                     std::copy(std::next(glyph.bitmap.begin(), glyph.glyph.corners.min.x * y),
                         std::next(glyph.bitmap.begin(), glyph.glyph.corners.min.x * (y + 1)),
@@ -406,7 +406,7 @@ namespace null::render {
             memset(write_ptr + pad_left, 0xFF, n);
             memset(write_ptr + pad_left + n, 0x00, pad_right);
 
-            rect_t uv{ rect_t{ rect->size.min + vec2_t{ pad_left - 1, n }, vec2_t{ pad_left + n + 1, n + 1 } } * texture.uv_scale };
+            rect_t uv{ rect_t<float>{ rect->size.min + vec2_t{ pad_left - 1, n }, vec2_t{ pad_left + n + 1, n + 1 } } * texture.uv_scale };
             float half_v{ (uv.min.y + uv.max.y) * 0.5f };
             texture.uv_lines[n] = rect_t{ uv.min.x, half_v, uv.max.x, half_v };
         }
@@ -419,8 +419,6 @@ namespace null::render {
 
         const int offset{ (int)(rect->size.min.x + rect->size.min.y * texture.size.x) };
         texture.pixels_alpha8[offset] = texture.pixels_alpha8[offset + 1] = texture.pixels_alpha8[offset + texture.size.x] = texture.pixels_alpha8[offset + texture.size.x + 1] = 0xFF;
-
-        texture.uv_white_pixel = (rect->size.min + vec2_t{ 0.5f }) * texture.uv_scale;
     }
 
     void c_atlas::pack_custom_rects(stbrp_context* stbrp_context_opaque) {

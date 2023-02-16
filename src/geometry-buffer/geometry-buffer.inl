@@ -1,8 +1,8 @@
-#include <draw-list/draw-list.h>
+#include <geometry-buffer/geometry-buffer.h>
 
 namespace null::render {
 	template <typename char_t>
-	void c_draw_list::add_text(const std::basic_string_view<char_t>& str, const color_t<int>& color, vec2_t<float>& pos, float& new_line_pos, c_font* font, const float& size, int& vtx_offset, e_text_flags flags) {
+	void c_geometry_buffer::add_text(const std::basic_string_view<char_t>& str, const color_t<int>& color, vec2_t<float>& pos, float& new_line_pos, c_font* font, const float& size, int& vtx_offset, e_text_flags flags) {
 		if(color.a() <= 0) return;
 		if(flags & e_text_flags::aligin_mask) {
 			vec2_t str_size{ font->calc_text_size(str, size) };
@@ -42,7 +42,7 @@ namespace null::render {
 
 					if(flags & e_text_flags::outline && !settings.text_outline_offsets.empty()) {
 						for(const vec2_t<float>& offset : settings.text_outline_offsets) {
-							add_idx(geometry_utils::quad_indicies, vtx_buffer.size());
+							add_idx(geometry_utils::quad_indexes, vtx_buffer.size());
 
 							rect_t pos{ corners + offset };
 							add_vtx(std::prev(vtx_buffer.end(), vtx_offset), geometry_utils::build_rect_vertex(pos.min, pos.max, uvs.min, uvs.max, color_t<int>::palette_t::black));
@@ -50,7 +50,7 @@ namespace null::render {
 					}
 
 					//@note: main text
-					add_idx(geometry_utils::quad_indicies, vtx_buffer.size());
+					add_idx(geometry_utils::quad_indexes, vtx_buffer.size());
 					add_vtx(geometry_utils::build_rect_vertex(corners.min, corners.max, uvs.min, uvs.max, color));
 
 					//@note:	necessary for the correct drawing order of the outline and body text.
@@ -63,30 +63,34 @@ namespace null::render {
 	}
 
 	template <typename string_view_t>
-	void c_draw_list::add_text(const string_view_t& str, vec2_t<float> pos, const color_t<int>& color, e_text_flags flags, c_font* font, float size) {
+	void c_geometry_buffer::add_text(const string_view_t& str, vec2_t<float> pos, const color_t<int>& color, e_text_flags flags, c_font* font, float size) {
 		if(!font) return;
 		if(size <= 0) size = font->size;
 
-		if(cmd_buffer.back().texture != font->container_atlas->texture.data)
-			throw std::runtime_error{ "cmd_buffer.back().texture != font->container_atlas->texture.data" };
+		bool _push_texture{ cmd_buffer.back().texture != font->container_atlas->texture.data };
+		if(_push_texture) push_texture(font->container_atlas->texture.data);
 
 		int vtx_offset{ }; //@note: offset for outline
 		float new_line_pos{ pos.x };
 		add_text(std::basic_string_view{ str }, color, pos, new_line_pos, font, size, vtx_offset, flags);
+
+		if(_push_texture) pop_texture();
 	}
 
 	template <typename string_t>
-	void c_draw_list::add_text(const multicolor_text_t<string_t>& str, vec2_t<float> pos, e_text_flags flags, c_font* font, float size) {
+	void c_geometry_buffer::add_text(const multicolor_text_t<string_t>& str, vec2_t<float> pos, e_text_flags flags, c_font* font, float size) {
 		if(!font) return;
 		if(size <= 0) size = font->size;
 
-		if(cmd_buffer.back().texture != font->container_atlas->texture.data)
-			throw std::runtime_error{ "cmd_buffer.back().texture != font->container_atlas->texture.data" };
+		bool _push_texture{ cmd_buffer.back().texture != font->container_atlas->texture.data };
+		if(_push_texture) push_texture(font->container_atlas->texture.data);
 
 		int vtx_offset{ }; //@note: offset for outline
 		float new_line_pos{ pos.x };
 		std::ranges::for_each(str.data, [&](const auto& data) {
 			add_text<string_t::value_type>(data.first, data.second, pos, new_line_pos, font, size, vtx_offset, flags);
 			});
+
+		if(_push_texture) pop_texture();
 	}
 }

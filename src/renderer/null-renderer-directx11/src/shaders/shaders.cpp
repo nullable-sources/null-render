@@ -1,7 +1,7 @@
 #include <shaders/shaders.h>
 
 namespace null::render::shaders {
-    void setup_state() {
+    /*void setup_state() {
         vertex::shader.set_shader();
 
         {
@@ -26,5 +26,5 @@ namespace null::render::shaders {
 
     void win_proc() {
         release_shaders();
-    }
+    }*/
 }

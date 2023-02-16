@@ -1,5 +1,7 @@
 #include <null-renderer-directx11.h>
-#include <shaders/shaders.h>
+#include <shaders/vertex/vertex.h>
+#include <shaders/pixel-without-sampler/pixel-without-sampler.h>
+#include <shaders/pixel-sampler/pixel-sampler.h>
 
 struct directx11_state_t {
     UINT scissor_rects_count{ }, viewports_count{ };
@@ -92,14 +94,14 @@ namespace null::renderer {
         if(context) { context->Release(); context = nullptr; }
     }
 
-    void c_directx11::render(const draw_data_t& _draw_data) {
-        if(draw_data_t::screen_size <= 0.f)
+    void c_directx11::render(const compiled_geometry_data_t& _compiled_geometry_data) {
+        if(render::shared::viewport <= 0.f)
             return;
 
         static int vertex_buffer_size{ 5000 }, index_buffer_size{ 10000 };
-        if(!vertex_buffer || vertex_buffer_size < _draw_data.total_vtx_count) {
+        if(!vertex_buffer || vertex_buffer_size < _compiled_geometry_data.total_vtx_count) {
             if(vertex_buffer) { vertex_buffer->Release(); vertex_buffer = nullptr; }
-            vertex_buffer_size = _draw_data.total_vtx_count + 5000;
+            vertex_buffer_size = _compiled_geometry_data.total_vtx_count + 5000;
             D3D11_BUFFER_DESC buffer_desc{
                 .ByteWidth{ vertex_buffer_size * sizeof(vertex_t) },
                 .Usage{ D3D11_USAGE_DYNAMIC },
@@ -111,9 +113,9 @@ namespace null::renderer {
                 throw std::runtime_error{ "cant create vertex buffer" };
         }
 
-        if(!index_buffer || index_buffer_size < _draw_data.total_idx_count) {
+        if(!index_buffer || index_buffer_size < _compiled_geometry_data.total_idx_count) {
             if(index_buffer) { index_buffer->Release(); index_buffer = nullptr; }
-            index_buffer_size = _draw_data.total_idx_count + 10000;
+            index_buffer_size = _compiled_geometry_data.total_idx_count + 10000;
             D3D11_BUFFER_DESC buffer_desc{
                 .ByteWidth{ index_buffer_size * sizeof(std::uint32_t) },
                 .Usage{ D3D11_USAGE_DYNAMIC },
@@ -132,18 +134,18 @@ namespace null::renderer {
 
         vertex_t* vtx_dst{ (vertex_t*)vtx_resource.pData };
         std::uint32_t* idx_dst{ (std::uint32_t*)idx_resource.pData };
-        for(render::c_draw_list* cmd_list : _draw_data.draw_lists) {
-            for(const render::vertex_t& vtx_src : cmd_list->vtx_buffer) {
+        for(render::c_geometry_buffer* geometry_buffer : _compiled_geometry_data.geometry_buffers) {
+            for(const render::vertex_t& vertex : geometry_buffer->vtx_buffer) {
                 *vtx_dst = {
-                    { vtx_src.pos.x, vtx_src.pos.y, 0.f },
-                    (std::uint32_t)((vtx_src.color.a() & 0xff) << 24) | ((vtx_src.color.b() & 0xff) << 16) | ((vtx_src.color.g() & 0xff) << 8) | (vtx_src.color.r() & 0xff),
-                    { vtx_src.uv.x, vtx_src.uv.y }
+                    { vertex.pos.x, vertex.pos.y, 0.f },
+                    (std::uint32_t)((vertex.color.a() & 0xff) << 24) | ((vertex.color.b() & 0xff) << 16) | ((vertex.color.g() & 0xff) << 8) | (vertex.color.r() & 0xff),
+                    { vertex.uv.x, vertex.uv.y }
                 };
 
                 vtx_dst++;
             }
-            memcpy(idx_dst, cmd_list->idx_buffer.data(), cmd_list->idx_buffer.size() * sizeof(std::uint32_t));
-            idx_dst += cmd_list->idx_buffer.size();
+            memcpy(idx_dst, geometry_buffer->idx_buffer.data(), geometry_buffer->idx_buffer.size() * sizeof(std::uint32_t));
+            idx_dst += geometry_buffer->idx_buffer.size();
         }
         context->Unmap(vertex_buffer, 0);
         context->Unmap(index_buffer, 0);
@@ -153,9 +155,9 @@ namespace null::renderer {
 
         setup_state();
 
-        for(int global_idx_offset{ }, global_vtx_offset{ }; render::c_draw_list* cmd_list : _draw_data.draw_lists) {
-            for(render::c_draw_list::cmd_t& cmd : cmd_list->cmd_buffer) {
-                if(auto& callback{ cmd.callbacks.at<render::e_cmd_callbacks::on_draw_data>() }; !callback.empty() && callback.call(cmd)) {
+        for(int global_idx_offset{ }, global_vtx_offset{ }; render::c_geometry_buffer* geometry_buffer : _compiled_geometry_data.geometry_buffers) {
+            for(render::c_geometry_buffer::cmd_t& cmd : geometry_buffer->cmd_buffer) {
+                if(auto& callback{ cmd.callbacks.at<render::e_cmd_callbacks::on_draw>() }; !callback.empty() && callback.call(cmd)) {
                     setup_state();
                     continue;
                 }
@@ -163,12 +165,15 @@ namespace null::renderer {
                 const D3D11_RECT clip_rect{ (LONG)cmd.clip_rect.min.x, (LONG)cmd.clip_rect.min.y, (LONG)cmd.clip_rect.max.x, (LONG)cmd.clip_rect.max.y };
                 context->RSSetScissorRects(1, &clip_rect);
 
-                ID3D11ShaderResourceView* texture_srv{ (ID3D11ShaderResourceView*)cmd.texture };
-                context->PSSetShaderResources(0, 1, &texture_srv);
-                context->DrawIndexed(cmd.element_count, cmd.idx_offset + global_idx_offset, cmd.vtx_offset + global_vtx_offset);
+                if(!cmd.texture) render::shaders::pixel_without_sampler::shader.set();
+                else {
+                    render::shaders::pixel_sampler::shader.set();
+                    context->PSSetShaderResources(0, 1, (ID3D11ShaderResourceView**)&cmd.texture);
+                }
+                context->DrawIndexed(cmd.element_count, global_idx_offset, global_vtx_offset);
+                global_idx_offset += cmd.element_count;
             }
-            global_idx_offset += cmd_list->idx_buffer.size();
-            global_vtx_offset += cmd_list->vtx_buffer.size();
+            global_vtx_offset += geometry_buffer->vtx_buffer.size();
         }
 
         directx11_state.restore(context);
@@ -176,13 +181,15 @@ namespace null::renderer {
 
     void c_directx11::setup_state() {
         D3D11_VIEWPORT viewport{ 0, 0,
-            draw_data_t::screen_size.x,
-            draw_data_t::screen_size.y,
+            render::shared::viewport.x,
+            render::shared::viewport.y,
             0, 1
         };
         context->RSSetViewports(1, &viewport);
 
-        render::shaders::setup_state();
+        render::shaders::vertex::shader.setup_state();
+        render::shaders::pixel_sampler::shader.setup_state();
+        render::shaders::pixel_without_sampler::shader.setup_state();
 
         std::uint32_t stride{ sizeof(vertex_t) };
         std::uint32_t offset{ };
@@ -207,7 +214,9 @@ namespace null::renderer {
         if(!device) return;
         if(font_sampler) destroy_objects();
 
-        render::shaders::create_shaders();
+        render::shaders::vertex::shader.create();
+        render::shaders::pixel_sampler::shader.create();
+        render::shaders::pixel_without_sampler::shader.create();
 
         {
             D3D11_INPUT_ELEMENT_DESC local_layout[] = {
@@ -215,7 +224,7 @@ namespace null::renderer {
                         { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,   0, (UINT)offsetof(vertex_t, uv),  D3D11_INPUT_PER_VERTEX_DATA, 0 },
                         { "COLOR",    0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, (UINT)offsetof(vertex_t, color), D3D11_INPUT_PER_VERTEX_DATA, 0 },
             };
-            device->CreateInputLayout(local_layout, 3, render::shaders::sources::vertex, sizeof(render::shaders::sources::vertex), &input_layout);
+            device->CreateInputLayout(local_layout, 3, render::shaders::sources::vertex::shader_data, sizeof(render::shaders::sources::vertex::shader_data), &input_layout);
         }
 
 
@@ -276,7 +285,9 @@ namespace null::renderer {
     void c_directx11::destroy_objects() {
         if(!device) return;
 
-        render::shaders::release_shaders();
+        render::shaders::vertex::shader.destroy();
+        render::shaders::pixel_sampler::shader.destroy();
+        render::shaders::pixel_without_sampler::shader.destroy();
 
         if(font_sampler) { font_sampler->Release(); font_sampler = nullptr; }
         if(font_texture_view) { font_texture_view->Release(); font_texture_view = nullptr; render::atlas.texture.data = nullptr; }

@@ -31,7 +31,7 @@ namespace null::renderer {
 		void begin_frame() override { if(!font_texture) create_objects(); }
 		void end_frame() override { }
 
-		void render(const draw_data_t& _draw_data = draw_data) override;
+		void render(const compiled_geometry_data_t& _compiled_geometry_data = compiled_geometry_data) override;
 		void setup_state() override;
 
 		void create_objects() override;
@@ -75,7 +75,7 @@ namespace null::renderer {
 		void on_main_loop() override {
 			utils::win::c_window::on_main_loop();
 
-			setup_default_draw_data();
+			compile_default_geometry_data();
 
 			device->SetRenderState(D3DRS_ZENABLE, FALSE);
 			device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
