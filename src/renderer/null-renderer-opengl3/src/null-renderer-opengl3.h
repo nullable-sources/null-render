@@ -87,7 +87,7 @@ namespace null::renderer {
 				vec2_t<int> framebuffer{ };
 				glfwGetFramebufferSize(glfw_window, &framebuffer.x, &framebuffer.y);
 				glViewport(0, 0, framebuffer.x, framebuffer.y);
-				glClearColor(clear_color.r(), clear_color.g(), clear_color.b(), clear_color.a());
+				glClearColor(clear_color.r, clear_color.g, clear_color.b, clear_color.a);
 				glClear(GL_COLOR_BUFFER_BIT);
 				renderer->render();
 

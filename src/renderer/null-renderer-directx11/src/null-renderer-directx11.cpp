@@ -138,7 +138,7 @@ namespace null::renderer {
             for(const render::vertex_t& vertex : geometry_buffer->vtx_buffer) {
                 *vtx_dst = {
                     { vertex.pos.x, vertex.pos.y, 0.f },
-                    (std::uint32_t)((vertex.color.a() & 0xff) << 24) | ((vertex.color.b() & 0xff) << 16) | ((vertex.color.g() & 0xff) << 8) | (vertex.color.r() & 0xff),
+                    (std::uint32_t)((vertex.color.a & 0xff) << 24) | ((vertex.color.b & 0xff) << 16) | ((vertex.color.g & 0xff) << 8) | (vertex.color.r & 0xff),
                     { vertex.uv.x, vertex.uv.y }
                 };
 

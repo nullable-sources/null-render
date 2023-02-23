@@ -28,13 +28,13 @@ namespace null::render {
     }
 
     void c_geometry_buffer::add_rect(const vec2_t<float>& a, const vec2_t<float>& b, const color_t<int>& color, const float& thickness, const float& rounding, const e_corner_flags& flags) {
-        if(color.a() <= 0) return;
+        if(color.a <= 0) return;
 
         add_poly_line(geometry_utils::build_rect_path(settings, a + 0.5f, b - (settings.initialize_flags & e_initialize_flags::anti_aliased_lines ? 0.50f : 0.49f), rounding, flags), color, true, thickness);
     }
 
     void c_geometry_buffer::add_rect_filled(const vec2_t<float>& a, const vec2_t<float>& b, const color_t<int>& color, const float& rounding, const e_corner_flags& flags) {
-        if(color.a() <= 0) return;
+        if(color.a <= 0) return;
 
         if(rounding > 0.0f) {
             add_convex_poly_filled(geometry_utils::build_rect_path(settings, a, b, rounding, flags), color);
@@ -46,7 +46,7 @@ namespace null::render {
 
     //@note: colors = { top left, top right, bottom left, bottom right };
     void c_geometry_buffer::add_rect_multicolor(const vec2_t<float>& a, const vec2_t<float>& b, const std::array<color_t<int>, 4>& colors, const float& thickness, const float& rounding, const e_corner_flags& flags) {
-        if(std::ranges::all_of(colors, [](const color_t<int>& color) { return color.a() <= 0; })) return;
+        if(std::ranges::all_of(colors, [](const color_t<int>& color) { return color.a <= 0; })) return;
 
         size_t offset{ vtx_buffer.size() };
         add_rect(a, b, color_t<int>::palette_t::white, thickness, rounding, flags);
@@ -63,7 +63,7 @@ namespace null::render {
 
     //@note: colors = { top left, top right, bottom left, bottom right };
     void c_geometry_buffer::add_rect_filled_multicolor(const vec2_t<float>& a, const vec2_t<float>& b, const std::array<color_t<int>, 4>& colors, float rounding, const e_corner_flags& flags) {
-        if(std::ranges::all_of(colors, [](const color_t<int>& color) { return color.a() <= 0; })) return;
+        if(std::ranges::all_of(colors, [](const color_t<int>& color) { return color.a <= 0; })) return;
 
         if(rounding > 0.f && flags != e_corner_flags{ }) {
             size_t offset{ vtx_buffer.size() };
@@ -76,12 +76,12 @@ namespace null::render {
     }
 
     void c_geometry_buffer::add_line(const vec2_t<float>& a, const vec2_t<float>& b, const color_t<int>& color, const float& thickness) {
-        if(color.a() <= 0) return;
+        if(color.a <= 0) return;
         add_poly_line({ a + 0.5f, b + 0.5f }, color, false, thickness);
     }
 
     void c_geometry_buffer::add_poly_line(const std::vector<vec2_t<float>>& points, const color_t<int>& color, const bool& closed, float thickness) {
-        if(points.size() < 2 || color.a() <= 0) return;
+        if(points.size() < 2 || color.a <= 0) return;
 
         const int count{ int(closed ? points.size() : points.size() - 1) };
         const bool thick_line{ thickness > 1.0f };
@@ -234,21 +234,21 @@ namespace null::render {
     }
 
     void c_geometry_buffer::add_circle(const vec2_t<float>& center, const color_t<int>& color, const float& radius, int num_segments, const float& thickness) {
-        if(color.a() <= 0 || radius <= 0.f) return;
+        if(color.a <= 0 || radius <= 0.f) return;
 
         settings.get_auto_circle_num_segments(num_segments, radius);
         add_poly_line(num_segments == 12 ? geometry_utils::build_arc_to_fast_path(center, radius - 0.5f, 0, 11, settings) : geometry_utils::build_arc_to_path(center, radius - 0.5f, 0.f, (std::numbers::pi * 2.f) * (num_segments - 1.f) / num_segments, num_segments - 1), color, true, thickness);
     }
 
     void c_geometry_buffer::add_circle_filled(const vec2_t<float>& center, const color_t<int>& color, const float& radius, int num_segments) {
-        if(color.a() <= 0 || radius <= 0.f) return;
+        if(color.a <= 0 || radius <= 0.f) return;
 
         settings.get_auto_circle_num_segments(num_segments, radius);
         add_convex_poly_filled(num_segments == 12 ? geometry_utils::build_arc_to_fast_path(center, radius, 0, 11, settings) : geometry_utils::build_arc_to_path(center, radius, 0.0f, (std::numbers::pi * 2.f) * (num_segments - 1.f) / num_segments, num_segments - 1), color);
     }
 
     void c_geometry_buffer::add_convex_poly_filled(const std::vector<vec2_t<float>>& points, const color_t<int>& color) {
-        if(points.size() < 3 || color.a() <= 0) return;
+        if(points.size() < 3 || color.a <= 0) return;
 
         if(settings.initialize_flags & e_initialize_flags::anti_aliased_fill) {
             static constexpr float aa_size{ 1.f };
@@ -289,7 +289,7 @@ namespace null::render {
     }
 
     void c_geometry_buffer::add_image(void* texture, const vec2_t<float>& a, const vec2_t<float>& b, const vec2_t<float>& uv_min, const vec2_t<float>& uv_max, const color_t<int>& color) {
-        if(color.a() <= 0) return;
+        if(color.a <= 0) return;
 
         bool _push_texture{ texture != cmd_buffer.back().texture };
         if(_push_texture) push_texture(texture);
@@ -301,7 +301,7 @@ namespace null::render {
     }
 
     void c_geometry_buffer::add_image_quad(void* texture, const std::array<std::pair<vec2_t<float>, vec2_t<float>>, 4>& points_and_uvs, const color_t<int>& color) {
-        if(color.a() <= 0) return;
+        if(color.a <= 0) return;
 
         bool _push_texture{ texture != cmd_buffer.back().texture };
         if(_push_texture) push_texture(texture);

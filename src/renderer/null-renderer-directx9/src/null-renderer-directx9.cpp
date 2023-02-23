@@ -37,7 +37,7 @@ namespace null::renderer {
 			for(const render::vertex_t& vertex : geometry_buffer->vtx_buffer) {
 				*vtx_dst = {
 					{ vertex.pos.x, vertex.pos.y, 0.f },
-					D3DCOLOR_RGBA(vertex.color.r(), vertex.color.g(), vertex.color.b(), vertex.color.a()),
+					D3DCOLOR_RGBA(vertex.color.r, vertex.color.g, vertex.color.b, vertex.color.a),
 					{ vertex.uv.x, vertex.uv.y }
 				};
 

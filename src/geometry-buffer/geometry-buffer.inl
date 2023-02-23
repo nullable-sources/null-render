@@ -3,7 +3,7 @@
 namespace null::render {
 	template <typename char_t>
 	void c_geometry_buffer::add_text(const std::basic_string_view<char_t>& str, const color_t<int>& color, vec2_t<float>& pos, float& new_line_pos, c_font* font, const float& size, int& vtx_offset, e_text_flags flags) {
-		if(color.a() <= 0) return;
+		if(color.a <= 0) return;
 		if(flags & e_text_flags::aligin_mask) {
 			vec2_t str_size{ font->calc_text_size(str, size) };
 			if(str_size <= 0.f) return;
