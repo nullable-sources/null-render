@@ -135,7 +135,7 @@ namespace null::render {
 		void add_idx(const std::vector<std::uint32_t>& buffer, const std::uint32_t& offset) { add_idx(idx_buffer.end(), buffer, offset); }
 
 	public:;
-		void repaint_rect_vertices_in_multicolor(const vec2_t<float>& min, const vec2_t<float>& max, const size_t& vtx_offset, const std::array<color_t<int>, 4>& colors);
+		void repaint_rect_vertices_in_multicolor(const size_t& vtx_offset, const std::array<color_t<int>, 4>& colors);
 
 	public:
 		void restore_clip_rect();

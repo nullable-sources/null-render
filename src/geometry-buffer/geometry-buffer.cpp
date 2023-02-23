@@ -18,7 +18,13 @@ namespace null::render {
         on_change_clip_rect();
     }
 
-    void c_geometry_buffer::repaint_rect_vertices_in_multicolor(const vec2_t<float>& min, const vec2_t<float>& max, const size_t& vtx_offset, const std::array<color_t<int>, 4>& colors) {
+    void c_geometry_buffer::repaint_rect_vertices_in_multicolor(const size_t& vtx_offset, const std::array<color_t<int>, 4>& colors) {
+        vec2_t min{ std::numeric_limits<float>::max() }, max{ std::numeric_limits<float>::min() };
+        for(const vertex_t& vertex : vtx_buffer | std::views::drop(vtx_offset)) {
+            min = math::min(vertex.pos, min);
+            max = math::max(vertex.pos, max);
+        }
+
         for(vertex_t& vertex : vtx_buffer | std::views::drop(vtx_offset)) { //@credits: https://github.com/ocornut/imgui/issues/3710#issuecomment-1315745540
             vec2_t f{ std::clamp((vertex.pos - min) / (max - min), { 0.f }, { 1.f }) };
             color_t<float> top_delta{ colors[0] + (colors[1] - colors[0]) * color_t<float>{ f.x } };
@@ -50,15 +56,7 @@ namespace null::render {
 
         size_t offset{ vtx_buffer.size() };
         add_rect(a, b, color_t<int>::palette_t::white, thickness, rounding, flags);
-
-        //@note: i'm sure it can be done differently, but i don't really give a fuck
-        vec2_t min{ std::numeric_limits<float>::max() }, max{ std::numeric_limits<float>::min() };
-        for(const vertex_t& vertex : vtx_buffer | std::views::drop(offset)) {
-            min = math::min(vertex.pos, min);
-            max = math::max(vertex.pos, max);
-        }
-
-        repaint_rect_vertices_in_multicolor(min, max, offset, colors);
+        repaint_rect_vertices_in_multicolor(offset, colors);
     }
 
     //@note: colors = { top left, top right, bottom left, bottom right };
@@ -68,7 +66,7 @@ namespace null::render {
         if(rounding > 0.f && flags != e_corner_flags{ }) {
             size_t offset{ vtx_buffer.size() };
             add_rect_filled(a, b, color_t<int>::palette_t::white, rounding, flags);
-            repaint_rect_vertices_in_multicolor(a, b, offset, colors);
+            repaint_rect_vertices_in_multicolor(offset, colors);
         } else {
             add_idx(geometry_utils::quad_indexes, vtx_buffer.size());
             add_vtx(geometry_utils::build_rect_vertex(a, b, { }, { }, colors));
@@ -327,8 +325,8 @@ namespace null::render {
             return {
                 { a, uv_a, colors[0] },
                 { { b.x, a.y }, { uv_b.x, uv_a.y }, colors[1] },
-                { b, uv_b, colors[2] },
-                { { a.x, b.y }, { uv_a.x, uv_b.y }, colors[3] }
+                { b, uv_b, colors[3] },
+                { { a.x, b.y }, { uv_a.x, uv_b.y }, colors[2] }
             };
         }
 
@@ -355,7 +353,7 @@ namespace null::render {
             rounding = std::min(rounding, std::fabsf(b.y - a.y) * ((flags & e_corner_flags::left) == -e_corner_flags::left || (flags & e_corner_flags::right) == -e_corner_flags::right ? 0.5f : 1.f) - 1.f);
 
             if(rounding <= 0.0f || flags == e_corner_flags{ }) {
-                return { a, { b.x, a.y }, b, { a.x, a.y } };
+                return { a, { b.x, a.y }, b, { a.x, b.y } };
             } else {
                 float rounding_tl{ flags & e_corner_flags::top_left ? rounding : 0.f };
                 float rounding_tr{ flags & e_corner_flags::top_right ? rounding : 0.f };
