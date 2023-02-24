@@ -127,6 +127,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnableModules>true</EnableModules>
       <AdditionalIncludeDirectories>$(ProjectDir)src\;$(ProjectDir)third-party\stb\;$(ProjectDir)third-party\freetype\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -153,6 +154,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnableModules>true</EnableModules>
       <AdditionalIncludeDirectories>$(ProjectDir)src\;$(ProjectDir)third-party\stb\;$(ProjectDir)third-party\freetype\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -179,6 +181,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnableModules>true</EnableModules>
       <AdditionalIncludeDirectories>$(ProjectDir)src\;$(ProjectDir)third-party\stb\;$(ProjectDir)third-party\freetype\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -205,6 +208,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnableModules>true</EnableModules>
       <AdditionalIncludeDirectories>$(ProjectDir)src\;$(ProjectDir)third-party\stb\;$(ProjectDir)third-party\freetype\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>
