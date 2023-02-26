@@ -57,7 +57,6 @@ namespace null::renderer {
                     opengl::bind_texture(opengl::e_texture_2d, (std::uint32_t)cmd.texture);
                 }
 
-                idx_offset += cmd.idx_offset;
                 opengl::draw_elements_base_vertex(opengl::e_triangles, cmd.element_count, opengl::e_unsigned_int, (void*)(std::intptr_t)(idx_offset * sizeof(std::uint32_t)), cmd.vtx_offset);
                 idx_offset += cmd.element_count;
             }

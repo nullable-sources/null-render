@@ -102,7 +102,7 @@ namespace null::render {
 		public:
 			rect_t<float> clip_rect{ };
 			void* texture{ };
-			std::uint32_t element_count{ }, idx_offset{ }, vtx_offset{ };
+			std::uint32_t element_count{ }, vtx_offset{ };
 
 			utils::callbacks_tuple_t<utils::callback_t<e_cmd_callbacks::on_draw, bool(c_geometry_buffer::cmd_t&)>> callbacks{ };
 		};
