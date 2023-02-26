@@ -170,7 +170,7 @@ namespace null::renderer {
                     render::shaders::pixel_sampler::shader.set();
                     context->PSSetShaderResources(0, 1, (ID3D11ShaderResourceView**)&cmd.texture);
                 }
-                context->DrawIndexed(cmd.element_count, global_idx_offset, global_vtx_offset);
+                context->DrawIndexed(cmd.element_count, cmd.idx_offset + global_idx_offset, cmd.vtx_offset + global_vtx_offset);
                 global_idx_offset += cmd.element_count;
             }
             global_vtx_offset += geometry_buffer->vtx_buffer.size();
