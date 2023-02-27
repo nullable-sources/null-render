@@ -7,7 +7,7 @@ utils::c_cumulative_time_measurement frame_counter{ 60 };
 
 void main_loop() {
 	static const null::render::e_text_flags text_flags{ null::render::e_text_flags::aligin_bottom | null::render::e_text_flags::aligin_center_x };
-	static const null::render::e_corner_flags corner_flags{ null::render::e_corner_flags::bot_left | null::render::e_corner_flags::top_right };
+	static const null::render::e_corner_flags corner_flags{ null::render::e_corner_flags::right_diagonal };
 
 	static const color_t color{ 100, 100, 255 };
 
@@ -22,10 +22,10 @@ void main_loop() {
 		null::render::background.add_text(multicolor_text, { 10 });
 
 		null::render::background.add_text("rect filled", { 100, 200 }, { }, text_flags);
-		null::render::background.add_rect_filled({ 50, 200 }, { 150, 300 }, color, 10.f, corner_flags);
+		null::render::background.add_rect_filled({ 50, 200 }, { 150, 300 }, color, { 10.f, corner_flags });
 
 		null::render::background.add_text("rect", { 250, 200 }, { }, text_flags);
-		null::render::background.add_rect({ 200 }, { 300 }, color, 2.f, 10.f, corner_flags);
+		null::render::background.add_rect({ 200 }, { 300 }, color, 2.f, { 10.f, corner_flags });
 
 		null::render::background.add_text("circle filled", { 400, 200 }, { }, text_flags);
 		null::render::background.add_circle_filled({ 400, 250 }, color, 50);
@@ -34,12 +34,12 @@ void main_loop() {
 		null::render::background.add_circle({ 550, 250 }, color, 50, 0, 2.f);
 
 		null::render::background.add_text("multicolor rect filled", { 100, 400 }, { }, text_flags);
-		null::render::background.add_rect_filled_multicolor({ 50, 400 }, { 150, 500 }, { color_t<int>::palette_t::red, color_t<int>::palette_t::green, color_t<int>::palette_t::blue, color_t<int>::palette_t::white }, 10.f, corner_flags);
+		null::render::background.add_rect_filled_multicolor({ 50, 400 }, { 150, 500 }, { color_t<int>::palette_t::red, color_t<int>::palette_t::green, color_t<int>::palette_t::blue, color_t<int>::palette_t::white }, { 10.f, corner_flags });
 
 		null::render::background.add_text("multicolor rect", { 250, 400 }, { }, text_flags);
-		null::render::background.add_rect_multicolor({ 200, 400 }, { 300, 500 }, { color_t<int>::palette_t::red, color_t<int>::palette_t::green, color_t<int>::palette_t::blue, color_t<int>::palette_t::white }, 2.f, 10.f, corner_flags);
+		null::render::background.add_rect_multicolor({ 200, 400 }, { 300, 500 }, { color_t<int>::palette_t::red, color_t<int>::palette_t::green, color_t<int>::palette_t::blue, color_t<int>::palette_t::white }, 2.f, { 10.f, 20.f, 30.f, 40.f });
 
-		null::render::background.add_poly_line({ { 400 }, { 550, 400 }, { 550, 500 } }, { }, true);
+		null::render::background.add_poly_line({ { 400 }, { 550, 400 }, { 550, 500 } }, { }, true, 20.f);
 
 		//@note:	you can use L"" to display cyrillic
 		//			or you can add /utf - 8 to C/C++->command line

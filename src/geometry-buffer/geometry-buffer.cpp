@@ -33,17 +33,17 @@ namespace null::render {
         }
     }
 
-    void c_geometry_buffer::add_rect(const vec2_t<float>& a, const vec2_t<float>& b, const color_t<int>& color, const float& thickness, const float& rounding, const e_corner_flags& flags) {
+    void c_geometry_buffer::add_rect(const vec2_t<float>& a, const vec2_t<float>& b, const color_t<int>& color, const float& thickness, const rounding_corners_t& rounding_corners) {
         if(color.a <= 0) return;
 
-        add_poly_line(geometry_utils::build_rect_path(settings, a + 0.5f, b - (settings.initialize_flags & e_initialize_flags::anti_aliased_lines ? 0.50f : 0.49f), rounding, flags), color, true, thickness);
+        add_poly_line(geometry_utils::build_rect_path(settings, a + 0.5f, b - (settings.initialize_flags & e_initialize_flags::anti_aliased_lines ? 0.50f : 0.49f), rounding_corners), color, true, thickness);
     }
 
-    void c_geometry_buffer::add_rect_filled(const vec2_t<float>& a, const vec2_t<float>& b, const color_t<int>& color, const float& rounding, const e_corner_flags& flags) {
+    void c_geometry_buffer::add_rect_filled(const vec2_t<float>& a, const vec2_t<float>& b, const color_t<int>& color, const rounding_corners_t& rounding_corners) {
         if(color.a <= 0) return;
 
-        if(rounding > 0.0f) {
-            add_convex_poly_filled(geometry_utils::build_rect_path(settings, a, b, rounding, flags), color);
+        if(rounding_corners.rounding_sum() > 0.0f) {
+            add_convex_poly_filled(geometry_utils::build_rect_path(settings, a, b, rounding_corners_t{ rounding_corners }), color);
         } else {
             add_idx(geometry_utils::quad_indexes, vtx_buffer.size());
             add_vtx(geometry_utils::build_rect_vertex(a, b, { }, { }, color));
@@ -51,21 +51,21 @@ namespace null::render {
     }
 
     //@note: colors = { top left, top right, bottom left, bottom right };
-    void c_geometry_buffer::add_rect_multicolor(const vec2_t<float>& a, const vec2_t<float>& b, const std::array<color_t<int>, 4>& colors, const float& thickness, const float& rounding, const e_corner_flags& flags) {
+    void c_geometry_buffer::add_rect_multicolor(const vec2_t<float>& a, const vec2_t<float>& b, const std::array<color_t<int>, 4>& colors, const float& thickness, const rounding_corners_t& rounding_corners) {
         if(std::ranges::all_of(colors, [](const color_t<int>& color) { return color.a <= 0; })) return;
 
         size_t offset{ vtx_buffer.size() };
-        add_rect(a, b, color_t<int>::palette_t::white, thickness, rounding, flags);
+        add_rect(a, b, color_t<int>::palette_t::white, thickness, rounding_corners);
         repaint_rect_vertices_in_multicolor(offset, colors);
     }
 
     //@note: colors = { top left, top right, bottom left, bottom right };
-    void c_geometry_buffer::add_rect_filled_multicolor(const vec2_t<float>& a, const vec2_t<float>& b, const std::array<color_t<int>, 4>& colors, float rounding, const e_corner_flags& flags) {
+    void c_geometry_buffer::add_rect_filled_multicolor(const vec2_t<float>& a, const vec2_t<float>& b, const std::array<color_t<int>, 4>& colors, const rounding_corners_t& rounding_corners) {
         if(std::ranges::all_of(colors, [](const color_t<int>& color) { return color.a <= 0; })) return;
 
-        if(rounding > 0.f && flags != e_corner_flags{ }) {
+        if(rounding_corners.rounding_sum() > 0.f) {
             size_t offset{ vtx_buffer.size() };
-            add_rect_filled(a, b, color_t<int>::palette_t::white, rounding, flags);
+            add_rect_filled(a, b, color_t<int>::palette_t::white, rounding_corners);
             repaint_rect_vertices_in_multicolor(offset, colors);
         } else {
             add_idx(geometry_utils::quad_indexes, vtx_buffer.size());
@@ -348,23 +348,26 @@ namespace null::render {
             }
         }
 
-        std::vector<vec2_t<float>> build_rect_path(const c_geometry_buffer::settings_t& settings, const vec2_t<float>& a, const vec2_t<float>& b, float rounding, const e_corner_flags& flags) {
-            rounding = std::min(rounding, std::fabsf(b.x - a.x) * ((flags & e_corner_flags::top) == -e_corner_flags::top || (flags & e_corner_flags::bot) == -e_corner_flags::bot ? 0.5f : 1.f) - 1.f);
-            rounding = std::min(rounding, std::fabsf(b.y - a.y) * ((flags & e_corner_flags::left) == -e_corner_flags::left || (flags & e_corner_flags::right) == -e_corner_flags::right ? 0.5f : 1.f) - 1.f);
-
-            if(rounding <= 0.0f || flags == e_corner_flags{ }) {
+        std::vector<vec2_t<float>> build_rect_path(const c_geometry_buffer::settings_t& settings, const vec2_t<float>& a, const vec2_t<float>& b, rounding_corners_t rounding_corners) {
+            if(rounding_corners.rounding_sum() <= 0.0f) {
                 return { a, { b.x, a.y }, b, { a.x, b.y } };
             } else {
-                float rounding_tl{ flags & e_corner_flags::top_left ? rounding : 0.f };
-                float rounding_tr{ flags & e_corner_flags::top_right ? rounding : 0.f };
-                float rounding_br{ flags & e_corner_flags::bot_right ? rounding : 0.f };
-                float rounding_bl{ flags & e_corner_flags::bot_left ? rounding : 0.f };
+                vec2_t size{ math::abs(b - a) - 1.f };
+                float scale_factor{ std::numeric_limits<float>::max() };
+                scale_factor = std::min(scale_factor, size.x / (rounding_corners[e_corner_sides::top_left] + rounding_corners[e_corner_sides::top_right]));
+                scale_factor = std::min(scale_factor, size.y / (rounding_corners[e_corner_sides::top_right] + rounding_corners[e_corner_sides::bottom_right]));
+                scale_factor = std::min(scale_factor, size.x / (rounding_corners[e_corner_sides::bottom_right] + rounding_corners[e_corner_sides::bottom_left]));
+                scale_factor = std::min(scale_factor, size.y / (rounding_corners[e_corner_sides::bottom_left] + rounding_corners[e_corner_sides::top_left]));
+                scale_factor = std::min(1.0f, scale_factor);
+
+                for(float& radius : rounding_corners.corners)
+                    radius = std::round(radius * scale_factor);
 
                 return std::vector{
-                    build_arc_to_fast_path(a + rounding_tl, rounding_tl, 6, 9, settings),
-                    build_arc_to_fast_path(vec2_t{ b.x, a.y } + vec2_t{ -rounding_tr, rounding_tr }, rounding_tr, 9, 12, settings),
-                    build_arc_to_fast_path(b - rounding_br, rounding_br, 0, 3, settings),
-                    build_arc_to_fast_path(vec2_t{ a.x, b.y } + vec2_t{ rounding_bl, -rounding_bl }, rounding_bl, 3, 6, settings)
+                    build_arc_to_fast_path(a + rounding_corners[e_corner_sides::top_left], rounding_corners[e_corner_sides::top_left], 6, 9, settings),
+                    build_arc_to_fast_path(vec2_t{ b.x, a.y } + vec2_t{ -rounding_corners[e_corner_sides::top_right], rounding_corners[e_corner_sides::top_right] }, rounding_corners[e_corner_sides::top_right], 9, 12, settings),
+                    build_arc_to_fast_path(b - rounding_corners[e_corner_sides::bottom_right], rounding_corners[e_corner_sides::bottom_right], 0, 3, settings),
+                    build_arc_to_fast_path(vec2_t{ a.x, b.y } + vec2_t{ rounding_corners[e_corner_sides::bottom_left], -rounding_corners[e_corner_sides::bottom_left] }, rounding_corners[e_corner_sides::bottom_left], 3, 6, settings)
                 } | std::views::join | std::ranges::to<std::vector>();
             }
         }

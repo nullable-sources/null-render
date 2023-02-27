@@ -26,20 +26,70 @@ namespace null::render {
 	}; enum_create_bit_operators(e_text_flags, true);
 	enum_create_cast_operator(e_text_flags, -);
 
+	enum class e_corner_sides {
+		top_left,
+		top_right,
+		bottom_left,
+		bottom_right
+	}; enum_create_cast_operator(e_corner_sides, -);
+
 	enum class e_corner_flags {
 		top_left = 1 << 0,
 		top_right = 1 << 1,
-		bot_left = 1 << 2,
-		bot_right = 1 << 3,
+		bottom_left = 1 << 2,
+		bottom_right = 1 << 3,
 
 		top = top_left | top_right,
-		bot = bot_left | bot_right,
-		left = top_left | bot_left,
-		right = top_right | bot_right,
+		bottom = bottom_left | bottom_right,
+		left = top_left | bottom_left,
+		right = top_right | bottom_right,
 
-		all = top_left | top_right | bot_left | bot_right
+		left_diagonal = top_left | bottom_right,
+		right_diagonal = top_right | bottom_left,
+
+		all = top_left | top_right | bottom_left | bottom_right
 	}; enum_create_bit_operators(e_corner_flags, true);
 	enum_create_cast_operator(e_corner_flags, -);
+
+	struct rounding_corners_t {
+	public:
+		std::array<float, 4> corners{ };
+
+	public:
+		rounding_corners_t() { }
+		rounding_corners_t(const std::array<float, 4>& _corners) : corners{ _corners } { }
+		rounding_corners_t(const float& top_left, const float& top_right, const float& bottom_left, const float& bottom_right) : corners{ top_left, top_right, bottom_left, bottom_right } { }
+		rounding_corners_t(const float& rounding, const e_corner_flags& corner_flags = e_corner_flags::all) {
+			if(rounding > 0) {
+				if(corner_flags & e_corner_flags::top_left) corner(e_corner_sides::top_left) = rounding;
+				if(corner_flags & e_corner_flags::top_right) corner(e_corner_sides::top_right) = rounding;
+				if(corner_flags & e_corner_flags::bottom_left) corner(e_corner_sides::bottom_left) = rounding;
+				if(corner_flags & e_corner_flags::bottom_right) corner(e_corner_sides::bottom_right) = rounding;
+			}
+		}
+
+		rounding_corners_t(const float& rounding_first, const float& rounding_second, const e_corner_flags& corner_flags) {
+			if(rounding_first > 0 || rounding_second > 0) {
+				switch(corner_flags & e_corner_flags::all) {
+					case -e_corner_flags::top: { corner(e_corner_sides::top_left) = rounding_first; corner(e_corner_sides::top_right) = rounding_second; } break;
+					case -e_corner_flags::bottom: { corner(e_corner_sides::bottom_left) = rounding_first; corner(e_corner_sides::bottom_right) = rounding_second; } break;
+					case -e_corner_flags::left: { corner(e_corner_sides::top_left) = rounding_first; corner(e_corner_sides::bottom_left) = rounding_second; } break;
+					case -e_corner_flags::right: { corner(e_corner_sides::top_right) = rounding_first; corner(e_corner_sides::bottom_right) = rounding_second; } break;
+					case -e_corner_flags::left_diagonal: { corner(e_corner_sides::top_left) = rounding_first; corner(e_corner_sides::bottom_right) = rounding_second; } break;
+					case -e_corner_flags::right_diagonal: { corner(e_corner_sides::top_right) = rounding_first; corner(e_corner_sides::bottom_left) = rounding_second; } break;
+				}
+			}
+		}
+
+	public:
+		template <typename self_t> auto&& corner(this self_t&& self, const e_corner_sides& corner) { return self[corner]; }
+
+		float rounding_sum() const { return std::accumulate(corners.begin(), corners.end(), 0.f); }
+
+	public:
+		template <typename self_t>
+		auto&& operator[](this self_t&& self, const e_corner_sides& idx) { return self.corners[-idx]; }
+	};
 
 	struct vertex_t {
 	public:
@@ -147,16 +197,16 @@ namespace null::render {
 		void pop_texture() { textures.pop_back(); on_change_texture(); }
 
 	public:
-		void add_rect(const vec2_t<float>& a, const vec2_t<float>& b, const color_t<int>& color, const float& thickness = 1.f, const float& rounding = 0.f, const e_corner_flags& flags = e_corner_flags::all);
-		void add_rect(const rect_t<float>& rect, const color_t<int>& color, const float& thickness = 1.f, const float& rounding = 0.f, const e_corner_flags& flags = e_corner_flags::all) { add_rect(rect.min, rect.max, color, thickness, rounding, flags); }
-		void add_rect_filled(const vec2_t<float>& a, const vec2_t<float>& b, const color_t<int>& color, const float& rounding = 0.f, const e_corner_flags& flags = e_corner_flags::all);
-		void add_rect_filled(const rect_t<float>& rect, const color_t<int>& color, const float& rounding = 0.f, const e_corner_flags& flags = e_corner_flags::all) { add_rect_filled(rect.min, rect.max, color, rounding, flags); }
+		void add_rect(const vec2_t<float>& a, const vec2_t<float>& b, const color_t<int>& color, const float& thickness = 1.f, const rounding_corners_t& rounding_corners = rounding_corners_t{ });
+		void add_rect(const rect_t<float>& rect, const color_t<int>& color, const float& thickness = 1.f, const rounding_corners_t& rounding_corners = rounding_corners_t{ }) { add_rect(rect.min, rect.max, color, thickness, rounding_corners); }
+		void add_rect_filled(const vec2_t<float>& a, const vec2_t<float>& b, const color_t<int>& color, const rounding_corners_t& rounding_corners = rounding_corners_t{ });
+		void add_rect_filled(const rect_t<float>& rect, const color_t<int>& color, const rounding_corners_t& rounding_corners = rounding_corners_t{ }) { add_rect_filled(rect.min, rect.max, color, rounding_corners); }
 
 		//@todo: add quad gradient shader
-		void add_rect_multicolor(const vec2_t<float>& a, const vec2_t<float>& b, const std::array<color_t<int>, 4>& colors, const float& thickness = 1.f, const float& rounding = 0.f, const e_corner_flags& flags = e_corner_flags::all);
-		void add_rect_multicolor(const rect_t<float>& rect, const std::array<color_t<int>, 4>& colors, const float& thickness = 1.f, const float& rounding = 0.f, const e_corner_flags& flags = e_corner_flags::all) { add_rect_multicolor(rect.min, rect.max, colors, thickness, rounding, flags); }
-		void add_rect_filled_multicolor(const vec2_t<float>& a, const vec2_t<float>& b, const std::array<color_t<int>, 4>& colors, float rounding = 0.f, const e_corner_flags& flags = e_corner_flags::all);
-		void add_rect_filled_multicolor(const rect_t<float>& rect, const std::array<color_t<int>, 4>& colors, const float& rounding = 0.f, const e_corner_flags& flags = e_corner_flags::all) { add_rect_filled_multicolor(rect.min, rect.max, colors, rounding, flags); }
+		void add_rect_multicolor(const vec2_t<float>& a, const vec2_t<float>& b, const std::array<color_t<int>, 4>& colors, const float& thickness = 1.f, const rounding_corners_t& rounding_corners = rounding_corners_t{ });
+		void add_rect_multicolor(const rect_t<float>& rect, const std::array<color_t<int>, 4>& colors, const float& thickness = 1.f, const rounding_corners_t& rounding_corners = rounding_corners_t{ }) { add_rect_multicolor(rect.min, rect.max, colors, thickness, rounding_corners); }
+		void add_rect_filled_multicolor(const vec2_t<float>& a, const vec2_t<float>& b, const std::array<color_t<int>, 4>& colors, const rounding_corners_t& rounding_corners = rounding_corners_t{ });
+		void add_rect_filled_multicolor(const rect_t<float>& rect, const std::array<color_t<int>, 4>& colors, const rounding_corners_t& rounding_corners = rounding_corners_t{ }) { add_rect_filled_multicolor(rect.min, rect.max, colors, rounding_corners); }
 
 		void add_line(const vec2_t<float>& a, const vec2_t<float>& b, const color_t<int>& color, const float& thickness = 1.f);
 		void add_poly_line(const std::vector<vec2_t<float>>& points, const color_t<int>& color, const bool& closed, float thickness = 1.f);
@@ -193,7 +243,7 @@ namespace null::render {
 
 		std::vector<vec2_t<float>> build_arc_to_fast_path(const vec2_t<float>& center, const float& radius, const int& a_min_of_12, const int& a_max_of_12, const c_geometry_buffer::settings_t& settings);
 		std::vector<vec2_t<float>> build_arc_to_path(const vec2_t<float>& center, const float& radius, const float& a_min, const float& a_max, const int& num_segments);
-		std::vector<vec2_t<float>> build_rect_path(const c_geometry_buffer::settings_t& settings, const vec2_t<float>& a, const vec2_t<float>& b, float rounding = 0.0f, const e_corner_flags& flags = e_corner_flags::all);
+		std::vector<vec2_t<float>> build_rect_path(const c_geometry_buffer::settings_t& settings, const vec2_t<float>& a, const vec2_t<float>& b, rounding_corners_t rounding_corners);
 	}
 }
 
