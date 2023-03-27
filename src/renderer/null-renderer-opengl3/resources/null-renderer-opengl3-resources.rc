@@ -1,4 +1,8 @@
-null-renderer:opengl:shaders:fragment-color		null-renderer:opengl:resources	"../src/shaders/general-color/glsl/fragment-color.glsl"
-null-renderer:opengl:shaders:vertex-color		null-renderer:opengl:resources	"../src/shaders/general-color/glsl/vertex-color.glsl"
-null-renderer:opengl:shaders:fragment-texture	null-renderer:opengl:resources	"../src/shaders/general-texture/glsl/fragment-texture.glsl"
-null-renderer:opengl:shaders:vertex-texture		null-renderer:opengl:resources	"../src/shaders/general-texture/glsl/vertex-texture.glsl"
+null-renderer:opengl:shaders:passthrough-color.frag		null-renderer:opengl:resources	"../src/shaders/passthrough-color/glsl/passthrough-color.frag"
+null-renderer:opengl:shaders:passthrough-color.vert		null-renderer:opengl:resources	"../src/shaders/passthrough-color/glsl/passthrough-color.vert"
+
+null-renderer:opengl:shaders:passthrough-texture.frag	null-renderer:opengl:resources	"../src/shaders/passthrough-texture/glsl/passthrough-texture.frag"
+null-renderer:opengl:shaders:passthrough-texture.vert	null-renderer:opengl:resources	"../src/shaders/passthrough-texture/glsl/passthrough-texture.vert"
+
+null-renderer:opengl:shaders:sdf.frag	null-renderer:opengl:resources	"../src/shaders/sdf/glsl/sdf.frag"
+null-renderer:opengl:shaders:quad-gradient.frag	null-renderer:opengl:resources	"../src/shaders/quad-gradient/glsl/quad-gradient.frag"

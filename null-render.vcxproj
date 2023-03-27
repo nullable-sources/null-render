@@ -20,7 +20,20 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\font\font.cpp" />
-    <ClCompile Include="src\geometry-buffer\geometry-buffer.cpp" />
+    <ClCompile Include="src\font\loaders\freetype\freetype.cpp" />
+    <ClCompile Include="src\font\loaders\truetype\truetype.cpp" />
+    <ClCompile Include="src\graphic\commands\clip-command\clip-command.cpp" />
+    <ClCompile Include="src\graphic\commands\geometry-command\geometry-command.cpp" />
+    <ClCompile Include="src\graphic\commands\matrix-command\matrix-command.cpp" />
+    <ClCompile Include="src\graphic\commands\setup-state-command\setup-state-command.cpp" />
+    <ClCompile Include="src\graphic\commands\texture-command\texture-command.cpp" />
+    <ClCompile Include="src\graphic\draw-list\brushes\quad-gradient-brush\quad-gradient-brush.cpp" />
+    <ClCompile Include="src\graphic\draw-list\draw-list.cpp" />
+    <ClCompile Include="src\graphic\draw-list\text-styles\sdf-text-style\sdf-text-style.cpp" />
+    <ClCompile Include="src\graphic\draw-list\text-styles\text-style\text-style.cpp" />
+    <ClCompile Include="src\graphic\filters\quad-gradient\quad-gradient.cpp" />
+    <ClCompile Include="src\graphic\filters\sdf\sdf.cpp" />
+    <ClCompile Include="src\graphic\filters\texture\texture.cpp" />
     <ClCompile Include="src\renderer\renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -30,13 +43,33 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\font\font.h" />
-    <ClInclude Include="src\geometry-buffer\geometry-buffer.h" />
+    <ClInclude Include="src\font\loaders\freetype\freetype.h" />
+    <ClInclude Include="src\font\loaders\loader.h" />
+    <ClInclude Include="src\font\loaders\truetype\truetype.h" />
+    <ClInclude Include="src\graphic\commands\clip-command\clip-command.h" />
+    <ClInclude Include="src\graphic\commands\commands.h" />
+    <ClInclude Include="src\graphic\commands\geometry-command\geometry-command.h" />
+    <ClInclude Include="src\graphic\commands\matrix-command\matrix-command.h" />
+    <ClInclude Include="src\graphic\commands\setup-state-command\setup-state-command.h" />
+    <ClInclude Include="src\graphic\commands\texture-command\texture-command.h" />
+    <ClInclude Include="src\graphic\draw-list\brushes\brush.h" />
+    <ClInclude Include="src\graphic\draw-list\brushes\quad-gradient-brush\quad-gradient-brush.h" />
+    <ClInclude Include="src\graphic\draw-list\draw-list.h" />
+    <ClInclude Include="src\graphic\draw-list\text-styles\sdf-text-style\sdf-text-style.h" />
+    <ClInclude Include="src\graphic\draw-list\text-styles\text-style\text-style.h" />
+    <ClInclude Include="src\graphic\filters\filters.h" />
+    <ClInclude Include="src\graphic\filters\quad-gradient\quad-gradient.h" />
+    <ClInclude Include="src\graphic\filters\sdf\sdf.h" />
+    <ClInclude Include="src\graphic\filters\texture\texture.h" />
     <ClInclude Include="src\null-render.h" />
     <ClInclude Include="src\renderer\renderer.h" />
+    <ClInclude Include="src\renderer\shaders\passthrough\passthrough.h" />
+    <ClInclude Include="src\renderer\shaders\quad-gradient\quad-gradient.h" />
+    <ClInclude Include="src\renderer\shaders\sdf\sdf.h" />
+    <ClInclude Include="src\renderer\shaders\shader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\font\font.inl" />
-    <None Include="src\geometry-buffer\geometry-buffer.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -4,7 +4,7 @@
 
 #include <null-render.h>
 
-namespace null::renderer {
+namespace null::render {
 	class c_directx9 : public i_renderer {
 	public:
 		struct vertex_t {
@@ -15,30 +15,36 @@ namespace null::renderer {
 
 	public:
 		IDirect3DDevice9* device{ };
-		IDirect3DTexture9* font_texture{ };
-		IDirect3DVertexDeclaration9* vtx_declaration{ };
-		IDirect3DVertexBuffer9* vtx_buffer{ };
-		IDirect3DIndexBuffer9* idx_buffer{ };
+		IDirect3DVertexDeclaration9* vertex_declaration{ };
+		IDirect3DVertexBuffer9* vertex_buffer{ };
+		IDirect3DIndexBuffer9* index_buffer{ };
 
 	public:
 		c_directx9(IDirect3DDevice9* _device = nullptr) : device{ _device } { initialize(); }
 		~c_directx9() { shutdown(); }
 
 	public:
-		void initialize() override { if(device) device->AddRef(); }
+		void set_texture(void* texture) override;
+		void set_clip(const rect_t<float>& rect) override;
+		void draw_geometry(const size_t& vertex_count, const size_t& index_count, const size_t& vertex_offset, const size_t& index_offset) override;
+
+	public:
+		void initialize() override;
 		void shutdown() override { destroy_objects(); if(device) { device->Release(); device = nullptr; } }
 
-		void begin_frame() override { if(!font_texture) create_objects(); }
+		void begin_frame() override { create_objects(); }
 		void end_frame() override { }
 
-		void render(const compiled_geometry_data_t& _compiled_geometry_data = compiled_geometry_data) override;
+		void begin_render() override;
+		void end_render() override;
+
 		void setup_state() override;
 
 		void create_objects() override;
 		void destroy_objects() override;
 
-	public:
-		void create_fonts_texture();
+		void* create_texture(const vec2_t<float>& size, void* data) override;
+		void destroy_texture(void* texture) override;
 	}; inline std::unique_ptr<c_directx9> directx9{ };
 
 	class c_window : public utils::win::c_window {
@@ -63,6 +69,7 @@ namespace null::renderer {
 				throw std::runtime_error{ "cannot create device" };
 			directx9 = std::make_unique<c_directx9>(device);
 			renderer = directx9.get();
+			directx9->initialize();
 			utils::win::c_window::on_create();
 		}
 
@@ -75,14 +82,15 @@ namespace null::renderer {
 		void on_main_loop() override {
 			utils::win::c_window::on_main_loop();
 
-			compile_default_geometry_data();
+			//compile_default_geometry_data();
 
 			device->SetRenderState(D3DRS_ZENABLE, FALSE);
 			device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 			device->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
 			device->Clear(0, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_RGBA(clear_color.r, clear_color.g, clear_color.b, clear_color.a), 1.0f, 0);
 			if(device->BeginScene() >= 0) {
-				renderer->render();
+				renderer->begin_render();
+				renderer->end_render();
 				device->EndScene();
 			}
 

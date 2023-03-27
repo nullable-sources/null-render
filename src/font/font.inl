@@ -16,7 +16,7 @@ namespace null::render {
                 continue;
             }
 
-            line_size.x += get_char_advance(symbol) * scale;
+            line_size.x += get_char_advance(symbol);
         }
     }
 

@@ -20,12 +20,20 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\null-renderer-opengl3.cpp" />
+    <ClCompile Include="src\opengl\wrappers\fields\fields.cpp" />
+    <ClCompile Include="src\opengl\wrappers\program\program.cpp" />
+    <ClCompile Include="src\opengl\wrappers\shader\shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\null-renderer-opengl3.h" />
     <ClInclude Include="src\opengl\opengl3.h" />
-    <ClInclude Include="src\shaders\general-color\general-color.h" />
-    <ClInclude Include="src\shaders\general-texture\general-texture.h" />
+    <ClInclude Include="src\opengl\wrappers\fields\fields.h" />
+    <ClInclude Include="src\opengl\wrappers\program\program.h" />
+    <ClInclude Include="src\opengl\wrappers\shader\shader.h" />
+    <ClInclude Include="src\shaders\passthrough-color\passthrough-color.h" />
+    <ClInclude Include="src\shaders\passthrough-texture\passthrough-texture.h" />
+    <ClInclude Include="src\shaders\quad-gradient\quad-gradient.h" />
+    <ClInclude Include="src\shaders\sdf\sdf.h" />
     <ClInclude Include="src\shaders\shaders.h" />
   </ItemGroup>
   <ItemGroup>
@@ -40,10 +48,12 @@
     <ResourceCompile Include="resources\null-renderer-opengl3-resources.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\shaders\general-color\glsl\fragment-color.glsl" />
-    <None Include="src\shaders\general-color\glsl\vertex-color.glsl" />
-    <None Include="src\shaders\general-texture\glsl\fragment-texture.glsl" />
-    <None Include="src\shaders\general-texture\glsl\vertex-texture.glsl" />
+    <None Include="src\shaders\passthrough-color\glsl\passthrough-color.frag" />
+    <None Include="src\shaders\passthrough-color\glsl\passthrough-color.vert" />
+    <None Include="src\shaders\passthrough-texture\glsl\passthrough-texture.frag" />
+    <None Include="src\shaders\passthrough-texture\glsl\passthrough-texture.vert" />
+    <None Include="src\shaders\quad-gradient\glsl\quad-gradient.frag" />
+    <None Include="src\shaders\sdf\glsl\sdf.frag" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -1,27 +1,28 @@
 #include <renderer/renderer.h>
+#include <graphic/draw-list/draw-list.h>
 
-namespace null::renderer {
-    void compiled_geometry_data_t::add_geometry_buffer(render::c_geometry_buffer* geometry_buffer) {
-        if(geometry_buffer && !geometry_buffer->cmd_buffer.empty() && !geometry_buffer->vtx_buffer.empty() && !geometry_buffer->idx_buffer.empty()) {
-            geometry_buffers.push_back(geometry_buffer);
+namespace null::render {
+    void i_renderer::create_atlases() {
+        if(!atlases_handler.changed) return;
+
+        for(c_atlas* atlas : atlases_handler.atlases) {
+            if(atlas->texture.data) destroy_texture(atlas->texture.data);
+
+            if(atlas->texture.pixels_alpha8.empty()) {
+                if(atlas->configs.empty()) atlas->add_font_default();
+                atlas->build();
+            }
+
+            atlas->texture.get_data_as_rgba32();
+            atlas->texture.data = create_texture(atlas->texture.size, atlas->texture.pixels_rgba32.data());
         }
-    }
-    void compiled_geometry_data_t::setup() {
-        total_vtx_count = total_idx_count = 0;
-        std::ranges::for_each(geometry_buffers, [&](const render::c_geometry_buffer* geometry_buffer) {
-            total_vtx_count += geometry_buffer->vtx_buffer.size();
-            total_idx_count += geometry_buffer->idx_buffer.size();
-            });
+
+        atlases_handler.changed = false;
     }
 
-    void compile_default_geometry_data() {
-        compiled_geometry_data.geometry_buffers.clear();
-        compiled_geometry_data.add_geometry_buffer(&render::background);
-        std::ranges::for_each(render::custom_buffers, [](render::c_geometry_buffer* geometry_buffer) { compiled_geometry_data.add_geometry_buffer(geometry_buffer); });
-        std::ranges::for_each(render::fast_buffers, [](render::c_geometry_buffer* geometry_buffer) { compiled_geometry_data.add_geometry_buffer(geometry_buffer); });
-        compiled_geometry_data.add_geometry_buffer(&render::foreground);
-        compiled_geometry_data.setup();
-
-        render::fast_buffers.clear();
+    void i_renderer::destroy_atlases() {
+        for(c_atlas* atlas : atlases_handler.atlases)
+            destroy_texture(atlas->texture.data);
+        atlases_handler.changed = true;
     }
 }
