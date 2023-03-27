@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{d11addc5-089b-4237-a3dd-c21f8f81dcf1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders">
+      <UniqueIdentifier>{2c8b535c-f26b-449a-a026-0d9dec481687}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\wrapper">
+      <UniqueIdentifier>{84603a9a-7da5-46ee-91de-cb5f324746eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\wrapper\shaders">
+      <UniqueIdentifier>{737f040b-a628-4c80-b515-7425d35e42ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\wrapper\shaders\pixel-shader">
+      <UniqueIdentifier>{cc99b337-cf2f-4993-8537-2614339cb639}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\wrapper\shaders\vertex-shader">
+      <UniqueIdentifier>{267d87f9-95b6-4d6a-be8d-b14234dbb4c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\wrapper\constant-buffer">
+      <UniqueIdentifier>{0631fab0-6e2c-439b-8982-391e2883f19e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\passthrough-color">
+      <UniqueIdentifier>{eeae46f4-5fb9-458d-9726-0566f675b35f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\passthrough-texture">
+      <UniqueIdentifier>{80901cfd-29be-42a4-879a-13618a99942b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\quad-gradient">
+      <UniqueIdentifier>{1a48af89-e860-4be8-b832-9cb93583d937}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\sdf">
+      <UniqueIdentifier>{41687e7f-5c9e-42de-bf2f-bdc24e400a9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\internal">
+      <UniqueIdentifier>{af9b015d-5f8d-44fc-9709-42416923b833}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\internal\frame-buffer">
+      <UniqueIdentifier>{8b6bd0d9-564a-4fb5-9531-9bc4591c7181}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\internal\mesh">
+      <UniqueIdentifier>{fc18e55a-e7b0-4dcc-b637-f815e842aa09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\renderer">
+      <UniqueIdentifier>{a9d4b66d-3e6b-42b4-bdb4-5c5b97589428}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects">
+      <UniqueIdentifier>{521037fb-2d84-443f-a267-0217ed840e69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects\sdf">
+      <UniqueIdentifier>{34bb0002-e4b6-412e-8cd3-6e57dc6000dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects\quad-gradient">
+      <UniqueIdentifier>{57107119-8f05-403a-b43d-857e7e9a6cd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects\passthrough-texture">
+      <UniqueIdentifier>{2f55464e-cf5f-41f8-bc37-096fb2bec137}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects\passthrough-color">
+      <UniqueIdentifier>{ab455ca0-fdb0-491e-a170-9e7738a058a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects\passthrough">
+      <UniqueIdentifier>{2f235a4a-9aeb-482c-a04e-18b12d3b53fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects\passthrough\hlsl">
+      <UniqueIdentifier>{bb725f7b-9a62-464d-8d5f-6a72515051b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects\passthrough-color\hlsl">
+      <UniqueIdentifier>{bb9507c1-932c-4419-96a7-6b985553a791}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects\passthrough-texture\hlsl">
+      <UniqueIdentifier>{31a18884-59c0-45c4-924a-673acf335e2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects\quad-gradient\hlsl">
+      <UniqueIdentifier>{b84cdf7d-8d57-495a-b62f-406c65c0b010}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects\sdf\hlsl">
+      <UniqueIdentifier>{cbc629e0-2898-46be-bd84-fec7ba461c00}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\null-backend-directx11.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal\frame-buffer\frame-buffer.cpp">
+      <Filter>src\internal\frame-buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal\mesh\mesh.cpp">
+      <Filter>src\internal\mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\renderer.cpp">
+      <Filter>src\renderer</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\null-backend-directx11.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\shader.h">
+      <Filter>src\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wrapper\shaders\pixel-shader\pixel-shader.h">
+      <Filter>src\wrapper\shaders\pixel-shader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wrapper\shaders\shader.h">
+      <Filter>src\wrapper\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wrapper\shaders\vertex-shader\vertex-shader.h">
+      <Filter>src\wrapper\shaders\vertex-shader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wrapper\constant-buffer\constant-buffer.h">
+      <Filter>src\wrapper\constant-buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\passthrough-color\passthrough-color.h">
+      <Filter>src\shaders\passthrough-color</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\passthrough-texture\passthrough-texture.h">
+      <Filter>src\shaders\passthrough-texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\quad-gradient\quad-gradient.h">
+      <Filter>src\shaders\quad-gradient</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\sdf\sdf.h">
+      <Filter>src\shaders\sdf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal\frame-buffer\frame-buffer.h">
+      <Filter>src\internal\frame-buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal\mesh\mesh.h">
+      <Filter>src\internal\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\renderer.h">
+      <Filter>src\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\compiled-objects\passthrough\passthrough.h">
+      <Filter>src\shaders\compiled-objects\passthrough</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\compiled-objects\passthrough-color\passthrough-color.h">
+      <Filter>src\shaders\compiled-objects\passthrough-color</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\compiled-objects\passthrough-texture\passthrough-texture.h">
+      <Filter>src\shaders\compiled-objects\passthrough-texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\compiled-objects\quad-gradient\quad-gradient.h">
+      <Filter>src\shaders\compiled-objects\quad-gradient</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\compiled-objects\sdf\sdf.h">
+      <Filter>src\shaders\compiled-objects\sdf</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="src\shaders\compiled-objects\passthrough\hlsl\passthrough.hlsl">
+      <Filter>src\shaders\compiled-objects\passthrough\hlsl</Filter>
+    </FxCompile>
+    <FxCompile Include="src\shaders\compiled-objects\passthrough-color\hlsl\passthrough-color.hlsl">
+      <Filter>src\shaders\compiled-objects\passthrough-color\hlsl</Filter>
+    </FxCompile>
+    <FxCompile Include="src\shaders\compiled-objects\passthrough-texture\hlsl\passthrough-texture.hlsl">
+      <Filter>src\shaders\compiled-objects\passthrough-texture\hlsl</Filter>
+    </FxCompile>
+    <FxCompile Include="src\shaders\compiled-objects\quad-gradient\hlsl\quad-gradient.hlsl">
+      <Filter>src\shaders\compiled-objects\quad-gradient\hlsl</Filter>
+    </FxCompile>
+    <FxCompile Include="src\shaders\compiled-objects\sdf\hlsl\sdf.hlsl">
+      <Filter>src\shaders\compiled-objects\sdf\hlsl</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>

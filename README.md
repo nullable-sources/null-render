@@ -1,25 +1,27 @@
 ﻿# null-render
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/60057961/205475625-1f49c685-4330-47f9-b583-30c094491026.png">
+  <img src="https://i.imgur.com/9R6S6I6.png">
 </p>
-This is an attempt to translate part of my previous null-gui project to c++20.
-
-At the moment, all more or less popular backends are implemented (dx9/dx11/opengl 3), in the future different functions will be added (shaders, maybe something else).
-
-I tried to translate the entire ImGui render to c++20, most likely I didn’t get it very well, so if you notice some c-style code in the project, or incorrect use of stl - welcome to the issue or pull request tab, I will appreciate any help.
+Heavily redesigned ImGui renderer with a lot of new features.
 
 # supported renderers and features
-- ### directx9
-    - base render
-- ### directx11
-    - base render
-- ### opengl3
-    - base render
+
+| backends      | base render | shaders | msaa |
+| ------------- |:-----------:|:-------:|:----:|
+| directx 11    | ✔️          | ✔️     | ✔️   |
+| directx 9     | ✔️          | ✔️     | ✔️   |
+| opengl 3      | ✔️          | ✔️     | ✔️   |
+
+# msaa example
+<p float="left">
+  <img width=250 src="https://i.imgur.com/pQJvFcA.png">
+  <img width=250 src="https://i.imgur.com/i0lurGn.png">
+</p>
 
 # opengl3 renderer
 To connect opengl3-renderer you need:
-- project properties->resources->additional include directories: specify the path to the file "null-renderer-opengl3-resources.rc"
-- create a .rc file in the project and include "null-renderer-opengl3-resources.rc" into it
+- project properties->resources->additional include directories: specify the path to the file "null-backend-opengl3-resources.rc"
+- create a .rc file in the project and include "null-backend-opengl3-resources.rc" into it
 
 # dependencies
 [null-sdk](https://github.com/nullptr-sources/null-sdk)

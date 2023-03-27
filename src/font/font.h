@@ -3,39 +3,11 @@
 #define STBRP_STATIC
 #include <stb_rect_pack.h>
 
-#include <ft2build.h>
-#include <freetype/freetype.h>
-#include <freetype/ftmodapi.h>
-#include <freetype/ftglyph.h>
-#include <freetype/ftsynth.h>
+#include <font/loaders/loader.h>
 
 #include <null-sdk.h>
 
 namespace null::render {
-    template <typename string_t>
-    struct multicolor_text_t {
-    public:
-        using data_t = std::vector<std::pair<string_t, color_t<int>>>;
-        data_t data{ };
-
-    public:
-        multicolor_text_t() { }
-        multicolor_text_t(const string_t& str, const color_t<int>& color) : data{ { str, color } } { }
-        multicolor_text_t(const data_t& _data) : data{ _data } { }
-
-    public:
-        void transform(const std::function<void(string_t&, color_t<int>&)> func) {
-            for(auto& [string, color] : data) { func(string, color); }
-        }
-
-        //@note: returns a string made up of all the strings in the text
-        string_t unite() {
-            return std::accumulate(data.begin(), data.end(), string_t{ }, [=](string_t result, data_t::value_type str) {
-                return result + str.first;
-                });
-        }
-    };
-
     namespace impl {
         static int get_char_from_utf8(std::uint32_t* out_char, const std::string_view::const_iterator& iterator, const std::string_view::const_iterator& end) {
             static constexpr std::array<char, 32> lengths{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 3, 3, 4, 0 };
@@ -75,6 +47,10 @@ namespace null::render {
         }
 
         namespace char_converters {
+            template <typename string_t> struct char_t { using type = string_t::value_type; };
+            template <> struct char_t<const char*> { using type = char; };
+            template <> struct char_t<const wchar_t*> { using type = char; };
+
             template <class string_t>
             struct converter {
                 template <typename iterator_t>
@@ -99,10 +75,14 @@ namespace null::render {
         light_hinting = 1 << 3,
         mono_hinting = 1 << 4,
         bold = 1 << 5,
-        oblique = 1 << 6,
-        monochrome = 1 << 7
+        oblique = 1 << 6
     }; enum_create_bit_operators(e_rasterizer_flags, true);
     enum_create_cast_operator(e_rasterizer_flags, -);
+
+    enum class e_render_mode_type {
+        monochrome,
+        sdf
+    };
 
     class c_atlas;
     class c_font {
@@ -148,17 +128,13 @@ namespace null::render {
             glyph_t::config_t glyph_config{ };
 
             std::vector<char> data{ };
-            bool owned_by_atlas{ true };
             int index{ };
             float size_pixels{ };
             vec2_t<float> oversample{ 3, 1 };
             bool pixel_snap_h{ };
-            bool merge_mode{ };
 
             e_rasterizer_flags rasterizer_flags{ };
-            float rasterizer_multiply{ 1.f };
-
-            std::uint16_t ellipsis_char{ (std::uint16_t)-1 };
+            e_render_mode_type render_mode_type{ };
         };
 
         struct lookup_table_t {
@@ -169,7 +145,7 @@ namespace null::render {
 
         public:
             void resize(const int& new_size) {
-                if(advances_x.size() != indexes.size()) throw std::runtime_error{ "advances_x.size() != indexes.size()" };
+                if(advances_x.size() != indexes.size()) utils::logger.log(utils::e_log_type::warning, "advances_x.size() != indexes.size().");
                 if(new_size <= indexes.size()) return;
                 advances_x.resize(new_size, -1.0f);
                 indexes.resize(new_size, (std::uint16_t)-1);
@@ -177,18 +153,10 @@ namespace null::render {
         };
 
     public:
-        static inline c_font* current_font{ }; //@note: set only from set_current_font
-        static inline std::vector<c_font*> fonts{ };
-        static inline float font_global_scale{ };
+        static inline c_font* default_font{ }; //@note: set only from set_current_font
 
     public:
-        static c_font* get_current_font();
-        static void set_current_font(c_font* font);
-        static void push_font(c_font* font);
-        static void pop_font(c_font* font);
-
-    public:
-        std::uint16_t fallback_char{ (std::uint16_t)'?' }, ellipsis_char{ (std::uint16_t)-1 };
+        std::uint16_t fallback_char{ (std::uint16_t)'?' };
 
         lookup_table_t lookup_table{ };
         std::vector<glyph_t> glyphs{ };
@@ -197,20 +165,15 @@ namespace null::render {
 
         c_atlas* container_atlas{ };
         config_t* config{ };
-        short config_count{ };
 
-        float size{ }, scale{ 1.f };
+        float size{ };
         float ascent{ }, descent{ };
-
-        std::array<std::uint8_t, 2> used_4k_pages_map{ };
 
     public:
         void build_lookup_table();
 
         glyph_t* find_glyph(const std::uint16_t& c, const bool& fallback = true);
         void add_glyph(config_t* src_config, const std::uint16_t& c, rect_t<float> corners, const rect_t<float>& texture_coordinates, float advance_x);
-        void add_remap_char(const std::uint16_t& dst, const std::uint16_t& src, const bool& overwrite_dst = true);
-        bool is_glyph_range_unused(const std::uint32_t& c_begin, const std::uint32_t& c_last);
 
         void set_fallback_char(const std::uint16_t& c) { fallback_char = c; build_lookup_table(); }
         void set_glyph_visible(const std::uint16_t& c, const bool& visible) { if(glyph_t* glyph{ find_glyph(c) }) glyph->visible = visible; }
@@ -218,52 +181,12 @@ namespace null::render {
         bool is_loaded() const { return container_atlas; }
         float get_char_advance(const std::uint16_t& c) const { return (c < lookup_table.advances_x.size()) ? lookup_table.advances_x[c] : fallback_advance_x; }
 
-        template <typename char_t> void calc_text_size(const std::basic_string_view<char_t>& str, vec2_t<float>& result, vec2_t<float>& line_size);
-        template <typename string_view_t> vec2_t<float> calc_text_size(const string_view_t& str, const float& custom_size = 0.f);
-        template <typename string_t> vec2_t<float> calc_text_size(const multicolor_text_t<string_t>& str, const float& custom_size = 0.f);
+        template <typename char_t> vec2_t<float> calc_text_size(const std::basic_string_view<char_t>& text, const float& custom_size = 0.f);
+        template <typename string_t> vec2_t<float> calc_text_size(const string_t& text, const float& custom_size = 0.f) { return calc_text_size(std::basic_string_view{ text }, custom_size); }
     };
 
     class c_atlas {
-    private:
-        struct build_data_t {
-        public:
-            int glyphs_highest{ }, glyphs_count{ };
-            std::vector<std::uint32_t> glyphs_set{ };
-        };
-
-        struct src_glyph_t {
-        public:
-            c_font::glyph_t glyph{ };
-            std::vector<std::uint8_t> bitmap{ };
-        };
-
-        struct build_src_t : build_data_t {
-        public:
-            struct freetype_t {
-            public:
-                struct info_t {
-                public:
-                    std::uint32_t pixel_height{ };
-                    float ascender{ }, descender{ }, line_spacing{ }, line_gap{ }, max_advance_width{ };
-                };
-
-            public:
-                info_t info{ };
-                FT_Face face{ };
-                e_rasterizer_flags rasterizer_flags{ };
-                FT_Int32 flags{ };
-                FT_Render_Mode render_mode{ };
-            };
-
-        public:
-            freetype_t freetype{ };
-            stbrp_rect* rects{ };
-
-            const std::uint16_t* src_ranges{ };
-            int dst_index{ };
-            std::vector<src_glyph_t> glyphs_list{ };
-        };
-
+    public:
         struct custom_rect_t {
         public:
             rect_t<float> size{ vec2_t{ std::numeric_limits<std::uint16_t>::max() }, vec2_t{ 0.f } };
@@ -286,8 +209,6 @@ namespace null::render {
             std::vector<std::uint32_t> pixels_rgba32{ };
 
             vec2_t<float> size{ };
-            vec2_t<float> uv_scale{ };
-            std::array<rect_t<float>, 64> uv_lines{ };
 
         public:
             void clear() { pixels_alpha8.clear(); pixels_rgba32.clear(); }
@@ -299,11 +220,10 @@ namespace null::render {
         texture_t texture{ };
 
         bool locked{ };
-        std::vector<c_font> fonts{ };
-        std::vector<custom_rect_t> custom_rects{ };
+        std::vector<std::unique_ptr<c_font>> fonts{ };
         std::vector<c_font::config_t> configs{ };
 
-        int pack_id_cursors{ -1 }, pack_id_lines{ -1 };
+        std::unique_ptr<i_font_loader> font_loader{ };
 
     public:
         ~c_atlas() { clear(); }
@@ -311,16 +231,9 @@ namespace null::render {
     public:
         void setup_font(c_font* font, c_font::config_t* config, const float& ascent, const float& descent);
 
-        void build_initialize();
         void build_finish();
 
-        bool build();
-
-        void render_lines_texture_data();
-        void render_default_texture_data();
-
-        void pack_custom_rects(stbrp_context* stbrp_context_opaque);
-        void multiply_calc_lookup_table(std::array<std::uint8_t, 256>& out_table, const float& in_multiply_factor);
+        void build();
 
         c_font* add_font(c_font::config_t* config);
         c_font* add_font_default(c_font::config_t* config = nullptr);
@@ -331,6 +244,21 @@ namespace null::render {
         void clear_input_data();
         void clear() { clear_input_data(); texture.clear(); fonts.clear(); }
     } inline atlas{ };
+
+    struct atlases_handler_t {        
+    public:
+        bool changed{ true };
+        std::vector<c_atlas*> atlases{ &atlas };
+
+    public:
+        void add(c_atlas* atlas) {
+            atlases.push_back(atlas);
+            changed = true;
+        }
+    } inline atlases_handler{ };
+
+    c_font* get_default_font();
+    void set_default_font(c_font* font);
 }
 
 #include <font/font.inl>

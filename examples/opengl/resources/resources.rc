@@ -1,1 +1,1 @@
-#include <null-renderer-opengl3-resources.rc>
+#include <null-backend-opengl3-resources.rc>

@@ -19,9 +19,27 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\backend\backend.cpp" />
+    <ClCompile Include="src\backend\renderer\renderer.cpp" />
     <ClCompile Include="src\font\font.cpp" />
-    <ClCompile Include="src\geometry-buffer\geometry-buffer.cpp" />
-    <ClCompile Include="src\renderer\renderer.cpp" />
+    <ClCompile Include="src\font\loaders\freetype\freetype.cpp" />
+    <ClCompile Include="src\font\loaders\truetype\truetype.cpp" />
+    <ClCompile Include="src\graphic\commands\clip-command\clip-command.cpp" />
+    <ClCompile Include="src\graphic\commands\geometry-command\geometry-command.cpp" />
+    <ClCompile Include="src\graphic\commands\matrix-command\matrix-command.cpp" />
+    <ClCompile Include="src\graphic\commands\setup-state-command\setup-state-command.cpp" />
+    <ClCompile Include="src\graphic\commands\texture-command\texture-command.cpp" />
+    <ClCompile Include="src\graphic\draw-list\brushes\quad-gradient-brush\quad-gradient-brush.cpp" />
+    <ClCompile Include="src\graphic\draw-list\draw-list.cpp" />
+    <ClCompile Include="src\graphic\draw-list\pen\pen.cpp" />
+    <ClCompile Include="src\graphic\draw-list\strokes\stroke.cpp" />
+    <ClCompile Include="src\graphic\draw-list\text-styles\sdf-text-style\sdf-text-style.cpp" />
+    <ClCompile Include="src\graphic\draw-list\text-styles\text-style\text-style.cpp" />
+    <ClCompile Include="src\graphic\filters\quad-gradient\quad-gradient.cpp" />
+    <ClCompile Include="src\graphic\filters\sdf\sdf.cpp" />
+    <ClCompile Include="src\graphic\filters\texture\texture.cpp" />
+    <ClCompile Include="src\graphic\path\path.cpp" />
+    <ClCompile Include="src\null-render.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(SolutionDir)third-party\null-sdk\null-sdk.vcxproj">
@@ -29,14 +47,42 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\backend\backend.h" />
+    <ClInclude Include="src\backend\internal\frame-buffer.h" />
+    <ClInclude Include="src\backend\internal\geometry-buffer.h" />
+    <ClInclude Include="src\backend\internal\mesh.h" />
+    <ClInclude Include="src\backend\renderer\renderer.h" />
+    <ClInclude Include="src\backend\shaders\passthrough\passthrough.h" />
+    <ClInclude Include="src\backend\shaders\quad-gradient\quad-gradient.h" />
+    <ClInclude Include="src\backend\shaders\sdf\sdf.h" />
+    <ClInclude Include="src\backend\shaders\shader.h" />
     <ClInclude Include="src\font\font.h" />
-    <ClInclude Include="src\geometry-buffer\geometry-buffer.h" />
+    <ClInclude Include="src\font\loaders\freetype\freetype.h" />
+    <ClInclude Include="src\font\loaders\loader.h" />
+    <ClInclude Include="src\font\loaders\truetype\truetype.h" />
+    <ClInclude Include="src\graphic\commands\clip-command\clip-command.h" />
+    <ClInclude Include="src\graphic\commands\commands.h" />
+    <ClInclude Include="src\graphic\commands\geometry-command\geometry-command.h" />
+    <ClInclude Include="src\graphic\commands\matrix-command\matrix-command.h" />
+    <ClInclude Include="src\graphic\commands\setup-state-command\setup-state-command.h" />
+    <ClInclude Include="src\graphic\commands\texture-command\texture-command.h" />
+    <ClInclude Include="src\graphic\draw-list\brushes\brush.h" />
+    <ClInclude Include="src\graphic\draw-list\brushes\quad-gradient-brush\quad-gradient-brush.h" />
+    <ClInclude Include="src\graphic\draw-list\draw-list.h" />
+    <ClInclude Include="src\graphic\draw-list\pen\pen.h" />
+    <ClInclude Include="src\graphic\draw-list\strokes\stroke.h" />
+    <ClInclude Include="src\graphic\draw-list\text-styles\sdf-text-style\sdf-text-style.h" />
+    <ClInclude Include="src\graphic\draw-list\text-styles\text-style\text-style.h" />
+    <ClInclude Include="src\graphic\filters\filters.h" />
+    <ClInclude Include="src\graphic\filters\quad-gradient\quad-gradient.h" />
+    <ClInclude Include="src\graphic\filters\sdf\sdf.h" />
+    <ClInclude Include="src\graphic\filters\texture\texture.h" />
+    <ClInclude Include="src\graphic\path\path.h" />
     <ClInclude Include="src\null-render.h" />
-    <ClInclude Include="src\renderer\renderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\font\font.inl" />
-    <None Include="src\geometry-buffer\geometry-buffer.inl" />
+    <None Include="src\graphic\draw-list\draw-list.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -128,6 +174,7 @@
       <EnableModules>true</EnableModules>
       <AdditionalIncludeDirectories>$(ProjectDir)src\;$(ProjectDir)third-party\stb\;$(ProjectDir)third-party\freetype\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -155,6 +202,7 @@
       <EnableModules>true</EnableModules>
       <AdditionalIncludeDirectories>$(ProjectDir)src\;$(ProjectDir)third-party\stb\;$(ProjectDir)third-party\freetype\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -182,6 +230,7 @@
       <EnableModules>true</EnableModules>
       <AdditionalIncludeDirectories>$(ProjectDir)src\;$(ProjectDir)third-party\stb\;$(ProjectDir)third-party\freetype\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -209,6 +258,7 @@
       <EnableModules>true</EnableModules>
       <AdditionalIncludeDirectories>$(ProjectDir)src\;$(ProjectDir)third-party\stb\;$(ProjectDir)third-party\freetype\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <SubSystem>

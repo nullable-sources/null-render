@@ -1,4 +1,0 @@
-null-renderer:opengl:shaders:fragment-color		null-renderer:opengl:resources	"../src/shaders/general-color/glsl/fragment-color.glsl"
-null-renderer:opengl:shaders:vertex-color		null-renderer:opengl:resources	"../src/shaders/general-color/glsl/vertex-color.glsl"
-null-renderer:opengl:shaders:fragment-texture	null-renderer:opengl:resources	"../src/shaders/general-texture/glsl/fragment-texture.glsl"
-null-renderer:opengl:shaders:vertex-texture		null-renderer:opengl:resources	"../src/shaders/general-texture/glsl/vertex-texture.glsl"
