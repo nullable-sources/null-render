@@ -18,7 +18,7 @@ void main_loop() {
 
 	null::render::begin_frame(window); {
 		null::render::brush_t brush{ };
-		brush.set_color({ 255, 255, 255 });
+		brush.set_color({ 100, 255, 255 });
 		null::render::background.add_rect({ 200 }, { 300 }, brush);
 
 		null::render::quad_gradient_brush_t gradient_brush{ };
@@ -28,11 +28,11 @@ void main_loop() {
 			.set_bottom_left_color({ 255, 0, 100 })
 			.set_bottom_right_color({ 100, 100, 255 });
 		null::render::background.add_rect({ 500, 200 }, { 600, 300 }, gradient_brush);
-
+		
 		null::render::sdf_text_style_t text_style{ };
 		text_style
 			.set_color({ 255, 100, 100 })
-			.set_size(30.f)
+			.set_size(40.f)
 			.set_outline(1.f, { 255, 200, 200 }, { 100, 100, 255 });
 		null::render::background.add_text("sdf text", { }, text_style);
 

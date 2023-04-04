@@ -65,8 +65,8 @@ namespace null::render {
         opengl::bind_buffer(opengl::e_array_buffer, vbo_handle);
         opengl::bind_buffer(opengl::e_element_array_buffer, elements_handle);
 
+        set_clip({ { 0 }, render::shared::viewport });
         set_matrix(matrix4x4_t::project_ortho(0.f, render::shared::viewport.x, render::shared::viewport.y, 0.f, -10000.f, 10000.f));
-
         render::impl::shaders::event_dispatcher.setup_state();
     }
 

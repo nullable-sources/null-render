@@ -8,9 +8,8 @@ namespace null::render {
 	class c_directx9 : public i_renderer {
 	public:
 		struct vertex_t {
-			float pos[3]{ };
-			std::uint32_t color{ };
-			float uv[2]{ };
+			vec2_t<float> pos{ }, uv{ };
+			sdk::i_color<byte> color{ };
 		};
 
 	public:
@@ -45,7 +44,7 @@ namespace null::render {
 
 		void* create_texture(const vec2_t<float>& size, void* data) override;
 		void destroy_texture(void* texture) override;
-	}; inline std::unique_ptr<c_directx9> directx9{ };
+	} inline* directx9{ };
 
 	class c_window : public utils::win::c_window {
 	public: using utils::win::c_window::c_window;
@@ -67,9 +66,11 @@ namespace null::render {
 				throw std::runtime_error{ "cannot create direct3d" };
 			if(direct3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, wnd_handle, D3DCREATE_HARDWARE_VERTEXPROCESSING, &present_parameters, &device) < 0)
 				throw std::runtime_error{ "cannot create device" };
-			directx9 = std::make_unique<c_directx9>(device);
-			renderer = directx9.get();
-			directx9->initialize();
+
+			renderer = std::make_unique<c_directx9>(device);
+			renderer->initialize();
+
+			directx9 = (c_directx9*)renderer.get();
 			utils::win::c_window::on_create();
 		}
 

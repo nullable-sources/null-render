@@ -32,7 +32,7 @@ namespace null::render {
 		if(!vertex_buffer || vtx_buffer_size < geometry_buffer.vertex_buffer.size()) {
 			if(vertex_buffer) { vertex_buffer->Release(); vertex_buffer = nullptr; }
 			vtx_buffer_size = geometry_buffer.vertex_buffer.size() + 5000;
-			if(auto result{ device->CreateVertexBuffer(vtx_buffer_size * sizeof(vertex_t), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, D3DPOOL_DEFAULT, &vertex_buffer, nullptr) }; FAILED(result))
+			if(auto result{ device->CreateVertexBuffer(vtx_buffer_size * sizeof(vertex_t), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, 0, D3DPOOL_DEFAULT, &vertex_buffer, nullptr) }; FAILED(result))
 				utils::logger.log(utils::e_log_type::error, "cant create vertex buffer, return code {}.", result);
 		}
 
@@ -53,23 +53,15 @@ namespace null::render {
 			utils::logger.log(utils::e_log_type::error, "cant lock vertex buffer, return code {}.", result);
 		if(auto result{ index_buffer->Lock(0, (UINT)(geometry_buffer.index_buffer.size() * sizeof(impl::index_t)), (void**)&index_dst, D3DLOCK_DISCARD) }; FAILED(result))
 			utils::logger.log(utils::e_log_type::error, "cant lock index buffer, return code {}.", result);
-
-		for(const impl::vertex_t& vertex : geometry_buffer.vertex_buffer) {
-			*vertex_dst = {
-				{ vertex.pos.x, vertex.pos.y, 0.f },
-				D3DCOLOR_RGBA(vertex.color.r, vertex.color.g, vertex.color.b, vertex.color.a),
-				{ vertex.uv.x, vertex.uv.y }
-			};
-
-			vertex_dst++;
-		}
-		memcpy(index_dst, geometry_buffer.index_buffer.data(), geometry_buffer.index_buffer.size() * sizeof(std::uint32_t));
+		
+		std::ranges::transform(geometry_buffer.vertex_buffer, vertex_dst, [](const impl::vertex_t& vertex) { return vertex_t{ vertex.pos, vertex.uv, vertex.color.cast<byte>() }; });
+		std::ranges::move(geometry_buffer.index_buffer, index_dst);
+		
 		vertex_buffer->Unlock();
 		index_buffer->Unlock();
 		device->SetStreamSource(0, vertex_buffer, 0, sizeof(vertex_t));
 		device->SetIndices(index_buffer);
 		device->SetVertexDeclaration(vertex_declaration);
-		device->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
 
 		setup_state();
 
@@ -92,7 +84,6 @@ namespace null::render {
 			render::shared::viewport.y,
 			0.0f, 1.0f
 		};
-
 		device->SetViewport(&viewport);
 
 		device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
@@ -115,6 +106,7 @@ namespace null::render {
 		device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
 		device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
 
+		set_clip({ { 0 }, render::shared::viewport });
 		set_matrix(matrix4x4_t::project_ortho(0.5f, render::shared::viewport.x + 0.5f, render::shared::viewport.y + 0.5f, 0.5f, -10000.f, 10000.f));
 		render::impl::shaders::event_dispatcher.setup_state();
 	}
@@ -126,9 +118,9 @@ namespace null::render {
 
 		if(!vertex_declaration) {
 			constexpr D3DVERTEXELEMENT9 elements[]{
-				{ 0, 0, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0 },
-				{ 0, 8, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 },
-				{ 0, 16, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0 },
+				{ 0, offsetof(impl::vertex_t, pos), D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0 },
+				{ 0, offsetof(impl::vertex_t, uv), D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 },
+				{ 0, offsetof(impl::vertex_t, color), D3DDECLTYPE_UBYTE4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0 },
 				D3DDECL_END()
 			};
 			device->CreateVertexDeclaration(elements, &vertex_declaration);
@@ -162,6 +154,7 @@ namespace null::render {
 				throw std::runtime_error{ std::format("lock rect error, code {}", result) };
 
 			for(float x{ size.x * 4 }; const int& y : std::views::iota(0, size.y)) {
+				std::cout << "x - " << x << " y - " << y << std::endl;
 				std::memcpy((std::uint8_t*)locked_rect.pBits + locked_rect.Pitch * y, (std::uint8_t*)data + (int)x * y, x);
 			}
 

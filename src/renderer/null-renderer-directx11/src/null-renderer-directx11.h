@@ -4,23 +4,15 @@
 
 #include <null-render.h>
 
-namespace null::renderer {
+namespace null::render {
 	class c_directx11 : public i_renderer {
-	public:
-		struct vertex_t {
-			float pos[3]{ };
-			std::uint32_t color{ };
-			float uv[2]{ };
-		};
-
 	public:
 		ID3D11Device* device{ };
 		ID3D11DeviceContext* context{ };
 		IDXGIFactory* factory{ };
 		ID3D11Buffer* vertex_buffer{ }, * index_buffer{ };
 		ID3D11InputLayout* input_layout{ };
-		ID3D11SamplerState* font_sampler{ };
-		ID3D11ShaderResourceView* font_texture_view{ };
+		ID3D11SamplerState* sampler_state{ };
 		ID3D11RasterizerState* rasterizer_state{ };
 		ID3D11BlendState* blend_state{ };
 		ID3D11DepthStencilState* depth_stencil_state{ };
@@ -30,21 +22,27 @@ namespace null::renderer {
 		~c_directx11() { shutdown(); }
 
 	public:
+		void set_texture(void* texture) override;
+		void set_clip(const rect_t<float>& rect) override;
+		void draw_geometry(const size_t& vertex_count, const size_t& index_count, const size_t& vertex_offset, const size_t& index_offset) override;
+
+	public:
 		void initialize() override;
 		void shutdown() override;
 
-		void begin_frame() override { if(!font_sampler) create_objects(); }
+		void begin_frame() override { if(!sampler_state) create_objects(); }
 		void end_frame() override { }
 
-		void render(const compiled_geometry_data_t& _compiled_geometry_data = compiled_geometry_data) override;
+		void begin_render() override;
+		void end_render() override;
 		void setup_state() override;
 
 		void create_objects() override;
 		void destroy_objects() override;
 
-	public:
-		void create_fonts_texture();
-	}; inline std::unique_ptr<c_directx11> directx11{ };
+		void* create_texture(const vec2_t<float>& size, void* data) override;
+		void destroy_texture(void* texture) override;
+	} inline* directx11{ };
 
 	class c_window : public utils::win::c_window {
 	public: using utils::win::c_window::c_window;
@@ -90,8 +88,8 @@ namespace null::renderer {
 
 			create_render_target();
 
-			directx11 = std::make_unique<c_directx11>(device, context);
-			renderer = directx11.get();
+			renderer = std::make_unique<c_directx11>(device, context);
+			directx11 = (c_directx11*)renderer.get();
 
 			utils::win::c_window::on_create();
 		}
@@ -106,12 +104,14 @@ namespace null::renderer {
 		void on_main_loop() override {
 			utils::win::c_window::on_main_loop();
 
-			compile_default_geometry_data();
+			//compile_default_geometry_data();
 
 			context->OMSetRenderTargets(1, &render_target, nullptr);
 			context->ClearRenderTargetView(render_target, clear_color.channels.data());
 
-			renderer->render();
+			//renderer->render();
+			renderer->begin_render();
+			renderer->end_render();
 
 			swap_chain->Present(1, 0);
 		}

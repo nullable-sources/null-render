@@ -7,6 +7,7 @@ src/renderer/null-renderer-directx9/src/shaders/passthrough-texture/compiled
 src/renderer/null-renderer-directx9/src/shaders/quad-gradient/compiled
 src/renderer/null-renderer-directx9/src/shaders/sdf/compiled
 
-src/renderer/null-renderer-directx11/src/shaders/pixel-sampler/compiled/
-src/renderer/null-renderer-directx11/src/shaders/pixel-without-sampler/compiled/
-src/renderer/null-renderer-directx11/src/shaders/vertex/compiled/
+src/renderer/null-renderer-directx11/src/shaders/passthrough-color/compiled
+src/renderer/null-renderer-directx11/src/shaders/passthrough-texture/compiled
+src/renderer/null-renderer-directx11/src/shaders/quad-gradient/compiled
+src/renderer/null-renderer-directx11/src/shaders/sdf/compiled

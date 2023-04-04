@@ -161,6 +161,7 @@
       <EnableModules>true</EnableModules>
       <AdditionalIncludeDirectories>$(ProjectDir)src\;$(ProjectDir)third-party\stb\;$(ProjectDir)third-party\freetype\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -188,6 +189,7 @@
       <EnableModules>true</EnableModules>
       <AdditionalIncludeDirectories>$(ProjectDir)src\;$(ProjectDir)third-party\stb\;$(ProjectDir)third-party\freetype\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -215,6 +217,7 @@
       <EnableModules>true</EnableModules>
       <AdditionalIncludeDirectories>$(ProjectDir)src\;$(ProjectDir)third-party\stb\;$(ProjectDir)third-party\freetype\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -242,6 +245,7 @@
       <EnableModules>true</EnableModules>
       <AdditionalIncludeDirectories>$(ProjectDir)src\;$(ProjectDir)third-party\stb\;$(ProjectDir)third-party\freetype\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <SubSystem>

@@ -60,5 +60,5 @@ namespace null::render {
 	public:
 		virtual void create_atlases();
 		virtual void destroy_atlases();
-	} inline *renderer{ }; //note: perhaps need to unify work with shaders and replace the type with std::unique_ptr
+	}; inline std::unique_ptr<i_renderer> renderer{ }; //note: perhaps need to unify work with shaders and replace the type with std::unique_ptr
 }

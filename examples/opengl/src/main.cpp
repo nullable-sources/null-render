@@ -19,7 +19,7 @@ void main_loop() {
 
 	null::render::begin_frame(window); {
 		null::render::brush_t brush{ };
-		brush.set_color({ 255, 255, 255 });
+		brush.set_color({ 100, 255, 255 });
 		null::render::background.add_rect({ 200 }, { 300 }, brush);
 
 		null::render::quad_gradient_brush_t gradient_brush{ };
@@ -30,12 +30,12 @@ void main_loop() {
 			.set_bottom_right_color({ 100, 100, 255 });
 		null::render::background.add_rect({ 500, 200 }, { 600, 300 }, gradient_brush);
 
-		/*null::render::sdf_text_style_t text_style{ };
+		null::render::sdf_text_style_t text_style{ };
 		text_style
 			.set_color({ 255, 100, 100 })
-			.set_size(13.f)
-			.set_outline(0.f, { 255, 200, 200, 0 }, { 100, 100, 255, 0 });
-		null::render::background.add_text("sdf text", { }, text_style);*/
+			.set_size(40.f)
+			.set_outline(1.f, { 255, 200, 200 }, { 100, 100, 255 });
+		null::render::background.add_text("sdf text", { }, text_style);
 		
 		//custom_buffer.add_text("text drawed by custom geometry buffer", { 100, 10 }, { });
 		//null::render::background.add_text(std::format("[ opengl3 ] fps: {:3.3f}", 1000.f /( 1.f / std::chrono::duration<float>{ frame_counter.representation() }.count())), { (float)window.get_window_size().x, 10.f }, { }, null::render::e_text_flags{ -null::render::e_text_flags::aligin_right | -null::render::e_text_flags::aligin_center_y | -null::render::e_text_flags::outline });

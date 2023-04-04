@@ -92,7 +92,7 @@ namespace null::render {
 
 		void* create_texture(const vec2_t<float>& size, void* data) override;
 		void destroy_texture(void* texture) override;
-	}; inline std::unique_ptr<c_opengl3> opengl3{ };
+	} inline* opengl3{ };
 
 #ifdef null_renderer_use_glfw
 	class c_window : public ::utils::win::c_window {
@@ -120,11 +120,11 @@ namespace null::render {
 
 			wnd_handle = glfwGetWin32Window(glfw_window);
 
-			opengl3 = std::make_unique<c_opengl3>();
-			renderer = opengl3.get();
-
-			on_create();
+			renderer = std::make_unique<c_opengl3>();
+			opengl3 = (c_opengl3*)renderer.get();
 			renderer->initialize();
+			
+			on_create();
 			return true;
 		}
 

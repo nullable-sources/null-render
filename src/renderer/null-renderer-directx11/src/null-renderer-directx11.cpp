@@ -1,7 +1,8 @@
 #include <null-renderer-directx11.h>
-#include <shaders/vertex/vertex.h>
-#include <shaders/pixel-without-sampler/pixel-without-sampler.h>
-#include <shaders/pixel-sampler/pixel-sampler.h>
+#include <shaders/passthrough-color/passthrough-color.h>
+#include <shaders/passthrough-texture/passthrough-texture.h>
+#include <shaders/quad-gradient/quad-gradient.h>
+#include <shaders/sdf/sdf.h>
 
 struct directx11_state_t {
     UINT scissor_rects_count{ }, viewports_count{ };
@@ -68,7 +69,20 @@ struct directx11_state_t {
     }
 };
 
-namespace null::renderer {
+namespace null::render {
+    void c_directx11::set_texture(void* texture) {
+        context->PSSetShaderResources(0, 1, (ID3D11ShaderResourceView**)&texture);
+    }
+
+    void c_directx11::set_clip(const rect_t<float>& rect) {
+        const D3D11_RECT clip{ (LONG)rect.min.x, (LONG)rect.min.y, (LONG)rect.max.x, (LONG)rect.max.y };
+        context->RSSetScissorRects(1, &clip);
+    }
+
+    void c_directx11::draw_geometry(const size_t& vertex_count, const size_t& index_count, const size_t& vertex_offset, const size_t& index_offset) {
+        context->DrawIndexed(index_count, index_offset, vertex_offset);
+    }
+
     void c_directx11::initialize() {
         IDXGIDevice* dxg_device{ };
         IDXGIAdapter* dxgi_adapter{ };
@@ -85,6 +99,12 @@ namespace null::renderer {
         if(dxgi_adapter) dxgi_adapter->Release();
         device->AddRef();
         context->AddRef();
+
+        impl::shaders::passthrough_color = std::make_unique<renderer::shaders::c_passthrough_color>();
+        impl::shaders::passthrough_texture = std::make_unique<renderer::shaders::c_passthrough_texture>();
+
+        impl::shaders::quad_gradient = std::make_unique<renderer::shaders::c_quad_gradient>();
+        impl::shaders::sdf = std::make_unique<renderer::shaders::c_sdf>();
     }
 
     void c_directx11::shutdown() {
@@ -94,59 +114,48 @@ namespace null::renderer {
         if(context) { context->Release(); context = nullptr; }
     }
 
-    void c_directx11::render(const compiled_geometry_data_t& _compiled_geometry_data) {
-        if(render::shared::viewport <= 0.f)
-            return;
-
+    void c_directx11::begin_render() {
         static int vertex_buffer_size{ 5000 }, index_buffer_size{ 10000 };
-        if(!vertex_buffer || vertex_buffer_size < _compiled_geometry_data.total_vtx_count) {
+        if(!vertex_buffer || vertex_buffer_size < geometry_buffer.vertex_buffer.size()) {
             if(vertex_buffer) { vertex_buffer->Release(); vertex_buffer = nullptr; }
-            vertex_buffer_size = _compiled_geometry_data.total_vtx_count + 5000;
+            vertex_buffer_size = geometry_buffer.vertex_buffer.size() + 5000;
             D3D11_BUFFER_DESC buffer_desc{
-                .ByteWidth{ vertex_buffer_size * sizeof(vertex_t) },
+                .ByteWidth{ vertex_buffer_size * sizeof(impl::vertex_t) },
                 .Usage{ D3D11_USAGE_DYNAMIC },
                 .BindFlags{ D3D11_BIND_VERTEX_BUFFER },
                 .CPUAccessFlags{ D3D11_CPU_ACCESS_WRITE },
                 .MiscFlags{ 0 }
             };
-            if(device->CreateBuffer(&buffer_desc, nullptr, &vertex_buffer) < 0)
-                throw std::runtime_error{ "cant create vertex buffer" };
+            if(auto result{ device->CreateBuffer(&buffer_desc, nullptr, &vertex_buffer) }; FAILED(result)) {
+                utils::logger.log(utils::e_log_type::error, "cant create vertex buffer, return code {}.", result);
+                return;
+            }
         }
 
-        if(!index_buffer || index_buffer_size < _compiled_geometry_data.total_idx_count) {
+        if(!index_buffer || index_buffer_size < geometry_buffer.index_buffer.size()) {
             if(index_buffer) { index_buffer->Release(); index_buffer = nullptr; }
-            index_buffer_size = _compiled_geometry_data.total_idx_count + 10000;
+            index_buffer_size = geometry_buffer.index_buffer.size() + 10000;
             D3D11_BUFFER_DESC buffer_desc{
-                .ByteWidth{ index_buffer_size * sizeof(std::uint32_t) },
+                .ByteWidth{ index_buffer_size * sizeof(impl::index_t) },
                 .Usage{ D3D11_USAGE_DYNAMIC },
                 .BindFlags{ D3D11_BIND_INDEX_BUFFER },
                 .CPUAccessFlags{ D3D11_CPU_ACCESS_WRITE },
                 .MiscFlags{ 0 }
             };
 
-            if(device->CreateBuffer(&buffer_desc, nullptr, &index_buffer) < 0)
-                throw std::runtime_error{ "cant create index buffer" };
-        }
-
-        D3D11_MAPPED_SUBRESOURCE vtx_resource{ }, idx_resource{ };
-        if(context->Map(vertex_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &vtx_resource) != S_OK) throw std::runtime_error{ "cant map vertex buffer" };
-        if(context->Map(index_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &idx_resource) != S_OK) throw std::runtime_error{ "cant map index buffer" };
-
-        vertex_t* vtx_dst{ (vertex_t*)vtx_resource.pData };
-        std::uint32_t* idx_dst{ (std::uint32_t*)idx_resource.pData };
-        for(render::c_geometry_buffer* geometry_buffer : _compiled_geometry_data.geometry_buffers) {
-            for(const render::vertex_t& vertex : geometry_buffer->vtx_buffer) {
-                *vtx_dst = {
-                    { vertex.pos.x, vertex.pos.y, 0.f },
-                    (std::uint32_t)((vertex.color.a & 0xff) << 24) | ((vertex.color.b & 0xff) << 16) | ((vertex.color.g & 0xff) << 8) | (vertex.color.r & 0xff),
-                    { vertex.uv.x, vertex.uv.y }
-                };
-
-                vtx_dst++;
+            if(auto result{ device->CreateBuffer(&buffer_desc, nullptr, &index_buffer) }; FAILED(result)) {
+                utils::logger.log(utils::e_log_type::error, "cant create index buffer, return code {}.", result);
+                return;
             }
-            memcpy(idx_dst, geometry_buffer->idx_buffer.data(), geometry_buffer->idx_buffer.size() * sizeof(std::uint32_t));
-            idx_dst += geometry_buffer->idx_buffer.size();
         }
+
+        D3D11_MAPPED_SUBRESOURCE vertex_buffer_subresource{ }, index_buffer_subresource{ };
+        if(context->Map(vertex_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &vertex_buffer_subresource) != S_OK) throw std::runtime_error{ "cant map vertex buffer" };
+        if(context->Map(index_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &index_buffer_subresource) != S_OK) throw std::runtime_error{ "cant map index buffer" };
+
+        std::ranges::move(geometry_buffer.vertex_buffer, (impl::vertex_t*)vertex_buffer_subresource.pData);
+        std::ranges::move(geometry_buffer.index_buffer, (impl::index_t*)index_buffer_subresource.pData);
+
         context->Unmap(vertex_buffer, 0);
         context->Unmap(index_buffer, 0);
 
@@ -155,28 +164,16 @@ namespace null::renderer {
 
         setup_state();
 
-        for(int global_idx_offset{ }, global_vtx_offset{ }; render::c_geometry_buffer* geometry_buffer : _compiled_geometry_data.geometry_buffers) {
-            for(render::c_geometry_buffer::cmd_t& cmd : geometry_buffer->cmd_buffer) {
-                if(auto& callback{ cmd.callbacks.at<render::e_cmd_callbacks::on_draw>() }; !callback.empty() && callback.call(cmd)) {
-                    setup_state();
-                    continue;
-                }
+        impl::shaders::passthrough_color->use();
 
-                const D3D11_RECT clip_rect{ (LONG)cmd.clip_rect.min.x, (LONG)cmd.clip_rect.min.y, (LONG)cmd.clip_rect.max.x, (LONG)cmd.clip_rect.max.y };
-                context->RSSetScissorRects(1, &clip_rect);
-
-                if(!cmd.texture) render::shaders::pixel_without_sampler::shader.set();
-                else {
-                    render::shaders::pixel_sampler::shader.set();
-                    context->PSSetShaderResources(0, 1, (ID3D11ShaderResourceView**)&cmd.texture);
-                }
-                context->DrawIndexed(cmd.element_count, global_idx_offset, cmd.vtx_offset + global_vtx_offset);
-                global_idx_offset += cmd.element_count;
-            }
-            global_vtx_offset += geometry_buffer->vtx_buffer.size();
-        }
+        background.handle();
+        background.clear();
 
         directx11_state.restore(context);
+    }
+
+    void c_directx11::end_render() {
+        geometry_buffer.clear();
     }
 
     void c_directx11::setup_state() {
@@ -187,24 +184,24 @@ namespace null::renderer {
         };
         context->RSSetViewports(1, &viewport);
 
-        render::shaders::vertex::shader.setup_state();
-        render::shaders::pixel_sampler::shader.setup_state();
-        render::shaders::pixel_without_sampler::shader.setup_state();
+        set_clip({ { 0 }, render::shared::viewport });
+        set_matrix(matrix4x4_t::project_ortho(0.f, render::shared::viewport.x, render::shared::viewport.y, 0.f, -10000.f, 10000.f));
+        impl::shaders::event_dispatcher.setup_state();
 
-        std::uint32_t stride{ sizeof(vertex_t) };
+        std::uint32_t stride{ sizeof(impl::vertex_t) };
         std::uint32_t offset{ };
         context->IASetInputLayout(input_layout);
         context->IASetVertexBuffers(0, 1, &vertex_buffer, &stride, &offset);
         context->IASetIndexBuffer(index_buffer, DXGI_FORMAT_R32_UINT, 0);
         context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-        context->PSSetSamplers(0, 1, &font_sampler);
+        context->PSSetSamplers(0, 1, &sampler_state);
         context->GSSetShader(nullptr, nullptr, 0);
         context->HSSetShader(nullptr, nullptr, 0);
         context->DSSetShader(nullptr, nullptr, 0);
         context->CSSetShader(nullptr, nullptr, 0);
 
-        const float blend_factor[4]{ 0.f, 0.f, 0.f, 0.f };
+        constexpr float blend_factor[4]{ 0.f, 0.f, 0.f, 0.f };
         context->OMSetBlendState(blend_state, blend_factor, 0xffffffff);
         context->OMSetDepthStencilState(depth_stencil_state, 0);
         context->RSSetState(rasterizer_state);
@@ -212,19 +209,18 @@ namespace null::renderer {
 
     void c_directx11::create_objects() {
         if(!device) return;
-        if(font_sampler) destroy_objects();
+        if(sampler_state) destroy_objects();
 
-        render::shaders::vertex::shader.create();
-        render::shaders::pixel_sampler::shader.create();
-        render::shaders::pixel_without_sampler::shader.create();
+        impl::shaders::event_dispatcher.create();
 
         {
             D3D11_INPUT_ELEMENT_DESC local_layout[] = {
-                        { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT,   0, (UINT)offsetof(vertex_t, pos), D3D11_INPUT_PER_VERTEX_DATA, 0 },
-                        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,   0, (UINT)offsetof(vertex_t, uv),  D3D11_INPUT_PER_VERTEX_DATA, 0 },
-                        { "COLOR",    0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, (UINT)offsetof(vertex_t, color), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+                        { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT,      0, (UINT)offsetof(impl::vertex_t, pos), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+                        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,      0, (UINT)offsetof(impl::vertex_t, uv),  D3D11_INPUT_PER_VERTEX_DATA, 0 },
+                        { "COLOR",    0, DXGI_FORMAT_R32G32B32A32_UINT, 0, (UINT)offsetof(impl::vertex_t, color), D3D11_INPUT_PER_VERTEX_DATA, 0 },
             };
-            device->CreateInputLayout(local_layout, 3, render::shaders::sources::vertex::shader_data, sizeof(render::shaders::sources::vertex::shader_data), &input_layout);
+            if(auto result{ device->CreateInputLayout(local_layout, 3, renderer::shaders::sources::passthrough_texture_vertex().data(), renderer::shaders::sources::passthrough_texture_vertex().size(), &input_layout) }; FAILED(result))
+                utils::logger.log(utils::e_log_type::error, "cant create vertex input layout, return code {}.", result);
         }
 
 
@@ -244,7 +240,8 @@ namespace null::renderer {
                     }
                 }
             };
-            device->CreateBlendState(&blend_desc, &blend_state);
+            if(auto result{ device->CreateBlendState(&blend_desc, &blend_state) }; FAILED(result))
+                utils::logger.log(utils::e_log_type::error, "cant create blend state, return code {}.", result);
         }
 
         {
@@ -254,7 +251,8 @@ namespace null::renderer {
                 .DepthClipEnable{ true },
                 .ScissorEnable{ true }
             };
-            device->CreateRasterizerState(&rasterizer_desc, &rasterizer_state);
+            if(auto result{ device->CreateRasterizerState(&rasterizer_desc, &rasterizer_state) }; FAILED(result))
+                utils::logger.log(utils::e_log_type::error, "cant create rasterizer state, return code {}.", result);
         }
 
         {
@@ -276,74 +274,9 @@ namespace null::renderer {
                     .StencilFunc{ D3D11_COMPARISON_ALWAYS }
                 }
             };
-            device->CreateDepthStencilState(&depth_stencil_desc, &depth_stencil_state);
+            if(auto result{ device->CreateDepthStencilState(&depth_stencil_desc, &depth_stencil_state) }; FAILED(result))
+                utils::logger.log(utils::e_log_type::error, "cant create depth stencil state, return code {}.", result);
         }
-
-        create_fonts_texture();
-    }
-
-    void c_directx11::destroy_objects() {
-        if(!device) return;
-
-        render::shaders::vertex::shader.destroy();
-        render::shaders::pixel_sampler::shader.destroy();
-        render::shaders::pixel_without_sampler::shader.destroy();
-
-        if(font_sampler) { font_sampler->Release(); font_sampler = nullptr; }
-        if(font_texture_view) { font_texture_view->Release(); font_texture_view = nullptr; render::atlas.texture.data = nullptr; }
-        if(index_buffer) { index_buffer->Release(); index_buffer = nullptr; }
-        if(vertex_buffer) { vertex_buffer->Release(); vertex_buffer = nullptr; }
-
-        if(blend_state) { blend_state->Release(); blend_state = nullptr; }
-        if(depth_stencil_state) { depth_stencil_state->Release(); depth_stencil_state = nullptr; }
-        if(rasterizer_state) { rasterizer_state->Release(); rasterizer_state = nullptr; }
-        if(input_layout) { input_layout->Release(); input_layout = nullptr; }
-    }
-
-    void c_directx11::create_fonts_texture() {
-        if(render::atlas.texture.pixels_alpha8.empty()) {
-            if(render::atlas.configs.empty()) render::atlas.add_font_default();
-            render::atlas.build();
-        }
-
-        render::atlas.texture.get_data_as_rgba32();
-
-        {
-            D3D11_TEXTURE2D_DESC texture_desc{
-                .Width{ (std::uint32_t)render::atlas.texture.size.x },
-                .Height{ (std::uint32_t)render::atlas.texture.size.y },
-                .MipLevels{ 1 },
-                .ArraySize{ 1 },
-                .Format{ DXGI_FORMAT_R8G8B8A8_UNORM },
-                .SampleDesc{
-                    .Count{ 1 }
-                },
-                .Usage{ D3D11_USAGE_DEFAULT },
-                .BindFlags{ D3D11_BIND_SHADER_RESOURCE },
-                .CPUAccessFlags{ 0 }
-            };
-
-            ID3D11Texture2D* texture{ };
-            D3D11_SUBRESOURCE_DATA subresource{
-                .pSysMem{ (void*)render::atlas.texture.pixels_rgba32.data() },
-                .SysMemPitch{ texture_desc.Width * 4 },
-                .SysMemSlicePitch{ 0 }
-            };
-            device->CreateTexture2D(&texture_desc, &subresource, &texture);
-
-            D3D11_SHADER_RESOURCE_VIEW_DESC shader_resource_view_desc{
-                .Format{ DXGI_FORMAT_R8G8B8A8_UNORM },
-                .ViewDimension{ D3D11_SRV_DIMENSION_TEXTURE2D },
-                .Texture2D{
-                    .MostDetailedMip{ 0 },
-                    .MipLevels{ texture_desc.MipLevels }
-                }
-            };
-            device->CreateShaderResourceView(texture, &shader_resource_view_desc, &font_texture_view);
-            texture->Release();
-        }
-
-        render::atlas.texture.data = (void*)font_texture_view;
 
         {
             D3D11_SAMPLER_DESC sampler_desc{
@@ -356,7 +289,80 @@ namespace null::renderer {
                 .MinLOD{ 0.f },
                 .MaxLOD{ 0.f }
             };
-            device->CreateSamplerState(&sampler_desc, &font_sampler);
+            if(auto result{ device->CreateSamplerState(&sampler_desc, &sampler_state) }; FAILED(result))
+                utils::logger.log(utils::e_log_type::error, "cant create sampler state, return code {}.", result);
         }
+
+        create_atlases();
+    }
+
+    void c_directx11::destroy_objects() {
+        if(!device) return;
+
+        impl::shaders::event_dispatcher.destroy();
+
+        destroy_atlases();
+
+        if(index_buffer) { index_buffer->Release(); index_buffer = nullptr; }
+        if(vertex_buffer) { vertex_buffer->Release(); vertex_buffer = nullptr; }
+
+        if(sampler_state) { sampler_state->Release(); sampler_state = nullptr; }
+        if(blend_state) { blend_state->Release(); blend_state = nullptr; }
+        if(depth_stencil_state) { depth_stencil_state->Release(); depth_stencil_state = nullptr; }
+        if(rasterizer_state) { rasterizer_state->Release(); rasterizer_state = nullptr; }
+        if(input_layout) { input_layout->Release(); input_layout = nullptr; }
+    }
+
+    void* c_directx11::create_texture(const vec2_t<float>& size, void* data) {
+        D3D11_TEXTURE2D_DESC texture_desc{
+                .Width{ (std::uint32_t)size.x },
+                .Height{ (std::uint32_t)size.y },
+                .MipLevels{ 1 },
+                .ArraySize{ 1 },
+                .Format{ DXGI_FORMAT_R8G8B8A8_UNORM },
+                .SampleDesc{
+                    .Count{ 1 }
+                },
+                .Usage{ D3D11_USAGE_DEFAULT },
+                .BindFlags{ D3D11_BIND_SHADER_RESOURCE },
+                .CPUAccessFlags{ 0 }
+        };
+
+        ID3D11Texture2D* texture{ };
+        D3D11_SUBRESOURCE_DATA subresource{
+            .pSysMem{ (void*)data },
+            .SysMemPitch{ texture_desc.Width * 4 },
+            .SysMemSlicePitch{ 0 }
+        };
+        if(auto result{ device->CreateTexture2D(&texture_desc, &subresource, &texture) }; FAILED(result))
+            utils::logger.log(utils::e_log_type::error, "cant create texture2d, return code {}.", result);
+
+        ID3D11ShaderResourceView* texture_view{ };
+        D3D11_SHADER_RESOURCE_VIEW_DESC shader_resource_view_desc{
+            .Format{ DXGI_FORMAT_R8G8B8A8_UNORM },
+            .ViewDimension{ D3D11_SRV_DIMENSION_TEXTURE2D },
+            .Texture2D{
+                .MostDetailedMip{ 0 },
+                .MipLevels{ texture_desc.MipLevels }
+            }
+        };
+        if(auto result{ device->CreateShaderResourceView(texture, &shader_resource_view_desc, &texture_view) }; FAILED(result))
+            utils::logger.log(utils::e_log_type::error, "cant create shader resource view, return code {}.", result);
+
+        if(auto result{ texture->Release() }; FAILED(result))
+            utils::logger.log(utils::e_log_type::warning, "cant release texture, return code {}.", result);
+
+        return texture_view;
+    }
+
+    void c_directx11::destroy_texture(void* texture) {
+        if(!texture) {
+            utils::logger.log(utils::e_log_type::warning, "it is impossible to destroy the texture because it is empty.");
+            return;
+        }
+
+        if(auto result{ ((ID3D11ShaderResourceView*)texture)->Release() }; FAILED(result))
+            utils::logger.log(utils::e_log_type::warning, "cant release texture, return code {}.", result);
+        texture = nullptr;
     }
 }
