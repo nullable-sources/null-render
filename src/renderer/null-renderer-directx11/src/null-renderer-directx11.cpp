@@ -84,21 +84,9 @@ namespace null::render {
     }
 
     void c_directx11::initialize() {
-        IDXGIDevice* dxg_device{ };
-        IDXGIAdapter* dxgi_adapter{ };
-        IDXGIFactory* local_factory{ };
-
-        if(device->QueryInterface(IID_PPV_ARGS(&dxg_device)) == S_OK) {
-            if(dxg_device->GetParent(IID_PPV_ARGS(&dxgi_adapter)) == S_OK) {
-                if(dxgi_adapter->GetParent(IID_PPV_ARGS(&local_factory)) == S_OK) {
-                    factory = local_factory;
-                }
-            }
-        }
-        if(dxg_device) dxg_device->Release();
-        if(dxgi_adapter) dxgi_adapter->Release();
         device->AddRef();
         context->AddRef();
+        swap_chain->AddRef();
 
         impl::shaders::passthrough_color = std::make_unique<renderer::shaders::c_passthrough_color>();
         impl::shaders::passthrough_texture = std::make_unique<renderer::shaders::c_passthrough_texture>();
@@ -109,12 +97,14 @@ namespace null::render {
 
     void c_directx11::shutdown() {
         destroy_objects();
-        if(factory) { factory->Release(); factory = nullptr; }
         if(device) { device->Release(); device = nullptr; }
         if(context) { context->Release(); context = nullptr; }
+        if(swap_chain) { swap_chain->Release(); swap_chain = nullptr; }
     }
 
     void c_directx11::begin_render() {
+        foreground.add_rect({ 0 }, { 784, 561 }, brush_t{ });
+
         static int vertex_buffer_size{ 5000 }, index_buffer_size{ 10000 };
         if(!vertex_buffer || vertex_buffer_size < geometry_buffer.vertex_buffer.size()) {
             if(vertex_buffer) { vertex_buffer->Release(); vertex_buffer = nullptr; }
@@ -172,8 +162,30 @@ namespace null::render {
 
         impl::shaders::passthrough_color->use();
 
+        ID3D11RenderTargetView* old_rtv{ };
+        ID3D11DepthStencilView* old_dsv{ };
+        context->OMGetRenderTargets(1, &old_rtv, &old_dsv);
+
+        float clr[4]{ 0.f, 0.f, 0.f, 0.f };
+        context->ClearRenderTargetView(msaa.render_target, clr);
+        context->ClearDepthStencilView(msaa.depth_stencil_view, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+        context->OMSetRenderTargets(1, &msaa.render_target, msaa.depth_stencil_view);
+        context->RSSetState(msaa.rasterizer_state);
+
         background.handle();
         background.clear();
+
+        context->OMSetRenderTargets(1, &old_rtv, old_dsv);
+
+        context->RSSetState(states.rasterizer);
+        set_texture(msaa.shader_resource_view);
+        impl::shaders::passthrough_texture->use();
+        foreground.handle();
+        foreground.clear();
+
+        //background.handle();
+        //background.clear();
+        //foreground.clear();
 
         directx11_state.restore(context);
     }
@@ -201,21 +213,94 @@ namespace null::render {
         context->IASetIndexBuffer(index_buffer, DXGI_FORMAT_R32_UINT, 0);
         context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-        context->PSSetSamplers(0, 1, &sampler_state);
+        context->PSSetSamplers(0, 1, &states.sampler);
         context->GSSetShader(nullptr, nullptr, 0);
         context->HSSetShader(nullptr, nullptr, 0);
         context->DSSetShader(nullptr, nullptr, 0);
         context->CSSetShader(nullptr, nullptr, 0);
 
         constexpr float blend_factor[4]{ 0.f, 0.f, 0.f, 0.f };
-        context->OMSetBlendState(blend_state, blend_factor, 0xffffffff);
-        context->OMSetDepthStencilState(depth_stencil_state, 0);
-        context->RSSetState(rasterizer_state);
+        context->OMSetBlendState(states.blend, blend_factor, 0xffffffff);
+        context->OMSetDepthStencilState(states.depth_stencil, 0);
+        context->RSSetState(states.rasterizer);
     }
 
     void c_directx11::create_objects() {
         if(!device) return;
-        if(sampler_state) destroy_objects();
+        destroy_objects();
+
+        D3D11_TEXTURE2D_DESC msaa_texture_desc{
+               .Width{ 784 },
+               .Height{ 561 },
+               .MipLevels{ 1 },
+               .ArraySize{ 1 },
+               .Format{ DXGI_FORMAT_R8G8B8A8_UNORM },
+               .SampleDesc{
+                   .Count{ 8 },
+                   .Quality{ 8 }
+               },
+               .Usage{ D3D11_USAGE_DEFAULT },
+               .BindFlags{ D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE },
+               .CPUAccessFlags{ 0 }
+        };
+
+        if(auto result{ device->CreateTexture2D(&msaa_texture_desc, nullptr, &msaa.render_target_texture) }; FAILED(result))
+            utils::logger.log(utils::e_log_type::error, "cant create msaa texture2d, return code {}.", result);
+
+        D3D11_RENDER_TARGET_VIEW_DESC msaa_rtv_desc{
+            .Format{ DXGI_FORMAT_R8G8B8A8_UNORM },
+            .ViewDimension{ D3D11_RTV_DIMENSION_TEXTURE2DMS },
+        };
+
+        if(auto result{ device->CreateRenderTargetView(msaa.render_target_texture, &msaa_rtv_desc, &msaa.render_target) }; FAILED(result))
+            utils::logger.log(utils::e_log_type::error, "CreateRenderTargetView failed, return code {}.", result);
+
+        D3D11_SHADER_RESOURCE_VIEW_DESC msaa_srv_desc{
+            .Format{ DXGI_FORMAT_R8G8B8A8_UNORM },
+            .ViewDimension{ D3D11_SRV_DIMENSION_TEXTURE2DMS },
+            .Texture2D{
+                .MostDetailedMip{ 0 },
+                .MipLevels{ 1 }
+            }
+        };
+        if(auto result{ device->CreateShaderResourceView(msaa.render_target_texture, &msaa_srv_desc, &msaa.shader_resource_view) }; FAILED(result))
+            utils::logger.log(utils::e_log_type::error, "cant create shader resource view, return code {}.", result);
+
+        D3D11_RASTERIZER_DESC msaa_rs_desc{
+                .FillMode{ D3D11_FILL_SOLID },
+                .CullMode{ D3D11_CULL_NONE },
+                .DepthClipEnable{ true },
+                .ScissorEnable{ true },
+                .MultisampleEnable{ true }
+        };
+        if(auto result{ device->CreateRasterizerState(&msaa_rs_desc, &msaa.rasterizer_state) }; FAILED(result))
+            utils::logger.log(utils::e_log_type::error, "cant create rasterizer state, return code {}.", result);
+
+        D3D11_TEXTURE2D_DESC msaa_dsv_texture_desc{
+               .Width{ 784 },
+               .Height{ 561 },
+               .MipLevels{ 1 },
+               .ArraySize{ 1 },
+               .Format{ DXGI_FORMAT_D32_FLOAT },
+               .SampleDesc{
+                   .Count{ 8 },
+                   .Quality{ 8 }
+               },
+               .Usage{ D3D11_USAGE_DEFAULT },
+               .BindFlags{ D3D11_BIND_DEPTH_STENCIL },
+               .CPUAccessFlags{ 0 }
+        };
+
+        if(auto result{ device->CreateTexture2D(&msaa_dsv_texture_desc, nullptr, &msaa.depth_stencil_view_texture) }; FAILED(result))
+            utils::logger.log(utils::e_log_type::error, "cant create msaa texture2d, return code {}.", result);
+
+        D3D11_DEPTH_STENCIL_VIEW_DESC msaa_dsv_desc{
+            .Format{ DXGI_FORMAT_D32_FLOAT },
+            .ViewDimension{ D3D11_DSV_DIMENSION_TEXTURE2DMS },
+        };
+
+        if(auto result{ device->CreateDepthStencilView(msaa.depth_stencil_view_texture, &msaa_dsv_desc, &msaa.depth_stencil_view) }; FAILED(result))
+            utils::logger.log(utils::e_log_type::error, "cant create msaa_dsv, return code {}.", result);
 
         impl::shaders::event_dispatcher.create();
 
@@ -246,7 +331,7 @@ namespace null::render {
                     }
                 }
             };
-            if(auto result{ device->CreateBlendState(&blend_desc, &blend_state) }; FAILED(result))
+            if(auto result{ device->CreateBlendState(&blend_desc, &states.blend) }; FAILED(result))
                 utils::logger.log(utils::e_log_type::error, "cant create blend state, return code {}.", result);
         }
 
@@ -255,9 +340,10 @@ namespace null::render {
                 .FillMode{ D3D11_FILL_SOLID },
                 .CullMode{ D3D11_CULL_NONE },
                 .DepthClipEnable{ true },
-                .ScissorEnable{ true }
+                .ScissorEnable{ true },
+                .MultisampleEnable{ true }
             };
-            if(auto result{ device->CreateRasterizerState(&rasterizer_desc, &rasterizer_state) }; FAILED(result))
+            if(auto result{ device->CreateRasterizerState(&rasterizer_desc, &states.rasterizer) }; FAILED(result))
                 utils::logger.log(utils::e_log_type::error, "cant create rasterizer state, return code {}.", result);
         }
 
@@ -280,7 +366,7 @@ namespace null::render {
                     .StencilFunc{ D3D11_COMPARISON_ALWAYS }
                 }
             };
-            if(auto result{ device->CreateDepthStencilState(&depth_stencil_desc, &depth_stencil_state) }; FAILED(result))
+            if(auto result{ device->CreateDepthStencilState(&depth_stencil_desc, &states.depth_stencil) }; FAILED(result))
                 utils::logger.log(utils::e_log_type::error, "cant create depth stencil state, return code {}.", result);
         }
 
@@ -295,7 +381,7 @@ namespace null::render {
                 .MinLOD{ 0.f },
                 .MaxLOD{ 0.f }
             };
-            if(auto result{ device->CreateSamplerState(&sampler_desc, &sampler_state) }; FAILED(result))
+            if(auto result{ device->CreateSamplerState(&sampler_desc, &states.sampler) }; FAILED(result))
                 utils::logger.log(utils::e_log_type::error, "cant create sampler state, return code {}.", result);
         }
 
@@ -312,10 +398,10 @@ namespace null::render {
         if(index_buffer) { index_buffer->Release(); index_buffer = nullptr; }
         if(vertex_buffer) { vertex_buffer->Release(); vertex_buffer = nullptr; }
 
-        if(sampler_state) { sampler_state->Release(); sampler_state = nullptr; }
-        if(blend_state) { blend_state->Release(); blend_state = nullptr; }
-        if(depth_stencil_state) { depth_stencil_state->Release(); depth_stencil_state = nullptr; }
-        if(rasterizer_state) { rasterizer_state->Release(); rasterizer_state = nullptr; }
+        if(states.sampler) { states.sampler->Release(); states.sampler = nullptr; }
+        if(states.blend) { states.blend->Release(); states.blend = nullptr; }
+        if(states.depth_stencil) { states.depth_stencil->Release(); states.depth_stencil = nullptr; }
+        if(states.rasterizer) { states.rasterizer->Release(); states.rasterizer = nullptr; }
         if(input_layout) { input_layout->Release(); input_layout = nullptr; }
     }
 

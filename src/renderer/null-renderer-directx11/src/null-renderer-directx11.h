@@ -9,13 +9,25 @@ namespace null::render {
 	public:
 		ID3D11Device* device{ };
 		ID3D11DeviceContext* context{ };
-		IDXGIFactory* factory{ };
-		ID3D11Buffer* vertex_buffer{ }, * index_buffer{ };
+		IDXGISwapChain* swap_chain{ };
+
+		struct {
+			ID3D11SamplerState* sampler{ };
+			ID3D11RasterizerState* rasterizer{ };
+			ID3D11BlendState* blend{ };
+			ID3D11DepthStencilState* depth_stencil{ };
+		} states{ };
+
+		struct {
+			ID3D11Texture2D* render_target_texture{ }, *depth_stencil_view_texture{ };
+			ID3D11RenderTargetView* render_target{ };
+			ID3D11ShaderResourceView* shader_resource_view{ };
+			ID3D11RasterizerState* rasterizer_state{ };
+			ID3D11DepthStencilView* depth_stencil_view{ };
+		} msaa{ };
+
+		ID3D11Buffer* vertex_buffer{ }, *index_buffer{ };
 		ID3D11InputLayout* input_layout{ };
-		ID3D11SamplerState* sampler_state{ };
-		ID3D11RasterizerState* rasterizer_state{ };
-		ID3D11BlendState* blend_state{ };
-		ID3D11DepthStencilState* depth_stencil_state{ };
 	
 	public:
 		c_directx11(ID3D11Device* _device = nullptr, ID3D11DeviceContext* _context = nullptr) : device{ _device }, context{ _context } { initialize(); }
@@ -30,7 +42,7 @@ namespace null::render {
 		void initialize() override;
 		void shutdown() override;
 
-		void begin_frame() override { if(!sampler_state) create_objects(); }
+		void begin_frame() override { if(!states.sampler) create_objects(); }
 		void end_frame() override { }
 
 		void begin_render() override;

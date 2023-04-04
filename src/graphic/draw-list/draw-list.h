@@ -7,8 +7,9 @@ namespace null::render {
 	class c_draw_list : public commands::c_command_buffer {
 	public:
 		void add_rect(const vec2_t<float>& a, const vec2_t<float>& b, const brush_t& brush);
+		void add_quad(const rect_t<float>& a, const rect_t<float>& b, const brush_t& brush);
 		void add_text(const std::string_view& text, const vec2_t<float>& pos, const text_style_t& text_style);
 	};
 
-	inline c_draw_list background{ };
+	inline c_draw_list background{ }, foreground{ };
 }

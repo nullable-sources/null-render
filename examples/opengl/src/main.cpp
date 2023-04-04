@@ -20,7 +20,7 @@ void main_loop() {
 	null::render::begin_frame(window); {
 		null::render::brush_t brush{ };
 		brush.set_color({ 100, 255, 255 });
-		null::render::background.add_rect({ 200 }, { 300 }, brush);
+		null::render::background.add_quad({ { 200, 200 }, { 300, 150} }, { { 200, 400 }, { 300, 500 } }, brush);
 
 		null::render::quad_gradient_brush_t gradient_brush{ };
 		gradient_brush

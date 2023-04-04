@@ -14,10 +14,28 @@ namespace null::render {
 
 		command->vertex_count += 4;
 		renderer->geometry_buffer
-			.add_vertex({ a, { }, brush.color })
-			.add_vertex({ { b.x, a.y }, { }, brush.color })
-			.add_vertex({ b, { }, brush.color })
-			.add_vertex({ { a.x, b.y }, { }, brush.color });
+			.add_vertex({ a, { 0.f }, brush.color })
+			.add_vertex({ { b.x, a.y }, { 1.f, 0.f }, brush.color })
+			.add_vertex({ b, { 1.f }, brush.color })
+			.add_vertex({ { a.x, b.y }, { 0.f, 1.f }, brush.color });
+
+		add_command(brush.prepare_command(command));
+	}
+	
+	void c_draw_list::add_quad(const rect_t<float>& a, const rect_t<float>& b, const brush_t& brush) {
+		std::unique_ptr<commands::c_geometry> command{ std::make_unique<commands::c_geometry>() };
+
+		command->index_count += 6;
+		renderer->geometry_buffer
+			.add_index(0).add_index(1).add_index(2)
+			.add_index(0).add_index(2).add_index(3);
+
+		command->vertex_count += 4;
+		renderer->geometry_buffer
+			.add_vertex({ a.min, { 0.f }, brush.color })
+			.add_vertex({ a.max, { 1.f, 0.f }, brush.color })
+			.add_vertex({ b.max, { 1.f }, brush.color })
+			.add_vertex({ b.min, { 0.f, 1.f }, brush.color });
 
 		add_command(brush.prepare_command(command));
 	}
