@@ -63,9 +63,9 @@ namespace null::render {
 	public:
 		void on_create() override {
 			if(!(direct3d = Direct3DCreate9(D3D_SDK_VERSION)))
-				throw std::runtime_error{ "cannot create direct3d" };
-			if(direct3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, wnd_handle, D3DCREATE_HARDWARE_VERTEXPROCESSING, &present_parameters, &device) < 0)
-				throw std::runtime_error{ "cannot create device" };
+				utils::logger.log(utils::e_log_type::error, "Direct3DCreate9 return nullptr.");
+			if(auto result{ direct3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, wnd_handle, D3DCREATE_HARDWARE_VERTEXPROCESSING, &present_parameters, &device) }; FAILED(result))
+				utils::logger.log(utils::e_log_type::error, "CreateDevice failed, return code {}.", result);
 
 			renderer = std::make_unique<c_directx9>(device);
 			renderer->initialize();
@@ -116,7 +116,8 @@ namespace null::render {
 
 		void reset_device() {
 			renderer->destroy_objects();
-			if(device->Reset(&present_parameters) == D3DERR_INVALIDCALL) throw std::runtime_error{ "device->Reset == D3DERR_INVALIDCALL" };
+			if(auto result{ device->Reset(&present_parameters) }; FAILED(result))
+				utils::logger.log(utils::e_log_type::error, "device reset failed, return code {}.", result);
 			renderer->create_objects();
 		}
 	};

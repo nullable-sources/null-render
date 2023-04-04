@@ -82,9 +82,10 @@ namespace null::render {
 			swap_chain_desc.OutputWindow = wnd_handle;
 
 			D3D_FEATURE_LEVEL feature_level;
-			if(D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, std::vector<D3D_FEATURE_LEVEL>{ D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_0 }.data(), 2,
-				D3D11_SDK_VERSION, & swap_chain_desc, & swap_chain, &device, & feature_level, &context) != S_OK)
-				throw std::runtime_error{ "cant create device and swap chain" };
+			if(auto result{ D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, std::vector<D3D_FEATURE_LEVEL>{ D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_0 }.data(), 2,
+				D3D11_SDK_VERSION, &swap_chain_desc, &swap_chain, &device, &feature_level, &context) }; FAILED(result)) {
+				utils::logger.log(utils::e_log_type::error, "D3D11CreateDeviceAndSwapChain failed, return code {}.", result);
+			}
 
 			create_render_target();
 

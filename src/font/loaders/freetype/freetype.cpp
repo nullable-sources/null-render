@@ -4,12 +4,14 @@
 
 namespace null::render {
 	void c_freetype_loader::build(c_atlas* atlas) {
-        if(atlas->locked) throw std::runtime_error{ "cannot modify a locked atlas between begin_render() and end_render/render()!" };
-        if(atlas->configs.empty()) throw std::runtime_error{ "configs.empty()" };
+        if(atlas->locked) { utils::logger.log(utils::e_log_type::error, "cannot modify a locked atlas between begin_render() and end_render/render()."); return; }
+        if(atlas->configs.empty()) { utils::logger.log(utils::e_log_type::warning, "configs array is empty."); return; }
 
         FT_Library ft_library{ };
-        if(FT_Init_FreeType(&ft_library))
-            throw std::runtime_error{ "FT_Init_FreeType != 0" };
+        if(auto result{ FT_Init_FreeType(&ft_library) }; result) {
+            utils::logger.log(utils::e_log_type::error, "FT_Init_FreeType failed, return code {}.", result);
+            return;
+        }
 
         atlas->texture = c_atlas::texture_t{ };
 
@@ -20,16 +22,23 @@ namespace null::render {
             build_src_t& src{ std::get<build_src_t&>(tuple) };
             c_font::config_t& config{ std::get<c_font::config_t&>(tuple) };
 
-            if(!config.font) throw std::runtime_error{ "!cfg.font" };
-            if(config.font->is_loaded() && config.font->container_atlas != atlas) throw std::runtime_error{ "cfg.font->is_loaded() && cfg.font->container_atlas != this" };
+            if(!config.font) { utils::logger.log(utils::e_log_type::warning, "config font is empty."); continue; }
+            if(config.font->is_loaded() && config.font->container_atlas != atlas) {
+                utils::logger.log(utils::e_log_type::warning, "font already loaded by another atlas.");
+                continue;
+            }
 
             if(auto iterator{ std::ranges::find_if(atlas->fonts, [=](const std::unique_ptr<c_font>& font) { return config.font == font.get(); }) }; iterator != atlas->fonts.end()) src.dst_index = std::distance(atlas->fonts.begin(), iterator);
-            else throw std::runtime_error{ "can't find font config" };
+            else { utils::logger.log(utils::e_log_type::error, "font configuration could not be found."); continue; }
 
-            if(FT_New_Memory_Face(ft_library, (std::uint8_t*)config.data.data(), (std::uint32_t)config.data.size(), (std::uint32_t)config.index, &src.freetype.face))
-                throw std::runtime_error{ "FT_New_Memory_Face != 0" };
-            if(FT_Select_Charmap(src.freetype.face, FT_ENCODING_UNICODE))
-                throw std::runtime_error{ "FT_Select_Charmap != 0" };
+            if(auto result{ FT_New_Memory_Face(ft_library, (std::uint8_t*)config.data.data(), (std::uint32_t)config.data.size(), (std::uint32_t)config.index, &src.freetype.face) }; result) {
+                utils::logger.log(utils::e_log_type::error, "FT_New_Memory_Face failed, return code {}.", result);
+                continue;
+            }
+            if(auto result{ FT_Select_Charmap(src.freetype.face, FT_ENCODING_UNICODE) }; result) {
+                utils::logger.log(utils::e_log_type::error, "FT_Select_Charmap failed, return code {}.", result);
+                continue;
+            }
 
             FT_Size_RequestRec req{
                 .type = FT_SIZE_REQUEST_TYPE_REAL_DIM,
@@ -37,8 +46,10 @@ namespace null::render {
                 .height = (FT_Long)config.size_pixels * 64,
                 .horiResolution = 0, .vertResolution = 0
             };
-            if(FT_Request_Size(src.freetype.face, &req))
-                throw std::runtime_error{ "FT_Request_Size != 0" };
+            if(auto result{ FT_Request_Size(src.freetype.face, &req) }; result) {
+                utils::logger.log(utils::e_log_type::error, "FT_Request_Size failed, return code {}.", result);
+                continue;
+            }
 
             FT_Size_Metrics metrics{ src.freetype.face->size->metrics };
             src.freetype.info = build_src_t::freetype_t::info_t{
@@ -103,7 +114,7 @@ namespace null::render {
             }
 
             src.glyphs_set.clear();
-            if(src.glyphs_list.size() != src.glyphs_count) throw std::runtime_error{ "src.glyphs_list.size() != src.glyphs_count" };
+            if(src.glyphs_list.size() != src.glyphs_count) utils::logger.log(utils::e_log_type::error, "src.glyphs_list.size() != src.glyphs_count.");
         }
 
         std::mutex mutex{ };
@@ -120,24 +131,29 @@ namespace null::render {
 
             for(const int& i : std::views::iota((size_t)0, src.glyphs_list.size())) {
                 futures.push_back(std::async(std::launch::async, [&](build_src_t* src, src_glyph_t* glyph, int index) {
-                    mutex.lock();
+                    std::lock_guard lock_guard{ mutex };
 
                     std::uint32_t glyph_index{ FT_Get_Char_Index(src->freetype.face, glyph->glyph.codepoint) };
-                    if(!glyph_index) throw std::runtime_error{ "!FT_Get_Char_Index" };
-                    if(FT_Load_Glyph(src->freetype.face, glyph_index, src->freetype.flags)) throw std::runtime_error{ "FT_Load_Glyph != 0" };
+                    if(!glyph_index) { utils::logger.log(utils::e_log_type::error, "FT_Get_Char_Index return 0."); return; }
+                    if(auto result{ FT_Load_Glyph(src->freetype.face, glyph_index, src->freetype.flags) }; result) { utils::logger.log(utils::e_log_type::error, "FT_Load_Glyph failed, return code {}.", result); return; }
 
                     if(src->freetype.rasterizer_flags & e_rasterizer_flags::bold) FT_GlyphSlot_Embolden(src->freetype.face->glyph);
                     if(src->freetype.rasterizer_flags & e_rasterizer_flags::oblique) FT_GlyphSlot_Oblique(src->freetype.face->glyph);
 
-                    if(FT_Render_Glyph(src->freetype.face->glyph, src->freetype.render_mode))
-                        throw std::runtime_error{ "FT_Render_Glyph != 0" };
+                    if(auto result{ FT_Render_Glyph(src->freetype.face->glyph, src->freetype.render_mode) }; result) {
+                        utils::logger.log(utils::e_log_type::error, "FT_Render_Glyph failed, return code {}.", result);
+                        return;
+                    }
 
                     glyph->glyph.corners.min = vec2_t{ src->freetype.face->glyph->bitmap.width, src->freetype.face->glyph->bitmap.rows };
                     glyph->glyph.texture_coordinates.min = vec2_t{ src->freetype.face->glyph->bitmap_left, -src->freetype.face->glyph->bitmap_top };
                     glyph->glyph.advance_x = std::ceilf(std::floor(src->freetype.face->glyph->advance.x) / 64);
 
                     const FT_Bitmap* ft_bitmap{ &src->freetype.face->glyph->bitmap };
-                    if(!ft_bitmap) throw std::runtime_error{ "!ft_bitmap" };
+                    if(!ft_bitmap) {
+                        utils::logger.log(utils::e_log_type::error, "ft_bitmap is empty.");
+                        return;
+                    }
 
                     glyph->bitmap.resize(ft_bitmap->width * (ft_bitmap->rows * ft_bitmap->pitch));
                     switch(ft_bitmap->pixel_mode) {
@@ -159,14 +175,12 @@ namespace null::render {
                                 }
                             }
                         } break;
-                        default: throw std::runtime_error("unknown bitmap pixel mode");
+                        default: utils::logger.log(utils::e_log_type::error, "unsupported pixel mode.");
                     }
 
                     src->rects[index].w = (stbrp_coord)(glyph->glyph.corners.min.x + atlas->texture.glyph_padding);
                     src->rects[index].h = (stbrp_coord)(glyph->glyph.corners.min.y + atlas->texture.glyph_padding);
                     total_surface += src->rects[index].w * src->rects[index].h;
-
-                    mutex.unlock();
                 }, &src, &src.glyphs_list[i], i));
             }
         }
@@ -210,11 +224,12 @@ namespace null::render {
             for(const int& i : std::views::iota(0, src.glyphs_count)) {
                 src_glyph_t& glyph{ src.glyphs_list[i] };
                 stbrp_rect& pack_rect{ src.rects[i] };
-                if(!pack_rect.was_packed) throw std::runtime_error{ "!pack_rect.was_packed" };
+                if(!pack_rect.was_packed) { utils::logger.log(utils::e_log_type::error, "pack_rect not packed."); continue; }
                 if(!pack_rect.w && !pack_rect.h) continue;
 
-                if(glyph.glyph.corners.min + atlas->texture.glyph_padding > vec2_t{ pack_rect.w, pack_rect.h })
-                    throw std::runtime_error{ "info.size + texture.glyph_padding > vec2_t{ pack_rect.w, pack_rect.h }" };
+                if(glyph.glyph.corners.min + atlas->texture.glyph_padding > vec2_t{ pack_rect.w, pack_rect.h }) {
+                    utils::logger.log(utils::e_log_type::error, "info.size + texture.glyph_padding > vec2_t{ pack_rect.w, pack_rect.h }."); continue;
+                }
 
                 vec2_t<float> t{ vec2_t{ pack_rect.x, pack_rect.y } };
                 for(const int& y : std::views::iota(0, glyph.glyph.corners.min.y)) {
@@ -233,7 +248,7 @@ namespace null::render {
             if(src.freetype.face) { FT_Done_Face(src.freetype.face); src.freetype.face = nullptr; }
             });
 
-        if(FT_Done_Library(ft_library))
-            throw std::runtime_error{ "FT_Done_Library != 0" };
+        if(auto result{ FT_Done_Library(ft_library) }; result)
+            utils::logger.log(utils::e_log_type::error, "FT_Done_Library failed, result code {}.", result);
 	}
 }

@@ -10,7 +10,6 @@ namespace null::renderer::wrapper {
 	public:
 		virtual void create() {
 			D3D11_BUFFER_DESC desc{
-				/*.ByteWidth{ std::uint32_t(std::ceil((sizeof(struct_t) + 15) / 16.f) * 16) },*/
 				.ByteWidth{ ((sizeof(struct_t) + 15) / 16) * 16 },
 				.Usage{ D3D11_USAGE_DYNAMIC },
 				.BindFlags{ D3D11_BIND_CONSTANT_BUFFER },

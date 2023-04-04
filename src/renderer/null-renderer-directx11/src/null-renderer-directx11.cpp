@@ -150,8 +150,14 @@ namespace null::render {
         }
 
         D3D11_MAPPED_SUBRESOURCE vertex_buffer_subresource{ }, index_buffer_subresource{ };
-        if(context->Map(vertex_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &vertex_buffer_subresource) != S_OK) throw std::runtime_error{ "cant map vertex buffer" };
-        if(context->Map(index_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &index_buffer_subresource) != S_OK) throw std::runtime_error{ "cant map index buffer" };
+        if(auto result{ context->Map(vertex_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &vertex_buffer_subresource) }; FAILED(result)) {
+            utils::logger.log(utils::e_log_type::error, "map vertex buffer failed, return code {}.", result);
+            return;
+        }
+        if(auto result{ context->Map(index_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &index_buffer_subresource) }; FAILED(result)) {
+            utils::logger.log(utils::e_log_type::error, "map index buffer failed, return code {}.", result);
+            return;
+        }
 
         std::ranges::move(geometry_buffer.vertex_buffer, (impl::vertex_t*)vertex_buffer_subresource.pData);
         std::ranges::move(geometry_buffer.index_buffer, (impl::index_t*)index_buffer_subresource.pData);

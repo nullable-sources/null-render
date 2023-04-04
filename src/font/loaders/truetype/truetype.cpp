@@ -4,8 +4,8 @@
 
 namespace null::render {
     void c_truetype_loader::build(c_atlas* atlas) {
-        if(atlas->locked) throw std::runtime_error{ "cannot modify a locked atlas between begin_render() and end_render/render()!" };
-        if(atlas->configs.empty()) throw std::runtime_error{ "configs.empty()" };
+        if(atlas->locked) { utils::logger.log(utils::e_log_type::error, "cannot modify a locked atlas between begin_render() and end_render/render()."); return; }
+        if(atlas->configs.empty()) { utils::logger.log(utils::e_log_type::warning, "configs array is empty."); return; }
 
         atlas->texture = c_atlas::texture_t{ };
 
@@ -16,16 +16,21 @@ namespace null::render {
             build_src_t& src{ std::get<build_src_t&>(tuple) };
             c_font::config_t& config{ std::get<c_font::config_t&>(tuple) };
 
-            if(!config.font) throw std::runtime_error{ "!cfg.font" };
-            if(config.font->is_loaded() && config.font->container_atlas != atlas) throw std::runtime_error{ "cfg.font->is_loaded() && cfg.font->container_atlas != this" };
+            if(!config.font) { utils::logger.log(utils::e_log_type::warning, "config font is empty."); continue; }
+            if(config.font->is_loaded() && config.font->container_atlas != atlas) {
+                utils::logger.log(utils::e_log_type::warning, "font already loaded by another atlas.");
+                continue;
+            }
 
             if(auto iterator{ std::ranges::find_if(atlas->fonts, [=](const std::unique_ptr<c_font>& font) { return config.font == font.get(); }) }; iterator != atlas->fonts.end()) src.dst_index = std::distance(atlas->fonts.begin(), iterator);
-            else throw std::runtime_error{ "can't find font config" };
+            else { utils::logger.log(utils::e_log_type::error, "font configuration could not be found."); continue; }
 
-            const int font_offset = stbtt_GetFontOffsetForIndex((std::uint8_t*)config.data.data(), config.index);
-            if(font_offset < 0) throw std::runtime_error{ "font_data is incorrect, or font_no cannot be found" };
-            if(!stbtt_InitFont(&src.font_info, (std::uint8_t*)config.data.data(), font_offset))
-                throw std::runtime_error{ "!stbtt_InitFont" };
+            const int font_offset{ stbtt_GetFontOffsetForIndex((std::uint8_t*)config.data.data(), config.index) };
+            if(font_offset < 0) { utils::logger.log(utils::e_log_type::error, "font_data is incorrect, or font_no cannot be found."); continue; }
+            if(auto result{ stbtt_InitFont(&src.font_info, (std::uint8_t*)config.data.data(), font_offset) }; !result) {
+                utils::logger.log(utils::e_log_type::error, "stbtt_InitFont failed, return code {}.", result);
+                continue;
+            }
 
             build_data_t& dst = dst_array[src.dst_index];
             src.src_ranges = config.glyph_config.ranges ? config.glyph_config.ranges : c_font::glyph_t::ranges_default();
@@ -66,7 +71,7 @@ namespace null::render {
             }
 
             src.glyphs_set.clear();
-            if(src.glyphs_list.size() != src.glyphs_count) throw std::runtime_error{ "src.glyphs_list.size() != src.glyphs_count" };
+            if(src.glyphs_list.size() != src.glyphs_count) utils::logger.log(utils::e_log_type::error, "src.glyphs_list.size() != src.glyphs_count.");
         }
 
         std::vector<stbrp_rect> buf_rects(total_glyphs_count);
@@ -94,7 +99,7 @@ namespace null::render {
             for(int i : std::views::iota((size_t)0, src.glyphs_list.size())) {
                 int x0{ }, y0{ }, x1{ }, y1{ };
                 int glyph_index_in_font{ stbtt_FindGlyphIndex(&src.font_info, src.glyphs_list[i]) };
-                if(!glyph_index_in_font) throw std::runtime_error{ "!glyph_index_in_font" };
+                if(!glyph_index_in_font) { utils::logger.log(utils::e_log_type::error, "stbtt_FindGlyphIndex return 0."); continue; }
                 stbtt_GetGlyphBitmapBoxSubpixel(&src.font_info, glyph_index_in_font, scale * (sdf ? 1 : config.oversample.x), scale * (sdf ? 1 : config.oversample.y), 0, 0, &x0, &y0, &x1, &y1);
                 src.rects[i].w = (stbrp_coord)(x1 - x0 + padding + (sdf ? 0 : config.oversample.x - 1));
                 src.rects[i].h = (stbrp_coord)(y1 - y0 + padding + (sdf ? 0 : config.oversample.y - 1));

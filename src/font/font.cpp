@@ -8,7 +8,10 @@ namespace null::render {
     void c_font::build_lookup_table() {
         int max_codepoint{ (int)(*std::ranges::max_element(glyphs, [](const glyph_t& a, const glyph_t& b) { return a.codepoint < b.codepoint; })).codepoint };
 
-        if(glyphs.size() >= std::numeric_limits<std::uint16_t>::max()) throw std::runtime_error{ "glyphs.size() >= 0xFFFF" };
+        if(glyphs.size() >= std::numeric_limits<std::uint16_t>::max()) {
+            utils::logger.log(utils::e_log_type::error, "glyphs.size() >= 0xFFFF.");
+            return;
+        }
         lookup_table = lookup_table_t{ };
         lookup_table.resize(max_codepoint + 1);
 
@@ -62,7 +65,10 @@ namespace null::render {
     }
 
     void c_atlas::texture_t::get_data_as_rgba32() {
-        if(pixels_alpha8.empty()) throw std::runtime_error{ "!pixels_alpha8" };
+        if(pixels_alpha8.empty()) {
+            utils::logger.log(utils::e_log_type::error, "pixels_alpha8 is empty.");
+            return;
+        }
 
         if(pixels_rgba32.empty()) {
             pixels_rgba32.resize(size.x * size.y * 4);
@@ -82,7 +88,10 @@ namespace null::render {
     }
 
     void c_atlas::build_finish() {
-        if(texture.pixels_alpha8.empty()) throw std::runtime_error{ "!texture.pixels_alpha8" };
+        if(texture.pixels_alpha8.empty()) {
+            utils::logger.log(utils::e_log_type::error, "texture pixels_alpha8 is empty.");
+            return;
+        }
 
         for(std::unique_ptr<c_font>& font : fonts) {
             if(font->lookup_table.dirty) font->build_lookup_table();
@@ -95,10 +104,10 @@ namespace null::render {
     }
 
     c_font* c_atlas::add_font(c_font::config_t* config) {
-        if(locked) throw std::runtime_error{ "cannot modify a locked atlas between begin_render() and end_render/render()!" };
-        if(config->font) throw std::runtime_error{ "config->font == nullptr" };
-        if(config->data.empty()) throw std::runtime_error{ "cofig->data.empty()" };
-        if(config->size_pixels <= 0.f) throw std::runtime_error{ "config->size_pixels <= 0.f" };
+        if(locked) { utils::logger.log(utils::e_log_type::error, "cannot modify a locked atlas between begin_render() and end_render/render()."); return nullptr; }
+        if(config->font) { utils::logger.log(utils::e_log_type::error, "config font pointer is empty."); return nullptr; }
+        if(config->data.empty()) { utils::logger.log(utils::e_log_type::error, "cofig font data is empty."); return nullptr; }
+        if(config->size_pixels <= 0.f) { utils::logger.log(utils::e_log_type::error, "config size_pixels <= 0.f."); return nullptr; }
 
         fonts.push_back(std::make_unique<c_font>());
 
@@ -106,9 +115,7 @@ namespace null::render {
         c_font::config_t& cfg{ configs.back() };
         
         if(!cfg.font) cfg.font = fonts.back().get();
-        if(cfg.data.empty()) {
-            cfg.data = config->data;
-        }
+        if(cfg.data.empty()) cfg.data = config->data;
 
         texture.clear();
         return cfg.font;
@@ -127,10 +134,10 @@ namespace null::render {
     }
 
     c_font* c_atlas::add_font_from_file_ttf(const std::string_view& filename, const float& size_pixels, c_font::config_t* config, const std::uint16_t* glyph_ranges) {
-        if(locked) throw std::runtime_error{ "cannot modify a locked atlas between begin_render() and end_render/render()!" };
+        if(locked) { utils::logger.log(utils::e_log_type::error, "cannot modify a locked atlas between begin_render() and end_render/render()."); return nullptr; }
         
         std::ifstream file{ filename.data(), std::ios::in | std::ios::binary | std::ios::ate };
-        if(!file.is_open()) throw std::runtime_error{ "cannot open font file" };
+        if(!file.is_open()) { utils::logger.log(utils::e_log_type::error, "cannot open font file."); return nullptr; }
         
         std::vector<char> font_file((std::size_t)file.tellg());
         file.seekg(0, std::ios::beg);
@@ -141,10 +148,10 @@ namespace null::render {
     }
 
     c_font* c_atlas::add_font_from_memory_ttf(const std::vector<char>& font_file, float size_pixels, c_font::config_t* config, const std::uint16_t* glyph_ranges) {
-        if(locked) throw std::runtime_error{ "cannot modify a locked atlas between begin_render() and end_render/render()!" };
+        if(locked) { utils::logger.log(utils::e_log_type::error, "cannot modify a locked atlas between begin_render() and end_render/render()."); return nullptr; }
 
         c_font::config_t cfg{ config ? *config : c_font::config_t{ } };
-        if(!cfg.data.empty()) throw std::runtime_error{ "!cfg.data.empty()" };
+        if(!cfg.data.empty()) utils::logger.log(utils::e_log_type::warning, "config font data is not empty.");
         
         cfg.data = font_file;
         cfg.size_pixels = size_pixels;
@@ -158,13 +165,13 @@ namespace null::render {
         stb::decompress((std::uint8_t*)buf_decompressed_data.data(), compressed_ttf.data());
 
         c_font::config_t cfg{ config ? *config : c_font::config_t{ } };
-        if(!cfg.data.empty()) throw std::runtime_error{ "!cfg.data.empty()" };
+        if(!cfg.data.empty()) utils::logger.log(utils::e_log_type::warning, "config font data is not empty.");
 
         return add_font_from_memory_ttf(buf_decompressed_data, size_pixels, &cfg, glyph_ranges);
     }
 
     void c_atlas::clear_input_data() {
-        if(locked) throw std::runtime_error{ "cannot modify a locked atlas between begin_render() and end_render/render()!" };
+        if(locked) { utils::logger.log(utils::e_log_type::error, "cannot modify a locked atlas between begin_render() and end_render/render()."); return; }
 
         for(c_font::config_t& config : configs) {
             config.font = nullptr;

@@ -15,7 +15,7 @@ namespace null::render {
         inline vec2_t<float> viewport{ };
     }
 
-    static void begin_frame(const ::utils::win::c_window& window) {
+    static void begin_frame(const utils::win::c_window& window) {
         renderer->begin_frame();
 
         atlas.locked = true;

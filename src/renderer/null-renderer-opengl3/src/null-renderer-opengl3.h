@@ -95,8 +95,8 @@ namespace null::render {
 	} inline* opengl3{ };
 
 #ifdef null_renderer_use_glfw
-	class c_window : public ::utils::win::c_window {
-	public: using ::utils::win::c_window::c_window;
+	class c_window : public utils::win::c_window {
+	public: using utils::win::c_window::c_window;
 		color_t<float> clear_color{ 0.07f, 0.07f, 0.07f };
 		GLFWwindow* glfw_window{ };
 
@@ -104,12 +104,12 @@ namespace null::render {
 
 	public:
 		bool create() override {
-			if(!glfwInit()) throw std::runtime_error{ "cant init glfw" };
+			if(!glfwInit()) { utils::logger.log(utils::e_log_type::error, "cant init glfw."); return false; }
 
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
-			if(!(glfw_window = glfwCreateWindow(size.x, size.y, name.c_str(), NULL, NULL))) throw std::runtime_error{ "cant create glfw window" };
+			if(!(glfw_window = glfwCreateWindow(size.x, size.y, name.c_str(), NULL, NULL))) { utils::logger.log(utils::e_log_type::error, "cant create glfw window."); return false; }
 			glfwSetWindowPos(glfw_window, pos.x, pos.y);
 			glfwMakeContextCurrent(glfw_window);
 			glfwSwapInterval(0);
@@ -135,7 +135,7 @@ namespace null::render {
 		}
 
 		void main_loop() override {
-			if(!wnd_handle) throw std::runtime_error{ "window handle is nullptr" };
+			if(!wnd_handle) { utils::logger.log(utils::e_log_type::error, "window handle is nullptr."); return; };
 
 			while(!glfwWindowShouldClose(glfw_window)) {
 				glfwPollEvents();

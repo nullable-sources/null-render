@@ -32,7 +32,7 @@ namespace null::renderer::wrapper {
 				opengl::get_shader_info_log(shader, log_length, nullptr, log.data());
 			}
 
-			if(!result_status) ::utils::logger.log(::utils::e_log_type::warning, "cant '{}' shader, log \"{}\"", desc, log);
+			if(!result_status) utils::logger.log(utils::e_log_type::warning, "cant '{}' shader, log \"{}\".", desc, log);
 		}
 
 	public:

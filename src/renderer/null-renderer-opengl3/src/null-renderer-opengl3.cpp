@@ -98,7 +98,7 @@ namespace null::render {
         opengl::bind_texture(opengl::e_texture_2d, 0);
 
         if(!texture) {
-            utils::logger.log(::utils::e_log_type::warning, "Failed to create texture.");
+            utils::logger.log(utils::e_log_type::warning, "Failed to create texture.");
             return nullptr;
         }
 
@@ -107,7 +107,7 @@ namespace null::render {
 
     void c_opengl3::destroy_texture(void* texture) {
         if(!texture) {
-            utils::logger.log(::utils::e_log_type::warning, "It is impossible to destroy the texture because it is empty.");
+            utils::logger.log(utils::e_log_type::warning, "It is impossible to destroy the texture because it is empty.");
             return;
         }
 

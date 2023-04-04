@@ -14,7 +14,7 @@ namespace null::renderer::wrapper {
 	public:
 		virtual void get_location(c_program* program, const std::string_view& name) override {
 			if(int result{ opengl::get_attrib_location(program->program, name.data()) }; result != -1) location = result;
-			else ::utils::logger.log(::utils::e_log_type::warning, "cant get '{}' attribute location.", name);
+			else utils::logger.log(utils::e_log_type::warning, "cant get '{}' attribute location.", name);
 		}
 	};
 
@@ -40,7 +40,7 @@ namespace null::renderer::wrapper {
 	public:
 		virtual void get_location(c_program* program, const std::string_view& name) override {
 			if(int result{ opengl::get_uniform_location(program->program, name.data()) }; result != -1) location = result;
-			else ::utils::logger.log(::utils::e_log_type::warning, "cant get '{}' uniforn location.", name);
+			else utils::logger.log(utils::e_log_type::warning, "cant get '{}' uniforn location.", name);
 		}
 	};
 

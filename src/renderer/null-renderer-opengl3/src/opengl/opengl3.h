@@ -2528,7 +2528,7 @@ namespace opengl {
 	public:
 		return_t operator()(args_t... args) {
 			if(!address) { address = opengl32.load_export(name); }
-			if(!address) throw std::runtime_error{ std::format("'{}' export address == nullptr", name.empty() ? "unknown" : name) };
+			if(!address) { utils::logger.log(utils::e_log_type::error, "'{}' export address == nullptr.", name.empty() ? "unknown" : name); return return_t{ }; }
 			return ((prototype_t)address)(args...);
 		}
 	};

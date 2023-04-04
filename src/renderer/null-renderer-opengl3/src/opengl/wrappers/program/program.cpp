@@ -13,6 +13,6 @@ namespace null::renderer::wrapper {
 			opengl::get_program_info_log(program, log_length, nullptr, log.data());
 		}
 
-		if(!result_status) ::utils::logger.log(::utils::e_log_type::warning, "cant '{}' program, log \"{}\"", desc, log);
+		if(!result_status) utils::logger.log(utils::e_log_type::warning, "cant '{}' program, log \"{}\".", desc, log);
 	}
 }

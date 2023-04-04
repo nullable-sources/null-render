@@ -150,11 +150,12 @@ namespace null::render {
 
 		if(data) {
 			D3DLOCKED_RECT locked_rect{ };
-			if(int result{ texture->LockRect(0, &locked_rect, nullptr, 0) }; result != D3D_OK)
-				throw std::runtime_error{ std::format("lock rect error, code {}", result) };
+			if(auto result{ texture->LockRect(0, &locked_rect, nullptr, 0) }; FAILED(result)) {
+				utils::logger.log(utils::e_log_type::error, "LockRect failed, return code {}.", result);
+				return texture;
+			}
 
 			for(float x{ size.x * 4 }; const int& y : std::views::iota(0, size.y)) {
-				std::cout << "x - " << x << " y - " << y << std::endl;
 				std::memcpy((std::uint8_t*)locked_rect.pBits + locked_rect.Pitch * y, (std::uint8_t*)data + (int)x * y, x);
 			}
 
