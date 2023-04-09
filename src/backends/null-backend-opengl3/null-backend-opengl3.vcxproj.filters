@@ -1,0 +1,187 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{d11addc5-089b-4237-a3dd-c21f8f81dcf1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources">
+      <UniqueIdentifier>{3bc9fc43-740a-4ee6-a1b4-42b2994661ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders">
+      <UniqueIdentifier>{7ece53da-1030-4628-9f2b-ad283852bc40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\sdf">
+      <UniqueIdentifier>{824b0bdf-66e3-43ec-bb0e-6e38a618b37a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\passthrough-texture">
+      <UniqueIdentifier>{98702e17-2602-4106-b8c6-90e47c02c069}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\passthrough-color">
+      <UniqueIdentifier>{5ee0845e-3281-4c6f-9241-37a1ce5587ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\quad-gradient">
+      <UniqueIdentifier>{65f0e0b0-b8a6-4752-989a-4387c3d4bdcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\internal">
+      <UniqueIdentifier>{a2450421-9a7e-42fc-8fd9-605679490eb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\wrapper">
+      <UniqueIdentifier>{94372850-18b3-4260-9bdd-ce0c2b331ddf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\renderer">
+      <UniqueIdentifier>{f6e51c44-d56d-47cd-a7e9-dc5baa5d9756}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\internal\frame-buffer">
+      <UniqueIdentifier>{1c7930f9-225d-49a7-977a-a4ddc42b0a62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\internal\mesh">
+      <UniqueIdentifier>{f83f074c-4bb0-4c11-a868-3770f6b2a6e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\wrapper\shader">
+      <UniqueIdentifier>{7a320df5-1b53-478e-a9a5-cd5b1cdcc3bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\wrapper\program">
+      <UniqueIdentifier>{078b6144-301d-4467-a73c-b0b1f5dfbdd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\wrapper\fields">
+      <UniqueIdentifier>{6937bc07-2f6e-449a-88cc-a582ec9fd054}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects">
+      <UniqueIdentifier>{d8f70820-9a7c-441c-92d8-f7d584e946cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects\quad-gradient">
+      <UniqueIdentifier>{67d95927-7f10-496a-b418-74116435cbd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects\quad-gradient\glsl">
+      <UniqueIdentifier>{32681363-79d5-4b33-95ef-e29639f011c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects\passthrough">
+      <UniqueIdentifier>{7067fb1e-ebcf-4f40-8d85-c377f0f63ecc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects\passthrough\glsl">
+      <UniqueIdentifier>{b5918b8a-c200-444f-af11-0694ed2537de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects\passthrough-color">
+      <UniqueIdentifier>{24043f22-dc16-4da8-94e6-c8ce25dafbcd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects\passthrough-color\glsl">
+      <UniqueIdentifier>{d1e5834b-d903-4a81-9fa8-9b3161791b1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects\passthrough-texture">
+      <UniqueIdentifier>{d8878c94-48be-4b73-8e04-a5b38dc9d184}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects\passthrough-texture\glsl">
+      <UniqueIdentifier>{1bb2f851-d3b6-422a-8115-ce6fcbe8c69e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects\sdf">
+      <UniqueIdentifier>{572dfbe9-5490-40d7-a826-db41eff2b08b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects\sdf\glsl">
+      <UniqueIdentifier>{b995f8a5-4e12-46eb-b8be-1a4d3bed1626}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\null-backend-opengl3.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal\mesh\mesh.cpp">
+      <Filter>src\internal\mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal\frame-buffer\frame-buffer.cpp">
+      <Filter>src\internal\frame-buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\renderer.cpp">
+      <Filter>src\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wrapper\shader\shader.cpp">
+      <Filter>src\wrapper\shader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wrapper\fields\fields.cpp">
+      <Filter>src\wrapper\fields</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wrapper\program\program.cpp">
+      <Filter>src\wrapper\program</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shaders\passthrough-color\passthrough-color.cpp">
+      <Filter>src\shaders\passthrough-color</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\null-backend-opengl3.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\shader.h">
+      <Filter>src\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\sdf\sdf.h">
+      <Filter>src\shaders\sdf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\quad-gradient\quad-gradient.h">
+      <Filter>src\shaders\quad-gradient</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal\mesh\mesh.h">
+      <Filter>src\internal\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal\frame-buffer\frame-buffer.h">
+      <Filter>src\internal\frame-buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\renderer.h">
+      <Filter>src\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wrapper\opengl3.h">
+      <Filter>src\wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wrapper\shader\shader.h">
+      <Filter>src\wrapper\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wrapper\fields\fields.h">
+      <Filter>src\wrapper\fields</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wrapper\program\program.h">
+      <Filter>src\wrapper\program</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\passthrough-color\passthrough-color.h">
+      <Filter>src\shaders\passthrough-color</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\compiled-objects\passthrough\passthrough.h">
+      <Filter>src\shaders\compiled-objects\passthrough</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\compiled-objects\passthrough-color\passthrough-color.h">
+      <Filter>src\shaders\compiled-objects\passthrough-color</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\compiled-objects\passthrough-texture\passthrough-texture.h">
+      <Filter>src\shaders\compiled-objects\passthrough-texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\compiled-objects\quad-gradient\quad-gradient.h">
+      <Filter>src\shaders\compiled-objects\quad-gradient</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\compiled-objects\sdf\sdf.h">
+      <Filter>src\shaders\compiled-objects\sdf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\passthrough-texture\passthrough-texture.h">
+      <Filter>src\shaders\passthrough-texture</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resources\null-backend-opengl3-resources.rc">
+      <Filter>resources</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\shaders\compiled-objects\passthrough\glsl\passthrough.vert">
+      <Filter>src\shaders\compiled-objects\passthrough\glsl</Filter>
+    </None>
+    <None Include="src\shaders\compiled-objects\passthrough-color\glsl\passthrough-color.frag">
+      <Filter>src\shaders\compiled-objects\passthrough-color\glsl</Filter>
+    </None>
+    <None Include="src\shaders\compiled-objects\passthrough-texture\glsl\passthrough-texture.frag">
+      <Filter>src\shaders\compiled-objects\passthrough-texture\glsl</Filter>
+    </None>
+    <None Include="src\shaders\compiled-objects\quad-gradient\glsl\quad-gradient.frag">
+      <Filter>src\shaders\compiled-objects\quad-gradient\glsl</Filter>
+    </None>
+    <None Include="src\shaders\compiled-objects\sdf\glsl\sdf.frag">
+      <Filter>src\shaders\compiled-objects\sdf\glsl</Filter>
+    </None>
+  </ItemGroup>
+</Project>

@@ -46,4 +46,33 @@ namespace null::render::backend::shaders {
         virtual void use() = 0;
         virtual bool empty() const = 0;
     };
+
+    //@note: compiled shader object
+    class i_compiled_object : public utils::i_event_listener<e_event_type> {
+    public:
+        i_compiled_object() {
+            event_dispatcher.attach_listener(e_event_type::create, this);
+            event_dispatcher.attach_listener(e_event_type::destroy, this);
+        }
+
+        virtual ~i_compiled_object() {
+            event_dispatcher.detach_listener(e_event_type::create, this);
+            event_dispatcher.detach_listener(e_event_type::destroy, this);
+        }
+
+    private:
+        void process_event(const e_event_type& id, const std::unordered_map<std::string, std::any>& parameters) override {
+            switch(id) {
+                case e_event_type::create: { on_create(); } break;
+                case e_event_type::destroy: { on_destroy(); } break;
+            }
+        }
+
+    public:
+        virtual void on_create() = 0;
+        virtual void on_destroy() = 0;
+
+    public:
+        virtual bool empty() const = 0;
+    };
 }

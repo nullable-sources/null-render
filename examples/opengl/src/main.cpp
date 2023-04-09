@@ -1,9 +1,10 @@
 ﻿#include <iostream>
 #define null_renderer_use_glfw
 #define null_renderer_save_state
-#include <null-renderer-opengl3.h>
+#include <null-backend-opengl3.h>
+#include <null-render.h>
 
-null::render::c_window window{ };
+null::render::backend::opengl3::c_window window{ };
 utils::c_cumulative_time_measurement frame_counter{ 60 };
 
 void main_loop() {

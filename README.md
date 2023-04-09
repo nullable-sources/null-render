@@ -11,10 +11,10 @@ I tried to translate the entire ImGui render to c++20, most likely I didn’t ge
 # supported renderers and features
 
 | backends      | base render | shaders | msaa |
-| ------------- |:-----------:|:-------:| ----:|
+| ------------- |:-----------:|:-------:|:----:|
 | directx 11    | ✔️          | ✔️     | ✔️   |
 | directx 9     | ✔️          | ✔️     | ✔️   |
-| opengl 3      | ✔️          | ✔️     | ❌   |
+| opengl 3      | ✔️          | ✔️     | ✔️   |
 
 # msaa preview
 <img src="https://i.imgur.com/pQJvFcA.png">
