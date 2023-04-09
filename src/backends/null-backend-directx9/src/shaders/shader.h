@@ -1,10 +1,10 @@
 #pragma once
 #include <wrapper/vertex/vertex.h>
 #include <wrapper/pixel/pixel.h>
-#include <renderer/shaders/shader.h>
+#include <backend/shaders/shader.h>
 
-namespace null::renderer::shaders {
-	class i_shader : public virtual render::impl::shaders::i_shader {
+namespace null::render::backend::directx9::shaders {
+	class i_shader : public virtual backend::shaders::i_shader {
 	public:
 		std::unique_ptr<wrapper::c_pixel_shader> pixel_shader{ };
 		std::unique_ptr<wrapper::c_vertex_shader> vertex_shader{ };

@@ -1,7 +1,8 @@
 ﻿#include <iostream>
-#include <null-renderer-directx9.h>
+#include <null-backend-directx9.h>
+#include <null-render.h>
 
-null::render::c_window window{ };
+null::render::backend::directx9::c_window window{ };
 //null::render::c_geometry_buffer custom_buffer{ };
 utils::c_cumulative_time_measurement frame_counter{ 60 };
 
@@ -19,7 +20,7 @@ void main_loop() {
 	null::render::begin_frame(window); {
 		null::render::brush_t brush{ };
 		brush.set_color({ 100, 255, 255 });
-		null::render::background.add_rect({ 200 }, { 300 }, brush);
+		null::render::background.add_quad({ { 200, 200 }, { 300, 150} }, { { 150, 400 }, { 300, 450 } }, brush);
 
 		null::render::quad_gradient_brush_t gradient_brush{ };
 		gradient_brush
@@ -67,7 +68,7 @@ void main_loop() {
 }
 
 int main(HINSTANCE instance) {
-	window = null::render::c_window{ instance };
+	window = null::render::backend::directx9::c_window{ instance };
 
 	window.callbacks.at<utils::win::e_window_callbacks::on_create>().add([&] { frame_counter.begin(); });
 	window.callbacks.at<utils::win::e_window_callbacks::on_main_loop>().add([&] { frame_counter.update(); });

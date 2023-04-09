@@ -41,16 +41,16 @@ namespace null::render::backend {
 
         shaders::passthrough_color->use();
 
-        msaa_buffer->clear();
         msaa_buffer->set();
+        msaa_buffer->clear();
 
         background.handle();
         background.clear();
     }
 
     void i_renderer::end_render() {
-        rendering_buffer->clear();
         rendering_buffer->set();
+        rendering_buffer->clear();
         rendering_buffer->copy_from_another_frame_buffer(msaa_buffer);
 
         mesh->clear_geometry();

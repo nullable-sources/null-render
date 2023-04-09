@@ -1,8 +1,8 @@
 #pragma once
-#include <renderer/shaders/quad-gradient/quad-gradient.h>
+#include <backend/shaders/quad-gradient/quad-gradient.h>
 #include <shaders/passthrough-texture/passthrough-texture.h>
 
-namespace null::renderer::shaders {
+namespace null::render::backend::directx9::shaders {
 	namespace sources {
 		static const std::vector<byte>& quad_gradient() {
 			#include <shaders/quad-gradient/compiled/quad-gradient.h>
@@ -11,7 +11,7 @@ namespace null::renderer::shaders {
 		}
 	}
 
-	class c_quad_gradient : public render::impl::shaders::i_quad_gradient, public i_shader {
+	class c_quad_gradient : public backend::shaders::i_quad_gradient, public i_shader {
 	public:
 		std::array<color_t<float>, 4> colors{ };
 
@@ -36,7 +36,7 @@ namespace null::renderer::shaders {
 			i_shader::use();
 
 			if(empty()) return;
-			vertex_shader->set_constant(0, render::renderer->get_matrix().linear_array.data(), 4);
+			vertex_shader->set_constant(0, renderer->get_matrix().linear_array.data(), 4);
 			pixel_shader->set_constant(0, colors[0].channels.data(), 1);
 			pixel_shader->set_constant(1, colors[1].channels.data(), 1);
 			pixel_shader->set_constant(2, colors[2].channels.data(), 1);

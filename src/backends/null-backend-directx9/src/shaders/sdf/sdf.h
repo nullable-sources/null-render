@@ -1,8 +1,8 @@
 #pragma once
-#include <renderer/shaders/sdf/sdf.h>
+#include <backend/shaders/sdf/sdf.h>
 #include <shaders/passthrough-texture/passthrough-texture.h>
 
-namespace null::renderer::shaders {
+namespace null::render::backend::directx9::shaders {
 	namespace sources {
 		static const std::vector<byte>& sdf() {
 			#include <shaders/sdf/compiled/sdf.h>
@@ -11,7 +11,7 @@ namespace null::renderer::shaders {
 		}
 	}
 
-	class c_sdf : public render::impl::shaders::i_sdf, public i_shader {
+	class c_sdf : public backend::shaders::i_sdf, public i_shader {
 	public:
 		float aa{ }, outline_thickness{ };
 		color_t<float> outline_start{ }, outline_end{ };
@@ -37,7 +37,7 @@ namespace null::renderer::shaders {
 			i_shader::use();
 
 			if(empty()) return;
-			vertex_shader->set_constant(0, render::renderer->get_matrix().linear_array.data(), 4);
+			vertex_shader->set_constant(0, renderer->get_matrix().linear_array.data(), 4);
 			pixel_shader->set_constant(0, &aa);
 			pixel_shader->set_constant(1, &outline_thickness);
 			pixel_shader->set_constant(2, outline_start.channels.data());

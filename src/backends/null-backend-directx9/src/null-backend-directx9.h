@@ -1,50 +1,29 @@
 #pragma once
-#pragma comment (lib,"d3d9.lib")
-#include <d3d9.h>
-
 #include <null-render.h>
+#include <backend/backend.h>
 
-namespace null::render {
-	class c_directx9 : public i_renderer {
-	public:
-		struct vertex_t {
-			vec2_t<float> pos{ }, uv{ };
-			sdk::i_color<byte> color{ };
-		};
+#include <internal/frame-buffer/frame-buffer.h>
+#include <internal/mesh/mesh.h>
+#include <shaders/passthrough-color/passthrough-color.h>
+#include <shaders/passthrough-texture/passthrough-texture.h>
+#include <shaders/quad-gradient/quad-gradient.h>
+#include <shaders/sdf/sdf.h>
 
+namespace null::render::backend::directx9 {
+	class c_factory : public i_factory {
 	public:
-		IDirect3DDevice9* device{ };
-		IDirect3DVertexDeclaration9* vertex_declaration{ };
-		IDirect3DVertexBuffer9* vertex_buffer{ };
-		IDirect3DIndexBuffer9* index_buffer{ };
-
-	public:
-		c_directx9(IDirect3DDevice9* _device = nullptr) : device{ _device } { initialize(); }
-		~c_directx9() { shutdown(); }
+		c_factory(IDirect3DDevice9* device) { shared.device = device; }
 
 	public:
-		void set_texture(void* texture) override;
-		void set_clip(const rect_t<float>& rect) override;
-		void draw_geometry(const size_t& vertex_count, const size_t& index_count, const size_t& vertex_offset, const size_t& index_offset) override;
+		std::unique_ptr<i_renderer> instance_renderer() override { return std::make_unique<c_renderer>(); }
+		std::unique_ptr<i_mesh> instance_mesh() override { return std::make_unique<c_mesh>(); }
+		std::unique_ptr<i_frame_buffer> instance_frame_buffer(const e_frame_buffer_type& type, const e_frame_buffer_flags& flags) override { return std::make_unique<c_frame_buffer>(type, flags); }
 
-	public:
-		void initialize() override;
-		void shutdown() override { destroy_objects(); if(device) { device->Release(); device = nullptr; } }
-
-		void begin_frame() override { create_objects(); }
-		void end_frame() override { }
-
-		void begin_render() override;
-		void end_render() override;
-
-		void setup_state() override;
-
-		void create_objects() override;
-		void destroy_objects() override;
-
-		void* create_texture(const vec2_t<float>& size, void* data) override;
-		void destroy_texture(void* texture) override;
-	} inline* directx9{ };
+		std::unique_ptr<backend::shaders::i_passthrough_color> instance_passthrough_color_shader() override { return std::make_unique<shaders::c_passthrough_color>(); }
+		std::unique_ptr<backend::shaders::i_passthrough_texture> instance_passthrough_texture_shader() override { return std::make_unique<shaders::c_passthrough_texture>(); }
+		std::unique_ptr<backend::shaders::i_quad_gradient> instance_quad_gradient_shader() override { return std::make_unique<shaders::c_quad_gradient>(); }
+		std::unique_ptr<backend::shaders::i_sdf> instance_sdf_shader() override { return std::make_unique<shaders::c_sdf>(); }
+	};
 
 	class c_window : public utils::win::c_window {
 	public: using utils::win::c_window::c_window;
@@ -67,16 +46,14 @@ namespace null::render {
 			if(auto result{ direct3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, wnd_handle, D3DCREATE_HARDWARE_VERTEXPROCESSING, &present_parameters, &device) }; FAILED(result))
 				utils::logger.log(utils::e_log_type::error, "CreateDevice failed, return code {}.", result);
 
-			renderer = std::make_unique<c_directx9>(device);
-			renderer->initialize();
-
-			directx9 = (c_directx9*)renderer.get();
+			factory = std::make_unique<c_factory>(device);
+			render::initialize();
 			utils::win::c_window::on_create();
 		}
 
 		void on_destroy() override {
 			utils::win::c_window::on_destroy();
-			renderer->shutdown();
+
 			if(direct3d) { direct3d->Release(); direct3d = nullptr; }
 		}
 
@@ -104,6 +81,7 @@ namespace null::render {
 			switch(msg) {
 				case WM_SIZE: {
 					if(device && w_param != SIZE_MINIMIZED) {
+						shared::viewport = vec2_t{ LOWORD(l_param), HIWORD(l_param) };
 						present_parameters.BackBufferWidth = LOWORD(l_param);
 						present_parameters.BackBufferHeight = HIWORD(l_param);
 						reset_device();

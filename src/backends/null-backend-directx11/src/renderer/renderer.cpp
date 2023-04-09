@@ -123,8 +123,8 @@ namespace null::render::backend::directx11 {
         };
         shared.context->RSSetViewports(1, &viewport);
 
-        renderer->set_clip({ { 0 }, render::shared::viewport });
-        renderer->set_matrix(matrix4x4_t::project_ortho(0.f, render::shared::viewport.x, render::shared::viewport.y, 0.f, -10000.f, 10000.f));
+        set_clip({ { 0 }, render::shared::viewport });
+        set_matrix(matrix4x4_t::project_ortho(0.f, render::shared::viewport.x, render::shared::viewport.y, 0.f, -10000.f, 10000.f));
         shaders::event_dispatcher.setup_state();
 
         mesh->set();

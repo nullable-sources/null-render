@@ -25,7 +25,7 @@
     <ProjectReference Include="..\..\null-render.vcxproj">
       <Project>{4abcf635-9767-40f9-989e-f0cdf5fb68ae}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\renderer\null-renderer-directx9\null-renderer-directx9.vcxproj">
+    <ProjectReference Include="..\..\src\backends\null-backend-directx9\null-backend-directx9.vcxproj">
       <Project>{95843de7-57a5-4b57-b7f2-7a60b0115992}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\third-party\null-sdk\null-sdk.vcxproj">

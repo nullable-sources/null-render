@@ -1,9 +1,8 @@
 #pragma once
-#include <d3d9.h>
-
+#include <renderer/renderer.h>
 #include <wrapper/shader/shader.h>
 
-namespace null::renderer::wrapper {
+namespace null::render::backend::directx9::wrapper {
 	class c_pixel_shader : public i_shader {
 	public:
 		IDirect3DPixelShader9* shader{ };

@@ -1,6 +1,6 @@
 #pragma once
 
-namespace null::renderer::wrapper {
+namespace null::render::backend::directx9::wrapper {
 	class i_shader {
 	public:
 		virtual void compile(const byte* source) = 0;

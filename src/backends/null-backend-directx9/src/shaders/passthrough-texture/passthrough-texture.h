@@ -1,8 +1,8 @@
 #pragma once
-#include <renderer/shaders/passthrough/passthrough.h>
+#include <backend/shaders/passthrough/passthrough.h>
 #include <shaders/shader.h>
 
-namespace null::renderer::shaders {
+namespace null::render::backend::directx9::shaders {
 	namespace sources {
 		static const std::vector<byte>& passthrough_texture_pixel() {
 			#include <shaders/passthrough-texture/compiled/passthrough-texture-pixel.h>
@@ -17,7 +17,7 @@ namespace null::renderer::shaders {
 		}
 	}
 
-	class c_passthrough_texture : public render::impl::shaders::i_passthrough_texture, public i_shader {
+	class c_passthrough_texture : public backend::shaders::i_passthrough_texture, public i_shader {
 	public:
 		void on_create() override {
 			if(!empty()) return;
@@ -39,7 +39,7 @@ namespace null::renderer::shaders {
 			i_shader::use();
 
 			if(empty()) return;
-			vertex_shader->set_constant(0, render::renderer->get_matrix().linear_array.data(), 4);
+			vertex_shader->set_constant(0, renderer->get_matrix().linear_array.data(), 4);
 		}
 	};
 }

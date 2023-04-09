@@ -43,12 +43,21 @@
     <Filter Include="src\shaders\passthrough-texture\hlsl">
       <UniqueIdentifier>{5b35510b-dea2-40e5-b875-5d91e82c48d0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\wrapper\frame-buffer">
-      <UniqueIdentifier>{32d37479-6c2f-459c-a3d5-460753872ed5}</UniqueIdentifier>
+    <Filter Include="src\renderer">
+      <UniqueIdentifier>{2c9675b6-4d47-4ac8-839b-21461fffd614}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\internal">
+      <UniqueIdentifier>{553970da-1c4f-4acf-8d32-05f16ed7ab3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\internal\frame-buffer">
+      <UniqueIdentifier>{a8d550b1-de43-48c3-9e6d-2a47f6e34c76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\internal\mesh">
+      <UniqueIdentifier>{dd063624-3c36-4e97-a039-a673ce73d58b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\null-renderer-directx9.cpp">
+    <ClCompile Include="src\null-backend-directx9.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\wrapper\pixel\pixel.cpp">
@@ -57,9 +66,18 @@
     <ClCompile Include="src\wrapper\vertex\vertex.cpp">
       <Filter>src\wrapper\shader\vertex</Filter>
     </ClCompile>
+    <ClCompile Include="src\renderer\renderer.cpp">
+      <Filter>src\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal\frame-buffer\frame-buffer.cpp">
+      <Filter>src\internal\frame-buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal\mesh\mesh.cpp">
+      <Filter>src\internal\mesh</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\null-renderer-directx9.h">
+    <ClInclude Include="src\null-backend-directx9.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\shaders\shader.h">
@@ -85,6 +103,15 @@
     </ClInclude>
     <ClInclude Include="src\shaders\sdf\sdf.h">
       <Filter>src\shaders\sdf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\renderer.h">
+      <Filter>src\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal\frame-buffer\frame-buffer.h">
+      <Filter>src\internal\frame-buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal\mesh\mesh.h">
+      <Filter>src\internal\mesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -19,7 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\null-renderer-directx9.cpp" />
+    <ClCompile Include="src\internal\frame-buffer\frame-buffer.cpp" />
+    <ClCompile Include="src\internal\mesh\mesh.cpp" />
+    <ClCompile Include="src\null-backend-directx9.cpp" />
+    <ClCompile Include="src\renderer\renderer.cpp" />
     <ClCompile Include="src\wrapper\pixel\pixel.cpp" />
     <ClCompile Include="src\wrapper\vertex\vertex.cpp" />
   </ItemGroup>
@@ -32,7 +35,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\null-renderer-directx9.h" />
+    <ClInclude Include="src\internal\frame-buffer\frame-buffer.h" />
+    <ClInclude Include="src\internal\mesh\mesh.h" />
+    <ClInclude Include="src\null-backend-directx9.h" />
+    <ClInclude Include="src\renderer\renderer.h" />
     <ClInclude Include="src\shaders\passthrough-color\passthrough-color.h" />
     <ClInclude Include="src\shaders\passthrough-texture\passthrough-texture.h" />
     <ClInclude Include="src\shaders\quad-gradient\quad-gradient.h" />
