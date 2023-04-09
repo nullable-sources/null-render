@@ -1,7 +1,8 @@
 ﻿#include <iostream>
-#include <null-renderer-directx11.h>
+#include <null-backend-directx11.h>
+#include <null-render.h>
 
-null::render::c_window window{ };
+null::render::backend::directx11::c_window window{ };
 utils::c_cumulative_time_measurement frame_counter{ 60 };
 
 void main_loop() {
@@ -34,11 +35,13 @@ void main_loop() {
 			.set_size(40.f)
 			.set_outline(1.f, { 255, 200, 200 }, { 100, 100, 255 });
 		null::render::background.add_text("sdf text", { }, text_style);
+
+		null::render::foreground.add_rect({ 500, 200 }, { 600, 300 }, brush);
 	} null::render::end_frame();
 }
 
 int main(HINSTANCE instance) {
-	window = null::render::c_window{ instance };
+	window = null::render::backend::directx11::c_window{ instance };
 
 	window.callbacks.at<utils::win::e_window_callbacks::on_create>().add([&] { frame_counter.begin(); });
 	window.callbacks.at<utils::win::e_window_callbacks::on_main_loop>().add([&] { frame_counter.update(); });

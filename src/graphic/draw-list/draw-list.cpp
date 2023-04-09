@@ -1,4 +1,4 @@
-#include <renderer/renderer.h>
+#include <backend/internal/mesh.h>
 #include <graphic/commands/geometry-command/geometry-command.h>
 
 #include <graphic/draw-list/draw-list.h>
@@ -8,12 +8,12 @@ namespace null::render {
 		std::unique_ptr<commands::c_geometry> command{ std::make_unique<commands::c_geometry>() };
 
 		command->index_count += 6;
-		renderer->geometry_buffer
+		backend::mesh->geometry_buffer
 			.add_index(0).add_index(1).add_index(2)
 			.add_index(0).add_index(2).add_index(3);
 
 		command->vertex_count += 4;
-		renderer->geometry_buffer
+		backend::mesh->geometry_buffer
 			.add_vertex({ a, { 0.f }, brush.color })
 			.add_vertex({ { b.x, a.y }, { 1.f, 0.f }, brush.color })
 			.add_vertex({ b, { 1.f }, brush.color })
@@ -26,12 +26,12 @@ namespace null::render {
 		std::unique_ptr<commands::c_geometry> command{ std::make_unique<commands::c_geometry>() };
 
 		command->index_count += 6;
-		renderer->geometry_buffer
+		backend::mesh->geometry_buffer
 			.add_index(0).add_index(1).add_index(2)
 			.add_index(0).add_index(2).add_index(3);
 
 		command->vertex_count += 4;
-		renderer->geometry_buffer
+		backend::mesh->geometry_buffer
 			.add_vertex({ a.min, { 0.f }, brush.color })
 			.add_vertex({ a.max, { 1.f, 0.f }, brush.color })
 			.add_vertex({ b.max, { 1.f }, brush.color })
@@ -64,12 +64,12 @@ namespace null::render {
 				rect_t uvs{ glyph->texture_coordinates };
 
 				command->index_count += 6;
-				renderer->geometry_buffer
+				backend::mesh->geometry_buffer
 					.add_index(command->vertex_count).add_index(command->vertex_count + 1).add_index(command->vertex_count + 2)
 					.add_index(command->vertex_count).add_index(command->vertex_count + 2).add_index(command->vertex_count + 3);
 
 				command->vertex_count += 4;
-				renderer->geometry_buffer
+				backend::mesh->geometry_buffer
 					.add_vertex({ corners.min, uvs.min, text_style.color })
 					.add_vertex({ { corners.max.x, corners.min.y }, { uvs.max.x, uvs.min.y }, text_style.color })
 					.add_vertex({ corners.max, uvs.max, text_style.color })

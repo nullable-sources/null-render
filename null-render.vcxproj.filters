@@ -7,9 +7,6 @@
     <Filter Include="src\font">
       <UniqueIdentifier>{eda5cc7f-ea04-4b39-84c1-023faa3fb642}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\renderer">
-      <UniqueIdentifier>{8b3fca09-81cb-4a8f-8f2c-631dc7ce18de}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\font\loaders">
       <UniqueIdentifier>{42a92ae8-850b-44b8-9983-878d9cc79f39}</UniqueIdentifier>
     </Filter>
@@ -58,18 +55,6 @@
     <Filter Include="src\graphic\draw-list\text-styles\text-style">
       <UniqueIdentifier>{24301867-f51b-4707-a90d-a351e5bee2e9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\renderer\shaders">
-      <UniqueIdentifier>{c1ebc963-83ce-4e1a-b909-b08055328afe}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\renderer\shaders\passthrough">
-      <UniqueIdentifier>{106c9ea7-ecfa-4b1a-90ba-e7192714fcd2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\renderer\shaders\quad-gradient">
-      <UniqueIdentifier>{e9ed9fbd-075c-427e-9e73-97f699783533}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\renderer\shaders\sdf">
-      <UniqueIdentifier>{b18fded4-7edc-4f24-8f57-2ff9c1f81b66}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\graphic\commands\clip-command">
       <UniqueIdentifier>{e64acf16-d8b5-44ad-a353-9d93dbedef93}</UniqueIdentifier>
     </Filter>
@@ -82,13 +67,31 @@
     <Filter Include="src\graphic\commands\setup-state-command">
       <UniqueIdentifier>{8bf788b1-78db-4efa-bd63-9150747d8aab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\backend">
+      <UniqueIdentifier>{a8cb3f04-36e6-4fa7-bc91-69471392379b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\backend\internal">
+      <UniqueIdentifier>{7f76bb54-744c-407a-aeec-9a47a7eab72c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\backend\renderer">
+      <UniqueIdentifier>{6cf1ef11-a737-4d58-85ac-88da8436f861}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\backend\shaders">
+      <UniqueIdentifier>{a5befbf0-2cb0-4895-bf43-e2158b07b51a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\backend\shaders\quad-gradient">
+      <UniqueIdentifier>{668323fe-7a6c-4783-a040-da2c1d9e18a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\backend\shaders\sdf">
+      <UniqueIdentifier>{57bf7932-2b09-4c96-82f5-2475e157cf8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\backend\shaders\passthrough">
+      <UniqueIdentifier>{3324d159-be66-4385-857d-868f9255469e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\font\font.cpp">
       <Filter>src\font</Filter>
-    </ClCompile>
-    <ClCompile Include="src\renderer\renderer.cpp">
-      <Filter>src\renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\font\loaders\truetype\truetype.cpp">
       <Filter>src\font\loaders\truetype</Filter>
@@ -132,6 +135,15 @@
     <ClCompile Include="src\graphic\commands\matrix-command\matrix-command.cpp">
       <Filter>src\graphic\commands\matrix-command</Filter>
     </ClCompile>
+    <ClCompile Include="src\backend\backend.cpp">
+      <Filter>src\backend</Filter>
+    </ClCompile>
+    <ClCompile Include="src\backend\renderer\renderer.cpp">
+      <Filter>src\backend\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\null-render.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\null-render.h">
@@ -139,9 +151,6 @@
     </ClInclude>
     <ClInclude Include="src\font\font.h">
       <Filter>src\font</Filter>
-    </ClInclude>
-    <ClInclude Include="src\renderer\renderer.h">
-      <Filter>src\renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\font\loaders\truetype\truetype.h">
       <Filter>src\font\loaders\truetype</Filter>
@@ -185,18 +194,6 @@
     <ClInclude Include="src\graphic\draw-list\brushes\brush.h">
       <Filter>src\graphic\draw-list\brushes</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\shaders\shader.h">
-      <Filter>src\renderer\shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="src\renderer\shaders\sdf\sdf.h">
-      <Filter>src\renderer\shaders\sdf</Filter>
-    </ClInclude>
-    <ClInclude Include="src\renderer\shaders\quad-gradient\quad-gradient.h">
-      <Filter>src\renderer\shaders\quad-gradient</Filter>
-    </ClInclude>
-    <ClInclude Include="src\renderer\shaders\passthrough\passthrough.h">
-      <Filter>src\renderer\shaders\passthrough</Filter>
-    </ClInclude>
     <ClInclude Include="src\graphic\commands\texture-command\texture-command.h">
       <Filter>src\graphic\commands\texture-command</Filter>
     </ClInclude>
@@ -208,6 +205,33 @@
     </ClInclude>
     <ClInclude Include="src\graphic\commands\matrix-command\matrix-command.h">
       <Filter>src\graphic\commands\matrix-command</Filter>
+    </ClInclude>
+    <ClInclude Include="src\backend\backend.h">
+      <Filter>src\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="src\backend\renderer\renderer.h">
+      <Filter>src\backend\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\backend\internal\frame-buffer.h">
+      <Filter>src\backend\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\backend\internal\geometry-buffer.h">
+      <Filter>src\backend\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\backend\internal\mesh.h">
+      <Filter>src\backend\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\backend\shaders\passthrough\passthrough.h">
+      <Filter>src\backend\shaders\passthrough</Filter>
+    </ClInclude>
+    <ClInclude Include="src\backend\shaders\quad-gradient\quad-gradient.h">
+      <Filter>src\backend\shaders\quad-gradient</Filter>
+    </ClInclude>
+    <ClInclude Include="src\backend\shaders\sdf\sdf.h">
+      <Filter>src\backend\shaders\sdf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\backend\shaders\shader.h">
+      <Filter>src\backend\shaders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

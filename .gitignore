@@ -2,12 +2,12 @@ build/
 .vs/
 *.user
 
-src/renderer/null-renderer-directx9/src/shaders/passthrough-color/compiled
-src/renderer/null-renderer-directx9/src/shaders/passthrough-texture/compiled
-src/renderer/null-renderer-directx9/src/shaders/quad-gradient/compiled
-src/renderer/null-renderer-directx9/src/shaders/sdf/compiled
+src/backends/null-renderer-directx9/src/shaders/passthrough-color/compiled
+src/backends/null-renderer-directx9/src/shaders/passthrough-texture/compiled
+src/backends/null-renderer-directx9/src/shaders/quad-gradient/compiled
+src/backends/null-renderer-directx9/src/shaders/sdf/compiled
 
-src/renderer/null-renderer-directx11/src/shaders/passthrough-color/compiled
-src/renderer/null-renderer-directx11/src/shaders/passthrough-texture/compiled
-src/renderer/null-renderer-directx11/src/shaders/quad-gradient/compiled
-src/renderer/null-renderer-directx11/src/shaders/sdf/compiled
+src/backends/null-backend-directx11/src/shaders/passthrough-color/compiled
+src/backends/null-backend-directx11/src/shaders/passthrough-texture/compiled
+src/backends/null-backend-directx11/src/shaders/quad-gradient/compiled
+src/backends/null-backend-directx11/src/shaders/sdf/compiled
