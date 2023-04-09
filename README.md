@@ -9,12 +9,16 @@ At the moment, all more or less popular backends are implemented (dx9/dx11/openg
 I tried to translate the entire ImGui render to c++20, most likely I didn’t get it very well, so if you notice some c-style code in the project, or incorrect use of stl - welcome to the issue or pull request tab, I will appreciate any help.
 
 # supported renderers and features
-- ### directx9
-    - base render
-- ### directx11
-    - base render
-- ### opengl3
-    - base render
+
+| backends      | base render | shaders | msaa |
+| ------------- |:-----------:|:-------:| ----:|
+| directx 11    | ✔️          | ✔️     | ✔️   |
+| directx 9     | ✔️          | ✔️     | ✔️   |
+| opengl 3      | ✔️          | ✔️     | ❌   |
+
+# msaa preview
+<img src="https://i.imgur.com/pQJvFcA.png">
+<img src="https://i.imgur.com/i0lurGn.png">
 
 # opengl3 renderer
 To connect opengl3-renderer you need:

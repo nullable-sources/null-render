@@ -31,7 +31,7 @@ namespace null::render::backend::directx9 {
             }
 
             //@note: creating render target
-            if(auto result{ shared.device->CreateRenderTarget(shared::viewport.x, shared::viewport.y, main_surface_desc.Format, multisample_type, 0, false, &surface, nullptr) }; FAILED(result)) {
+            if(auto result{ shared.device->CreateRenderTarget(shared::viewport.x, shared::viewport.y, main_surface_desc.Format, multisample_type, main_surface_desc.MultiSampleQuality, false, &surface, nullptr) }; FAILED(result)) {
                 utils::logger.log(utils::e_log_type::error, "CreateRenderTarget failed, return code {}.", result);
                 return;
             }

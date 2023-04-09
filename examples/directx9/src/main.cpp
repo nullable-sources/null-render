@@ -69,7 +69,7 @@ void main_loop() {
 
 int main(HINSTANCE instance) {
 	window = null::render::backend::directx9::c_window{ instance };
-
+	null::render::shared::msaa_quality = 16;
 	window.callbacks.at<utils::win::e_window_callbacks::on_create>().add([&] { frame_counter.begin(); });
 	window.callbacks.at<utils::win::e_window_callbacks::on_main_loop>().add([&] { frame_counter.update(); });
 
