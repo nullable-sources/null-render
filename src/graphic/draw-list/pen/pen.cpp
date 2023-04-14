@@ -1,4 +1,4 @@
-#include <graphic/draw-list/pens/pen.h>
+#include <graphic/draw-list/pen/pen.h>
 #include <backend/internal/mesh.h>
 
 namespace null::render {
@@ -63,7 +63,7 @@ namespace null::render {
 		const float thickness_offset{ 2.f * origin };
 		pen_command->vertex_count += 2;
 		backend::mesh->geometry_buffer
-			.add_vertex({ current_vertex.pos + normal * (thickness * thickness_offset), { }, { brush->color, 100 } })
-			.add_vertex({ current_vertex.pos - normal * (thickness * (2.f - thickness_offset)), { }, { brush->color, 100 } });
+			.add_vertex({ current_vertex.pos + normal * (thickness * thickness_offset), { }, brush->color })
+			.add_vertex({ current_vertex.pos - normal * (thickness * (2.f - thickness_offset)), { }, brush->color });
 	}
 }
