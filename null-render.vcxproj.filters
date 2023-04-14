@@ -91,6 +91,9 @@
     <Filter Include="src\graphic\draw-list\strokes">
       <UniqueIdentifier>{9d890c68-a50a-485a-aac9-60273143cdea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\graphic\draw-list\pens">
+      <UniqueIdentifier>{f4cce58a-0e20-452d-b535-23a0b3981ee6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\font\font.cpp">
@@ -149,6 +152,9 @@
     </ClCompile>
     <ClCompile Include="src\graphic\draw-list\strokes\stroke.cpp">
       <Filter>src\graphic\draw-list\strokes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\draw-list\pens\pen.cpp">
+      <Filter>src\graphic\draw-list\pens</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -239,8 +245,11 @@
     <ClInclude Include="src\backend\shaders\shader.h">
       <Filter>src\backend\shaders</Filter>
     </ClInclude>
+    <ClInclude Include="src\graphic\draw-list\pens\pen.h">
+      <Filter>src\graphic\draw-list\pens</Filter>
+    </ClInclude>
     <ClInclude Include="src\graphic\draw-list\strokes\stroke.h">
-      <Filter>src\graphic\draw-list\strokes</Filter>
+      <Filter>src\graphic\draw-list\text-styles</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -31,6 +31,7 @@
     <ClCompile Include="src\graphic\commands\texture-command\texture-command.cpp" />
     <ClCompile Include="src\graphic\draw-list\brushes\quad-gradient-brush\quad-gradient-brush.cpp" />
     <ClCompile Include="src\graphic\draw-list\draw-list.cpp" />
+    <ClCompile Include="src\graphic\draw-list\pens\pen.cpp" />
     <ClCompile Include="src\graphic\draw-list\strokes\stroke.cpp" />
     <ClCompile Include="src\graphic\draw-list\text-styles\sdf-text-style\sdf-text-style.cpp" />
     <ClCompile Include="src\graphic\draw-list\text-styles\text-style\text-style.cpp" />
@@ -67,6 +68,7 @@
     <ClInclude Include="src\graphic\draw-list\brushes\brush.h" />
     <ClInclude Include="src\graphic\draw-list\brushes\quad-gradient-brush\quad-gradient-brush.h" />
     <ClInclude Include="src\graphic\draw-list\draw-list.h" />
+    <ClInclude Include="src\graphic\draw-list\pens\pen.h" />
     <ClInclude Include="src\graphic\draw-list\strokes\stroke.h" />
     <ClInclude Include="src\graphic\draw-list\text-styles\sdf-text-style\sdf-text-style.h" />
     <ClInclude Include="src\graphic\draw-list\text-styles\text-style\text-style.h" />
