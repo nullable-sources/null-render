@@ -1,8 +1,9 @@
 #pragma once
 #include <wrapper/constant-buffer/constant-buffer.h>
+#include <backend/shaders/shader.h>
 
 namespace null::render::backend::directx11::wrapper {
-	class i_shader {
+	class i_shader : public backend::shaders::i_compiled_object {
 	public:
 		virtual void create(const std::vector<std::uint8_t>& source) = 0;
 		virtual void destroy() = 0;
@@ -14,6 +15,6 @@ namespace null::render::backend::directx11::wrapper {
 		virtual void set_constant_buffer(ID3D11Buffer* buffer, const int& slot) = 0;
 
 	public:
-		virtual bool empty() const = 0;
+		virtual void on_destroy() override { destroy(); }
 	};
 }

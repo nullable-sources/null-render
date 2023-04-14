@@ -2,43 +2,19 @@
 #include <backend/shaders/passthrough/passthrough.h>
 #include <shaders/shader.h>
 
+#include <shaders/compiled-objects/passthrough-color/passthrough-color.h>
+#include <shaders/compiled-objects/passthrough/passthrough.h>
+
 namespace null::render::backend::directx9::shaders {
-	namespace sources {
-		static const std::vector<byte>& passthrough_color_pixel() {
-			#include <shaders/passthrough-color/compiled/passthrough-color-pixel.h>
-			static const std::vector<byte> source{ shader_bytes, shader_bytes + sizeof(shader_bytes) };
-			return source;
-		}
-
-		static const std::vector<byte>& passthrough_color_vertex() {
-			#include <shaders/passthrough-color/compiled/passthrough-color-vertex.h>
-			static const std::vector<byte> source{ shader_bytes, shader_bytes + sizeof(shader_bytes) };
-			return source;
-		}
-	}
-
 	class c_passthrough_color : public backend::shaders::i_passthrough_color, public i_shader {
 	public:
-		void on_create() override {
-			if(!empty()) return;
+		c_passthrough_color() : i_shader{ &compiled_objects::passthrough_color, &compiled_objects::passthrough } { }
 
-			pixel_shader = std::make_unique<wrapper::c_pixel_shader>();
-			pixel_shader->compile(sources::passthrough_color_pixel().data());
-
-			vertex_shader = std::make_unique<wrapper::c_vertex_shader>();
-			vertex_shader->compile(sources::passthrough_color_vertex().data());
-		}
-
-		void on_destroy() override {
-			if(empty()) return;
-			pixel_shader->destroy();
-			vertex_shader->destroy();
-		}
-
+	public:
 		void use() override {
+			if(empty()) return;
 			i_shader::use();
 
-			if(empty()) return;
 			vertex_shader->set_constant(0, renderer->get_matrix().linear_array.data(), 4);
 		}
 	};

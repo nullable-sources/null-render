@@ -47,37 +47,37 @@
       <UniqueIdentifier>{6937bc07-2f6e-449a-88cc-a582ec9fd054}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\shaders\compiled-objects">
-      <UniqueIdentifier>{d8f70820-9a7c-441c-92d8-f7d584e946cb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\shaders\compiled-objects\quad-gradient">
-      <UniqueIdentifier>{67d95927-7f10-496a-b418-74116435cbd9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\shaders\compiled-objects\quad-gradient\glsl">
-      <UniqueIdentifier>{32681363-79d5-4b33-95ef-e29639f011c4}</UniqueIdentifier>
+      <UniqueIdentifier>{3b0398e2-854e-4455-8512-fc8a229e4c8c}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\shaders\compiled-objects\passthrough">
-      <UniqueIdentifier>{7067fb1e-ebcf-4f40-8d85-c377f0f63ecc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\shaders\compiled-objects\passthrough\glsl">
-      <UniqueIdentifier>{b5918b8a-c200-444f-af11-0694ed2537de}</UniqueIdentifier>
+      <UniqueIdentifier>{5a0e1560-357d-4e86-b2a3-795921c42d02}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\shaders\compiled-objects\passthrough-color">
-      <UniqueIdentifier>{24043f22-dc16-4da8-94e6-c8ce25dafbcd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\shaders\compiled-objects\passthrough-color\glsl">
-      <UniqueIdentifier>{d1e5834b-d903-4a81-9fa8-9b3161791b1b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\shaders\compiled-objects\passthrough-texture">
-      <UniqueIdentifier>{d8878c94-48be-4b73-8e04-a5b38dc9d184}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\shaders\compiled-objects\passthrough-texture\glsl">
-      <UniqueIdentifier>{1bb2f851-d3b6-422a-8115-ce6fcbe8c69e}</UniqueIdentifier>
+      <UniqueIdentifier>{8ecc15cb-d9a0-4501-b69a-089474637a56}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\shaders\compiled-objects\sdf">
-      <UniqueIdentifier>{572dfbe9-5490-40d7-a826-db41eff2b08b}</UniqueIdentifier>
+      <UniqueIdentifier>{00e3385a-1888-48e8-9f8f-b2febe478ec0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects\quad-gradient">
+      <UniqueIdentifier>{a25a92fb-3998-4a59-990f-1c1be7d4f084}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects\passthrough-texture">
+      <UniqueIdentifier>{ee7cf448-0e66-4630-9671-cfcaa71755d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects\passthrough-texture\glsl">
+      <UniqueIdentifier>{cc75025b-120c-4715-b119-cbfe9573c158}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects\quad-gradient\glsl">
+      <UniqueIdentifier>{fed1505c-0a57-4343-a0c9-f4188cc89218}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\shaders\compiled-objects\sdf\glsl">
-      <UniqueIdentifier>{b995f8a5-4e12-46eb-b8be-1a4d3bed1626}</UniqueIdentifier>
+      <UniqueIdentifier>{6b625ca8-6f90-40a0-a841-910c9229f8eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects\passthrough-color\glsl">
+      <UniqueIdentifier>{de0a6a72-3f97-47e3-b904-52cff0812989}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects\passthrough\glsl">
+      <UniqueIdentifier>{a7585922-2663-4809-8cc0-1bc806087d55}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -143,11 +143,11 @@
     <ClInclude Include="src\shaders\passthrough-color\passthrough-color.h">
       <Filter>src\shaders\passthrough-color</Filter>
     </ClInclude>
+    <ClInclude Include="src\shaders\passthrough-texture\passthrough-texture.h">
+      <Filter>src\shaders\passthrough-texture</Filter>
+    </ClInclude>
     <ClInclude Include="src\shaders\compiled-objects\passthrough\passthrough.h">
       <Filter>src\shaders\compiled-objects\passthrough</Filter>
-    </ClInclude>
-    <ClInclude Include="src\shaders\compiled-objects\passthrough-color\passthrough-color.h">
-      <Filter>src\shaders\compiled-objects\passthrough-color</Filter>
     </ClInclude>
     <ClInclude Include="src\shaders\compiled-objects\passthrough-texture\passthrough-texture.h">
       <Filter>src\shaders\compiled-objects\passthrough-texture</Filter>
@@ -158,8 +158,8 @@
     <ClInclude Include="src\shaders\compiled-objects\sdf\sdf.h">
       <Filter>src\shaders\compiled-objects\sdf</Filter>
     </ClInclude>
-    <ClInclude Include="src\shaders\passthrough-texture\passthrough-texture.h">
-      <Filter>src\shaders\passthrough-texture</Filter>
+    <ClInclude Include="src\shaders\compiled-objects\passthrough-color\passthrough-color.h">
+      <Filter>src\shaders\compiled-objects\passthrough-color</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -168,12 +168,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\shaders\compiled-objects\passthrough\glsl\passthrough.vert">
-      <Filter>src\shaders\compiled-objects\passthrough\glsl</Filter>
-    </None>
-    <None Include="src\shaders\compiled-objects\passthrough-color\glsl\passthrough-color.frag">
-      <Filter>src\shaders\compiled-objects\passthrough-color\glsl</Filter>
-    </None>
     <None Include="src\shaders\compiled-objects\passthrough-texture\glsl\passthrough-texture.frag">
       <Filter>src\shaders\compiled-objects\passthrough-texture\glsl</Filter>
     </None>
@@ -182,6 +176,12 @@
     </None>
     <None Include="src\shaders\compiled-objects\sdf\glsl\sdf.frag">
       <Filter>src\shaders\compiled-objects\sdf\glsl</Filter>
+    </None>
+    <None Include="src\shaders\compiled-objects\passthrough-color\glsl\passthrough-color.frag">
+      <Filter>src\shaders\compiled-objects\passthrough-color\glsl</Filter>
+    </None>
+    <None Include="src\shaders\compiled-objects\passthrough\glsl\passthrough.vert">
+      <Filter>src\shaders\compiled-objects\passthrough\glsl</Filter>
     </None>
   </ItemGroup>
 </Project>

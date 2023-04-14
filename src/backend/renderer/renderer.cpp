@@ -49,6 +49,9 @@ namespace null::render::backend {
     }
 
     void i_renderer::end_render() {
+        foreground.handle();
+        foreground.clear();
+
         rendering_buffer->set();
         rendering_buffer->clear();
         rendering_buffer->copy_from_another_frame_buffer(msaa_buffer);

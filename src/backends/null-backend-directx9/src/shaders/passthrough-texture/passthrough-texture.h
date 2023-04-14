@@ -2,43 +2,19 @@
 #include <backend/shaders/passthrough/passthrough.h>
 #include <shaders/shader.h>
 
+#include <shaders/compiled-objects/passthrough-texture/passthrough-texture.h>
+#include <shaders/compiled-objects/passthrough/passthrough.h>
+
 namespace null::render::backend::directx9::shaders {
-	namespace sources {
-		static const std::vector<byte>& passthrough_texture_pixel() {
-			#include <shaders/passthrough-texture/compiled/passthrough-texture-pixel.h>
-			static const std::vector<byte> source{ shader_bytes, shader_bytes + sizeof(shader_bytes) };
-			return source;
-		}
-
-		static const std::vector<byte>& passthrough_texture_vertex() {
-			#include <shaders/passthrough-texture/compiled/passthrough-texture-vertex.h>
-			static const std::vector<byte> source{ shader_bytes, shader_bytes + sizeof(shader_bytes) };
-			return source;
-		}
-	}
-
 	class c_passthrough_texture : public backend::shaders::i_passthrough_texture, public i_shader {
 	public:
-		void on_create() override {
-			if(!empty()) return;
+		c_passthrough_texture() : i_shader{ &compiled_objects::passthrough_texture, &compiled_objects::passthrough } { }
 
-			pixel_shader = std::make_unique<wrapper::c_pixel_shader>();
-			pixel_shader->compile(sources::passthrough_texture_pixel().data());
-
-			vertex_shader = std::make_unique<wrapper::c_vertex_shader>();
-			vertex_shader->compile(sources::passthrough_texture_vertex().data());
-		}
-
-		void on_destroy() override {
-			if(empty()) return;
-			pixel_shader->destroy();
-			vertex_shader->destroy();
-		}
-
+	public:
 		void use() override {
+			if(empty()) return;
 			i_shader::use();
 
-			if(empty()) return;
 			vertex_shader->set_constant(0, renderer->get_matrix().linear_array.data(), 4);
 		}
 	};

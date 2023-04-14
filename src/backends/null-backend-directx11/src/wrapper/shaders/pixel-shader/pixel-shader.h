@@ -1,3 +1,4 @@
+#pragma once
 #include <wrapper/shaders/shader.h>
 
 namespace null::render::backend::directx11::wrapper {

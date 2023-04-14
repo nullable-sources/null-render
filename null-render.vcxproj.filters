@@ -88,6 +88,9 @@
     <Filter Include="src\backend\shaders\passthrough">
       <UniqueIdentifier>{3324d159-be66-4385-857d-868f9255469e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\graphic\draw-list\strokes">
+      <UniqueIdentifier>{9d890c68-a50a-485a-aac9-60273143cdea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\font\font.cpp">
@@ -143,6 +146,9 @@
     </ClCompile>
     <ClCompile Include="src\null-render.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\draw-list\strokes\stroke.cpp">
+      <Filter>src\graphic\draw-list\strokes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -232,6 +238,9 @@
     </ClInclude>
     <ClInclude Include="src\backend\shaders\shader.h">
       <Filter>src\backend\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\draw-list\strokes\stroke.h">
+      <Filter>src\graphic\draw-list\strokes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

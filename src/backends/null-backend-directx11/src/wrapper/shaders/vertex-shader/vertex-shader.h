@@ -1,6 +1,7 @@
+#pragma once
 #include <wrapper/shaders/shader.h>
 
-namespace null::render::backend::directx11::wrapper{
+namespace null::render::backend::directx11::wrapper {
 	class c_vertex_shader : public i_shader {
 	public:
 		ID3D11VertexShader* shader{ };

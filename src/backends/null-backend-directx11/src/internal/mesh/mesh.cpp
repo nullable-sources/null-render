@@ -1,5 +1,5 @@
 #include <internal/mesh/mesh.h>
-#include <shaders/passthrough-texture/passthrough-texture.h>
+#include <shaders/compiled-objects/passthrough/passthrough.h>
 
 namespace null::render::backend::directx11 {
     void c_mesh::create() {
@@ -10,7 +10,7 @@ namespace null::render::backend::directx11 {
             { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,      0, (UINT)offsetof(vertex_t, uv),  D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "COLOR",    0, DXGI_FORMAT_R32G32B32A32_UINT, 0, (UINT)offsetof(vertex_t, color), D3D11_INPUT_PER_VERTEX_DATA, 0 },
         };
-        if(auto result{ shared.device->CreateInputLayout(desc, 3, shaders::sources::passthrough_texture_vertex().data(), shaders::sources::passthrough_texture_vertex().size(), &input_layout) }; FAILED(result))
+        if(auto result{ shared.device->CreateInputLayout(desc, 3, shaders::compiled_objects::sources::passthrough().data(), shaders::compiled_objects::sources::passthrough().size(), &input_layout) }; FAILED(result))
             utils::logger.log(utils::e_log_type::error, "cant create vertex input layout, return code {}.", result);
     }
 
