@@ -94,6 +94,9 @@
     <Filter Include="src\graphic\draw-list\pen">
       <UniqueIdentifier>{f4cce58a-0e20-452d-b535-23a0b3981ee6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\graphic\path">
+      <UniqueIdentifier>{d0a8f224-405a-4f20-a296-c59ca99bf979}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\font\font.cpp">
@@ -155,6 +158,9 @@
     </ClCompile>
     <ClCompile Include="src\graphic\draw-list\pen\pen.cpp">
       <Filter>src\graphic\draw-list\pen</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\path\path.cpp">
+      <Filter>src\graphic\path</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -250,6 +256,9 @@
     </ClInclude>
     <ClInclude Include="src\graphic\draw-list\pen\pen.h">
       <Filter>src\graphic\draw-list\pen</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\path\path.h">
+      <Filter>src\graphic\path</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

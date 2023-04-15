@@ -38,6 +38,7 @@
     <ClCompile Include="src\graphic\filters\quad-gradient\quad-gradient.cpp" />
     <ClCompile Include="src\graphic\filters\sdf\sdf.cpp" />
     <ClCompile Include="src\graphic\filters\texture\texture.cpp" />
+    <ClCompile Include="src\graphic\path\path.cpp" />
     <ClCompile Include="src\null-render.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -76,6 +77,7 @@
     <ClInclude Include="src\graphic\filters\quad-gradient\quad-gradient.h" />
     <ClInclude Include="src\graphic\filters\sdf\sdf.h" />
     <ClInclude Include="src\graphic\filters\texture\texture.h" />
+    <ClInclude Include="src\graphic\path\path.h" />
     <ClInclude Include="src\null-render.h" />
   </ItemGroup>
   <ItemGroup>

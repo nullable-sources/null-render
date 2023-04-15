@@ -3,6 +3,12 @@
 
 namespace null::render {
     void initialize() {
+        shared::arc_fast_vertex.resize(shared::arc_fast_tessellation_multiplier * 12);
+        std::ranges::for_each(std::views::iota(0, (int)shared::arc_fast_vertex.size()), [=](const int& i) {
+            float a{ float(i * 2.f * std::numbers::pi) / shared::arc_fast_vertex.size() };
+            shared::arc_fast_vertex[i] = vec2_t{ std::cosf(a), std::sinf(a) };
+            });
+
         if(!backend::factory) {
             utils::logger.log(utils::e_log_type::error, "backend factory is empty.");
             return;

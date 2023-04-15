@@ -1,7 +1,7 @@
 ﻿#include <iostream>
 #include <null-backend-directx11.h>
 #include <null-render.h>
-
+#include <graphic/path/path.h>
 null::render::backend::directx11::c_window window{ };
 utils::c_cumulative_time_measurement frame_counter{ 60 };
 
@@ -38,6 +38,8 @@ void main_loop() {
 
 		brush.set_color({ 100, 255, 255, 100 });
 		null::render::background.add_convex_shape({ { 150, 200 }, { 300, 180}, { 300, 450 }, { 150, 400 } }, brush, null::render::pen_t{ }.set_brush(null::render::brush_t{ }));
+
+		null::render::background.add_poly_line(null::render::path::make_rect({ 600, 200 }, { 700, 300 }, { 0.f }), null::render::stroke_t{ }.set_join(null::render::e_line_join::miter).set_cap(null::render::e_line_cap::joint).set_thickness(2.f), brush);
 
 		//null::render::background.add_rect({ 600, 200 }, { 700, 300 }, gradient_brush);
 

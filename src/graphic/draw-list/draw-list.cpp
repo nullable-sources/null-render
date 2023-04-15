@@ -5,7 +5,7 @@
 
 namespace null::render {
 	void c_draw_list::add_poly_line(const std::vector<vec2_t<float>>& points, const stroke_t& stroke, const brush_t& brush, const pen_t& pen) {
-		if(points.size() < 2 || brush.color.a <= 0) return;
+		if(points.size() < 2) return;
 		std::unique_ptr<commands::c_geometry> command{ std::make_unique<commands::c_geometry>() };
 
 		const bool have_pen{ stroke.line_join != e_line_join::none && pen.brush };
@@ -91,7 +91,7 @@ namespace null::render {
 	}
 
 	void c_draw_list::add_convex_shape(const std::vector<vec2_t<float>>& points, const brush_t& brush, const pen_t& pen) {
-		if(points.size() < 3 || brush.color.a <= 0) return;
+		if(points.size() < 3) return;
 		std::unique_ptr<commands::c_geometry> command{ std::make_unique<commands::c_geometry>() };
 
 		command->index_count += (points.size() - 2) * 3;
