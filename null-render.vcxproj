@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\font\font.inl" />
+    <None Include="src\graphic\draw-list\draw-list.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

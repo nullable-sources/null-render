@@ -3,9 +3,9 @@
 
 namespace null::render {
 	enum class e_line_join {
-		none,
 		miter,
-		bevel
+		bevel,
+		none
 	};
 
 	enum class e_line_cap {
@@ -36,12 +36,12 @@ namespace null::render {
 		};
 
 	public:
-		float thickness{ };
+		float thickness{ 1.f };
 		e_line_join line_join{ };
 		e_line_cap line_cap{ };
 
 	public:
-		template <typename self_t> auto&& set_thickness(this self_t&& self, const float& thickness) { self.thickness = thickness; return self; }
+		template <typename self_t> auto&& set_thickness(this self_t&& self, const float& thickness) { self.thickness = std::max(thickness, 1.f); return self; }
 		template <typename self_t> auto&& set_join(this self_t&& self, const e_line_join& line_join) { self.line_join = line_join; return self; }
 		template <typename self_t> auto&& set_cap(this self_t&& self, const e_line_cap& line_cap) { self.line_cap = line_cap; return self; }
 

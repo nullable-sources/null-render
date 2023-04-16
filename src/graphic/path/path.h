@@ -68,5 +68,6 @@ namespace null::render::path {
 	std::vector<vec2_t<float>> make_arc_fast(const vec2_t<float>& center, const float& radius, const int& a_min_of_12, const int& a_max_of_12);
 	std::vector<vec2_t<float>> make_arc(const vec2_t<float>& center, const float& radius, const float& a_min, const float& a_max, const int& num_segments);
 
+	std::vector<vec2_t<float>> make_circle(const vec2_t<float>& center, const float& radius, int num_segments = 0);
 	std::vector<vec2_t<float>> make_rect(const vec2_t<float>& a, const vec2_t<float>& b, const rounding_t& rounding = { });
 }

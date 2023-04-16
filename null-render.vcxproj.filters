@@ -251,19 +251,22 @@
     <ClInclude Include="src\backend\shaders\shader.h">
       <Filter>src\backend\shaders</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphic\draw-list\strokes\stroke.h">
-      <Filter>src\graphic\draw-list\text-styles</Filter>
-    </ClInclude>
     <ClInclude Include="src\graphic\draw-list\pen\pen.h">
       <Filter>src\graphic\draw-list\pen</Filter>
     </ClInclude>
     <ClInclude Include="src\graphic\path\path.h">
       <Filter>src\graphic\path</Filter>
     </ClInclude>
+    <ClInclude Include="src\graphic\draw-list\strokes\stroke.h">
+      <Filter>src\graphic\draw-list\strokes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\font\font.inl">
       <Filter>src\font</Filter>
+    </None>
+    <None Include="src\graphic\draw-list\draw-list.inl">
+      <Filter>src\graphic\draw-list</Filter>
     </None>
   </ItemGroup>
 </Project>

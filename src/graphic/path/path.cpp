@@ -20,6 +20,16 @@ namespace null::render::path {
         }
     }
 
+    std::vector<vec2_t<float>> make_circle(const vec2_t<float>& center, const float& radius, int num_segments) {
+        if(num_segments <= 0) {
+            const int radius_idx{ (int)radius - 1 };
+            if(radius_idx < shared::circle_segments.size()) num_segments = shared::circle_segments[radius_idx];
+            else num_segments = std::clamp((int)((std::numbers::pi * 2.0f) / acosf((radius - shared::circle_segment_max_error) / radius)), 12, shared::circle_auto_segment_max);
+        } else num_segments = std::clamp(num_segments, 3, shared::circle_auto_segment_max);
+
+        return num_segments == 12 ? make_arc_fast(center, radius, 0, 11) : make_arc(center, radius, 0.0f, (std::numbers::pi * 2.f) * (num_segments - 1.f) / num_segments, num_segments - 1);
+    }
+
 	std::vector<vec2_t<float>> make_rect(const vec2_t<float>& a, const vec2_t<float>& b, const rounding_t& rounding) {
         if(rounding.sum() <= 0.0f) return { a, { b.x, a.y }, b, { a.x, b.y } };
         

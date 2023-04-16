@@ -8,30 +8,6 @@
 #include <null-sdk.h>
 
 namespace null::render {
-    template <typename string_t>
-    struct multicolor_text_t {
-    public:
-        using data_t = std::vector<std::pair<string_t, color_t<int>>>;
-        data_t data{ };
-
-    public:
-        multicolor_text_t() { }
-        multicolor_text_t(const string_t& str, const color_t<int>& color) : data{ { str, color } } { }
-        multicolor_text_t(const data_t& _data) : data{ _data } { }
-
-    public:
-        void transform(const std::function<void(string_t&, color_t<int>&)> func) {
-            for(auto& [string, color] : data) { func(string, color); }
-        }
-
-        //@note: returns a string made up of all the strings in the text
-        string_t unite() {
-            return std::accumulate(data.begin(), data.end(), string_t{ }, [=](string_t result, data_t::value_type str) {
-                return result + str.first;
-                });
-        }
-    };
-
     namespace impl {
         static int get_char_from_utf8(std::uint32_t* out_char, const std::string_view::const_iterator& iterator, const std::string_view::const_iterator& end) {
             static constexpr std::array<char, 32> lengths{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 3, 3, 4, 0 };
@@ -71,6 +47,10 @@ namespace null::render {
         }
 
         namespace char_converters {
+            template <typename string_t> struct char_t { using type = string_t::value_type; };
+            template <> struct char_t<const char*> { using type = char; };
+            template <> struct char_t<const wchar_t*> { using type = char; };
+
             template <class string_t>
             struct converter {
                 template <typename iterator_t>
@@ -201,9 +181,8 @@ namespace null::render {
         bool is_loaded() const { return container_atlas; }
         float get_char_advance(const std::uint16_t& c) const { return (c < lookup_table.advances_x.size()) ? lookup_table.advances_x[c] : fallback_advance_x; }
 
-        template <typename char_t> void calc_text_size(const std::basic_string_view<char_t>& str, vec2_t<float>& result, vec2_t<float>& line_size);
-        template <typename string_view_t> vec2_t<float> calc_text_size(const string_view_t& str, const float& custom_size = 0.f);
-        template <typename string_t> vec2_t<float> calc_text_size(const multicolor_text_t<string_t>& str, const float& custom_size = 0.f);
+        template <typename char_t> vec2_t<float> calc_text_size(const std::basic_string_view<char_t>& text, const float& custom_size = 0.f);
+        template <typename string_t> vec2_t<float> calc_text_size(const string_t& text, const float& custom_size = 0.f) { return calc_text_size(std::basic_string_view{ text }, custom_size); }
     };
 
     class c_atlas {

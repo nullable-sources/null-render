@@ -11,7 +11,7 @@ namespace null::render {
 	struct pen_t {
 	public:
 		const brush_t* brush{ };
-		float thickness{ 5.f };
+		float thickness{ 1.f };
 		float origin{ 0.5f }; //@note: offset from geometry start, 0.f -> inside the geometry, 1.f -> outside the geometry
 		e_pen_layer layer{ };
 

@@ -1,54 +1,81 @@
 ﻿#include <iostream>
 #include <null-backend-directx11.h>
 #include <null-render.h>
-#include <graphic/path/path.h>
 null::render::backend::directx11::c_window window{ };
 utils::c_cumulative_time_measurement frame_counter{ 60 };
 
+void draw_example(const std::string_view& name, const null::render::brush_t& brush, const float& y, const null::render::pen_t& pen) {
+	static const null::render::e_text_align text_align{ null::render::e_text_align::right | null::render::e_text_align::center_y };
+	static const null::render::path::rounding_t rect_path_rounding{ 20.f, null::render::path::e_corner_flags::right_diagonal };
 
-void main_loop() {
-	/*static const null::render::e_text_flags text_flags{ null::render::e_text_flags::aligin_bottom | null::render::e_text_flags::aligin_center_x };
-	static const null::render::e_corner_flags corner_flags{ null::render::e_corner_flags::right_diagonal };*/
+	null::render::stroke_t stroke{ };
+	stroke.set_cap(null::render::e_line_cap::joint);
 
-	static const color_t color{ 100, 100, 255 };
+	null::render::sdf_text_style_t text_style{ };
+	text_style
+		.set_align(text_align)
+		.set_size(30.f);
+	null::render::background.add_text(name, { 280, y + 50 }, text_style);
 
-	static const null::render::multicolor_text_t<std::string> multicolor_text{ {
-		{ "multicolored \n\n", { } },
-		{ "text", color }
-	} };
+	null::render::background.add_convex_shape(
+		null::render::path::make_rect({ 290, y }, { 390, y + 100 }, rect_path_rounding),
+		brush,
+		pen
+	);
+
+	null::render::background.add_poly_line(
+		null::render::path::make_rect({ 410, y }, { 510, y + 100 }, rect_path_rounding),
+		stroke,
+		brush,
+		pen
+	);
+
+	null::render::background.add_convex_shape(
+		null::render::path::make_circle({ 580, y + 50 }, 50),
+		brush,
+		pen
+	);
+
+	null::render::background.add_poly_line(
+		null::render::path::make_circle({ 700, y + 50 }, 50),
+		stroke,
+		brush,
+		pen
+	);
+}
+
+void main_loop() {	
+	null::render::brush_t brush{ };
+	brush.set_color({ 100, 100, 255 });
+
+	null::render::quad_gradient_brush_t gradient_brush{ };
+	gradient_brush
+		.set_top_left_color({ 255, 255, 255 })
+		.set_top_right_color({ 255, 100, 0 })
+		.set_bottom_left_color({ 255, 0, 100 })
+		.set_bottom_right_color({ 100, 100, 255 });
+
+	null::render::pen_t pen_brush{ };
+	pen_brush.set_layer(null::render::e_pen_layer::background);
+	pen_brush.set_thickness(2.f);
+	pen_brush.set_brush(brush);
+
+	null::render::pen_t pen_gradient{ };
+	pen_gradient.set_layer(null::render::e_pen_layer::background);
+	pen_gradient.set_thickness(2.f);
+	pen_gradient.set_brush(gradient_brush);
 
 	null::render::begin_frame(window); {
-		null::render::brush_t brush{ };
-		
-		brush.set_color({ 255, 100, 255, 100 });
-		null::render::background.add_poly_line({ { 350, 220 }, { 500, 180}, { 500, 450 }, { 350, 400 } }, null::render::stroke_t{ }.set_join(null::render::e_line_join::miter).set_cap(null::render::e_line_cap::joint).set_thickness(50.f), brush);
-		
-		/*null::render::quad_gradient_pen_t gradient_pen{ };
-		gradient_pen
-			.set_top_left_color({ 255, 255, 255 })
-			.set_top_right_color({ 255, 100, 0 })
-			.set_bottom_left_color({ 255, 0, 100 })
-			.set_bottom_right_color({ 100, 100, 255 });*/
-		null::render::quad_gradient_brush_t gradient_brush{ };
-		gradient_brush
-			.set_top_left_color({ 255, 255, 255 })
-			.set_top_right_color({ 255, 100, 0 })
-			.set_bottom_left_color({ 255, 0, 100 })
-			.set_bottom_right_color({ 100, 100, 255 });
-
-		brush.set_color({ 100, 255, 255, 100 });
-		null::render::background.add_convex_shape({ { 150, 200 }, { 300, 180}, { 300, 450 }, { 150, 400 } }, brush, null::render::pen_t{ }.set_brush(null::render::brush_t{ }));
-
-		null::render::background.add_poly_line(null::render::path::make_rect({ 600, 200 }, { 700, 300 }, { 0.f }), null::render::stroke_t{ }.set_join(null::render::e_line_join::miter).set_cap(null::render::e_line_cap::joint).set_thickness(2.f), brush);
-
-		//null::render::background.add_rect({ 600, 200 }, { 700, 300 }, gradient_brush);
-
 		null::render::sdf_text_style_t text_style{ };
 		text_style
-			.set_color({ 255, 100, 100 })
-			.set_size(40.f)
-			.set_outline(1.f, { 255, 200, 200 }, { 100, 100, 255 });
-		//null::render::background.add_text("sdf text", { }, text_style);
+			.set_size(30.f)
+			.set_outline(1.f, { 100, 100, 255 }, { 100, 100, 255, 0 });
+		null::render::background.add_text(std::format("[ directx11 ] fps: {:3.0f}", 1.f / std::chrono::duration<float>{ frame_counter.representation() }.count()), { }, text_style);
+
+		draw_example("brush", brush, 10, { });
+		draw_example("brush\ngradient pen", brush, 150, pen_gradient);
+		draw_example("gradient brush", gradient_brush, 290, { });
+		draw_example("gradient brush\npen", gradient_brush, 430, pen_brush);
 	} null::render::end_frame();
 }
 
