@@ -3,7 +3,7 @@
 #include <wrapper/fields/fields.h>
 
 namespace null::render::backend::opengl3 {
-	class c_mesh : public i_mesh {
+	class c_mesh : public backend::c_mesh {
 	public:
 		wrapper::c_vertex_element<vertex_t, 2, opengl::e_float, false, offsetof(vertex_t, pos)> position{ };
 		wrapper::c_vertex_element<vertex_t, 4, opengl::e_int, false, offsetof(vertex_t, color)> color{ };

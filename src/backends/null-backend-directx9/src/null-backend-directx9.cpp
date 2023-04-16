@@ -1,5 +1,0 @@
-
-
-namespace null::render {
-	
-}

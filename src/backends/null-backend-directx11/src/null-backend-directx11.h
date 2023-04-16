@@ -18,7 +18,7 @@ namespace null::render::backend::directx11 {
 
 	public:
 		std::unique_ptr<i_renderer> instance_renderer() override { return std::make_unique<c_renderer>(); }
-		std::unique_ptr<i_mesh> instance_mesh() override { return std::make_unique<c_mesh>(); }
+		std::unique_ptr<backend::c_mesh> instance_mesh() override { return std::make_unique<c_mesh>(); }
 		std::unique_ptr<i_frame_buffer> instance_frame_buffer(const e_frame_buffer_type& type, const e_frame_buffer_flags& flags) override { return std::make_unique<c_frame_buffer>(type, flags); }
 
 		std::unique_ptr<backend::shaders::i_passthrough_color> instance_passthrough_color_shader() override { return std::make_unique<shaders::c_passthrough_color>(); }

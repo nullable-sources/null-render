@@ -21,7 +21,6 @@
   <ItemGroup>
     <ClCompile Include="src\internal\frame-buffer\frame-buffer.cpp" />
     <ClCompile Include="src\internal\mesh\mesh.cpp" />
-    <ClCompile Include="src\null-backend-opengl3.cpp" />
     <ClCompile Include="src\renderer\renderer.cpp" />
     <ClCompile Include="src\shaders\passthrough-color\passthrough-color.cpp" />
     <ClCompile Include="src\wrapper\fields\fields.cpp" />

@@ -3,7 +3,7 @@
 #include <backend/internal/mesh.h>
 
 namespace null::render::backend::directx9 {
-	class c_mesh : public i_mesh {
+	class c_mesh : public backend::c_mesh {
 	public:
 		struct directx_vertex_t {
 			vec2_t<float> pos{ }, uv{ };

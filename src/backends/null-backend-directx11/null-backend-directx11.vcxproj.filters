@@ -81,9 +81,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\null-backend-directx11.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\internal\frame-buffer\frame-buffer.cpp">
       <Filter>src\internal\frame-buffer</Filter>
     </ClCompile>

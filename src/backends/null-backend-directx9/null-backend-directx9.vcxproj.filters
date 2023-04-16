@@ -78,9 +78,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\null-backend-directx9.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\wrapper\pixel\pixel.cpp">
       <Filter>src\wrapper\shader\pixel</Filter>
     </ClCompile>

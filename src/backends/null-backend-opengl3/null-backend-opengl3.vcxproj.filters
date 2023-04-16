@@ -81,9 +81,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\null-backend-opengl3.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\internal\mesh\mesh.cpp">
       <Filter>src\internal\mesh</Filter>
     </ClCompile>
