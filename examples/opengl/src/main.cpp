@@ -68,8 +68,7 @@ void main_loop() {
 	pen_gradient.set_thickness(2.f);
 	pen_gradient.set_brush(gradient_brush);
 
-	null::render::begin_frame(window);
-	{
+	null::render::begin_frame(window); {
 		null::render::sdf_text_style_t text_style{ };
 		text_style
 			.set_size(30.f)
@@ -99,7 +98,6 @@ int main() {
 		null::render::atlas.add_font_default(&config);
 
 		window.create();
-
 		window.main_loop();
 		window.destroy();
 	} catch(const std::exception& exception) {
