@@ -3,7 +3,7 @@
 #include <backend/internal/frame-buffer.h>
 #include <backend/shaders/passthrough/passthrough.h>
 
-#include <graphic/draw-list/draw-list.h>
+#include <null-render.h>
 
 namespace null::render::backend {
     void i_renderer::create_objects() {
@@ -33,16 +33,19 @@ namespace null::render::backend {
     }
 
     void i_renderer::begin_render() {
-        mesh->compile();
-
         save_state();
+
+        mesh->compile();
 
         setup_state();
 
         shaders::passthrough_color->use();
 
-        msaa_buffer->set();
-        msaa_buffer->clear();
+        if(render::shared::msaa_quality != 0) {
+            msaa_buffer->set();
+            msaa_buffer->clear();
+            msaa_buffer->copy_from_backbuffer();
+        }
 
         background.handle();
         background.clear();
@@ -52,9 +55,10 @@ namespace null::render::backend {
         foreground.handle();
         foreground.clear();
 
-        rendering_buffer->set();
-        rendering_buffer->clear();
-        rendering_buffer->copy_from_another_frame_buffer(msaa_buffer);
+        if(render::shared::msaa_quality != 0) {
+            rendering_buffer->set();
+            rendering_buffer->copy_from_another_frame_buffer(msaa_buffer);
+        }
 
         mesh->clear_geometry();
 

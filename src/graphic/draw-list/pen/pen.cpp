@@ -60,7 +60,7 @@ namespace null::render {
 			.add_index(pen_command->vertex_count).add_index(next_vertex_offset + 1).add_index(pen_command->vertex_count + 1);
 
 
-		const float thickness_offset{ 2.f * origin };
+		const float thickness_offset{ origin * 2.f };
 		pen_command->vertex_count += 2;
 		backend::mesh->geometry_buffer
 			.add_vertex({ current_vertex.pos + normal * (thickness * thickness_offset), { }, brush->color })
