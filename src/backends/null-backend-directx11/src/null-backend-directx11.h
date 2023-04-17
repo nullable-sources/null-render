@@ -84,9 +84,6 @@ namespace null::render::backend::directx11 {
 		void on_main_loop() override {
 			utils::win::c_window::on_main_loop();
 
-			renderer->begin_render();
-			renderer->end_render();
-
 			if(auto result{ swap_chain->Present(1, 0) }; FAILED(result))
 				utils::logger.log(utils::e_log_type::error, "Present failed, return code {}.", result);
 		}

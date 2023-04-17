@@ -15,6 +15,8 @@ namespace null::render::backend::directx9 {
 		IDirect3DStateBlock9* state_block{ };
 
 	public:
+		matrix4x4_t get_projection_matrix() const override;
+
 		void set_texture(void* texture) override;
 		void set_clip(const rect_t<float>& rect) override;
 		void draw_geometry(const size_t& vertex_count, const size_t& index_count, const size_t& vertex_offset, const size_t& index_offset) override;
@@ -22,10 +24,11 @@ namespace null::render::backend::directx9 {
 		void* create_texture(const vec2_t<float>& size, void* data) override;
 		void destroy_texture(void* texture) override;
 
+		void setup_state() override;
+
 	private:
 		void save_state() override;
 		void restore_state() override;
-		void setup_state() override;
 
 	public:
 		bool empty() const override { return !shared.device; }

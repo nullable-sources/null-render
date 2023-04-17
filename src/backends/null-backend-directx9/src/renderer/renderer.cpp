@@ -5,6 +5,10 @@
 #include <backend/internal/mesh.h>
 
 namespace null::render::backend::directx9 {
+	matrix4x4_t c_renderer::get_projection_matrix() const {
+		return matrix4x4_t::project_ortho(0.5f, render::shared::viewport.x + 0.5f, render::shared::viewport.y + 0.5f, 0.5f, -10000.f, 10000.f);
+	}
+
 	void c_renderer::set_texture(void* texture) {
 		shared.device->SetTexture(0, (IDirect3DTexture9*)texture);
 	}
@@ -53,19 +57,6 @@ namespace null::render::backend::directx9 {
 		texture = nullptr;
 	}
 
-	void c_renderer::save_state() {
-		if(auto result{ shared.device->CreateStateBlock(D3DSBT_ALL, &state_block) }; FAILED(result))
-			utils::logger.log(utils::e_log_type::error, "cant create state_block, return code {}.", result);
-	}
-
-	void c_renderer::restore_state() {
-		if(state_block) {
-			state_block->Apply();
-			state_block->Release();
-			state_block = nullptr;
-		}
-	}
-
 	void c_renderer::setup_state() {
 		D3DVIEWPORT9 viewport{ 0, 0,
 			render::shared::viewport.x,
@@ -96,9 +87,22 @@ namespace null::render::backend::directx9 {
 
 
 		set_clip({ { 0 }, render::shared::viewport });
-		set_matrix(matrix4x4_t::project_ortho(0.5f, render::shared::viewport.x + 0.5f, render::shared::viewport.y + 0.5f, 0.5f, -10000.f, 10000.f));
+		set_matrix(get_projection_matrix());
 		shaders::event_dispatcher.setup_state();
 
 		mesh->set();
+	}
+
+	void c_renderer::save_state() {
+		if(auto result{ shared.device->CreateStateBlock(D3DSBT_ALL, &state_block) }; FAILED(result))
+			utils::logger.log(utils::e_log_type::error, "cant create state_block, return code {}.", result);
+	}
+
+	void c_renderer::restore_state() {
+		if(state_block) {
+			state_block->Apply();
+			state_block->Release();
+			state_block = nullptr;
+		}
 	}
 }

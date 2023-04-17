@@ -6,6 +6,10 @@
 #include <backend/internal/mesh.h>
 
 namespace null::render::backend::opengl3 {
+    matrix4x4_t c_renderer::get_projection_matrix() const {
+        return matrix4x4_t::project_ortho(0.f, shared::viewport.x, shared::viewport.y, 0.f, -10000.f, 10000.f);
+    }
+
     void c_renderer::set_texture(void* texture) {
         opengl::bind_texture(opengl::e_texture_2d, (std::uint32_t)texture);
     }
@@ -44,6 +48,25 @@ namespace null::render::backend::opengl3 {
 
         opengl::delete_textures(1, (std::uint32_t*)&texture);
         texture = nullptr;
+    }
+
+    void c_renderer::setup_state() {
+        opengl::enable(opengl::e_blend);
+        opengl::blend_equation(opengl::e_func_add);
+        opengl::blend_func_separate(opengl::e_src_alpha, opengl::e_one_minus_src_alpha, 1, opengl::e_one_minus_src_alpha);
+        opengl::disable(opengl::e_cull_face);
+        opengl::disable(opengl::e_depth_test);
+        opengl::disable(opengl::e_stencil_test);
+        opengl::enable(opengl::e_scissor_test);
+        opengl::disable(opengl::e_primitive_restart);
+
+        opengl::viewport(0.f, 0.f, shared::viewport.x, shared::viewport.y);
+
+        set_clip({ { 0 }, shared::viewport });
+        set_matrix(get_projection_matrix());
+        shaders::event_dispatcher.setup_state();
+
+        mesh->set();
     }
 
     void c_renderer::save_state() {
@@ -88,24 +111,5 @@ namespace null::render::backend::opengl3 {
         if(saved_state.enable_primitive_restart) opengl::enable(opengl::e_primitive_restart); else opengl::disable(opengl::e_primitive_restart);
         opengl::viewport(saved_state.viewport[0], saved_state.viewport[1], saved_state.viewport[2], saved_state.viewport[3]);
         opengl::scissor(saved_state.scissor_box[0], saved_state.scissor_box[1], saved_state.scissor_box[2], saved_state.scissor_box[3]);
-    }
-    
-    void c_renderer::setup_state() {
-        opengl::enable(opengl::e_blend);
-        opengl::blend_equation(opengl::e_func_add);
-        opengl::blend_func_separate(opengl::e_src_alpha, opengl::e_one_minus_src_alpha, 1, opengl::e_one_minus_src_alpha);
-        opengl::disable(opengl::e_cull_face);
-        opengl::disable(opengl::e_depth_test);
-        opengl::disable(opengl::e_stencil_test);
-        opengl::enable(opengl::e_scissor_test);
-        opengl::disable(opengl::e_primitive_restart);
-
-        opengl::viewport(0.f, 0.f, shared::viewport.x, shared::viewport.y);
-
-        set_clip({ { 0 }, shared::viewport });
-        set_matrix(matrix4x4_t::project_ortho(0.f, shared::viewport.x, shared::viewport.y, 0.f, -10000.f, 10000.f));
-        shaders::event_dispatcher.setup_state();
-
-        mesh->set();
     }
 }

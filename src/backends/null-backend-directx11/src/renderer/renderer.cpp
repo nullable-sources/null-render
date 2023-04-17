@@ -8,6 +8,10 @@
 #include <backend/shaders/passthrough/passthrough.h>
 
 namespace null::render::backend::directx11 {
+    matrix4x4_t c_renderer::get_projection_matrix() const {
+        return matrix4x4_t::project_ortho(0.f, render::shared::viewport.x, render::shared::viewport.y, 0.f, -10000.f, 10000.f);
+    }
+
     void c_renderer::set_texture(void* texture) {
         shared.context->PSSetShaderResources(0, 1, (ID3D11ShaderResourceView**)&texture);
     }
@@ -74,6 +78,27 @@ namespace null::render::backend::directx11 {
         texture = nullptr;
     }
 
+    void c_renderer::setup_state() {
+        D3D11_VIEWPORT viewport{ 0, 0,
+            render::shared::viewport.x,
+            render::shared::viewport.y,
+            0, 1
+        };
+        shared.context->RSSetViewports(1, &viewport);
+
+        set_clip({ { 0 }, render::shared::viewport });
+        set_matrix(get_projection_matrix());
+        shaders::event_dispatcher.setup_state();
+
+        mesh->set();
+
+        shared.context->PSSetSamplers(0, 1, &internal_objects.sampler);
+
+        constexpr float blend_factor[4]{ 0.f, 0.f, 0.f, 0.f };
+        shared.context->OMSetBlendState(internal_objects.blend, blend_factor, 0xffffffff);
+        shared.context->OMSetDepthStencilState(internal_objects.depth_stencil, 0);
+    }
+
     void c_renderer::save_state() {
         saved_state.scissor_rects_count = saved_state.viewports_count = D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE;
         shared.context->RSGetScissorRects(&saved_state.scissor_rects_count, saved_state.scissor_rects);
@@ -113,27 +138,6 @@ namespace null::render::backend::directx11 {
         shared.context->IASetIndexBuffer(saved_state.index_buffer, saved_state.index_buffer_format, saved_state.index_buffer_offset); if(saved_state.index_buffer) saved_state.index_buffer->Release();
         shared.context->IASetVertexBuffers(0, 1, &saved_state.vertex_buffer, &saved_state.vertex_buffer_stride, &saved_state.vertex_buffer_offset); if(saved_state.vertex_buffer) saved_state.vertex_buffer->Release();
         shared.context->IASetInputLayout(saved_state.input_layout); if(saved_state.input_layout) saved_state.input_layout->Release();
-    }
-
-    void c_renderer::setup_state() {
-        D3D11_VIEWPORT viewport{ 0, 0,
-            render::shared::viewport.x,
-            render::shared::viewport.y,
-            0, 1
-        };
-        shared.context->RSSetViewports(1, &viewport);
-
-        set_clip({ { 0 }, render::shared::viewport });
-        set_matrix(matrix4x4_t::project_ortho(0.f, render::shared::viewport.x, render::shared::viewport.y, 0.f, -10000.f, 10000.f));
-        shaders::event_dispatcher.setup_state();
-
-        mesh->set();
-
-        shared.context->PSSetSamplers(0, 1, &internal_objects.sampler);
-
-        constexpr float blend_factor[4]{ 0.f, 0.f, 0.f, 0.f };
-        shared.context->OMSetBlendState(internal_objects.blend, blend_factor, 0xffffffff);
-        shared.context->OMSetDepthStencilState(internal_objects.depth_stencil, 0);
     }
 
     void c_renderer::create_internal_objects() {

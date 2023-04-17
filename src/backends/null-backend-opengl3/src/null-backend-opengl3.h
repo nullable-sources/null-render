@@ -35,8 +35,6 @@ namespace null::render::backend::opengl3 {
 		color_t<float> clear_color{ 0.07f, 0.07f, 0.07f };
 		GLFWwindow* glfw_window{ };
 
-		//std::vector<commands::c_command_buffer*> user_buffers{ };
-
 	public:
 		bool create() override {
 			if(!glfwInit()) { utils::logger.log(utils::e_log_type::error, "cant init glfw."); return false; }
@@ -75,16 +73,12 @@ namespace null::render::backend::opengl3 {
 			while(!glfwWindowShouldClose(glfw_window)) {
 				glfwPollEvents();
 
-				on_main_loop();
-
 				vec2_t<int> framebuffer{ };
 				glfwGetFramebufferSize(glfw_window, &framebuffer.x, &framebuffer.y);
 				glViewport(0, 0, framebuffer.x, framebuffer.y);
 				glClearColor(clear_color.r, clear_color.g, clear_color.b, clear_color.a);
 				glClear(GL_COLOR_BUFFER_BIT);
-				renderer->begin_render();
-				//for(auto& user_buffer : user_buffers) user_buffer->handle();
-				renderer->end_render();
+				on_main_loop();
 
 				glfwSwapBuffers(glfw_window);
 			}

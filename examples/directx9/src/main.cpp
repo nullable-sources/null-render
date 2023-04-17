@@ -78,6 +78,9 @@ void main_loop() {
 		draw_example("gradient brush", gradient_brush, 290, { });
 		draw_example("gradient brush\npen", gradient_brush, 430, pen_brush);
 	} null::render::end_frame();
+
+	null::render::backend::renderer->begin_render();
+	null::render::backend::renderer->end_render();
 }
 
 int main(HINSTANCE instance) {

@@ -58,17 +58,12 @@ namespace null::render::backend::directx9 {
 		}
 
 		void on_main_loop() override {
-			utils::win::c_window::on_main_loop();
-
-			//compile_default_geometry_data();
-
 			device->SetRenderState(D3DRS_ZENABLE, FALSE);
 			device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 			device->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
 			device->Clear(0, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_RGBA(clear_color.r, clear_color.g, clear_color.b, clear_color.a), 1.0f, 0);
 			if(device->BeginScene() >= 0) {
-				renderer->begin_render();
-				renderer->end_render();
+				utils::win::c_window::on_main_loop();
 				device->EndScene();
 			}
 
