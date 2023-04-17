@@ -13,7 +13,9 @@ namespace null::render {
 
 		const float half_thickness{ stroke.thickness / 2.f };
 		for(const stroke_t::segment_t& segment : stroke.build_segments(points)) {
-			const bool floor_pos{ std::abs(segment.begin_edge->to_next_direction.x) == 1.f || std::abs(segment.begin_edge->to_next_direction.y) == 1.f || std::abs(segment.begin_edge->to_previous_direction.x) == 1.f || std::abs(segment.begin_edge->to_previous_direction.y) == 1.f };
+			const bool to_next_floor{ std::abs(segment.begin_edge->to_next_direction.x) == 1.f || std::abs(segment.begin_edge->to_next_direction.y) == 1.f };
+			const bool to_previous_floor{ std::abs(segment.begin_edge->to_previous_direction.x) == 1.f || std::abs(segment.begin_edge->to_previous_direction.y) == 1.f };
+			const bool floor_pos{ to_next_floor || to_previous_floor };
 
 			if(have_pen) {
 				outward_order.push_back(command->vertex_count + segment.begin_edge->outward_begin);
@@ -46,8 +48,8 @@ namespace null::render {
 
 				command->vertex_count += 2;
 				backend::mesh->geometry_buffer
-					.add_vertex({ floor_pos ? math::floor(outward_vertex) : outward_vertex, { }, brush.color })
-					.add_vertex({ floor_pos ? math::floor(inward_vertex) : inward_vertex, { }, brush.color });
+					.add_vertex({ (segment.is_first ? to_next_floor : to_previous_floor) ? math::floor(outward_vertex) : outward_vertex, { }, brush.color })
+					.add_vertex({ (segment.is_first ? to_next_floor : to_previous_floor) ? math::floor(inward_vertex) : inward_vertex, { }, brush.color });
 			} else {
 				vec2_t<float> distance{ segment.begin_edge->normal * (half_thickness / std::cos(segment.begin_edge->miter_angle / 2.)) };
 				if(stroke.line_join == e_line_join::bevel) {
