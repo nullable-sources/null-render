@@ -70,4 +70,5 @@ namespace null::render::path {
 
 	std::vector<vec2_t<float>> make_circle(const vec2_t<float>& center, const float& radius, int num_segments = 0);
 	std::vector<vec2_t<float>> make_rect(const vec2_t<float>& a, const vec2_t<float>& b, const rounding_t& rounding = { });
+	std::vector<vec2_t<float>> make_rect(const rect_t<float>& rect, const rounding_t& rounding = { }) { return make_rect(rect.min, rect.max, rounding); }
 }
