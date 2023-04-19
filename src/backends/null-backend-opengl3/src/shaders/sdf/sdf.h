@@ -15,42 +15,10 @@ namespace null::render::backend::opengl3::shaders {
 		wrapper::c_uniform<matrix4x4_t> matrix{ };
 
 	public:
-		void on_create() override {
-			if(!empty()) return;
-			program = std::make_unique<wrapper::c_program>();
-			program->create();
+		void on_create() override;
+		void on_destroy() override;
 
-			program->attach_shader(&compiled_objects::sdf);
-			program->attach_shader(&compiled_objects::passthrough);
-
-			program->link();
-
-			program->detach_shader(&compiled_objects::sdf);
-			program->detach_shader(&compiled_objects::passthrough);
-
-			matrix.get_location(program.get(), "matrix");
-
-			aa.get_location(program.get(), "aa");
-			outline_thickness.get_location(program.get(), "outline_thickness");
-			outline_start.get_location(program.get(), "outline_start");
-			outline_end.get_location(program.get(), "outline_end");
-		}
-
-		void on_destroy() override {
-			program->destroy();
-		}
-
-		void use() override {
-			if(empty()) return;
-			program->use();
-
-			matrix.set(renderer->get_matrix());
-
-			aa.set();
-			outline_thickness.set();
-			outline_start.set();
-			outline_end.set();
-		}
+		void use() override;
 
 	public:
 		void set_aa(const float& _aa) override { aa.value() = _aa; }

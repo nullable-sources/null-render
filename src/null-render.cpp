@@ -28,6 +28,7 @@ namespace null::render {
         backend::shaders::passthrough_color = backend::factory->instance_passthrough_color_shader();
         backend::shaders::passthrough_texture = backend::factory->instance_passthrough_texture_shader();
         backend::shaders::quad_gradient = backend::factory->instance_quad_gradient_shader();
+        backend::shaders::linear_gradient = backend::factory->instance_linear_gradient_shader();
         backend::shaders::sdf = backend::factory->instance_sdf_shader();
     }
 

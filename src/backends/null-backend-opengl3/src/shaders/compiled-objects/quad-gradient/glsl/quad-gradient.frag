@@ -11,9 +11,9 @@ uniform vec4 color_bl;
 out vec4 out_color;
 
 void main() {
-	out_color = vec4(mix(
+	out_color = mix(
 		mix(color_tl / 255.f, color_tr / 255.f, frag_uv.x),
 		mix(color_bl / 255.f, color_br / 255.f, frag_uv.x),
 		frag_uv.y
-	).rgb, frag_color.a);
+	);
 }

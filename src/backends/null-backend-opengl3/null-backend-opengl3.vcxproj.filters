@@ -79,6 +79,15 @@
     <Filter Include="src\shaders\compiled-objects\passthrough\glsl">
       <UniqueIdentifier>{a7585922-2663-4809-8cc0-1bc806087d55}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\shaders\linear-gradient">
+      <UniqueIdentifier>{e3d6deff-5ebe-4a19-a467-389d65056778}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects\linear-gradient">
+      <UniqueIdentifier>{0eef778a-f1a8-45fa-a294-0c92d036dcee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects\linear-gradient\glsl">
+      <UniqueIdentifier>{be162323-5a87-4653-8edb-000a89fd320f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\internal\mesh\mesh.cpp">
@@ -101,6 +110,18 @@
     </ClCompile>
     <ClCompile Include="src\shaders\passthrough-color\passthrough-color.cpp">
       <Filter>src\shaders\passthrough-color</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shaders\passthrough-texture\passthrough-texture.cpp">
+      <Filter>src\shaders\passthrough-texture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shaders\quad-gradient\quad-gradient.cpp">
+      <Filter>src\shaders\quad-gradient</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shaders\sdf\sdf.cpp">
+      <Filter>src\shaders\sdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shaders\linear-gradient\linear-gradient.cpp">
+      <Filter>src\shaders\linear-gradient</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -158,6 +179,12 @@
     <ClInclude Include="src\shaders\compiled-objects\passthrough-color\passthrough-color.h">
       <Filter>src\shaders\compiled-objects\passthrough-color</Filter>
     </ClInclude>
+    <ClInclude Include="src\shaders\linear-gradient\linear-gradient.h">
+      <Filter>src\shaders\linear-gradient</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\compiled-objects\linear-gradient\linear-gradient.h">
+      <Filter>src\shaders\compiled-objects\linear-gradient</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resources\null-backend-opengl3-resources.rc">
@@ -179,6 +206,9 @@
     </None>
     <None Include="src\shaders\compiled-objects\passthrough\glsl\passthrough.vert">
       <Filter>src\shaders\compiled-objects\passthrough\glsl</Filter>
+    </None>
+    <None Include="src\shaders\compiled-objects\linear-gradient\glsl\linear-gradient.frag">
+      <Filter>src\shaders\compiled-objects\linear-gradient\glsl</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -22,6 +22,11 @@
     <ClCompile Include="src\internal\frame-buffer\frame-buffer.cpp" />
     <ClCompile Include="src\internal\mesh\mesh.cpp" />
     <ClCompile Include="src\renderer\renderer.cpp" />
+    <ClCompile Include="src\shaders\linear-gradient\linear-gradient.cpp" />
+    <ClCompile Include="src\shaders\passthrough-color\passthrough-color.cpp" />
+    <ClCompile Include="src\shaders\passthrough-texture\passthrough-texture.cpp" />
+    <ClCompile Include="src\shaders\quad-gradient\quad-gradient.cpp" />
+    <ClCompile Include="src\shaders\sdf\sdf.cpp" />
     <ClCompile Include="src\wrapper\pixel\pixel.cpp" />
     <ClCompile Include="src\wrapper\vertex\vertex.cpp" />
   </ItemGroup>
@@ -38,11 +43,13 @@
     <ClInclude Include="src\internal\mesh\mesh.h" />
     <ClInclude Include="src\null-backend-directx9.h" />
     <ClInclude Include="src\renderer\renderer.h" />
+    <ClInclude Include="src\shaders\compiled-objects\linear-gradient\linear-gradient.h" />
     <ClInclude Include="src\shaders\compiled-objects\passthrough-color\passthrough-color.h" />
     <ClInclude Include="src\shaders\compiled-objects\passthrough-texture\passthrough-texture.h" />
     <ClInclude Include="src\shaders\compiled-objects\passthrough\passthrough.h" />
     <ClInclude Include="src\shaders\compiled-objects\quad-gradient\quad-gradient.h" />
     <ClInclude Include="src\shaders\compiled-objects\sdf\sdf.h" />
+    <ClInclude Include="src\shaders\linear-gradient\linear-gradient.h" />
     <ClInclude Include="src\shaders\passthrough-color\passthrough-color.h" />
     <ClInclude Include="src\shaders\passthrough-texture\passthrough-texture.h" />
     <ClInclude Include="src\shaders\quad-gradient\quad-gradient.h" />
@@ -53,6 +60,32 @@
     <ClInclude Include="src\wrapper\vertex\vertex.h" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="src\shaders\compiled-objects\linear-gradient\hlsl\linear-gradient.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|Win32'">3.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">3.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|x64'">3.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='debug|x64'">3.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
+      </ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
+      </ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='release|x64'">
+      </ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
+      </ObjectFileOutput>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='release|x64'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|x64'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='release|Win32'">shader_data</VariableName>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">shader_data</VariableName>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='release|x64'">shader_data</VariableName>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='debug|x64'">shader_data</VariableName>
+    </FxCompile>
     <FxCompile Include="src\shaders\compiled-objects\passthrough-color\hlsl\passthrough-color.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|Win32'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|Win32'">3.0</ShaderModel>

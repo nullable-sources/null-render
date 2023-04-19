@@ -14,16 +14,7 @@ namespace null::render::backend::directx9::shaders {
 		c_quad_gradient() : i_shader{ &compiled_objects::quad_gradient, &compiled_objects::passthrough } { }
 
 	public:
-		void use() override {
-			if(empty()) return;
-			i_shader::use();
-
-			vertex_shader->set_constant(0, renderer->get_matrix().linear_array.data(), 4);
-			pixel_shader->set_constant(0, colors[0].channels.data(), 1);
-			pixel_shader->set_constant(1, colors[1].channels.data(), 1);
-			pixel_shader->set_constant(2, colors[2].channels.data(), 1);
-			pixel_shader->set_constant(3, colors[3].channels.data(), 1);
-		}
+		void use() override;
 
 	public:
 		void set_colors(const std::array<color_t<int>, 4>& _colors) override {

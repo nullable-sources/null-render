@@ -14,6 +14,7 @@
 #include <shaders/passthrough-color/passthrough-color.h>
 #include <shaders/passthrough-texture/passthrough-texture.h>
 #include <shaders/quad-gradient/quad-gradient.h>
+#include <shaders/linear-gradient/linear-gradient.h>
 #include <shaders/sdf/sdf.h>
 
 namespace null::render::backend::opengl3 {
@@ -26,6 +27,7 @@ namespace null::render::backend::opengl3 {
 		std::unique_ptr<backend::shaders::i_passthrough_color> instance_passthrough_color_shader() override { return std::make_unique<shaders::c_passthrough_color>(); }
 		std::unique_ptr<backend::shaders::i_passthrough_texture> instance_passthrough_texture_shader() override { return std::make_unique<shaders::c_passthrough_texture>(); }
 		std::unique_ptr<backend::shaders::i_quad_gradient> instance_quad_gradient_shader() override { return std::make_unique<shaders::c_quad_gradient>(); }
+		std::unique_ptr<backend::shaders::i_linear_gradient> instance_linear_gradient_shader() override { return std::make_unique<shaders::c_linear_gradient>(); }
 		std::unique_ptr<backend::shaders::i_sdf> instance_sdf_shader() override { return std::make_unique<shaders::c_sdf>(); }
 	};
 

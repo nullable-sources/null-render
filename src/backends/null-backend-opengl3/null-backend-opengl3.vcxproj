@@ -22,7 +22,11 @@
     <ClCompile Include="src\internal\frame-buffer\frame-buffer.cpp" />
     <ClCompile Include="src\internal\mesh\mesh.cpp" />
     <ClCompile Include="src\renderer\renderer.cpp" />
+    <ClCompile Include="src\shaders\linear-gradient\linear-gradient.cpp" />
     <ClCompile Include="src\shaders\passthrough-color\passthrough-color.cpp" />
+    <ClCompile Include="src\shaders\passthrough-texture\passthrough-texture.cpp" />
+    <ClCompile Include="src\shaders\quad-gradient\quad-gradient.cpp" />
+    <ClCompile Include="src\shaders\sdf\sdf.cpp" />
     <ClCompile Include="src\wrapper\fields\fields.cpp" />
     <ClCompile Include="src\wrapper\program\program.cpp" />
     <ClCompile Include="src\wrapper\shader\shader.cpp" />
@@ -32,11 +36,13 @@
     <ClInclude Include="src\internal\mesh\mesh.h" />
     <ClInclude Include="src\null-backend-opengl3.h" />
     <ClInclude Include="src\renderer\renderer.h" />
+    <ClInclude Include="src\shaders\compiled-objects\linear-gradient\linear-gradient.h" />
     <ClInclude Include="src\shaders\compiled-objects\passthrough-color\passthrough-color.h" />
     <ClInclude Include="src\shaders\compiled-objects\passthrough-texture\passthrough-texture.h" />
     <ClInclude Include="src\shaders\compiled-objects\passthrough\passthrough.h" />
     <ClInclude Include="src\shaders\compiled-objects\quad-gradient\quad-gradient.h" />
     <ClInclude Include="src\shaders\compiled-objects\sdf\sdf.h" />
+    <ClInclude Include="src\shaders\linear-gradient\linear-gradient.h" />
     <ClInclude Include="src\shaders\passthrough-color\passthrough-color.h" />
     <ClInclude Include="src\shaders\passthrough-texture\passthrough-texture.h" />
     <ClInclude Include="src\shaders\quad-gradient\quad-gradient.h" />
@@ -59,6 +65,7 @@
     <ResourceCompile Include="resources\null-backend-opengl3-resources.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\shaders\compiled-objects\linear-gradient\glsl\linear-gradient.frag" />
     <None Include="src\shaders\compiled-objects\passthrough-color\glsl\passthrough-color.frag" />
     <None Include="src\shaders\compiled-objects\passthrough-texture\glsl\passthrough-texture.frag" />
     <None Include="src\shaders\compiled-objects\passthrough\glsl\passthrough.vert" />

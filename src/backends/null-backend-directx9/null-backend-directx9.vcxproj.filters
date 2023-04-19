@@ -76,6 +76,15 @@
     <Filter Include="src\shaders\compiled-objects\sdf\hlsl">
       <UniqueIdentifier>{f15d513d-e8e5-4a65-912b-e10734593666}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\shaders\linear-gradient">
+      <UniqueIdentifier>{5ba72d3d-4b97-43c9-b0ef-406bf9aad78d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects\linear-gradient">
+      <UniqueIdentifier>{f4f9a01e-5049-43bc-9439-ab687f65f464}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\compiled-objects\linear-gradient\hlsl">
+      <UniqueIdentifier>{cc0349f9-85ca-46ea-b572-abfef4f007ef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\wrapper\pixel\pixel.cpp">
@@ -92,6 +101,21 @@
     </ClCompile>
     <ClCompile Include="src\internal\mesh\mesh.cpp">
       <Filter>src\internal\mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shaders\sdf\sdf.cpp">
+      <Filter>src\shaders\sdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shaders\quad-gradient\quad-gradient.cpp">
+      <Filter>src\shaders\quad-gradient</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shaders\passthrough-texture\passthrough-texture.cpp">
+      <Filter>src\shaders\passthrough-texture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shaders\passthrough-color\passthrough-color.cpp">
+      <Filter>src\shaders\passthrough-color</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shaders\linear-gradient\linear-gradient.cpp">
+      <Filter>src\shaders\linear-gradient</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -146,6 +170,12 @@
     <ClInclude Include="src\shaders\compiled-objects\passthrough\passthrough.h">
       <Filter>src\shaders\compiled-objects\passthrough</Filter>
     </ClInclude>
+    <ClInclude Include="src\shaders\linear-gradient\linear-gradient.h">
+      <Filter>src\shaders\linear-gradient</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\compiled-objects\linear-gradient\linear-gradient.h">
+      <Filter>src\shaders\compiled-objects\linear-gradient</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\shaders\compiled-objects\passthrough\hlsl\passthrough.hlsl">
@@ -162,6 +192,9 @@
     </FxCompile>
     <FxCompile Include="src\shaders\compiled-objects\sdf\hlsl\sdf.hlsl">
       <Filter>src\shaders\compiled-objects\sdf\hlsl</Filter>
+    </FxCompile>
+    <FxCompile Include="src\shaders\compiled-objects\linear-gradient\hlsl\linear-gradient.hlsl">
+      <Filter>src\shaders\compiled-objects\linear-gradient\hlsl</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

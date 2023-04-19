@@ -15,17 +15,7 @@ namespace null::render::backend::directx9::shaders {
 		c_sdf() : i_shader{ &compiled_objects::sdf, &compiled_objects::passthrough } { }
 
 	public:
-		void use() override {
-			if(empty()) return;
-			i_shader::use();
-
-			vertex_shader->set_constant(0, renderer->get_matrix().linear_array.data(), 4);
-			
-			pixel_shader->set_constant(0, &aa);
-			pixel_shader->set_constant(1, &outline_thickness);
-			pixel_shader->set_constant(2, outline_start.channels.data());
-			pixel_shader->set_constant(3, outline_end.channels.data());
-		}
+		void use() override;
 
 	public:
 		void set_aa(const float& _aa) override { aa = _aa; }

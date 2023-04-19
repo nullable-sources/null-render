@@ -5,3 +5,4 @@ null-render:opengl:shaders:passthrough-texture.frag	null-render:opengl:resources
 
 null-render:opengl:shaders:sdf.frag					null-render:opengl:resources	"../src/shaders/compiled-objects/sdf/glsl/sdf.frag"
 null-render:opengl:shaders:quad-gradient.frag		null-render:opengl:resources	"../src/shaders/compiled-objects/quad-gradient/glsl/quad-gradient.frag"
+null-render:opengl:shaders:linear-gradient.frag		null-render:opengl:resources	"../src/shaders/compiled-objects/linear-gradient/glsl/linear-gradient.frag"

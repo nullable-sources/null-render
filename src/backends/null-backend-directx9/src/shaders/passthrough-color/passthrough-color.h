@@ -11,11 +11,6 @@ namespace null::render::backend::directx9::shaders {
 		c_passthrough_color() : i_shader{ &compiled_objects::passthrough_color, &compiled_objects::passthrough } { }
 
 	public:
-		void use() override {
-			if(empty()) return;
-			i_shader::use();
-
-			vertex_shader->set_constant(0, renderer->get_matrix().linear_array.data(), 4);
-		}
+		void use() override;
 	};
 }

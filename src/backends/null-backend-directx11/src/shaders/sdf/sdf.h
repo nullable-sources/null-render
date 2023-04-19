@@ -1,4 +1,5 @@
 #pragma once
+#include <shaders/shader.h>
 #include <backend/shaders/sdf/sdf.h>
 
 #include <shaders/compiled-objects/sdf/sdf.h>
@@ -13,13 +14,7 @@ namespace null::render::backend::directx11::shaders {
 		c_sdf() : i_shader{ &compiled_objects::sdf, &compiled_objects::passthrough } { }
 
 	public:
-		void use() override {
-			if(empty()) return;
-			i_shader::use();
-
-			compiled_objects::passthrough.set_constant({ renderer->get_matrix() });
-			compiled_objects::sdf.set_constant(constant);
-		}
+		void use() override;
 
 	public:
 		virtual void set_aa(const float& aa) override { constant.aa = aa; }

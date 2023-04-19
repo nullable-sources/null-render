@@ -28,9 +28,22 @@ namespace null::render::backend::opengl3::wrapper {
 		static void set_impl(const int& _location, const value_t& value) { utils::logger.log(utils::e_log_type::error, "c_uniform::set is not implemented for this type."); }
 		
 		static void set_impl(const int& _location, const matrix4x4_t& value) { opengl::uniform_matrix4fv(_location, 1, false, value.linear_array.data()); }
+		
+		template <size_t size>
+		static void set_impl(const int& _location, const std::array<vec4_t<float>, size>& value) { opengl::uniform4fv(_location, size, (float*)value.data()); }
 		static void set_impl(const int& _location, const vec4_t<float>& value) { opengl::uniform4f(_location, value.x, value.y, value.z, value.w); }
+		
+		template <size_t size>
+		static void set_impl(const int& _location, const std::array<vec4_t<int>, size>& value) { opengl::uniform4iv(_location, size, (int*)value.data()); }
 		static void set_impl(const int& _location, const vec4_t<int>& value) { opengl::uniform4i(_location, value.x, value.y, value.z, value.w); }
+		
+		template <size_t size>
+		static void set_impl(const int& _location, const std::array<float, size>& value) { opengl::uniform1fv(_location, size, value.data()); }
 		static void set_impl(const int& _location, const float& value) { opengl::uniform1f(_location, value); }
+
+		template <size_t size>
+		static void set_impl(const int& _location, const std::array<int, size>& value) { opengl::uniform1iv(_location, size, value.data()); }
+		static void set_impl(const int& _location, const int& value) { opengl::uniform1i(_location, value); }
 
 	public:
 		template <typename self_t> auto&& value(this self_t&& self) { return self.stored_value; }

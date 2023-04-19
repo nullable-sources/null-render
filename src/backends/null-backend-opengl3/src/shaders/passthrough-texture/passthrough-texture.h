@@ -12,30 +12,9 @@ namespace null::render::backend::opengl3::shaders {
 		wrapper::c_uniform<matrix4x4_t> matrix{ };
 
 	public:
-		void on_create() override {
-			if(!empty()) return;
-			program = std::make_unique<wrapper::c_program>();
-			program->create();
+		void on_create() override;
+		void on_destroy() override;
 
-			program->attach_shader(&compiled_objects::passthrough_texture);
-			program->attach_shader(&compiled_objects::passthrough);
-
-			program->link();
-
-			program->detach_shader(&compiled_objects::passthrough_texture);
-			program->detach_shader(&compiled_objects::passthrough);
-
-			matrix.get_location(program.get(), "matrix");
-		}
-
-		void on_destroy() override {
-			program->destroy();
-		}
-
-		void use() override {
-			program->use();
-
-			matrix.set(renderer->get_matrix());
-		}
+		void use() override;
 	};
 }

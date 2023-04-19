@@ -85,9 +85,6 @@
     <Filter Include="src\backend\shaders\sdf">
       <UniqueIdentifier>{57bf7932-2b09-4c96-82f5-2475e157cf8c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\backend\shaders\passthrough">
-      <UniqueIdentifier>{3324d159-be66-4385-857d-868f9255469e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\graphic\draw-list\strokes">
       <UniqueIdentifier>{9d890c68-a50a-485a-aac9-60273143cdea}</UniqueIdentifier>
     </Filter>
@@ -96,6 +93,18 @@
     </Filter>
     <Filter Include="src\graphic\path">
       <UniqueIdentifier>{d0a8f224-405a-4f20-a296-c59ca99bf979}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\graphic\filters\linear-gradient">
+      <UniqueIdentifier>{e097fd9d-68b7-441f-a4c1-a5a9002b487c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\backend\shaders\linear-gradient">
+      <UniqueIdentifier>{73aa3c64-257e-4f3f-9418-47ad6e97c7af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\backend\shaders\passthrough">
+      <UniqueIdentifier>{3324d159-be66-4385-857d-868f9255469e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\graphic\draw-list\brushes\linear-gradient-brush">
+      <UniqueIdentifier>{9f006405-a3b2-4362-b060-7226476d6cbc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -161,6 +170,12 @@
     </ClCompile>
     <ClCompile Include="src\graphic\path\path.cpp">
       <Filter>src\graphic\path</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\filters\linear-gradient\linear-gradient.cpp">
+      <Filter>src\graphic\filters\linear-gradient</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\draw-list\brushes\linear-gradient-brush\linear-gradient-brush.cpp">
+      <Filter>src\graphic\draw-list\brushes\linear-gradient-brush</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -259,6 +274,15 @@
     </ClInclude>
     <ClInclude Include="src\graphic\draw-list\strokes\stroke.h">
       <Filter>src\graphic\draw-list\strokes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\filters\linear-gradient\linear-gradient.h">
+      <Filter>src\graphic\filters\linear-gradient</Filter>
+    </ClInclude>
+    <ClInclude Include="src\backend\shaders\linear-gradient\linear-gradient.h">
+      <Filter>src\backend\shaders\linear-gradient</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\draw-list\brushes\linear-gradient-brush\linear-gradient-brush.h">
+      <Filter>src\graphic\draw-list\brushes\linear-gradient-brush</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

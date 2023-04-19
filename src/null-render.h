@@ -6,9 +6,6 @@
 
 #include <graphic/draw-list/draw-list.h>
 
-#include <graphic/draw-list/brushes/quad-gradient-brush/quad-gradient-brush.h>
-#include <graphic/draw-list/text-styles/sdf-text-style/sdf-text-style.h>
-
 #include <graphic/path/path.h>
 
 namespace null::render {

@@ -11,11 +11,6 @@ namespace null::render::backend::directx11::shaders {
 		c_passthrough_texture() : i_shader{ &compiled_objects::passthrough_texture, &compiled_objects::passthrough } { }
 
 	public:
-		void use() override {
-			if(empty()) return;
-			i_shader::use();
-
-			compiled_objects::passthrough.set_constant({ renderer->get_matrix() });
-		}
+		void use() override;
 	};
 }
