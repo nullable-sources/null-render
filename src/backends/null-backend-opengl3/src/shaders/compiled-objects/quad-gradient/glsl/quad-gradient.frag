@@ -15,5 +15,5 @@ void main() {
 		mix(color_tl / 255.f, color_tr / 255.f, frag_uv.x),
 		mix(color_bl / 255.f, color_br / 255.f, frag_uv.x),
 		frag_uv.y
-	);
+	) * frag_color;
 }

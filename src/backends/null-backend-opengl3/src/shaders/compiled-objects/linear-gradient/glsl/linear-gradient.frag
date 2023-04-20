@@ -18,4 +18,6 @@ void main() {
     for(int i = 1; i < stops_count; ++i) {
         out_color = mix(out_color, colors[i]  / 255.f, smoothstep(stops[i - 1], stops[i], t));
     }
+
+    out_color *= frag_color;
 }

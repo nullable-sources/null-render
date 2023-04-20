@@ -14,5 +14,5 @@ float4 main(ps_input_t input) : COLOR {
 		lerp(color_tl / 255.f, color_tr / 255.f, input.uv.x),
 		lerp(color_bl / 255.f, color_br / 255.f, input.uv.x),
 		input.uv.y
-	);
+	) * input.color;
 }

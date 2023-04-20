@@ -19,5 +19,5 @@ float4 main(ps_input_t input) : SV_Target {
     for (int i = 1; i < stops_count; ++i) {
         color = lerp(color, colors[i] / 255.f, smoothstep(stops[i - 1].x, stops[i].x, t));
     }
-    return color;
+    return color * input.color;
 }

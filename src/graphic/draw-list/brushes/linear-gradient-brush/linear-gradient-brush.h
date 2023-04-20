@@ -9,6 +9,7 @@ namespace null::render {
 
 	public:
 		template <typename self_t> auto&& set_angle(this self_t&& self, const radians_t& angle) { self.angle = angle; return self; }
+		template <typename self_t> auto&& set_stops(this self_t&& self, const std::vector<std::pair<color_t<int>, float>>& stops) { self.stops = stops; return self; }
 		template <typename self_t> auto&& add_stop(this self_t&& self, const color_t<int>& color, const float& uv) { self.stops.push_back({ color, uv }); return self; }
 
 	public:
