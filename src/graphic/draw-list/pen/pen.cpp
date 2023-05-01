@@ -44,14 +44,9 @@ namespace null::render {
 		const backend::vertex_t& current_vertex{ backend::mesh->geometry_buffer.vertex_buffer[command->vertex_offset + current] };
 		const backend::vertex_t& next_vertex{ backend::mesh->geometry_buffer.vertex_buffer[command->vertex_offset + next] };
 
-		vec2_t<float> to_next_direction{ next_vertex.pos - current_vertex.pos };
-		to_next_direction.normalize();
-
-		vec2_t<float> to_previous_direction{ current_vertex.pos - previous_vertex.pos };
-		to_previous_direction.normalize();
-
-		vec2_t<float> normal{ math::rotate_90_degrees<float>(to_next_direction, rotation) + math::rotate_90_degrees<float>(to_previous_direction, rotation) };
-		normal.normalize();
+		const vec2_t<float> to_next_direction{ current_vertex.pos.direction(next_vertex.pos) };
+		const vec2_t<float> from_previous_direction{ previous_vertex.pos.direction(current_vertex.pos) };
+		const vec2_t<float> normal{ math::vectors_bisector(to_next_direction, from_previous_direction) };
 
 		const size_t next_vertex_offset{ is_last ? first_vertex_offset : pen_command->vertex_count + 2 };
 		pen_command->index_count += 6;
@@ -59,11 +54,15 @@ namespace null::render {
 			.add_index(pen_command->vertex_count).add_index(next_vertex_offset).add_index(next_vertex_offset + 1)
 			.add_index(pen_command->vertex_count).add_index(next_vertex_offset + 1).add_index(pen_command->vertex_count + 1);
 
+		const float half_thickness{ thickness / 2.f }, thickness_offset{ origin * 2.f };
+		const vec2_t<float> outward_tesselation{ normal * (half_thickness * thickness_offset) };
+		const vec2_t<float> inward_tesselation{ normal * (half_thickness * (2.f - thickness_offset)) };
 
-		const float thickness_offset{ origin * 2.f };
+		const bool to_next_round{ std::abs(to_next_direction.x) == 1.f || std::abs(to_next_direction.y) == 1.f };
+		const bool from_previous_round{ std::abs(from_previous_direction.x) == 1.f || std::abs(from_previous_direction.y) == 1.f };
 		pen_command->vertex_count += 2;
 		backend::mesh->geometry_buffer
-			.add_vertex({ current_vertex.pos + normal * (thickness * thickness_offset), { }, brush->color })
-			.add_vertex({ current_vertex.pos - normal * (thickness * (2.f - thickness_offset)), { }, brush->color });
+			.add_vertex({ current_vertex.pos + (to_next_round || from_previous_round ? math::round(outward_tesselation) : outward_tesselation), { }, brush->color })
+			.add_vertex({ current_vertex.pos - (to_next_round || from_previous_round ? math::round(inward_tesselation) : inward_tesselation), { }, brush->color });
 	}
 }

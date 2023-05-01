@@ -25,21 +25,13 @@ namespace null::render {
 
 			begin_edge->point = &current_point;
 
-			begin_edge->to_next_direction = next_point - current_point;
-			begin_edge->to_next_direction.normalize();
+			begin_edge->to_next_direction = current_point.direction(next_point);
+			begin_edge->from_previous_direction = previous_point.direction(current_point);
+			begin_edge->normal = math::vectors_bisector(begin_edge->to_next_direction, begin_edge->from_previous_direction);
 
-			begin_edge->to_previous_direction = current_point - previous_point;
-			begin_edge->to_previous_direction.normalize();
-
-			begin_edge->normal = math::rotate_90_degrees<float>(begin_edge->to_next_direction, math::e_rotation::ccw) + math::rotate_90_degrees<float>(begin_edge->to_previous_direction, math::e_rotation::ccw);
-			begin_edge->normal.normalize();
-
-			vec2_t<float> to_next_rotated{ math::rotate_90_degrees<float>(begin_edge->to_next_direction, math::e_rotation::cw) };
-			vec2_t<float> to_previous_rotated{ math::rotate_90_degrees<float>(begin_edge->to_previous_direction, math::e_rotation::cw) };
-
-			begin_edge->miter_angle = math::angle_between<float>(
-				math::rotate_90_degrees<float>(begin_edge->to_next_direction, math::e_rotation::cw),
-				math::rotate_90_degrees<float>(begin_edge->to_previous_direction, math::e_rotation::cw)
+			begin_edge->miter_angle = math::angle_between(
+				math::rotate_vector(begin_edge->to_next_direction, angle_t<radians_t>{ 90.f }, math::e_rotation::cw),
+				math::rotate_vector(begin_edge->from_previous_direction, angle_t<radians_t>{ 90.f }, math::e_rotation::cw)
 			);
 			begin_edge->miter_angle.normalize();
 			begin_edge->inversed = angle_t<radians_t>{ math::angle_between<float>(begin_edge->normal, begin_edge->to_next_direction) }.normalized() < angle_t<radians_t>{ 90.f };

@@ -25,7 +25,7 @@ namespace null::render {
 				size_t inward_begin{ }, inward_end{ };
 				size_t join_size{ };
 
-				vec2_t<float> normal{ }, to_previous_direction{ }, to_next_direction{ };
+				vec2_t<float> normal{ }, from_previous_direction{ }, to_next_direction{ };
 				angle_t<radians_t> miter_angle{ };
 				bool inversed{ };
 			};
