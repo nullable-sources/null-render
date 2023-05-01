@@ -57,12 +57,10 @@ void main_loop() {
 
 	null::render::pen_t pen_brush{ };
 	pen_brush.set_layer(null::render::e_pen_layer::background);
-	pen_brush.set_thickness(2.f);
 	pen_brush.set_brush(brush);
 
 	null::render::pen_t pen_gradient{ };
 	pen_gradient.set_layer(null::render::e_pen_layer::background);
-	pen_gradient.set_thickness(2.f);
 	pen_gradient.set_brush(gradient_brush);
 
 	null::render::begin_frame(window); {

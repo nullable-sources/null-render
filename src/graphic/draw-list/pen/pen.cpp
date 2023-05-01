@@ -46,7 +46,7 @@ namespace null::render {
 
 		const vec2_t<float> to_next_direction{ current_vertex.pos.direction(next_vertex.pos) };
 		const vec2_t<float> from_previous_direction{ previous_vertex.pos.direction(current_vertex.pos) };
-		const vec2_t<float> normal{ math::vectors_bisector(to_next_direction, from_previous_direction) };
+		const vec2_t<float> normal{ math::vectors_bisector(to_next_direction, from_previous_direction, rotation) };
 
 		const size_t next_vertex_offset{ is_last ? first_vertex_offset : pen_command->vertex_count + 2 };
 		pen_command->index_count += 6;
