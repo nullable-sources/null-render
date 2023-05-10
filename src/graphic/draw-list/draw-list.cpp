@@ -51,7 +51,7 @@ namespace null::render {
 					.add_vertex({ (segment.is_first ? to_next_round : from_previous_round) ? math::round(outward_vertex) : outward_vertex, { }, brush.color })
 					.add_vertex({ (segment.is_first ? to_next_round : from_previous_round) ? math::round(inward_vertex) : inward_vertex, { }, brush.color });
 			} else {
-				vec2_t<float> distance{ segment.begin_edge->normal * (half_thickness / std::cos(segment.begin_edge->miter_angle / 2.)) };
+				vec2_t<float> distance{ segment.begin_edge->normal * std::min(half_thickness / segment.begin_edge->miter_angle.cos(), (double)segment.begin_edge->max_miter_dist) };
 				if(stroke.line_join == e_line_join::bevel) {
 					const math::e_rotation rotation{ segment.begin_edge->inversed ? math::e_rotation::cw : math::e_rotation::ccw };
 					if(!segment.begin_edge->inversed)

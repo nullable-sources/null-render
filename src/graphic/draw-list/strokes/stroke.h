@@ -27,6 +27,8 @@ namespace null::render {
 
 				vec2_t<float> normal{ }, from_previous_direction{ }, to_next_direction{ };
 				angle_t<radians_t> miter_angle{ };
+				double half_miter_cos{ };
+				float max_miter_dist{ };
 				bool inversed{ };
 			};
 
