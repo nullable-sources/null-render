@@ -2,16 +2,18 @@ build/
 .vs/
 *.user
 
-src/backends/null-backend-directx9/src/shaders/compiled-objects/passthrough/compiled
-src/backends/null-backend-directx9/src/shaders/compiled-objects/passthrough-color/compiled
-src/backends/null-backend-directx9/src/shaders/compiled-objects/passthrough-texture/compiled
-src/backends/null-backend-directx9/src/shaders/compiled-objects/quad-gradient/compiled
-src/backends/null-backend-directx9/src/shaders/compiled-objects/linear-gradient/compiled
-src/backends/null-backend-directx9/src/shaders/compiled-objects/sdf/compiled
+src/backends/null-render-backend-directx9/src/shaders/compiled-objects/passthrough/compiled
+src/backends/null-render-backend-directx9/src/shaders/compiled-objects/passthrough-color/compiled
+src/backends/null-render-backend-directx9/src/shaders/compiled-objects/passthrough-texture/compiled
+src/backends/null-render-backend-directx9/src/shaders/compiled-objects/quad-gradient/compiled
+src/backends/null-render-backend-directx9/src/shaders/compiled-objects/linear-gradient/compiled
+src/backends/null-render-backend-directx9/src/shaders/compiled-objects/sdf/compiled
+src/backends/null-render-backend-directx9/src/shaders/compiled-objects/blur/compiled
 
-src/backends/null-backend-directx11/src/shaders/compiled-objects/passthrough/compiled
-src/backends/null-backend-directx11/src/shaders/compiled-objects/passthrough-color/compiled
-src/backends/null-backend-directx11/src/shaders/compiled-objects/passthrough-texture/compiled
-src/backends/null-backend-directx11/src/shaders/compiled-objects/quad-gradient/compiled
-src/backends/null-backend-directx11/src/shaders/compiled-objects/linear-gradient/compiled
-src/backends/null-backend-directx11/src/shaders/compiled-objects/sdf/compiled
+src/backends/null-render-backend-directx11/src/shaders/compiled-objects/passthrough/compiled
+src/backends/null-render-backend-directx11/src/shaders/compiled-objects/passthrough-color/compiled
+src/backends/null-render-backend-directx11/src/shaders/compiled-objects/passthrough-texture/compiled
+src/backends/null-render-backend-directx11/src/shaders/compiled-objects/quad-gradient/compiled
+src/backends/null-render-backend-directx11/src/shaders/compiled-objects/linear-gradient/compiled
+src/backends/null-render-backend-directx11/src/shaders/compiled-objects/sdf/compiled
+src/backends/null-render-backend-directx11/src/shaders/compiled-objects/blur/compiled

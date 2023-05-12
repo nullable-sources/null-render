@@ -1,7 +1,7 @@
 ﻿#include <iostream>
 #define null_renderer_use_glfw
 #define null_renderer_save_state
-#include <null-backend-opengl3.h>
+#include <null-render-backend-opengl3.h>
 #include <null-render.h>
 
 null::render::backend::opengl3::c_window window{ };
@@ -69,7 +69,7 @@ void main_loop() {
 	null::render::begin_frame(window); {
 		null::render::sdf_text_style_t text_style{ };
 		text_style
-			.set_size(30.f)
+			.set_size(30.f);
 			.set_outline(1.f, { 100, 100, 255 }, { 100, 100, 255, 0 });
 		null::render::background.add_text(std::format("[ opengl ] fps: {:3.0f}", 1.f / std::chrono::duration<float>{ frame_counter.representation() }.count()), { }, text_style);
 

@@ -3,8 +3,6 @@
 
 namespace null::render {
 	std::unique_ptr<commands::i_command> text_style_t::prepare_command(std::unique_ptr<commands::c_geometry>& command) const {
-		std::unique_ptr<filters::c_texture> filter{ std::make_unique<filters::c_texture>(font->container_atlas->texture.data) };
-		filter->child_command = std::move(command);
-		return std::move(filter);
+		return std::make_unique<filters::c_texture>(std::move(command), font->container_atlas->texture.data);
 	};
 }

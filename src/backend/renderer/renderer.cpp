@@ -15,6 +15,11 @@ namespace null::render::backend {
         msaa_buffer->create();
         rendering_buffer->create();
 
+        rtt_buffer->create();
+        for(std::unique_ptr<i_frame_buffer>& postprocessing_buffer : postprocessing_buffers) {
+            postprocessing_buffer->create();
+        }
+
         create_atlases();
         create_internal_objects();
     }
@@ -27,6 +32,11 @@ namespace null::render::backend {
 
         msaa_buffer->destroy();
         rendering_buffer->destroy();
+
+        rtt_buffer->destroy();
+        for(std::unique_ptr<i_frame_buffer>& postprocessing_buffer : postprocessing_buffers) {
+            postprocessing_buffer->destroy();
+        }
 
         destroy_atlases();
         destroy_internal_objects();
@@ -44,7 +54,7 @@ namespace null::render::backend {
         if(render::shared::msaa_quality != 0) {
             msaa_buffer->set();
             msaa_buffer->clear();
-            msaa_buffer->copy_from_backbuffer();
+            msaa_buffer->copy_from(rendering_buffer);
         }
 
         background.handle();
@@ -57,7 +67,7 @@ namespace null::render::backend {
 
         if(render::shared::msaa_quality != 0) {
             rendering_buffer->set();
-            rendering_buffer->copy_from_another_frame_buffer(msaa_buffer);
+            rendering_buffer->copy_from(msaa_buffer);
         }
 
         mesh->clear_geometry();

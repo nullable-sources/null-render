@@ -12,8 +12,6 @@ namespace null::render {
 		command->get_bounding_box(min, max);
 		command->recalculate_uvs(min, max);
 
-		std::unique_ptr<filters::c_linear_gradient> filter{ std::make_unique<filters::c_linear_gradient>(angle, stops) };
-		filter->child_command = std::move(command);
-		return std::move(filter);
+		return std::make_unique<filters::c_linear_gradient>(std::move(command), angle, stops);
 	}
 }

@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include <backend/renderer/renderer.h>
 #include <backend/internal/mesh.h>
 
@@ -20,8 +22,18 @@ namespace null::render::commands {
 	}
 
 	void c_geometry::recalculate_uvs(const vec2_t<float>& min, const vec2_t<float>& max) const {
+		const rect_t<float> uvs{ { 0.f }, { 1.f } };
 		for(backend::vertex_t& vertex : backend::mesh->geometry_buffer.vertex_buffer | std::views::drop(vertex_offset) | std::views::take(vertex_count)) {
-			vertex.uv = std::clamp((vertex.pos - min) / (max - min), { 0.f }, { 1.f });
+			vertex.uv = std::clamp((vertex.pos - min) / (max - min), uvs.min, uvs.max);
+		}
+	}
+
+	void c_geometry::recalculate_uvs(const vec2_t<float>& min, const vec2_t<float>& max, const rect_t<float>& uvs) const {
+		const vec2_t<float> uv_scale{ uvs.size() / (max - min) };
+		const std::pair minmax_uv{ std::minmax(uvs.min, uvs.max) };
+
+		for(backend::vertex_t& vertex : backend::mesh->geometry_buffer.vertex_buffer | std::views::drop(vertex_offset) | std::views::take(vertex_count)) {
+			vertex.uv = std::clamp(uvs.min + (vertex.pos - min) * uv_scale, minmax_uv.first, minmax_uv.second);
 		}
 	}
 }

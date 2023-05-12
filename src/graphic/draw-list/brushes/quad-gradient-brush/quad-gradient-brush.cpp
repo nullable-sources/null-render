@@ -7,8 +7,6 @@ namespace null::render {
 		command->get_bounding_box(min, max);
 		command->recalculate_uvs(min, max);
 
-		std::unique_ptr<filters::c_quad_gradient> filter{ std::make_unique<filters::c_quad_gradient>(colors) };
-		filter->child_command = std::move(command);
-		return std::move(filter);
+		return std::make_unique<filters::c_quad_gradient>(std::move(command), colors);
 	}
 }

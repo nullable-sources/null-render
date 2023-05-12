@@ -20,8 +20,8 @@ Heavily redesigned ImGui renderer with a lot of new features.
 
 # opengl3 renderer
 To connect opengl3-renderer you need:
-- project properties->resources->additional include directories: specify the path to the file "null-backend-opengl3-resources.rc"
-- create a .rc file in the project and include "null-backend-opengl3-resources.rc" into it
+- project properties->resources->additional include directories: specify the path to the file "null-render-backend-opengl3-resources.rc"
+- create a .rc file in the project and include "null-render-backend-opengl3-resources.rc" into it
 
 # dependencies
 [null-sdk](https://github.com/nullptr-sources/null-sdk)

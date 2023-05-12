@@ -1,5 +1,5 @@
 ﻿#include <iostream>
-#include <null-backend-directx9.h>
+#include <null-render-backend-directx9.h>
 #include <null-render.h>
 
 null::render::backend::directx9::c_window window{ };
@@ -56,13 +56,6 @@ void main_loop() {
 		.set_bottom_left_color({ 255, 0, 100 })
 		.set_bottom_right_color({ 100, 100, 255 });
 
-	null::render::linear_gradient_brush_t linear_gradient_brush{ };
-	linear_gradient_brush
-		.set_angle(angle_t<degrees_t>{ 90.f })
-		.add_stop({ 255, 0, 0 }, 0.f)
-		.add_stop({ 0, 255, 0 }, 0.5f)
-		.add_stop({ 0, 0, 255 }, 1.0f);
-
 	null::render::pen_t pen_brush{ };
 	pen_brush.set_layer(null::render::e_pen_layer::background);
 	pen_brush.set_brush(brush);
@@ -80,7 +73,7 @@ void main_loop() {
 
 		draw_example("brush", brush, 10, { });
 		draw_example("brush\ngradient pen", brush, 150, pen_gradient);
-		draw_example("gradient brush", linear_gradient_brush, 290, { });
+		draw_example("gradient brush", gradient_brush, 290, { });
 		draw_example("gradient brush\npen", gradient_brush, 430, pen_brush);
 	} null::render::end_frame();
 

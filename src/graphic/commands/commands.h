@@ -24,5 +24,10 @@ namespace null::render::commands {
 		void add_command(std::unique_ptr<command_t>&& command) {
 			command_buffer.push_back(std::move(command));
 		}
+
+		template <typename command_t, typename ...args_t>
+		void add_command(args_t&& ...args) {
+			command_buffer.push_back(std::make_unique<command_t>(std::forward<args_t>(args)...));
+		}
 	};
 }

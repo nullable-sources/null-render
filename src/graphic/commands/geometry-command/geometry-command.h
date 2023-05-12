@@ -18,5 +18,6 @@ namespace null::render::commands {
 	public:
 		void get_bounding_box(vec2_t<float>& min, vec2_t<float>& max) const;
 		void recalculate_uvs(const vec2_t<float>& min, const vec2_t<float>& max) const;
+		void recalculate_uvs(const vec2_t<float>& min, const vec2_t<float>& max, const rect_t<float>& uvs) const;
 	};
 }

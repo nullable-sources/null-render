@@ -3,10 +3,10 @@
 #include <graphic/draw-list/pen/pen.h>
 #include <graphic/draw-list/text-styles/text-style/text-style.h>
 #include <graphic/draw-list/strokes/stroke.h>
-#include <graphic/commands/commands.h>
 
 #include <graphic/draw-list/brushes/linear-gradient-brush/linear-gradient-brush.h>
 #include <graphic/draw-list/brushes/quad-gradient-brush/quad-gradient-brush.h>
+#include <graphic/draw-list/brushes/texture-brush/texture-brush.h>
 #include <graphic/draw-list/text-styles/sdf-text-style/sdf-text-style.h>
 
 namespace null::render {

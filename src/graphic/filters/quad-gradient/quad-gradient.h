@@ -7,7 +7,8 @@ namespace null::render::filters {
 		std::array<color_t<int>, 4> colors{ };
 
 	public:
-		c_quad_gradient(const std::array<color_t<int>, 4>& _colors) : colors{ _colors } { }
+		c_quad_gradient(std::unique_ptr<commands::i_command>&& _child_command, const std::array<color_t<int>, 4>& _colors)
+			: i_filter{ std::move(_child_command) }, colors { _colors } { }
 
 	public:
 		virtual void handle() override;

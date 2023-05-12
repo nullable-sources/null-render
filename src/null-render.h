@@ -4,7 +4,12 @@
 #include <font/loaders/truetype/truetype.h>
 #include <null-sdk.h>
 
+#include <graphic/commands/postprocessing-commands/postprocessing-commands.h>
+
 #include <graphic/draw-list/draw-list.h>
+
+#include <graphic/filters/blur/blur.h>
+#include <graphic/filters/render-to-texture/render-to-texture.h>
 
 #include <graphic/path/path.h>
 
@@ -21,7 +26,7 @@ namespace null::render {
         inline std::vector<vec2_t<float>> arc_fast_vertex{ };
     }
 
-    void initialize();
+    void initialize(const utils::win::c_window& window);
 
     void begin_frame(const utils::win::c_window& window);
     void end_frame();

@@ -106,6 +106,21 @@
     <Filter Include="src\graphic\draw-list\brushes\linear-gradient-brush">
       <UniqueIdentifier>{9f006405-a3b2-4362-b060-7226476d6cbc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\graphic\draw-list\brushes\texture-brush">
+      <UniqueIdentifier>{7ab9bdbf-9b30-4155-bd98-00abe050abdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\graphic\filters\blur">
+      <UniqueIdentifier>{ce5daf45-e1cf-40da-9beb-0a92aa8f1fe9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\backend\shaders\blur">
+      <UniqueIdentifier>{7c690f9b-44a8-42d6-97e1-649d18af1ecb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\graphic\commands\postprocessing-commands">
+      <UniqueIdentifier>{341d2db7-0799-4875-b7d0-76760fcb62ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\graphic\filters\render-to-texture">
+      <UniqueIdentifier>{4014c2be-1d86-41a5-826b-ad0d0a015e72}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\font\font.cpp">
@@ -153,9 +168,6 @@
     <ClCompile Include="src\graphic\commands\matrix-command\matrix-command.cpp">
       <Filter>src\graphic\commands\matrix-command</Filter>
     </ClCompile>
-    <ClCompile Include="src\backend\backend.cpp">
-      <Filter>src\backend</Filter>
-    </ClCompile>
     <ClCompile Include="src\backend\renderer\renderer.cpp">
       <Filter>src\backend\renderer</Filter>
     </ClCompile>
@@ -176,6 +188,18 @@
     </ClCompile>
     <ClCompile Include="src\graphic\draw-list\brushes\linear-gradient-brush\linear-gradient-brush.cpp">
       <Filter>src\graphic\draw-list\brushes\linear-gradient-brush</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\draw-list\brushes\texture-brush\texture-brush.cpp">
+      <Filter>src\graphic\draw-list\brushes\texture-brush</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\filters\blur\blur.cpp">
+      <Filter>src\graphic\filters\blur</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\commands\postprocessing-commands\postprocessing-commands.cpp">
+      <Filter>src\graphic\commands\postprocessing-commands</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\filters\render-to-texture\render-to-texture.cpp">
+      <Filter>src\graphic\filters\render-to-texture</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -283,6 +307,21 @@
     </ClInclude>
     <ClInclude Include="src\graphic\draw-list\brushes\linear-gradient-brush\linear-gradient-brush.h">
       <Filter>src\graphic\draw-list\brushes\linear-gradient-brush</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\draw-list\brushes\texture-brush\texture-brush.h">
+      <Filter>src\graphic\draw-list\brushes\texture-brush</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\filters\blur\blur.h">
+      <Filter>src\graphic\filters\blur</Filter>
+    </ClInclude>
+    <ClInclude Include="src\backend\shaders\blur\blur.h">
+      <Filter>src\backend\shaders\blur</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\commands\postprocessing-commands\postprocessing-commands.h">
+      <Filter>src\graphic\commands\postprocessing-commands</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\filters\render-to-texture\render-to-texture.h">
+      <Filter>src\graphic\filters\render-to-texture</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

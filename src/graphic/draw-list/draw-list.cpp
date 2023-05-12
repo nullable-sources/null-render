@@ -58,7 +58,7 @@ namespace null::render {
 						distance *= -1;
 
 					command->index_count += 3;
-					backend::mesh->geometry_buffer .add_index(command->vertex_count).add_index(command->vertex_count + 1).add_index(command->vertex_count + 2);
+					backend::mesh->geometry_buffer.add_index(command->vertex_count).add_index(command->vertex_count + 1).add_index(command->vertex_count + 2);
 
 					const vec2_t<float> miter_vertex{ *segment.begin_edge->point + distance };
 					const vec2_t<float> to_previous_vertex{ *segment.begin_edge->point + math::rotate_vector(segment.begin_edge->from_previous_direction, angle_t<radians_t>{ 90.f }, rotation) * half_thickness };
