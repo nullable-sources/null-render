@@ -37,7 +37,6 @@
     <ClCompile Include="src\graphic\draw-list\strokes\stroke.cpp" />
     <ClCompile Include="src\graphic\draw-list\text-styles\sdf-text-style\sdf-text-style.cpp" />
     <ClCompile Include="src\graphic\draw-list\text-styles\text-style\text-style.cpp" />
-    <ClCompile Include="src\graphic\filters\blur\blur.cpp" />
     <ClCompile Include="src\graphic\filters\linear-gradient\linear-gradient.cpp" />
     <ClCompile Include="src\graphic\filters\quad-gradient\quad-gradient.cpp" />
     <ClCompile Include="src\graphic\filters\render-to-texture\render-to-texture.cpp" />
@@ -57,7 +56,6 @@
     <ClInclude Include="src\backend\internal\geometry-buffer.h" />
     <ClInclude Include="src\backend\internal\mesh.h" />
     <ClInclude Include="src\backend\renderer\renderer.h" />
-    <ClInclude Include="src\backend\shaders\blur\blur.h" />
     <ClInclude Include="src\backend\shaders\linear-gradient\linear-gradient.h" />
     <ClInclude Include="src\backend\shaders\passthrough\passthrough.h" />
     <ClInclude Include="src\backend\shaders\quad-gradient\quad-gradient.h" />
@@ -83,7 +81,6 @@
     <ClInclude Include="src\graphic\draw-list\strokes\stroke.h" />
     <ClInclude Include="src\graphic\draw-list\text-styles\sdf-text-style\sdf-text-style.h" />
     <ClInclude Include="src\graphic\draw-list\text-styles\text-style\text-style.h" />
-    <ClInclude Include="src\graphic\filters\blur\blur.h" />
     <ClInclude Include="src\graphic\filters\filters.h" />
     <ClInclude Include="src\graphic\filters\linear-gradient\linear-gradient.h" />
     <ClInclude Include="src\graphic\filters\quad-gradient\quad-gradient.h" />

@@ -85,15 +85,6 @@
     <Filter Include="src\shaders\compiled-objects\linear-gradient\hlsl">
       <UniqueIdentifier>{cc0349f9-85ca-46ea-b572-abfef4f007ef}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\shaders\compiled-objects\blur">
-      <UniqueIdentifier>{8f35f964-fb04-40d5-8358-1fbc81564a20}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\shaders\blur">
-      <UniqueIdentifier>{173c92d4-e391-4461-aec3-711a4e73aa6c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\shaders\compiled-objects\blur\hlsl">
-      <UniqueIdentifier>{26987a1d-45e4-4535-91b6-792629c3a504}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\wrapper\pixel\pixel.cpp">
@@ -125,9 +116,6 @@
     </ClCompile>
     <ClCompile Include="src\shaders\linear-gradient\linear-gradient.cpp">
       <Filter>src\shaders\linear-gradient</Filter>
-    </ClCompile>
-    <ClCompile Include="src\shaders\blur\blur.cpp">
-      <Filter>src\shaders\blur</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -188,12 +176,6 @@
     <ClInclude Include="src\shaders\compiled-objects\linear-gradient\linear-gradient.h">
       <Filter>src\shaders\compiled-objects\linear-gradient</Filter>
     </ClInclude>
-    <ClInclude Include="src\shaders\compiled-objects\blur\blur.h">
-      <Filter>src\shaders\compiled-objects\blur</Filter>
-    </ClInclude>
-    <ClInclude Include="src\shaders\blur\blur.h">
-      <Filter>src\shaders\blur</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\shaders\compiled-objects\passthrough\hlsl\passthrough.hlsl">
@@ -213,9 +195,6 @@
     </FxCompile>
     <FxCompile Include="src\shaders\compiled-objects\linear-gradient\hlsl\linear-gradient.hlsl">
       <Filter>src\shaders\compiled-objects\linear-gradient\hlsl</Filter>
-    </FxCompile>
-    <FxCompile Include="src\shaders\compiled-objects\blur\hlsl\blur.hlsl">
-      <Filter>src\shaders\compiled-objects\blur\hlsl</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

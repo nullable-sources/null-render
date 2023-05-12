@@ -7,5 +7,5 @@ in vec4 frag_color;
 out vec4 out_color;
 
 void main() {
-	out_color = frag_color * texture(sampler, vec2(frag_uv.x, 1.f - frag_uv.y));
+	out_color = frag_color * texture(sampler, frag_uv);
 }

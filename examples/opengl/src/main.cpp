@@ -65,11 +65,11 @@ void main_loop() {
 	null::render::pen_t pen_gradient{ };
 	pen_gradient.set_layer(null::render::e_pen_layer::background);
 	pen_gradient.set_brush(gradient_brush);
-
+	
 	null::render::begin_frame(window); {
 		null::render::sdf_text_style_t text_style{ };
 		text_style
-			.set_size(30.f);
+			.set_size(30.f)
 			.set_outline(1.f, { 100, 100, 255 }, { 100, 100, 255, 0 });
 		null::render::background.add_text(std::format("[ opengl ] fps: {:3.0f}", 1.f / std::chrono::duration<float>{ frame_counter.representation() }.count()), { }, text_style);
 

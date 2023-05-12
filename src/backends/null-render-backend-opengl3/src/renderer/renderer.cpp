@@ -62,7 +62,7 @@ namespace null::render::backend::opengl3 {
         opengl::enable(opengl::e_scissor_test);
         opengl::disable(opengl::e_primitive_restart);
 
-        opengl::viewport(0.f, 0.f, shared::viewport.x, shared::viewport.y);
+        //opengl::viewport(0.f, shared::viewport.y, shared::viewport.x, -shared::viewport.y);
 
         set_clip({ { 0 }, shared::viewport });
         set_matrix(get_projection_matrix());

@@ -39,7 +39,6 @@ namespace null::render {
         backend::shaders::quad_gradient = backend::factory->instance_quad_gradient_shader();
         backend::shaders::linear_gradient = backend::factory->instance_linear_gradient_shader();
         backend::shaders::sdf = backend::factory->instance_sdf_shader();
-        backend::shaders::blur = backend::factory->instance_blur_shader();
     }
 
     void begin_frame(const utils::win::c_window& window) {

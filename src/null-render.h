@@ -8,7 +8,6 @@
 
 #include <graphic/draw-list/draw-list.h>
 
-#include <graphic/filters/blur/blur.h>
 #include <graphic/filters/render-to-texture/render-to-texture.h>
 
 #include <graphic/path/path.h>

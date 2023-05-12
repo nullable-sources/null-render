@@ -5,7 +5,6 @@
 #include <backend/shaders/quad-gradient/quad-gradient.h>
 #include <backend/shaders/linear-gradient/linear-gradient.h>
 #include <backend/shaders/sdf/sdf.h>
-#include <backend/shaders/blur/blur.h>
 
 #include <backend/internal/frame-buffer.h>
 #include <backend/internal/mesh.h>
@@ -22,6 +21,5 @@ namespace null::render::backend {
 		virtual std::unique_ptr<shaders::i_quad_gradient> instance_quad_gradient_shader() = 0;
 		virtual std::unique_ptr<shaders::i_linear_gradient> instance_linear_gradient_shader() = 0;
 		virtual std::unique_ptr<shaders::i_sdf> instance_sdf_shader() = 0;
-		virtual std::unique_ptr<shaders::i_blur> instance_blur_shader() = 0;
 	}; inline std::unique_ptr<i_factory> factory{ };
 }

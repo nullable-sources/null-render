@@ -22,7 +22,6 @@
     <ClCompile Include="src\internal\frame-buffer\frame-buffer.cpp" />
     <ClCompile Include="src\internal\mesh\mesh.cpp" />
     <ClCompile Include="src\renderer\renderer.cpp" />
-    <ClCompile Include="src\shaders\blur\blur.cpp" />
     <ClCompile Include="src\shaders\linear-gradient\linear-gradient.cpp" />
     <ClCompile Include="src\shaders\passthrough-color\passthrough-color.cpp" />
     <ClCompile Include="src\shaders\passthrough-texture\passthrough-texture.cpp" />
@@ -37,8 +36,6 @@
     <ClInclude Include="src\internal\mesh\mesh.h" />
     <ClInclude Include="src\null-render-backend-opengl3.h" />
     <ClInclude Include="src\renderer\renderer.h" />
-    <ClInclude Include="src\shaders\blur\blur.h" />
-    <ClInclude Include="src\shaders\compiled-objects\blur\blur.h" />
     <ClInclude Include="src\shaders\compiled-objects\linear-gradient\linear-gradient.h" />
     <ClInclude Include="src\shaders\compiled-objects\passthrough-color\passthrough-color.h" />
     <ClInclude Include="src\shaders\compiled-objects\passthrough-texture\passthrough-texture.h" />
@@ -68,7 +65,6 @@
     <ResourceCompile Include="resources\null-render-backend-opengl3-resources.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\shaders\compiled-objects\blur\glsl\blur.frag" />
     <None Include="src\shaders\compiled-objects\linear-gradient\glsl\linear-gradient.frag" />
     <None Include="src\shaders\compiled-objects\passthrough-color\glsl\passthrough-color.frag" />
     <None Include="src\shaders\compiled-objects\passthrough-texture\glsl\passthrough-texture.frag" />

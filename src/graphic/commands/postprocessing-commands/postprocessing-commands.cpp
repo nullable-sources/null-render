@@ -13,7 +13,7 @@ namespace null::render::commands {
 
 	void c_backbuffer_to_postprocess::handle() {
 		backend::postprocessing_buffers[0]->set();
-		//backend::postprocessing_buffers[0]->clear();
+		backend::postprocessing_buffers[0]->clear();
 
 		backend::postprocessing_buffers[0]->copy_from(backend::msaa_buffer);
 
