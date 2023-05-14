@@ -33,7 +33,7 @@ namespace null::render {
 				math::rotate_vector(begin_edge->to_next_direction, angle_t<radians_t>{ 90.f }, math::e_rotation::cw),
 				math::rotate_vector(begin_edge->from_previous_direction, angle_t<radians_t>{ 90.f }, math::e_rotation::cw)
 			) }.normalized() / 2.;
-			begin_edge->max_miter_dist = std::abs(std::min(vec2_t{ current_point - next_point }.length(), vec2_t{ current_point - previous_point }.length()) * begin_edge->miter_angle.sin());
+			begin_edge->max_miter_dist = std::abs(std::max(vec2_t{ current_point - next_point }.length(), vec2_t{ current_point - previous_point }.length()) / begin_edge->miter_angle.sin());
 
 			begin_edge->inversed = angle_t<radians_t>{ math::angle_between<float>(begin_edge->normal, begin_edge->to_next_direction) }.normalized() < angle_t<radians_t>{ 90.f };
 
