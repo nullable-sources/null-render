@@ -9,7 +9,7 @@
 
 namespace null::render::backend::directx11 {
     matrix4x4_t c_renderer::get_projection_matrix() const {
-        return matrix4x4_t::project_ortho(0.f, render::shared::viewport.x, render::shared::viewport.y, 0.f, -10000.f, 10000.f);
+        return matrix4x4_t::projection_ortho(0.f, render::shared::viewport.x, render::shared::viewport.y, 0.f, -10000.f, 10000.f);
     }
 
     void c_renderer::set_texture(void* texture) {

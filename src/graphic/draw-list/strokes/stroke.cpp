@@ -30,8 +30,8 @@ namespace null::render {
 			begin_edge->normal = math::vectors_bisector(begin_edge->to_next_direction, begin_edge->from_previous_direction);
 
 			begin_edge->miter_angle = angle_t<radians_t>{ math::angle_between(
-				math::rotate_vector(begin_edge->to_next_direction, angle_t<radians_t>{ 90.f }, math::e_rotation::cw),
-				math::rotate_vector(begin_edge->from_previous_direction, angle_t<radians_t>{ 90.f }, math::e_rotation::cw)
+				math::invert_vector_axis(begin_edge->to_next_direction, math::e_rotation::cw),
+				math::invert_vector_axis(begin_edge->from_previous_direction, math::e_rotation::cw)
 			) }.normalized() / 2.;
 			begin_edge->max_miter_dist = std::abs(std::max(vec2_t{ current_point - next_point }.length(), vec2_t{ current_point - previous_point }.length()) / begin_edge->miter_angle.sin());
 

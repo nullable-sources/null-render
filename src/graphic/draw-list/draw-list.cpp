@@ -40,8 +40,8 @@ namespace null::render {
 				const vec2_t<float>& cap_direction{ segment.is_first ? -segment.begin_edge->to_next_direction : segment.begin_edge->from_previous_direction };
 				
 				const vec2_t<float>& direction{ segment.is_first ? segment.begin_edge->to_next_direction : segment.begin_edge->from_previous_direction };
-				const vec2_t<float> outward_delta{ math::rotate_vector(direction, angle_t<radians_t>{ 90.f }, math::e_rotation::ccw) };
-				const vec2_t<float> inward_delta{ math::rotate_vector(direction, angle_t<radians_t>{ 90.f }, math::e_rotation::cw) };
+				const vec2_t<float> outward_delta{ math::invert_vector_axis(direction, math::e_rotation::ccw) };
+				const vec2_t<float> inward_delta{ math::invert_vector_axis(direction, math::e_rotation::cw) };
 
 				const vec2_t<float> outward_vertex{ *segment.begin_edge->point + outward_delta * half_thickness + cap_direction * (stroke.line_cap == e_line_cap::square ? half_thickness : 0.f) };
 				const vec2_t<float> inward_vertex{ *segment.begin_edge->point + inward_delta * half_thickness + cap_direction * (stroke.line_cap == e_line_cap::square ? half_thickness : 0.f) };
@@ -61,8 +61,8 @@ namespace null::render {
 					backend::mesh->geometry_buffer.add_index(command->vertex_count).add_index(command->vertex_count + 1).add_index(command->vertex_count + 2);
 
 					const vec2_t<float> miter_vertex{ *segment.begin_edge->point + distance };
-					const vec2_t<float> to_previous_vertex{ *segment.begin_edge->point + math::rotate_vector(segment.begin_edge->from_previous_direction, angle_t<radians_t>{ 90.f }, rotation) * half_thickness };
-					const vec2_t<float> to_next_vertex{ *segment.begin_edge->point + math::rotate_vector(segment.begin_edge->to_next_direction, angle_t<radians_t>{ 90.f }, rotation) * half_thickness };
+					const vec2_t<float> to_previous_vertex{ *segment.begin_edge->point + math::invert_vector_axis(segment.begin_edge->from_previous_direction, rotation) * half_thickness };
+					const vec2_t<float> to_next_vertex{ *segment.begin_edge->point + math::invert_vector_axis(segment.begin_edge->to_next_direction, rotation) * half_thickness };
 
 					command->vertex_count += 3;
 					backend::mesh->geometry_buffer
@@ -80,8 +80,8 @@ namespace null::render {
 				} else {
 					vec2_t<float> direction{ segment.begin_edge->to_next_direction * half_thickness };
 
-					const vec2_t<float> outward_vertex{ *segment.begin_edge->point + math::rotate_vector(segment.begin_edge->to_next_direction, angle_t<radians_t>{ 90.f }, math::e_rotation::ccw) * half_thickness };
-					const vec2_t<float> inward_vertex{ *segment.begin_edge->point + math::rotate_vector(segment.begin_edge->to_next_direction, angle_t<radians_t>{ 90.f }, math::e_rotation::cw) * half_thickness };
+					const vec2_t<float> outward_vertex{ *segment.begin_edge->point + math::invert_vector_axis(segment.begin_edge->to_next_direction, math::e_rotation::ccw) * half_thickness };
+					const vec2_t<float> inward_vertex{ *segment.begin_edge->point + math::invert_vector_axis(segment.begin_edge->to_next_direction, math::e_rotation::cw) * half_thickness };
 
 					command->vertex_count += 2;
 					backend::mesh->geometry_buffer
@@ -91,8 +91,8 @@ namespace null::render {
 			}
 
 			if(stroke.line_join == e_line_join::none) {
-				const vec2_t<float> outward_vertex{ *segment.end_edge->point + math::rotate_vector(segment.begin_edge->to_next_direction, angle_t<radians_t>{ 90.f }, math::e_rotation::ccw) * half_thickness };
-				const vec2_t<float> inward_vertex{ *segment.end_edge->point + math::rotate_vector(segment.begin_edge->to_next_direction, angle_t<radians_t>{ 90.f }, math::e_rotation::cw) * half_thickness };
+				const vec2_t<float> outward_vertex{ *segment.end_edge->point + math::invert_vector_axis(segment.begin_edge->to_next_direction, math::e_rotation::ccw) * half_thickness };
+				const vec2_t<float> inward_vertex{ *segment.end_edge->point + math::invert_vector_axis(segment.begin_edge->to_next_direction, math::e_rotation::cw) * half_thickness };
 
 				command->vertex_count += 2;
 				backend::mesh->geometry_buffer

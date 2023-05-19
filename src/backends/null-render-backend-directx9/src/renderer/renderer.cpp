@@ -6,7 +6,7 @@
 
 namespace null::render::backend::directx9 {
 	matrix4x4_t c_renderer::get_projection_matrix() const {
-		return matrix4x4_t::project_ortho(0.5f, render::shared::viewport.x + 0.5f, render::shared::viewport.y + 0.5f, 0.5f, -10000.f, 10000.f);
+		return matrix4x4_t::projection_ortho(0.5f, render::shared::viewport.x + 0.5f, render::shared::viewport.y + 0.5f, 0.5f, -10000.f, 10000.f);
 	}
 
 	void c_renderer::set_texture(void* texture) {
@@ -72,7 +72,7 @@ namespace null::render::backend::directx9 {
 		shared.device->SetRenderState(D3DRS_ALPHATESTENABLE, false);
 		shared.device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 		shared.device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-		shared.device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
+		shared.device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 		shared.device->SetRenderState(D3DRS_SCISSORTESTENABLE, true);
 		shared.device->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
 		shared.device->SetRenderState(D3DRS_FOGENABLE, false);
