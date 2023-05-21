@@ -11,9 +11,7 @@ namespace null::render::backend::opengl3 {
     }
 
     void c_renderer::set_texture(void* texture) {
-        opengl::active_texture(opengl::e_texture_2d);
         opengl::bind_texture(opengl::e_texture_2d, (std::uint32_t)texture);
-        opengl::enable(opengl::e_texture_2d);
     }
     
     void c_renderer::set_clip(const rect_t<float>& rect) {
@@ -72,6 +70,9 @@ namespace null::render::backend::opengl3 {
     }
 
     void c_renderer::save_state() {
+        opengl::get_integerv(opengl::e_draw_framebuffer_binding, (int*)&saved_state.draw_fbo);
+        opengl::get_integerv(opengl::e_read_framebuffer_binding, (int*)&saved_state.read_fbo);
+        opengl::get_integerv(opengl::e_renderbuffer_binding, (int*)&saved_state.rbo);
         opengl::get_integerv(opengl::e_active_texture, (int*)&saved_state.active_texture);
         opengl::active_texture(opengl::e_texture0);
         opengl::get_integerv(opengl::e_current_program, (int*)&saved_state.program);
@@ -97,6 +98,9 @@ namespace null::render::backend::opengl3 {
     }
     
     void c_renderer::restore_state() {
+        opengl::bind_framebuffer(opengl::e_read_framebuffer, saved_state.read_fbo);
+        opengl::bind_framebuffer(opengl::e_draw_framebuffer, saved_state.draw_fbo);
+        opengl::bind_renderbuffer(opengl::e_renderbuffer, saved_state.rbo);
         opengl::use_program(saved_state.program);
         opengl::bind_texture(opengl::e_texture_2d, saved_state.texture);
         opengl::bind_sampler(0, saved_state.sampler);

@@ -9,7 +9,8 @@ namespace null::render::backend {
 
 	enum class e_frame_buffer_flags {
 		none = 0,
-		msaa = 1 << 0
+		msaa			= 1 << 0,
+		depth_buffer	= 1 << 1
 	}; enum_create_bit_operators(e_frame_buffer_flags, true);
 	enum_create_cast_operator(e_frame_buffer_flags, -);
 
