@@ -3,7 +3,7 @@
 #include <internal/frame-buffer/frame-buffer.h>
 
 namespace null::render::backend::directx11 {
-	void c_frame_buffer::create() {
+	void c_frame_buffer::on_create() {
         if(!empty()) return;
 
         //@note: creating texture for render target
@@ -100,7 +100,7 @@ namespace null::render::backend::directx11 {
         }
 	}
 
-	void c_frame_buffer::destroy() {
+	void c_frame_buffer::on_destroy() {
         if(rasterizer_state) { rasterizer_state->Release(); rasterizer_state = nullptr; }
         if(render_target_texture) { render_target_texture->Release(); render_target_texture = nullptr; }
         if(depth_stencil_view_texture) { depth_stencil_view_texture->Release(); depth_stencil_view_texture = nullptr; }

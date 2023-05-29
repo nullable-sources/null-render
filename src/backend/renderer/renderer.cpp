@@ -8,17 +8,8 @@
 namespace null::render::backend {
     void i_renderer::create_objects() {
         if(empty()) return;
-        shaders::event_dispatcher.create();
 
-        mesh->create();
-
-        msaa_buffer->create();
-        rendering_buffer->create();
-
-        rtt_buffer->create();
-        for(std::unique_ptr<i_frame_buffer>& postprocessing_buffer : postprocessing_buffers) {
-            postprocessing_buffer->create();
-        }
+        object_event_dispatcher.create();
 
         create_atlases();
         create_internal_objects();
@@ -26,17 +17,8 @@ namespace null::render::backend {
 
     void i_renderer::destroy_objects() {
         if(empty()) return;
-        shaders::event_dispatcher.destroy();
 
-        mesh->destroy();
-
-        msaa_buffer->destroy();
-        rendering_buffer->destroy();
-
-        rtt_buffer->destroy();
-        for(std::unique_ptr<i_frame_buffer>& postprocessing_buffer : postprocessing_buffers) {
-            postprocessing_buffer->destroy();
-        }
+        object_event_dispatcher.destroy();
 
         destroy_atlases();
         destroy_internal_objects();
@@ -44,6 +26,8 @@ namespace null::render::backend {
 
     void i_renderer::begin_render() {
         save_state();
+
+        object_event_dispatcher.begin_render();
 
         mesh->compile();
 
@@ -71,6 +55,8 @@ namespace null::render::backend {
         }
 
         mesh->clear_geometry();
+
+        object_event_dispatcher.end_render();
 
         restore_state();
     }

@@ -16,7 +16,7 @@
 */
 
 namespace null::render::backend::directx9 {
-    void c_frame_buffer::create() {
+    void c_frame_buffer::on_create() {
         if(!empty()) return;
 
         //@note: creating texture for render target
@@ -60,7 +60,7 @@ namespace null::render::backend::directx9 {
         }
     }
 
-    void c_frame_buffer::destroy() {
+    void c_frame_buffer::on_destroy() {
         if(texture) { texture->Release(); texture = nullptr; }
         if(surface) { surface->Release(); surface = nullptr; }
     }

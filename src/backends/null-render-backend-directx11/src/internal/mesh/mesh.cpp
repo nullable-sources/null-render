@@ -2,7 +2,7 @@
 #include <shaders/compiled-objects/passthrough/passthrough.h>
 
 namespace null::render::backend::directx11 {
-    void c_mesh::create() {
+    void c_mesh::on_create() {
         if(input_layout) return;
 
         D3D11_INPUT_ELEMENT_DESC desc[] = {
@@ -14,7 +14,7 @@ namespace null::render::backend::directx11 {
             utils::logger.log(utils::e_log_type::error, "cant create vertex input layout, return code {}.", result);
     }
 
-    void c_mesh::destroy() {
+    void c_mesh::on_destroy() {
         if(index_buffer) { index_buffer->Release(); index_buffer = nullptr; }
         if(vertex_buffer) { vertex_buffer->Release(); vertex_buffer = nullptr; }
         if(input_layout) { input_layout->Release(); input_layout = nullptr; }

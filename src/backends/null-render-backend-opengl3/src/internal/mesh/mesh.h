@@ -11,8 +11,8 @@ namespace null::render::backend::opengl3 {
 		std::uint32_t vao{ }, vbo{ }, ibo{ };
 
 	public:
-		void create() override;
-		void destroy() override;
+		void on_create() override;
+		void on_destroy() override;
 
 		void compile() override;
 

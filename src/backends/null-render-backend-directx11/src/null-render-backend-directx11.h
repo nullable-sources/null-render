@@ -96,14 +96,14 @@ namespace null::render::backend::directx11 {
 			switch(msg) {
 				case WM_SIZE: {
 					if(device && w_param != SIZE_MINIMIZED) {
-						msaa_buffer->destroy();
-						rendering_buffer->destroy();
+						msaa_buffer->on_destroy();
+						rendering_buffer->on_destroy();
 
 						render::shared::viewport = vec2_t{ (std::uint32_t)LOWORD(l_param), (std::uint32_t)HIWORD(l_param) };
 						swap_chain->ResizeBuffers(0, (std::uint32_t)render::shared::viewport.x, (std::uint32_t)render::shared::viewport.y, DXGI_FORMAT_UNKNOWN, 0);
 
-						msaa_buffer->create();
-						rendering_buffer->create();
+						msaa_buffer->on_create();
+						rendering_buffer->on_create();
 					}
 				} return { 0 };
 			}

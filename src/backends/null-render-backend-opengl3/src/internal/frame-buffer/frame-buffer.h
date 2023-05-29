@@ -11,8 +11,8 @@ namespace null::render::backend::opengl3 {
 		void* get_texture() override { return (void*)fbo_attachment; }
 
 	public:
-		void create() override;
-		void destroy() override;
+		void on_create() override;
+		void on_destroy() override;
 
 	public:
 		void clear() override;

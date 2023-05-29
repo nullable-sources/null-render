@@ -1,5 +1,5 @@
 #pragma once
-#include <null-sdk.h>
+#include <backend/internal/object.h>
 
 namespace null::render::backend {
 	enum class e_frame_buffer_type {
@@ -14,7 +14,7 @@ namespace null::render::backend {
 	}; enum_create_bit_operators(e_frame_buffer_flags, true);
 	enum_create_cast_operator(e_frame_buffer_flags, -);
 
-	class i_frame_buffer {
+	class i_frame_buffer : public i_object {
 	public:
 		vec2_t<int> size{ };
 		e_frame_buffer_type type{ };
@@ -27,10 +27,6 @@ namespace null::render::backend {
 	public:
 		virtual void* get_surface() = 0;
 		virtual void* get_texture() = 0;
-
-	public:
-		virtual void create() = 0;
-		virtual void destroy() = 0;
 
 	public:
 		virtual void clear() = 0;

@@ -4,7 +4,7 @@
 #include <internal/frame-buffer/frame-buffer.h>
 
 namespace null::render::backend::opengl3 {
-	void c_frame_buffer::create() {
+	void c_frame_buffer::on_create() {
 		if(!empty()) return;
 
 		if(type == e_frame_buffer_type::postprocessing) {
@@ -35,7 +35,7 @@ namespace null::render::backend::opengl3 {
 					opengl::tex_parameterf(opengl::e_texture_2d, opengl::e_texture_wrap_t, opengl::e_clamp_to_edge);
 					opengl::tex_parameterf(opengl::e_texture_2d, opengl::e_texture_mag_filter, opengl::e_linear);
 					opengl::tex_parameterf(opengl::e_texture_2d, opengl::e_texture_min_filter, opengl::e_linear);
-					opengl::tex_image2d(opengl::e_texture_2d, 0, opengl::e_depth_component, size.x, size.y, 0, opengl::e_depth_component, opengl::e_unsigned_byte, NULL);
+					opengl::tex_image2d(opengl::e_texture_2d, 0, opengl::e_depth_component, size.x, size.y, 0, opengl::e_depth_component, opengl::e_unsigned_byte, nullptr);
 					
 					opengl::framebuffer_texture2d(opengl::e_framebuffer, opengl::e_depth_attachment, opengl::e_texture_2d, depth_buffer, 0);
 				}
@@ -60,7 +60,7 @@ namespace null::render::backend::opengl3 {
 		}
 	}
 
-	void c_frame_buffer::destroy() {
+	void c_frame_buffer::on_destroy() {
 		if(flags & e_frame_buffer_flags::depth_buffer) opengl::delete_renderbuffers(1, &depth_buffer);
 
 		if(flags & e_frame_buffer_flags::msaa) opengl::delete_renderbuffers(1, &fbo_attachment);

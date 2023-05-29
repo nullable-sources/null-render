@@ -15,7 +15,7 @@ namespace null::render::backend::opengl3 {
     }
     
     void c_renderer::set_clip(const rect_t<float>& rect) {
-        vec2_t size{ rect.size() };
+        const vec2_t size{ rect.size() };
         opengl::scissor(rect.min.x, shared::viewport.y - rect.max.y, size.x, size.y);
     }
     
@@ -64,7 +64,7 @@ namespace null::render::backend::opengl3 {
 
         set_clip({ { 0 }, shared::viewport });
         set_matrix(get_projection_matrix());
-        shaders::event_dispatcher.setup_state();
+        object_event_dispatcher.setup_state();
 
         mesh->set();
     }

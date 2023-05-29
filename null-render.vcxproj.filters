@@ -308,6 +308,9 @@
     <ClInclude Include="src\graphic\filters\render-to-texture\render-to-texture.h">
       <Filter>src\graphic\filters\render-to-texture</Filter>
     </ClInclude>
+    <ClInclude Include="src\backend\internal\object.h">
+      <Filter>src\backend\internal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\font\font.inl">

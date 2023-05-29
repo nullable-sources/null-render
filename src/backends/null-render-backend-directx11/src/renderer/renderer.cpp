@@ -88,7 +88,7 @@ namespace null::render::backend::directx11 {
 
         set_clip({ { 0 }, render::shared::viewport });
         set_matrix(get_projection_matrix());
-        shaders::event_dispatcher.setup_state();
+        object_event_dispatcher.setup_state();
 
         mesh->set();
 

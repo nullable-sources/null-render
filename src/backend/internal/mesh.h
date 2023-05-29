@@ -1,12 +1,10 @@
 #pragma once
 #include <backend/internal/geometry-buffer.h>
+#include <backend/internal/object.h>
 
 namespace null::render::backend {
-	class i_mesh {
+	class i_mesh : public i_object {
 	public:
-		virtual void create() = 0;
-		virtual void destroy() = 0;
-
 		virtual void compile() = 0;
 
 		virtual void set() = 0;

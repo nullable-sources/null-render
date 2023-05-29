@@ -55,6 +55,7 @@
     <ClInclude Include="src\backend\internal\frame-buffer.h" />
     <ClInclude Include="src\backend\internal\geometry-buffer.h" />
     <ClInclude Include="src\backend\internal\mesh.h" />
+    <ClInclude Include="src\backend\internal\object.h" />
     <ClInclude Include="src\backend\renderer\renderer.h" />
     <ClInclude Include="src\backend\shaders\linear-gradient\linear-gradient.h" />
     <ClInclude Include="src\backend\shaders\passthrough\passthrough.h" />
