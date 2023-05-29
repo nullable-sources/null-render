@@ -41,6 +41,5 @@ namespace null::render::backend {
         virtual void on_begin_render() { }
         virtual void on_end_render() { }
         virtual void on_setup_state() { }
-        virtual void on_resize() { }
     };
 }
