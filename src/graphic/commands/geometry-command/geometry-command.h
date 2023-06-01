@@ -1,6 +1,5 @@
 #pragma once
 #include <graphic/commands/commands.h>
-#include <graphic/filters/filters.h>
 
 namespace null::render::commands {
 	class c_geometry : public i_command {
@@ -19,5 +18,8 @@ namespace null::render::commands {
 		void get_bounding_box(vec2_t<float>& min, vec2_t<float>& max) const;
 		void recalculate_uvs(const vec2_t<float>& min, const vec2_t<float>& max) const;
 		void recalculate_uvs(const vec2_t<float>& min, const vec2_t<float>& max, const rect_t<float>& uvs) const;
+
+		void set_uvs(const rect_t<float>& uvs) const;
+		void set_default_uvs() const;
 	};
 }

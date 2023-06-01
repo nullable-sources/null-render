@@ -12,11 +12,11 @@ void draw_example(const std::string_view& name, const null::render::brush_t& bru
 	null::render::stroke_t stroke{ };
 	stroke.set_cap(null::render::e_line_cap::joint);
 
-	null::render::sdf_text_style_t text_style{ };
-	text_style
+	null::render::sdf_text_brush_t text_brush{ };
+	text_brush
 		.set_align(text_align)
 		.set_size(30.f);
-	null::render::background.add_text(name, { 280, y + 50 }, text_style);
+	null::render::background.add_text(name, { 280, y + 50 }, text_brush);
 
 	null::render::background.add_convex_shape(
 		null::render::path::make_rect({ 290, y }, { 390, y + 100 }, rect_path_rounding),
@@ -46,15 +46,18 @@ void draw_example(const std::string_view& name, const null::render::brush_t& bru
 }
 
 void main_loop() {
-	null::render::brush_t brush{ };
-	brush.set_color({ 100, 100, 255 });
-
-	null::render::quad_gradient_brush_t gradient_brush{ };
-	gradient_brush
+	null::render::filters::quad_gradient_t quad_gradient_filter{ };
+	quad_gradient_filter
 		.set_top_left_color({ 255, 255, 255 })
 		.set_top_right_color({ 255, 100, 0 })
 		.set_bottom_left_color({ 255, 0, 100 })
 		.set_bottom_right_color({ 100, 100, 255 });
+
+	null::render::brush_t brush{ };
+	brush.set_color({ 100, 100, 255 });
+
+	null::render::filter_brush_t quad_gradient_brush{ };
+	quad_gradient_brush.set_filter(quad_gradient_filter);
 
 	null::render::pen_t pen_brush{ };
 	pen_brush.set_layer(null::render::e_pen_layer::background);
@@ -62,19 +65,19 @@ void main_loop() {
 
 	null::render::pen_t pen_gradient{ };
 	pen_gradient.set_layer(null::render::e_pen_layer::background);
-	pen_gradient.set_brush(gradient_brush);
+	pen_gradient.set_brush(quad_gradient_brush);
 
 	null::render::begin_frame(window); {
-		null::render::sdf_text_style_t text_style{ };
-		text_style
+		null::render::sdf_text_brush_t text_brush{ };
+		text_brush
 			.set_size(30.f)
 			.set_outline(1.f, { 100, 100, 255 }, { 100, 100, 255, 0 });
-		null::render::background.add_text(std::format("[ directx9 ] fps: {:3.0f}", 1.f / std::chrono::duration<float>{ frame_counter.representation() }.count()), { }, text_style);
+		null::render::background.add_text(std::format("[ directx9 ] fps: {:3.0f}", 1.f / std::chrono::duration<float>{ frame_counter.representation() }.count()), { }, text_brush);
 
 		draw_example("brush", brush, 10, { });
 		draw_example("brush\ngradient pen", brush, 150, pen_gradient);
-		draw_example("gradient brush", gradient_brush, 290, { });
-		draw_example("gradient brush\npen", gradient_brush, 430, pen_brush);
+		draw_example("gradient brush", quad_gradient_brush, 290, { });
+		draw_example("gradient brush\npen", quad_gradient_brush, 430, pen_brush);
 	} null::render::end_frame();
 
 	null::render::backend::renderer->begin_render();

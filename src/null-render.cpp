@@ -27,12 +27,6 @@ namespace null::render {
         //@note: main buffers
         backend::msaa_buffer = backend::factory->instance_frame_buffer(shared::viewport, backend::e_frame_buffer_type::postprocessing, backend::e_frame_buffer_flags::msaa);
         backend::rendering_buffer = backend::factory->instance_frame_buffer(shared::viewport, backend::e_frame_buffer_type::backbuffer, backend::e_frame_buffer_flags::none);
-        
-        //@note: postprocessing buffers
-        backend::rtt_buffer = backend::factory->instance_frame_buffer(shared::viewport, backend::e_frame_buffer_type::postprocessing, backend::e_frame_buffer_flags::none);
-        for(std::unique_ptr<backend::i_frame_buffer>& postprocessing_buffer : backend::postprocessing_buffers) {
-            postprocessing_buffer = backend::factory->instance_frame_buffer(shared::viewport, backend::e_frame_buffer_type::postprocessing, backend::e_frame_buffer_flags::none);
-        }
 
         backend::shaders::passthrough_color = backend::factory->instance_passthrough_color_shader();
         backend::shaders::passthrough_texture = backend::factory->instance_passthrough_texture_shader();

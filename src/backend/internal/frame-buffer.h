@@ -38,8 +38,4 @@ namespace null::render::backend {
 	public:
 		virtual bool empty() const = 0;
 	}; inline std::unique_ptr<i_frame_buffer> msaa_buffer{ }, rendering_buffer{ };
-	
-
-	inline std::unique_ptr<i_frame_buffer> rtt_buffer{ };
-	inline std::array<std::unique_ptr<i_frame_buffer>, 4> postprocessing_buffers{ }; //@note: the result of postprocessing is written to the first buffer
 }

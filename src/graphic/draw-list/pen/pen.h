@@ -10,13 +10,13 @@ namespace null::render {
 
 	struct pen_t {
 	public:
-		const brush_t* brush{ };
+		std::shared_ptr<brush_t> brush{ };
 		float thickness{ 1.f };
 		float origin{ 1.f }; //@note: offset from geometry start, 0.f -> inside the geometry, 1.f -> outside the geometry
 		e_pen_layer layer{ };
 
 	public:
-		template <typename self_t> auto&& set_brush(this self_t&& self, const brush_t& brush) { self.brush = &brush; return self; }
+		template <typename self_t, typename brush_type_t> auto&& set_brush(this self_t&& self, const brush_type_t& brush) { self.brush = std::make_shared<brush_type_t>(brush); return self; }
 		template <typename self_t> auto&& set_thickness(this self_t&& self, const float& thickness) { self.thickness = thickness; return self; }
 		template <typename self_t> auto&& set_origin(this self_t&& self, const float& origin) { self.origin = origin; return self; }
 		template <typename self_t> auto&& set_layer(this self_t&& self, const e_pen_layer& layer) { self.layer = layer; return self; }

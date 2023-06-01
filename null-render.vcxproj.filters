@@ -40,21 +40,6 @@
     <Filter Include="src\graphic\commands\geometry-command">
       <UniqueIdentifier>{9f208b51-7095-4022-a67c-1be385c31ddf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\graphic\draw-list\brushes">
-      <UniqueIdentifier>{a8901549-3fba-4a75-935b-97659aefbbc2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\draw-list\brushes\quad-gradient-brush">
-      <UniqueIdentifier>{a2687576-7a80-4a01-a2f1-37dd3f741cf7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\draw-list\text-styles">
-      <UniqueIdentifier>{2db21fc2-fc74-4b83-b8bf-b9a0e9143575}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\draw-list\text-styles\sdf-text-style">
-      <UniqueIdentifier>{adef3365-a84c-4412-abc6-206a8836e514}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\draw-list\text-styles\text-style">
-      <UniqueIdentifier>{24301867-f51b-4707-a90d-a351e5bee2e9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\graphic\commands\clip-command">
       <UniqueIdentifier>{e64acf16-d8b5-44ad-a353-9d93dbedef93}</UniqueIdentifier>
     </Filter>
@@ -103,17 +88,14 @@
     <Filter Include="src\backend\shaders\passthrough">
       <UniqueIdentifier>{3324d159-be66-4385-857d-868f9255469e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\graphic\draw-list\brushes\linear-gradient-brush">
-      <UniqueIdentifier>{9f006405-a3b2-4362-b060-7226476d6cbc}</UniqueIdentifier>
+    <Filter Include="src\graphic\draw-list\brushes">
+      <UniqueIdentifier>{a8901549-3fba-4a75-935b-97659aefbbc2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\graphic\draw-list\brushes\texture-brush">
-      <UniqueIdentifier>{7ab9bdbf-9b30-4155-bd98-00abe050abdb}</UniqueIdentifier>
+    <Filter Include="src\graphic\draw-list\brushes\text-brush">
+      <UniqueIdentifier>{24301867-f51b-4707-a90d-a351e5bee2e9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\graphic\commands\postprocessing-commands">
-      <UniqueIdentifier>{341d2db7-0799-4875-b7d0-76760fcb62ea}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\filters\render-to-texture">
-      <UniqueIdentifier>{4014c2be-1d86-41a5-826b-ad0d0a015e72}</UniqueIdentifier>
+    <Filter Include="src\graphic\draw-list\brushes\sdf-text-brush">
+      <UniqueIdentifier>{adef3365-a84c-4412-abc6-206a8836e514}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -140,15 +122,6 @@
     </ClCompile>
     <ClCompile Include="src\graphic\draw-list\draw-list.cpp">
       <Filter>src\graphic\draw-list</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphic\draw-list\text-styles\text-style\text-style.cpp">
-      <Filter>src\graphic\draw-list\text-styles\text-style</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphic\draw-list\text-styles\sdf-text-style\sdf-text-style.cpp">
-      <Filter>src\graphic\draw-list\text-styles\sdf-text-style</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphic\draw-list\brushes\quad-gradient-brush\quad-gradient-brush.cpp">
-      <Filter>src\graphic\draw-list\brushes\quad-gradient-brush</Filter>
     </ClCompile>
     <ClCompile Include="src\graphic\commands\texture-command\texture-command.cpp">
       <Filter>src\graphic\commands\texture-command</Filter>
@@ -180,17 +153,11 @@
     <ClCompile Include="src\graphic\filters\linear-gradient\linear-gradient.cpp">
       <Filter>src\graphic\filters\linear-gradient</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphic\draw-list\brushes\linear-gradient-brush\linear-gradient-brush.cpp">
-      <Filter>src\graphic\draw-list\brushes\linear-gradient-brush</Filter>
+    <ClCompile Include="src\graphic\draw-list\brushes\sdf-text-brush\sdf-text-brush.cpp">
+      <Filter>src\graphic\draw-list\brushes\sdf-text-brush</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphic\draw-list\brushes\texture-brush\texture-brush.cpp">
-      <Filter>src\graphic\draw-list\brushes\texture-brush</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphic\commands\postprocessing-commands\postprocessing-commands.cpp">
-      <Filter>src\graphic\commands\postprocessing-commands</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphic\filters\render-to-texture\render-to-texture.cpp">
-      <Filter>src\graphic\filters\render-to-texture</Filter>
+    <ClCompile Include="src\graphic\draw-list\brushes\text-brush\text-brush.cpp">
+      <Filter>src\graphic\draw-list\brushes\text-brush</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -229,15 +196,6 @@
     </ClInclude>
     <ClInclude Include="src\graphic\draw-list\draw-list.h">
       <Filter>src\graphic\draw-list</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\draw-list\text-styles\text-style\text-style.h">
-      <Filter>src\graphic\draw-list\text-styles\text-style</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\draw-list\text-styles\sdf-text-style\sdf-text-style.h">
-      <Filter>src\graphic\draw-list\text-styles\sdf-text-style</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\draw-list\brushes\quad-gradient-brush\quad-gradient-brush.h">
-      <Filter>src\graphic\draw-list\brushes\quad-gradient-brush</Filter>
     </ClInclude>
     <ClInclude Include="src\graphic\draw-list\brushes\brush.h">
       <Filter>src\graphic\draw-list\brushes</Filter>
@@ -296,20 +254,14 @@
     <ClInclude Include="src\backend\shaders\linear-gradient\linear-gradient.h">
       <Filter>src\backend\shaders\linear-gradient</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphic\draw-list\brushes\linear-gradient-brush\linear-gradient-brush.h">
-      <Filter>src\graphic\draw-list\brushes\linear-gradient-brush</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\draw-list\brushes\texture-brush\texture-brush.h">
-      <Filter>src\graphic\draw-list\brushes\texture-brush</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\commands\postprocessing-commands\postprocessing-commands.h">
-      <Filter>src\graphic\commands\postprocessing-commands</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\filters\render-to-texture\render-to-texture.h">
-      <Filter>src\graphic\filters\render-to-texture</Filter>
-    </ClInclude>
     <ClInclude Include="src\backend\internal\object.h">
       <Filter>src\backend\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\draw-list\brushes\sdf-text-brush\sdf-text-brush.h">
+      <Filter>src\graphic\draw-list\brushes\sdf-text-brush</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\draw-list\brushes\text-brush\text-brush.h">
+      <Filter>src\graphic\draw-list\brushes\text-brush</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

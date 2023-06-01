@@ -14,7 +14,7 @@ namespace null::render {
 	}; enum_create_bit_operators(e_text_align, true);
 	enum_create_cast_operator(e_text_align, -);
 
-	struct text_style_t : public brush_t {
+	struct text_brush_t : public brush_t {
 	public:
 		c_font* font{ get_default_font() };
 		float size{ font->size };

@@ -1,8 +1,8 @@
 #pragma once
-#include <graphic/draw-list/text-styles/text-style/text-style.h>
+#include <graphic/draw-list/brushes/text-brush/text-brush.h>
 
 namespace null::render {
-	struct sdf_text_style_t : public text_style_t {
+	struct sdf_text_brush_t : public text_brush_t {
 	public:
 		float outline_thickness{ };
 		color_t<int> outline_start{ }, outline_end{ };

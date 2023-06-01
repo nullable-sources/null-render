@@ -36,4 +36,16 @@ namespace null::render::commands {
 			vertex.uv = std::clamp(uvs.min + (vertex.pos - min) * uv_scale, minmax_uv.first, minmax_uv.second);
 		}
 	}
+
+	void c_geometry::set_uvs(const rect_t<float>& uvs) const {
+		vec2_t<float> min{ }, max{ };
+		get_bounding_box(min, max);
+		recalculate_uvs(min, max, uvs);
+	}
+
+	void c_geometry::set_default_uvs() const {
+		vec2_t<float> min{ }, max{ };
+		get_bounding_box(min, max);
+		recalculate_uvs(min, max);
+	}
 }
