@@ -37,7 +37,5 @@ namespace null::render::filters {
 			child_command->set_default_uvs();
 			return std::make_unique<c_linear_gradient>(std::move(child_command), angle, stops);
 		}
-
-		linear_gradient_t* clone() const override { return new linear_gradient_t{ *this }; }
 	};
 }

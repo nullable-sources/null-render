@@ -13,8 +13,5 @@ namespace null::render::filters {
 	class i_filter_instancer {
 	public:
 		virtual std::unique_ptr<i_filter> instance_filter(std::unique_ptr<commands::c_geometry>&& child_command) const = 0;
-
-	public:
-		virtual i_filter_instancer* clone() const = 0;
 	};
 }

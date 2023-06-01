@@ -30,7 +30,5 @@ namespace null::render::filters {
 			child_command->set_default_uvs();
 			return std::make_unique<c_quad_gradient>(std::move(child_command), colors);
 		}
-
-		quad_gradient_t* clone() const override { return new quad_gradient_t{ *this }; }
 	};
 }
