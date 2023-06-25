@@ -19,78 +19,29 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\backend\renderer\renderer.cpp" />
-    <ClCompile Include="src\font\font.cpp" />
-    <ClCompile Include="src\font\loaders\freetype\freetype.cpp" />
-    <ClCompile Include="src\font\loaders\truetype\truetype.cpp" />
-    <ClCompile Include="src\graphic\commands\clip-command\clip-command.cpp" />
-    <ClCompile Include="src\graphic\commands\geometry-command\geometry-command.cpp" />
-    <ClCompile Include="src\graphic\commands\matrix-command\matrix-command.cpp" />
-    <ClCompile Include="src\graphic\commands\setup-state-command\setup-state-command.cpp" />
-    <ClCompile Include="src\graphic\commands\texture-command\texture-command.cpp" />
-    <ClCompile Include="src\graphic\draw-list\brushes\sdf-text-brush\sdf-text-brush.cpp" />
-    <ClCompile Include="src\graphic\draw-list\brushes\text-brush\text-brush.cpp" />
-    <ClCompile Include="src\graphic\draw-list\draw-list.cpp" />
-    <ClCompile Include="src\graphic\draw-list\pen\pen.cpp" />
-    <ClCompile Include="src\graphic\draw-list\strokes\stroke.cpp" />
-    <ClCompile Include="src\graphic\filters\linear-gradient\linear-gradient.cpp" />
-    <ClCompile Include="src\graphic\filters\quad-gradient\quad-gradient.cpp" />
-    <ClCompile Include="src\graphic\filters\sdf\sdf.cpp" />
-    <ClCompile Include="src\graphic\filters\texture\texture.cpp" />
-    <ClCompile Include="src\graphic\path\path.cpp" />
-    <ClCompile Include="src\null-render.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="$(SolutionDir)third-party\null-sdk\null-sdk.vcxproj">
       <Project>{f7a10a5c-0fae-424b-8f2b-6cc4e4d898d1}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\backend\backend.h" />
-    <ClInclude Include="src\backend\internal\frame-buffer.h" />
-    <ClInclude Include="src\backend\internal\geometry-buffer.h" />
-    <ClInclude Include="src\backend\internal\mesh.h" />
-    <ClInclude Include="src\backend\internal\object.h" />
-    <ClInclude Include="src\backend\renderer\renderer.h" />
-    <ClInclude Include="src\backend\shaders\linear-gradient\linear-gradient.h" />
-    <ClInclude Include="src\backend\shaders\passthrough\passthrough.h" />
-    <ClInclude Include="src\backend\shaders\quad-gradient\quad-gradient.h" />
-    <ClInclude Include="src\backend\shaders\sdf\sdf.h" />
-    <ClInclude Include="src\backend\shaders\shader.h" />
-    <ClInclude Include="src\font\font.h" />
-    <ClInclude Include="src\font\loaders\freetype\freetype.h" />
-    <ClInclude Include="src\font\loaders\loader.h" />
-    <ClInclude Include="src\font\loaders\truetype\truetype.h" />
-    <ClInclude Include="src\graphic\commands\clip-command\clip-command.h" />
-    <ClInclude Include="src\graphic\commands\commands.h" />
-    <ClInclude Include="src\graphic\commands\geometry-command\geometry-command.h" />
-    <ClInclude Include="src\graphic\commands\matrix-command\matrix-command.h" />
-    <ClInclude Include="src\graphic\commands\setup-state-command\setup-state-command.h" />
-    <ClInclude Include="src\graphic\commands\texture-command\texture-command.h" />
-    <ClInclude Include="src\graphic\draw-list\brushes\brush.h" />
-    <ClInclude Include="src\graphic\draw-list\brushes\sdf-text-brush\sdf-text-brush.h" />
-    <ClInclude Include="src\graphic\draw-list\brushes\text-brush\text-brush.h" />
-    <ClInclude Include="src\graphic\draw-list\draw-list.h" />
-    <ClInclude Include="src\graphic\draw-list\pen\pen.h" />
-    <ClInclude Include="src\graphic\draw-list\strokes\stroke.h" />
-    <ClInclude Include="src\graphic\filters\filters.h" />
-    <ClInclude Include="src\graphic\filters\linear-gradient\linear-gradient.h" />
-    <ClInclude Include="src\graphic\filters\quad-gradient\quad-gradient.h" />
-    <ClInclude Include="src\graphic\filters\sdf\sdf.h" />
-    <ClInclude Include="src\graphic\filters\texture\texture.h" />
-    <ClInclude Include="src\graphic\path\path.h" />
-    <ClInclude Include="src\null-render.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="src\font\font.inl" />
-    <None Include="src\graphic\draw-list\draw-list.inl" />
+    <ClCompile Include="src\font\atlas.ixx" />
+    <ClCompile Include="src\font\configs.ixx" />
+    <ClCompile Include="src\font\font.ixx" />
+    <ClCompile Include="src\font\glyph.ixx" />
+    <ClCompile Include="src\font\impl\impl.ixx" />
+    <ClCompile Include="src\font\impl\lookup-table.ixx" />
+    <ClCompile Include="src\font\loaders\freetype.ixx" />
+    <ClCompile Include="src\font\loaders\loader.ixx" />
+    <ClCompile Include="src\font\loaders\truetype.ixx" />
+    <ClCompile Include="src\graphic\path.ixx" />
+    <ClCompile Include="src\null-render.ixx" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{4abcf635-9767-40f9-989e-f0cdf5fb68ae}</ProjectGuid>
     <RootNamespace>null_render</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'" Label="Configuration">
@@ -172,10 +123,11 @@
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <EnableModules>true</EnableModules>
+      <EnableModules>false</EnableModules>
       <AdditionalIncludeDirectories>$(ProjectDir)src\;$(ProjectDir)third-party\stb\;$(ProjectDir)third-party\freetype\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
+      <BuildStlModules>false</BuildStlModules>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -200,10 +152,11 @@
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <EnableModules>true</EnableModules>
+      <EnableModules>false</EnableModules>
       <AdditionalIncludeDirectories>$(ProjectDir)src\;$(ProjectDir)third-party\stb\;$(ProjectDir)third-party\freetype\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
+      <BuildStlModules>false</BuildStlModules>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -221,17 +174,18 @@
     <ClCompile>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NOMINMAX;_CRT_SECURE_NO_WARNINGS;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>STBTT_STATIC;NOMINMAX;_CRT_SECURE_NO_WARNINGS;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <EnableModules>true</EnableModules>
+      <EnableModules>false</EnableModules>
       <AdditionalIncludeDirectories>$(ProjectDir)src\;$(ProjectDir)third-party\stb\;$(ProjectDir)third-party\freetype\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
+      <BuildStlModules>false</BuildStlModules>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -256,10 +210,11 @@
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <EnableModules>true</EnableModules>
+      <EnableModules>false</EnableModules>
       <AdditionalIncludeDirectories>$(ProjectDir)src\;$(ProjectDir)third-party\stb\;$(ProjectDir)third-party\freetype\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
+      <BuildStlModules>false</BuildStlModules>
     </ClCompile>
     <Link>
       <SubSystem>

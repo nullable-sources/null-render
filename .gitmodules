@@ -1,3 +1,4 @@
 [submodule "third-party/null-sdk"]
 	path = third-party/null-sdk
 	url = https://github.com/nullptr-sources/null-sdk
+	branch = cpp20-modules

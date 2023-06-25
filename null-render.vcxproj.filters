@@ -5,271 +5,60 @@
       <UniqueIdentifier>{d11addc5-089b-4237-a3dd-c21f8f81dcf1}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\font">
-      <UniqueIdentifier>{eda5cc7f-ea04-4b39-84c1-023faa3fb642}</UniqueIdentifier>
+      <UniqueIdentifier>{5fea4115-e8bc-4038-9554-6b287024388f}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\font\loaders">
-      <UniqueIdentifier>{42a92ae8-850b-44b8-9983-878d9cc79f39}</UniqueIdentifier>
+      <UniqueIdentifier>{82b1a956-3d23-4911-8101-f3c31c5910df}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\font\loaders\freetype">
-      <UniqueIdentifier>{3cff3577-97b6-4785-ab28-a033dc3a7e6e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\font\loaders\truetype">
-      <UniqueIdentifier>{a8d128a9-8fe4-450b-a6d1-ec711f25ba14}</UniqueIdentifier>
+    <Filter Include="src\font\impl">
+      <UniqueIdentifier>{0666242d-d807-4ead-8fbe-d4a7630556da}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\graphic">
-      <UniqueIdentifier>{92a02369-d887-4fa6-a907-37fad8aec3fb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\filters">
-      <UniqueIdentifier>{86bab117-ae8b-4322-9796-68ca03b73c70}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\filters\texture">
-      <UniqueIdentifier>{7a22f134-e584-45dd-a8c0-fc0c87d53c9f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\filters\quad-gradient">
-      <UniqueIdentifier>{19dab34c-1ed7-40eb-9a13-80e2f4ff3189}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\filters\sdf">
-      <UniqueIdentifier>{ad4ccb60-6cff-47ee-88c3-08203e45a8b5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\draw-list">
-      <UniqueIdentifier>{627a08f7-8422-47a4-8f22-d81a6c06d0ba}</UniqueIdentifier>
+      <UniqueIdentifier>{a2c7d656-b786-4e76-b557-ef3b42d8b484}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\graphic\commands">
-      <UniqueIdentifier>{565c00bd-8a95-4559-9881-7983374698f8}</UniqueIdentifier>
+      <UniqueIdentifier>{4e66aa36-9248-4ef0-a509-bc6f1b56ffe8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\graphic\commands\geometry-command">
-      <UniqueIdentifier>{9f208b51-7095-4022-a67c-1be385c31ddf}</UniqueIdentifier>
+    <Filter Include="src\graphic\draw-list">
+      <UniqueIdentifier>{0e457e0b-c3d9-4dc3-aaf2-e863df212a5a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\graphic\commands\clip-command">
-      <UniqueIdentifier>{e64acf16-d8b5-44ad-a353-9d93dbedef93}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\commands\texture-command">
-      <UniqueIdentifier>{bb60c0b8-9a58-49c1-99a8-41e290e5ddda}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\commands\matrix-command">
-      <UniqueIdentifier>{ff1cd921-4e46-4ae1-af84-98b929399108}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\commands\setup-state-command">
-      <UniqueIdentifier>{8bf788b1-78db-4efa-bd63-9150747d8aab}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\backend">
-      <UniqueIdentifier>{a8cb3f04-36e6-4fa7-bc91-69471392379b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\backend\internal">
-      <UniqueIdentifier>{7f76bb54-744c-407a-aeec-9a47a7eab72c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\backend\renderer">
-      <UniqueIdentifier>{6cf1ef11-a737-4d58-85ac-88da8436f861}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\backend\shaders">
-      <UniqueIdentifier>{a5befbf0-2cb0-4895-bf43-e2158b07b51a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\backend\shaders\quad-gradient">
-      <UniqueIdentifier>{668323fe-7a6c-4783-a040-da2c1d9e18a0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\backend\shaders\sdf">
-      <UniqueIdentifier>{57bf7932-2b09-4c96-82f5-2475e157cf8c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\draw-list\strokes">
-      <UniqueIdentifier>{9d890c68-a50a-485a-aac9-60273143cdea}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\draw-list\pen">
-      <UniqueIdentifier>{f4cce58a-0e20-452d-b535-23a0b3981ee6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\path">
-      <UniqueIdentifier>{d0a8f224-405a-4f20-a296-c59ca99bf979}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\filters\linear-gradient">
-      <UniqueIdentifier>{e097fd9d-68b7-441f-a4c1-a5a9002b487c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\backend\shaders\linear-gradient">
-      <UniqueIdentifier>{73aa3c64-257e-4f3f-9418-47ad6e97c7af}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\backend\shaders\passthrough">
-      <UniqueIdentifier>{3324d159-be66-4385-857d-868f9255469e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\draw-list\brushes">
-      <UniqueIdentifier>{a8901549-3fba-4a75-935b-97659aefbbc2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\draw-list\brushes\text-brush">
-      <UniqueIdentifier>{24301867-f51b-4707-a90d-a351e5bee2e9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\draw-list\brushes\sdf-text-brush">
-      <UniqueIdentifier>{adef3365-a84c-4412-abc6-206a8836e514}</UniqueIdentifier>
+    <Filter Include="src\graphic\filters">
+      <UniqueIdentifier>{02e7731f-013c-4a47-818c-82ea861dfaee}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\font\font.cpp">
-      <Filter>src\font</Filter>
-    </ClCompile>
-    <ClCompile Include="src\font\loaders\truetype\truetype.cpp">
-      <Filter>src\font\loaders\truetype</Filter>
-    </ClCompile>
-    <ClCompile Include="src\font\loaders\freetype\freetype.cpp">
-      <Filter>src\font\loaders\freetype</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphic\filters\texture\texture.cpp">
-      <Filter>src\graphic\filters\texture</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphic\filters\quad-gradient\quad-gradient.cpp">
-      <Filter>src\graphic\filters\quad-gradient</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphic\filters\sdf\sdf.cpp">
-      <Filter>src\graphic\filters\sdf</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphic\commands\geometry-command\geometry-command.cpp">
-      <Filter>src\graphic\commands\geometry-command</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphic\draw-list\draw-list.cpp">
-      <Filter>src\graphic\draw-list</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphic\commands\texture-command\texture-command.cpp">
-      <Filter>src\graphic\commands\texture-command</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphic\commands\clip-command\clip-command.cpp">
-      <Filter>src\graphic\commands\clip-command</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphic\commands\setup-state-command\setup-state-command.cpp">
-      <Filter>src\graphic\commands\setup-state-command</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphic\commands\matrix-command\matrix-command.cpp">
-      <Filter>src\graphic\commands\matrix-command</Filter>
-    </ClCompile>
-    <ClCompile Include="src\backend\renderer\renderer.cpp">
-      <Filter>src\backend\renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\null-render.cpp">
+    <ClCompile Include="src\null-render.ixx">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphic\draw-list\strokes\stroke.cpp">
-      <Filter>src\graphic\draw-list\strokes</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphic\draw-list\pen\pen.cpp">
-      <Filter>src\graphic\draw-list\pen</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphic\path\path.cpp">
-      <Filter>src\graphic\path</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphic\filters\linear-gradient\linear-gradient.cpp">
-      <Filter>src\graphic\filters\linear-gradient</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphic\draw-list\brushes\sdf-text-brush\sdf-text-brush.cpp">
-      <Filter>src\graphic\draw-list\brushes\sdf-text-brush</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphic\draw-list\brushes\text-brush\text-brush.cpp">
-      <Filter>src\graphic\draw-list\brushes\text-brush</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\null-render.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\font\font.h">
+    <ClCompile Include="src\font\font.ixx">
       <Filter>src\font</Filter>
-    </ClInclude>
-    <ClInclude Include="src\font\loaders\truetype\truetype.h">
-      <Filter>src\font\loaders\truetype</Filter>
-    </ClInclude>
-    <ClInclude Include="src\font\loaders\freetype\freetype.h">
-      <Filter>src\font\loaders\freetype</Filter>
-    </ClInclude>
-    <ClInclude Include="src\font\loaders\loader.h">
+    </ClCompile>
+    <ClCompile Include="src\font\configs.ixx">
+      <Filter>src\font</Filter>
+    </ClCompile>
+    <ClCompile Include="src\font\glyph.ixx">
+      <Filter>src\font</Filter>
+    </ClCompile>
+    <ClCompile Include="src\font\impl\impl.ixx">
+      <Filter>src\font\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\font\impl\lookup-table.ixx">
+      <Filter>src\font\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\font\atlas.ixx">
+      <Filter>src\font</Filter>
+    </ClCompile>
+    <ClCompile Include="src\font\loaders\loader.ixx">
       <Filter>src\font\loaders</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\filters\filters.h">
-      <Filter>src\graphic\filters</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\filters\texture\texture.h">
-      <Filter>src\graphic\filters\texture</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\filters\quad-gradient\quad-gradient.h">
-      <Filter>src\graphic\filters\quad-gradient</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\filters\sdf\sdf.h">
-      <Filter>src\graphic\filters\sdf</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\commands\geometry-command\geometry-command.h">
-      <Filter>src\graphic\commands\geometry-command</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\commands\commands.h">
-      <Filter>src\graphic\commands</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\draw-list\draw-list.h">
-      <Filter>src\graphic\draw-list</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\draw-list\brushes\brush.h">
-      <Filter>src\graphic\draw-list\brushes</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\commands\texture-command\texture-command.h">
-      <Filter>src\graphic\commands\texture-command</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\commands\clip-command\clip-command.h">
-      <Filter>src\graphic\commands\clip-command</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\commands\setup-state-command\setup-state-command.h">
-      <Filter>src\graphic\commands\setup-state-command</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\commands\matrix-command\matrix-command.h">
-      <Filter>src\graphic\commands\matrix-command</Filter>
-    </ClInclude>
-    <ClInclude Include="src\backend\backend.h">
-      <Filter>src\backend</Filter>
-    </ClInclude>
-    <ClInclude Include="src\backend\renderer\renderer.h">
-      <Filter>src\backend\renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="src\backend\internal\frame-buffer.h">
-      <Filter>src\backend\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\backend\internal\geometry-buffer.h">
-      <Filter>src\backend\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\backend\internal\mesh.h">
-      <Filter>src\backend\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\backend\shaders\passthrough\passthrough.h">
-      <Filter>src\backend\shaders\passthrough</Filter>
-    </ClInclude>
-    <ClInclude Include="src\backend\shaders\quad-gradient\quad-gradient.h">
-      <Filter>src\backend\shaders\quad-gradient</Filter>
-    </ClInclude>
-    <ClInclude Include="src\backend\shaders\sdf\sdf.h">
-      <Filter>src\backend\shaders\sdf</Filter>
-    </ClInclude>
-    <ClInclude Include="src\backend\shaders\shader.h">
-      <Filter>src\backend\shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\draw-list\pen\pen.h">
-      <Filter>src\graphic\draw-list\pen</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\path\path.h">
-      <Filter>src\graphic\path</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\draw-list\strokes\stroke.h">
-      <Filter>src\graphic\draw-list\strokes</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\filters\linear-gradient\linear-gradient.h">
-      <Filter>src\graphic\filters\linear-gradient</Filter>
-    </ClInclude>
-    <ClInclude Include="src\backend\shaders\linear-gradient\linear-gradient.h">
-      <Filter>src\backend\shaders\linear-gradient</Filter>
-    </ClInclude>
-    <ClInclude Include="src\backend\internal\object.h">
-      <Filter>src\backend\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\draw-list\brushes\sdf-text-brush\sdf-text-brush.h">
-      <Filter>src\graphic\draw-list\brushes\sdf-text-brush</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\draw-list\brushes\text-brush\text-brush.h">
-      <Filter>src\graphic\draw-list\brushes\text-brush</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="src\font\font.inl">
-      <Filter>src\font</Filter>
-    </None>
-    <None Include="src\graphic\draw-list\draw-list.inl">
-      <Filter>src\graphic\draw-list</Filter>
-    </None>
+    </ClCompile>
+    <ClCompile Include="src\font\loaders\truetype.ixx">
+      <Filter>src\font\loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\font\loaders\freetype.ixx">
+      <Filter>src\font\loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\path.ixx">
+      <Filter>src\graphic</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,4 +1,7 @@
-﻿# null-render
+﻿**At the moment, this branch is only in the process of switching to modules, because of the terrible support for modules, not even IntelliSense (ReSharper to help), but by the msvc compiler itself (just look at how many bug reports on ICE and other problems on the site https://developercommunity.visualstudio.com/cpp), a full transition will not be very soon.**
+
+
+# null-render
 <p align="center">
   <img src="https://i.imgur.com/9R6S6I6.png">
 </p>
