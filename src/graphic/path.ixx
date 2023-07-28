@@ -13,14 +13,31 @@ export module null.render:graphic.path;
 import null.sdk;
 
 export namespace null::render {
-	namespace shared {
-		int arc_fast_tessellation_multiplier{ 1 };
-		float circle_segment_max_error{ 1.6f };
-		int circle_auto_segment_max{ 512 };
+	struct path_builder_t {
+	public:
+		int arc_fast_tessellation_multiplier{ };
+		float circle_segment_max_error{ };
+		int circle_auto_segment_max{ };
 
 		std::array<std::uint8_t, 64> circle_segments{ };
 		std::vector<vec2_t<float>> arc_fast_vertex{ };
-	}
+
+	public:
+		path_builder_t(int _arc_fast_tessellation_multiplier, float _circle_segment_max_error, int _circle_auto_segment_max)
+			: arc_fast_tessellation_multiplier{ _arc_fast_tessellation_multiplier }, circle_segment_max_error{ _circle_segment_max_error }, circle_auto_segment_max{ _circle_auto_segment_max }
+		{
+			for(int i : std::views::iota(0u, circle_segments.size())) {
+				float radius{ i + 1.f };
+				circle_segments[i] = std::min(std::clamp((std::numbers::pi * 2.f) / std::acosf((radius - circle_segment_max_error) / radius), 12., 512.), 255.);
+			}
+
+			arc_fast_vertex.resize(arc_fast_tessellation_multiplier * 12);
+			for(int i : std::views::iota(0u, arc_fast_vertex.size())) {
+				float a{ float(i * 2.f * std::numbers::pi) / arc_fast_vertex.size() };
+				arc_fast_vertex[i] = vec2_t{ std::cosf(a), std::sinf(a) };
+			}
+		}
+	} path_builder{ 1, 1.6f, 512 };
 
 	enum class e_corner_sides {
 		top_left,
@@ -54,69 +71,69 @@ export namespace null::render {
 	public:
 		rounding_t() { }
 		rounding_t(const std::array<float, 4>& _corners) : corners{ _corners } { }
-		rounding_t(const float& top_left, const float& top_right, const float& bottom_left, const float& bottom_right) : corners{ top_left, top_right, bottom_left, bottom_right } { }
-		rounding_t(const float& rounding, const e_corner_flags& corner_flags = e_corner_flags::all) {
-			if (rounding > 0) {
-				if (corner_flags & e_corner_flags::top_left) corner(e_corner_sides::top_left) = rounding;
-				if (corner_flags & e_corner_flags::top_right) corner(e_corner_sides::top_right) = rounding;
-				if (corner_flags & e_corner_flags::bottom_left) corner(e_corner_sides::bottom_left) = rounding;
-				if (corner_flags & e_corner_flags::bottom_right) corner(e_corner_sides::bottom_right) = rounding;
+		rounding_t(float top_left, float top_right, float bottom_left, float bottom_right) : corners{ top_left, top_right, bottom_left, bottom_right } { }
+		rounding_t(float rounding, e_corner_flags corner_flags = e_corner_flags::all) {
+			if(rounding > 0) {
+				if(corner_flags & e_corner_flags::top_left) corner(e_corner_sides::top_left) = rounding;
+				if(corner_flags & e_corner_flags::top_right) corner(e_corner_sides::top_right) = rounding;
+				if(corner_flags & e_corner_flags::bottom_left) corner(e_corner_sides::bottom_left) = rounding;
+				if(corner_flags & e_corner_flags::bottom_right) corner(e_corner_sides::bottom_right) = rounding;
 			}
 		}
 
-		rounding_t(const float& rounding_first, const float& rounding_second, const e_corner_flags& corner_flags) {
-			if (rounding_first > 0 || rounding_second > 0) {
-				switch (corner_flags & e_corner_flags::all) {
-				case -e_corner_flags::top: { corner(e_corner_sides::top_left) = rounding_first; corner(e_corner_sides::top_right) = rounding_second; } break;
-				case -e_corner_flags::bottom: { corner(e_corner_sides::bottom_left) = rounding_first; corner(e_corner_sides::bottom_right) = rounding_second; } break;
-				case -e_corner_flags::left: { corner(e_corner_sides::top_left) = rounding_first; corner(e_corner_sides::bottom_left) = rounding_second; } break;
-				case -e_corner_flags::right: { corner(e_corner_sides::top_right) = rounding_first; corner(e_corner_sides::bottom_right) = rounding_second; } break;
-				case -e_corner_flags::left_diagonal: { corner(e_corner_sides::top_left) = rounding_first; corner(e_corner_sides::bottom_right) = rounding_second; } break;
-				case -e_corner_flags::right_diagonal: { corner(e_corner_sides::top_right) = rounding_first; corner(e_corner_sides::bottom_left) = rounding_second; } break;
+		rounding_t(float rounding_first, float rounding_second, e_corner_flags corner_flags) {
+			if(rounding_first > 0 || rounding_second > 0) {
+				switch(corner_flags & e_corner_flags::all) {
+					case -e_corner_flags::top: { corner(e_corner_sides::top_left) = rounding_first; corner(e_corner_sides::top_right) = rounding_second; } break;
+					case -e_corner_flags::bottom: { corner(e_corner_sides::bottom_left) = rounding_first; corner(e_corner_sides::bottom_right) = rounding_second; } break;
+					case -e_corner_flags::left: { corner(e_corner_sides::top_left) = rounding_first; corner(e_corner_sides::bottom_left) = rounding_second; } break;
+					case -e_corner_flags::right: { corner(e_corner_sides::top_right) = rounding_first; corner(e_corner_sides::bottom_right) = rounding_second; } break;
+					case -e_corner_flags::left_diagonal: { corner(e_corner_sides::top_left) = rounding_first; corner(e_corner_sides::bottom_right) = rounding_second; } break;
+					case -e_corner_flags::right_diagonal: { corner(e_corner_sides::top_right) = rounding_first; corner(e_corner_sides::bottom_left) = rounding_second; } break;
 				}
 			}
 		}
 
 	public:
 		float sum() const { return std::accumulate(corners.begin(), corners.end(), 0.f); }
-		float& corner(const e_corner_sides& corner) { return corners[-corner]; }
+		float& corner(e_corner_sides corner) { return corners[-corner]; }
 
 	public:
-		auto& operator[](const e_corner_sides& corner) const { return corners[-corner]; }
-		auto& operator[](const e_corner_sides& corner) { return corners[-corner]; }
+		auto& operator[](e_corner_sides corner) const { return corners[-corner]; }
+		auto& operator[](e_corner_sides corner) { return corners[-corner]; }
 	};
 
-	std::vector<vec2_t<float>> make_arc_fast(const vec2_t<float>& center, const float& radius, const int& a_min_of_12, const int& a_max_of_12) {
-		if (radius == 0.f || a_min_of_12 > a_max_of_12) return { center };
+	std::vector<vec2_t<float>> make_arc_fast(const vec2_t<float>& center, float radius, int a_min_of_12, int a_max_of_12) {
+		if(radius == 0.f || a_min_of_12 > a_max_of_12) return { center };
 		else {
-			return std::views::iota(a_min_of_12 * shared::arc_fast_tessellation_multiplier, a_max_of_12 * shared::arc_fast_tessellation_multiplier + 1)
-				| std::views::transform([&](const int& a) { return vec2_t<float>{ center + shared::arc_fast_vertex[a % shared::arc_fast_vertex.size()] * radius }; })
+			return std::views::iota(a_min_of_12 * path_builder.arc_fast_tessellation_multiplier, a_max_of_12 * path_builder.arc_fast_tessellation_multiplier + 1)
+				| std::views::transform([&](int a) { return vec2_t<float>{ center + path_builder.arc_fast_vertex[a % path_builder.arc_fast_vertex.size()] * radius }; })
 				| std::ranges::to<std::vector>();
 		}
 	}
 
-	std::vector<vec2_t<float>> make_arc(const vec2_t<float>& center, const float& radius, const float& a_min, const float& a_max, const int& num_segments) {
-		if (radius == 0.f) return { center };
+	std::vector<vec2_t<float>> make_arc(const vec2_t<float>& center, float radius, float a_min, float a_max, int num_segments) {
+		if(radius == 0.f) return { center };
 		else {
 			return std::views::iota(0, num_segments + 1)
-				| std::views::transform([&](const int& i) { const float a{ a_min + ((float)i / (float)num_segments) * (a_max - a_min) }; return vec2_t<float>{ center + vec2_t{ std::cosf(a), std::sinf(a) } *radius }; })
+				| std::views::transform([&](int i) { const float a{ a_min + ((float)i / (float)num_segments) * (a_max - a_min) }; return vec2_t<float>{ center + vec2_t{ std::cosf(a), std::sinf(a) } *radius }; })
 				| std::ranges::to<std::vector>();
 		}
 	}
 
-	std::vector<vec2_t<float>> make_circle(const vec2_t<float>& center, const float& radius, int num_segments = 0) {
-		if (num_segments <= 0) {
+	std::vector<vec2_t<float>> make_circle(const vec2_t<float>& center, float radius, int num_segments = 0) {
+		if(num_segments <= 0) {
 			const int radius_idx{ (int)radius - 1 };
-			if (radius_idx < shared::circle_segments.size()) num_segments = shared::circle_segments[radius_idx];
-			else num_segments = std::clamp((int)((std::numbers::pi * 2.0f) / std::acosf((radius - shared::circle_segment_max_error) / radius)), 12, shared::circle_auto_segment_max);
+			if(radius_idx < path_builder.circle_segments.size()) num_segments = path_builder.circle_segments[radius_idx];
+			else num_segments = std::clamp((int)((std::numbers::pi * 2.0f) / std::acosf((radius - path_builder.circle_segment_max_error) / radius)), 12, path_builder.circle_auto_segment_max);
 		}
-		else num_segments = std::clamp(num_segments, 3, shared::circle_auto_segment_max);
+		else num_segments = std::clamp(num_segments, 3, path_builder.circle_auto_segment_max);
 
 		return num_segments == 12 ? make_arc_fast(center, radius, 0, 11) : make_arc(center, radius, 0.0f, (std::numbers::pi * 2.f) * (num_segments - 1.f) / num_segments, num_segments - 1);
 	}
 
 	std::vector<vec2_t<float>> make_rect(const vec2_t<float>& a, const vec2_t<float>& b, const rounding_t& rounding = { }) {
-		if (rounding.sum() <= 0.0f) return { a, { b.x, a.y }, b, { a.x, b.y } };
+		if(rounding.sum() <= 0.0f) return { a, { b.x, a.y }, b, { a.x, b.y } };
 
 		const vec2_t size{ math::abs(b - a) - 1.f };
 		float scale_factor{ std::numeric_limits<float>::max() };
@@ -127,8 +144,8 @@ export namespace null::render {
 		scale_factor = std::min(1.0f, scale_factor);
 
 		rounding_t result_rounding{ };
-		for (std::tuple<const float&, float&> tuple : std::views::zip(rounding.corners, result_rounding.corners))
-			std::get<float&>(tuple) = std::round(std::get<const float&>(tuple) * scale_factor);
+		for(auto [corners, result_corners] : std::views::zip(rounding.corners, result_rounding.corners))
+			result_corners = std::round(corners * scale_factor);
 
 		return std::vector{
 			make_arc_fast(a + result_rounding[e_corner_sides::top_left], result_rounding[e_corner_sides::top_left], 6, 9),

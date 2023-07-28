@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "null-sdk", "third-party\nul
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backends", "backends", "{EC753036-4399-4DD8-890B-CA8F184A0608}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "null-render-backend-directx9", "src\backend\implementations\null-render-backend-directx9\null-render-backend-directx9.vcxproj", "{95843DE7-57A5-4B57-B7F2-7A60B0115992}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		debug|x64 = debug|x64
@@ -37,12 +39,21 @@ Global
 		{F7A10A5C-0FAE-424B-8F2B-6CC4E4D898D1}.release|x64.Build.0 = release|x64
 		{F7A10A5C-0FAE-424B-8F2B-6CC4E4D898D1}.release|x86.ActiveCfg = release|Win32
 		{F7A10A5C-0FAE-424B-8F2B-6CC4E4D898D1}.release|x86.Build.0 = release|Win32
+		{95843DE7-57A5-4B57-B7F2-7A60B0115992}.debug|x64.ActiveCfg = debug|x64
+		{95843DE7-57A5-4B57-B7F2-7A60B0115992}.debug|x64.Build.0 = debug|x64
+		{95843DE7-57A5-4B57-B7F2-7A60B0115992}.debug|x86.ActiveCfg = debug|Win32
+		{95843DE7-57A5-4B57-B7F2-7A60B0115992}.debug|x86.Build.0 = debug|Win32
+		{95843DE7-57A5-4B57-B7F2-7A60B0115992}.release|x64.ActiveCfg = release|x64
+		{95843DE7-57A5-4B57-B7F2-7A60B0115992}.release|x64.Build.0 = release|x64
+		{95843DE7-57A5-4B57-B7F2-7A60B0115992}.release|x86.ActiveCfg = release|Win32
+		{95843DE7-57A5-4B57-B7F2-7A60B0115992}.release|x86.Build.0 = release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F7A10A5C-0FAE-424B-8F2B-6CC4E4D898D1} = {4350B62F-41BA-4DDF-9FF9-455F108C2977}
+		{95843DE7-57A5-4B57-B7F2-7A60B0115992} = {EC753036-4399-4DD8-890B-CA8F184A0608}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D8D91833-D74F-4DB6-9490-501FA6486F71}

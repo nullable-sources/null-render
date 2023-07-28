@@ -48,7 +48,7 @@ export namespace null::render {
             bool is_built() const { return !pixels_alpha8.empty() || !pixels_rgba32.empty(); }
             void get_data_as_rgba32() {
                 if(pixels_alpha8.empty()) {
-                    utils::logger.log(utils::e_log_type::error, "pixels_alpha8 is empty.");
+                    utils::logger(utils::e_log_type::error, "pixels_alpha8 is empty.");
                     return;
                 }
 
@@ -56,7 +56,7 @@ export namespace null::render {
                     pixels_rgba32.resize(size.x * size.y * 4);
                     const std::uint8_t* src{ pixels_alpha8.data() };
                     std::uint32_t* dst{ pixels_rgba32.data() };
-                    for(const int& n : std::views::iota(1, size.x* size.y + 1) | std::views::reverse)
+                    for(int n : std::views::iota(1, size.x* size.y + 1) | std::views::reverse)
                         *dst++ = (*src++ << 24) | 0xFFFFFF;
                 }
             }
@@ -85,7 +85,7 @@ export namespace null::render {
 
         void build() {
             if(!font_loader) {
-                utils::logger.log(utils::e_log_type::error, "font_loader is empty.");
+                utils::logger(utils::e_log_type::error, "font_loader is empty.");
                 return;
             }
             font_loader->build(this);
@@ -93,7 +93,7 @@ export namespace null::render {
 
         void build_finish() {
             if(texture.pixels_alpha8.empty()) {
-                utils::logger.log(utils::e_log_type::error, "texture pixels_alpha8 is empty.");
+                utils::logger(utils::e_log_type::error, "texture pixels_alpha8 is empty.");
                 return;
             }
 
@@ -105,7 +105,7 @@ export namespace null::render {
         void clear() { clear_input_data(); texture.clear(); fonts.clear(); }
         void clear_input_data() {
             if(locked) {
-	            utils::logger.log(utils::e_log_type::error, "cannot modify a locked atlas between begin_render() and end_render/render().");
+	            utils::logger(utils::e_log_type::error, "cannot modify a locked atlas between begin_render() and end_render/render().");
             	return;
             }
 
@@ -117,10 +117,10 @@ export namespace null::render {
         }
 
         c_font* add_font(font_config_t* config) {
-            if(locked) { utils::logger.log(utils::e_log_type::error, "cannot modify a locked atlas between begin_render() and end_render/render()."); return nullptr; }
-            if(config->font) { utils::logger.log(utils::e_log_type::error, "config font pointer is empty."); return nullptr; }
-            if(config->data.empty()) { utils::logger.log(utils::e_log_type::error, "cofig font data is empty."); return nullptr; }
-            if(config->size_pixels <= 0.f) { utils::logger.log(utils::e_log_type::error, "config size_pixels <= 0.f."); return nullptr; }
+            if(locked) { utils::logger(utils::e_log_type::error, "cannot modify a locked atlas between begin_render() and end_render/render()."); return nullptr; }
+            if(config->font) { utils::logger(utils::e_log_type::error, "config font pointer is empty."); return nullptr; }
+            if(config->data.empty()) { utils::logger(utils::e_log_type::error, "cofig font data is empty."); return nullptr; }
+            if(config->size_pixels <= 0.f) { utils::logger(utils::e_log_type::error, "config size_pixels <= 0.f."); return nullptr; }
 
             fonts.push_back(std::make_unique<c_font>());
 
@@ -147,10 +147,10 @@ export namespace null::render {
         }
 
         c_font* add_font_from_file_ttf(const std::string_view& filename, const float& size_pixels, font_config_t* config = nullptr, const std::uint16_t* glyph_ranges = glyph_t::ranges_default()) {
-            if(locked) { utils::logger.log(utils::e_log_type::error, "cannot modify a locked atlas between begin_render() and end_render/render()."); return nullptr; }
+            if(locked) { utils::logger(utils::e_log_type::error, "cannot modify a locked atlas between begin_render() and end_render/render()."); return nullptr; }
 
             std::ifstream file{ filename.data(), std::ios::in | std::ios::binary | std::ios::ate };
-            if(!file.is_open()) { utils::logger.log(utils::e_log_type::error, "cannot open font file."); return nullptr; }
+            if(!file.is_open()) { utils::logger(utils::e_log_type::error, "cannot open font file."); return nullptr; }
 
             std::vector<char> font_file((std::size_t)file.tellg());
             file.seekg(0, std::ios::beg);
@@ -161,10 +161,10 @@ export namespace null::render {
         }
 
         c_font* add_font_from_memory_ttf(const std::vector<char>& font_file, float size_pixels, font_config_t* config = nullptr, const std::uint16_t* glyph_ranges = glyph_t::ranges_default()) {
-            if(locked) { utils::logger.log(utils::e_log_type::error, "cannot modify a locked atlas between begin_render() and end_render/render()."); return nullptr; }
+            if(locked) { utils::logger(utils::e_log_type::error, "cannot modify a locked atlas between begin_render() and end_render/render()."); return nullptr; }
 
             font_config_t cfg{ config ? *config : font_config_t{ } };
-            if(!cfg.data.empty()) utils::logger.log(utils::e_log_type::warning, "config font data is not empty.");
+            if(!cfg.data.empty()) utils::logger(utils::e_log_type::warning, "config font data is not empty.");
 
             cfg.data = font_file;
             cfg.size_pixels = size_pixels;
@@ -178,7 +178,7 @@ export namespace null::render {
             stb::decompress((std::uint8_t*)buf_decompressed_data.data(), compressed_ttf.data());
 
             font_config_t cfg{ config ? *config : font_config_t{ } };
-            if(!cfg.data.empty()) utils::logger.log(utils::e_log_type::warning, "config font data is not empty.");
+            if(!cfg.data.empty()) utils::logger(utils::e_log_type::warning, "config font data is not empty.");
 
             return add_font_from_memory_ttf(buf_decompressed_data, size_pixels, &cfg, glyph_ranges);
         }
@@ -202,7 +202,7 @@ export namespace null::render {
 
     void set_default_font(c_font* font) {
         if(!font || !font->is_loaded()) {
-            utils::logger.log(utils::e_log_type::warning, "The default font cannot be set, it is empty or not loaded.");
+            utils::logger(utils::e_log_type::warning, "The default font cannot be set, it is empty or not loaded.");
             return;
         }
 

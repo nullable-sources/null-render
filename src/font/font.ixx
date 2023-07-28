@@ -44,19 +44,18 @@ export namespace null::render {
             const size_t max_codepoint{ std::ranges::max_element(glyphs, [](const glyph_t& a, const glyph_t& b) { return a.codepoint < b.codepoint; })->codepoint };
 
             if(glyphs.size() >= std::numeric_limits<std::uint16_t>::max()) {
-                utils::logger.log(utils::e_log_type::error, "glyphs.size() >= 0xFFFF.");
+                utils::logger(utils::e_log_type::error, "glyphs.size() >= 0xFFFF.");
                 return;
             }
 
             lookup_table = font::impl::lookup_table_t{ };
             lookup_table.resize(max_codepoint + 1u);
 
-            //@note: try using std::views::iota is here, and get an internal compiler error, 3 years since the modules were introduced....................
-            /*for(const auto [i, glyph] : std::views::enumerate(glyphs)) {
+            for(const auto [i, glyph] : glyphs | std::views::enumerate) {
                 const size_t codepoint{ glyph.codepoint };
                 lookup_table.advances_x[codepoint] = glyph.advance_x;
                 lookup_table.indexes[codepoint] = (std::uint16_t)i;
-            }*/
+            }
 
             if(glyph_t* glyph{ find_glyph((std::uint16_t)' ') }) {
                 if(glyphs.back().codepoint != '\t')
@@ -75,9 +74,8 @@ export namespace null::render {
             fallback_glyph = find_glyph(fallback_char, false);
             fallback_advance_x = fallback_glyph ? fallback_glyph->advance_x : 0.0f;
 
-            //@note: std::views::iota here - internal compiler error
-            for(float& advance : lookup_table.advances_x | std::views::take(max_codepoint + 1u))
-                if(advance < 0.0f) advance = fallback_advance_x;
+            for(int i : std::views::iota(0u, max_codepoint + 1))
+                if(lookup_table.advances_x[i] < 0.0f) lookup_table.advances_x[i] = fallback_advance_x;
     	}
 
         glyph_t* find_glyph(const std::uint16_t& c, const bool& fallback = true) {

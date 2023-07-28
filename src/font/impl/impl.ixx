@@ -1,8 +1,4 @@
 module;
-#define STB_RECT_PACK_IMPLEMENTATION
-#define STBRP_STATIC
-#include <stb_rect_pack.h>
-
 #include <string_view>
 #include <array>
 #include <cmath>
@@ -53,14 +49,14 @@ export namespace null::render::font::impl {
     template <class string_t>
     struct char_converter {
         template <typename iterator_t>
-        static int convert(std::uint32_t& output_char, const iterator_t& iterator, const iterator_t& end) {
+        static int convert(std::uint32_t& output_char, iterator_t iterator, iterator_t end) {
             return 1;
         }
     };
 
     template <>
     struct char_converter<char> {
-        static int convert(std::uint32_t& output_char, const std::string_view::const_iterator& iterator, const std::string_view::const_iterator& end) {
+        static int convert(std::uint32_t& output_char, std::string_view::const_iterator iterator, std::string_view::const_iterator end) {
             return output_char < 0x80 ? 1 : get_char_from_utf8(&output_char, iterator, end);
         }
     };

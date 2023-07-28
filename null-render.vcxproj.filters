@@ -25,6 +25,18 @@
     <Filter Include="src\graphic\filters">
       <UniqueIdentifier>{02e7731f-013c-4a47-818c-82ea861dfaee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\backend">
+      <UniqueIdentifier>{6c597aa5-d12d-4cce-85b9-0269bd09b628}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\backend\renderer">
+      <UniqueIdentifier>{86cb1ad3-87b5-48ff-b7e6-fbb57fd581b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\backend\shaders">
+      <UniqueIdentifier>{a515cbfd-21ae-4ca7-84a4-35bde36b23b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\graphic\draw-list\brushes">
+      <UniqueIdentifier>{25bf3cac-b4b3-4a3a-a291-403f9d2f74b1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\null-render.ixx">
@@ -59,6 +71,81 @@
     </ClCompile>
     <ClCompile Include="src\graphic\path.ixx">
       <Filter>src\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\backend\shaders\quad-gradient-shader.ixx">
+      <Filter>src\backend\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\backend\shaders\sdf-shader.ixx">
+      <Filter>src\backend\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\backend\shaders\shader.ixx">
+      <Filter>src\backend\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\backend\shaders\linear-gradient-shader.ixx">
+      <Filter>src\backend\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\backend\shaders\passthrough-shader.ixx">
+      <Filter>src\backend\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\backend\renderer\mesh.ixx">
+      <Filter>src\backend\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\backend\renderer\object.ixx">
+      <Filter>src\backend\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\backend\renderer\renderer.ixx">
+      <Filter>src\backend\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\backend\renderer\frame-buffer.ixx">
+      <Filter>src\backend\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\backend\backend.ixx">
+      <Filter>src\backend</Filter>
+    </ClCompile>
+    <ClCompile Include="src\backend\renderer\geometry-buffer.ixx">
+      <Filter>src\backend\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\filters\quad-gradient-filter.ixx">
+      <Filter>src\graphic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\filters\sdf-filter.ixx">
+      <Filter>src\graphic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\filters\texture-filter.ixx">
+      <Filter>src\graphic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\filters\linear-gradient-filter.ixx">
+      <Filter>src\graphic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\filters\filter.ixx">
+      <Filter>src\graphic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\commands\geometry-command.ixx">
+      <Filter>src\graphic\commands</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\commands\renderer-commands.ixx">
+      <Filter>src\graphic\commands</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\commands\command.ixx">
+      <Filter>src\graphic\commands</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\draw-list\pen.ixx">
+      <Filter>src\graphic\draw-list</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\draw-list\stroke.ixx">
+      <Filter>src\graphic\draw-list</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\draw-list\draw-list.ixx">
+      <Filter>src\graphic\draw-list</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\draw-list\brushes\sdf-text-brush.ixx">
+      <Filter>src\graphic\draw-list\brushes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\draw-list\brushes\text-brush.ixx">
+      <Filter>src\graphic\draw-list\brushes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\draw-list\brushes\brush.ixx">
+      <Filter>src\graphic\draw-list\brushes</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -13,8 +13,8 @@ export namespace null::render::font::impl {
         bool dirty{ };
 
     public:
-        void resize(const int& new_size) {
-            if(advances_x.size() != indexes.size()) utils::logger.log(utils::e_log_type::warning, "advances_x.size() != indexes.size().");
+        void resize(int new_size) {
+            if(advances_x.size() != indexes.size()) utils::logger(utils::e_log_type::warning, "advances_x.size() != indexes.size().");
             if(new_size <= indexes.size()) return;
             advances_x.resize(new_size, -1.0f);
             indexes.resize(new_size, (std::uint16_t)-1);
