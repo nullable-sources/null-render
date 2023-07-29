@@ -21,7 +21,7 @@ namespace null::render::backend::directx11::wrapper {
 			shared.context->VSSetShader(shader, nullptr, 0);
 		}
 
-		void set_constant_buffer(ID3D11Buffer* buffer, const int& slot) override {
+		void set_constant_buffer(ID3D11Buffer* buffer, int slot) override {
 			shared.context->VSSetConstantBuffers(slot, 1, &buffer);
 		}
 

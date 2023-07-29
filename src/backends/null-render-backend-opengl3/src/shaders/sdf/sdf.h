@@ -21,8 +21,8 @@ namespace null::render::backend::opengl3::shaders {
 		void use() override;
 
 	public:
-		void set_aa(const float& _aa) override { aa.value() = _aa; }
-		void set_outline_thickness(const float& thickness) override { outline_thickness.value() = thickness; }
+		void set_aa(float _aa) override { aa.value() = _aa; }
+		void set_outline_thickness(float thickness) override { outline_thickness.value() = thickness; }
 		void set_outline_start(const color_t<int>& color) override { outline_start.value() = color.cast<float>(); }
 		void set_outline_end(const color_t<int>& color) override { outline_end.value() = color.cast<float>(); }
 	};

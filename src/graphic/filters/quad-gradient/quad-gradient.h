@@ -19,11 +19,11 @@ namespace null::render::filters {
 		std::array<color_t<int>, 4> colors{ };
 
 	public:
-		template <typename self_t> auto&& set_colors(this self_t&& self, const std::array<color_t<int>, 4>& colors) { self.colors = colors; return self; }
-		template <typename self_t> auto&& set_top_left_color(this self_t&& self, const color_t<int>& color) { self.colors[0] = color; return self; }
-		template <typename self_t> auto&& set_top_right_color(this self_t&& self, const color_t<int>& color) { self.colors[1] = color; return self; }
-		template <typename self_t> auto&& set_bottom_left_color(this self_t&& self, const color_t<int>& color) { self.colors[2] = color; return self; }
-		template <typename self_t> auto&& set_bottom_right_color(this self_t&& self, const color_t<int>& color) { self.colors[3] = color; return self; }
+		auto&& set_colors(this auto&& self, const std::array<color_t<int>, 4>& colors) { self.colors = colors; return self; }
+		auto&& set_top_left_color(this auto&& self, const color_t<int>& color) { self.colors[0] = color; return self; }
+		auto&& set_top_right_color(this auto&& self, const color_t<int>& color) { self.colors[1] = color; return self; }
+		auto&& set_bottom_left_color(this auto&& self, const color_t<int>& color) { self.colors[2] = color; return self; }
+		auto&& set_bottom_right_color(this auto&& self, const color_t<int>& color) { self.colors[3] = color; return self; }
 
 	public:
 		std::unique_ptr<i_filter> instance_filter(std::unique_ptr<commands::c_geometry>&& child_command) const override {

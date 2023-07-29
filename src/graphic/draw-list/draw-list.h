@@ -15,7 +15,7 @@ namespace null::render {
 		void add_convex_shape(const std::vector<vec2_t<float>>& points, const brush_t& brush, const pen_t& pen = { });
 
 		template <typename string_t> void add_text(const string_t& text, vec2_t<float> pos, const text_brush_t& text_brush) { add_text(std::basic_string_view{ text }, pos, text_brush); }
-		template <typename char_t> void add_text(const std::basic_string_view<char_t>& text, vec2_t<float> pos, const text_brush_t& text_brush);
+		template <typename char_t> void add_text(std::basic_string_view<char_t> text, vec2_t<float> pos, const text_brush_t& text_brush);
 	};
 
 	inline c_draw_list background{ }, foreground{ };

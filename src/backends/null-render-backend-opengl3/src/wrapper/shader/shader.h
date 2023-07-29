@@ -10,7 +10,7 @@ namespace null::render::backend::opengl3::wrapper {
 	public:
 		virtual void create() = 0;
 		virtual void compile(const memory::resource_t& resource) { compile((const char*)resource.locked_data, resource.locked_data_size); }
-		virtual void compile(const char* source, const int& length) {
+		virtual void compile(const char* source, int length) {
 			opengl::shader_source(shader, 1, (const char* const*)&source, &length);
 			opengl::compile_shader(shader);
 			check(opengl::e_compile_status, "compile");
@@ -21,7 +21,7 @@ namespace null::render::backend::opengl3::wrapper {
 		virtual bool empty() const { return shader == 0; }
 
 	public:
-		void check(const opengl::e_constants& status, const std::string_view& desc) {
+		void check(opengl::e_constants status, std::string_view desc) {
 			std::string log{ "empty" };
 
 			int result_status{ }, log_length{ };
@@ -33,7 +33,7 @@ namespace null::render::backend::opengl3::wrapper {
 				opengl::get_shader_info_log(shader, log_length, nullptr, log.data());
 			}
 
-			if(!result_status) utils::logger.log(utils::e_log_type::warning, "cant '{}' shader, log \"{}\".", desc, log);
+			if(!result_status) utils::logger(utils::e_log_type::warning, "cant '{}' shader, log \"{}\".", desc, log);
 		}
 
 	public:

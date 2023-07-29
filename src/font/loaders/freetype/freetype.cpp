@@ -4,12 +4,12 @@
 
 namespace null::render {
 	void c_freetype_loader::build(c_atlas* atlas) {
-        if(atlas->locked) { utils::logger.log(utils::e_log_type::error, "cannot modify a locked atlas between begin_render() and end_render/render()."); return; }
-        if(atlas->configs.empty()) { utils::logger.log(utils::e_log_type::warning, "configs array is empty."); return; }
+        if(atlas->locked) { utils::logger(utils::e_log_type::error, "cannot modify a locked atlas between begin_render() and end_render/render()."); return; }
+        if(atlas->configs.empty()) { utils::logger(utils::e_log_type::warning, "configs array is empty."); return; }
 
         FT_Library ft_library{ };
         if(auto result{ FT_Init_FreeType(&ft_library) }; result) {
-            utils::logger.log(utils::e_log_type::error, "FT_Init_FreeType failed, return code {}.", result);
+            utils::logger(utils::e_log_type::error, "FT_Init_FreeType failed, return code {}.", result);
             return;
         }
 
@@ -18,36 +18,33 @@ namespace null::render {
         std::vector<build_src_t> src_array{ atlas->configs.size() };
         std::vector<build_data_t> dst_array{ atlas->fonts.size() };
 
-        for(std::tuple<build_src_t&, c_font::config_t&> tuple : std::views::zip(src_array, atlas->configs)) {
-            build_src_t& src{ std::get<build_src_t&>(tuple) };
-            c_font::config_t& config{ std::get<c_font::config_t&>(tuple) };
-
-            if(!config.font) { utils::logger.log(utils::e_log_type::warning, "config font is empty."); continue; }
+        for(auto [src, config] : std::views::zip(src_array, atlas->configs)) {
+            if(!config.font) { utils::logger(utils::e_log_type::warning, "config font is empty."); continue; }
             if(config.font->is_loaded() && config.font->container_atlas != atlas) {
-                utils::logger.log(utils::e_log_type::warning, "font already loaded by another atlas.");
+                utils::logger(utils::e_log_type::warning, "font already loaded by another atlas.");
                 continue;
             }
 
             if(auto iterator{ std::ranges::find_if(atlas->fonts, [=](const std::unique_ptr<c_font>& font) { return config.font == font.get(); }) }; iterator != atlas->fonts.end()) src.dst_index = std::distance(atlas->fonts.begin(), iterator);
-            else { utils::logger.log(utils::e_log_type::error, "font configuration could not be found."); continue; }
+            else { utils::logger(utils::e_log_type::error, "font configuration could not be found."); continue; }
 
             if(auto result{ FT_New_Memory_Face(ft_library, (std::uint8_t*)config.data.data(), (std::uint32_t)config.data.size(), (std::uint32_t)config.index, &src.freetype.face) }; result) {
-                utils::logger.log(utils::e_log_type::error, "FT_New_Memory_Face failed, return code {}.", result);
+                utils::logger(utils::e_log_type::error, "FT_New_Memory_Face failed, return code {}.", result);
                 continue;
             }
             if(auto result{ FT_Select_Charmap(src.freetype.face, FT_ENCODING_UNICODE) }; result) {
-                utils::logger.log(utils::e_log_type::error, "FT_Select_Charmap failed, return code {}.", result);
+                utils::logger(utils::e_log_type::error, "FT_Select_Charmap failed, return code {}.", result);
                 continue;
             }
 
             FT_Size_RequestRec req{
-                .type = FT_SIZE_REQUEST_TYPE_REAL_DIM,
-                .width = 0,
-                .height = (FT_Long)config.size_pixels * 64,
-                .horiResolution = 0, .vertResolution = 0
+                .type{ FT_SIZE_REQUEST_TYPE_REAL_DIM },
+                .width{ 0 },
+                .height{ (FT_Long)config.size_pixels * 64 },
+                .horiResolution{ 0 }, .vertResolution{ 0 }
             };
             if(auto result{ FT_Request_Size(src.freetype.face, &req) }; result) {
-                utils::logger.log(utils::e_log_type::error, "FT_Request_Size failed, return code {}.", result);
+                utils::logger(utils::e_log_type::error, "FT_Request_Size failed, return code {}.", result);
                 continue;
             }
 
@@ -72,7 +69,7 @@ namespace null::render {
 
             switch(config.render_mode_type) {
                 case e_render_mode_type::monochrome: { src.freetype.render_mode = FT_RENDER_MODE_MONO; } break;
-                case e_render_mode_type::sdf: { utils::logger.log(utils::e_log_type::warning, "freetype font loader does not support sdf fonts yet."); }
+                case e_render_mode_type::sdf: { utils::logger(utils::e_log_type::warning, "freetype font loader does not support sdf fonts yet."); }
                 default: { src.freetype.render_mode = FT_RENDER_MODE_NORMAL; } break;
             }
 
@@ -104,17 +101,17 @@ namespace null::render {
         }
 
         for(build_src_t& src : src_array) {
-            for(const int& idx : std::views::iota((size_t)0, src.glyphs_set.size())) {
+            for(int idx : std::views::iota(0u, src.glyphs_set.size())) {
                 if(!src.glyphs_set[idx]) continue;
 
-                for(const std::uint32_t& bit_n : std::views::iota(0, 32)) {
+                for(std::uint32_t bit_n : std::views::iota(0, 32)) {
                     if(src.glyphs_set[idx] & ((std::uint16_t)1 << bit_n))
                         src.glyphs_list.push_back({ { ((idx) << 5) + bit_n } });
                 }
             }
 
             src.glyphs_set.clear();
-            if(src.glyphs_list.size() != src.glyphs_count) utils::logger.log(utils::e_log_type::error, "src.glyphs_list.size() != src.glyphs_count.");
+            if(src.glyphs_list.size() != src.glyphs_count) utils::logger(utils::e_log_type::error, "src.glyphs_list.size() != src.glyphs_count.");
         }
 
         std::mutex mutex{ };
@@ -122,26 +119,23 @@ namespace null::render {
 
         int total_surface{ }, buf_rects_out_n{ }, buf_packedchars_out_n{ };
         std::vector<stbrp_rect> buf_rects{ (size_t)total_glyphs_count };
-        for(std::tuple<build_src_t&, c_font::config_t&> tuple : std::views::zip(src_array, atlas->configs)) {
-            build_src_t& src{ std::get<build_src_t&>(tuple) };
-            c_font::config_t& config{ std::get<c_font::config_t&>(tuple) };
-
+        for(auto [src, config] : std::views::zip(src_array, atlas->configs)) {
             src.rects = &buf_rects[buf_rects_out_n];
             buf_rects_out_n += src.glyphs_count;
 
-            for(const int& i : std::views::iota((size_t)0, src.glyphs_list.size())) {
+            for(int i : std::views::iota(0u, src.glyphs_list.size())) {
                 futures.push_back(std::async(std::launch::async, [&](build_src_t* src, src_glyph_t* glyph, int index) {
                     std::lock_guard lock_guard{ mutex };
 
                     std::uint32_t glyph_index{ FT_Get_Char_Index(src->freetype.face, glyph->glyph.codepoint) };
-                    if(!glyph_index) { utils::logger.log(utils::e_log_type::error, "FT_Get_Char_Index return 0."); return; }
-                    if(auto result{ FT_Load_Glyph(src->freetype.face, glyph_index, src->freetype.flags) }; result) { utils::logger.log(utils::e_log_type::error, "FT_Load_Glyph failed, return code {}.", result); return; }
+                    if(!glyph_index) { utils::logger(utils::e_log_type::error, "FT_Get_Char_Index return 0."); return; }
+                    if(auto result{ FT_Load_Glyph(src->freetype.face, glyph_index, src->freetype.flags) }; result) { utils::logger(utils::e_log_type::error, "FT_Load_Glyph failed, return code {}.", result); return; }
 
                     if(src->freetype.rasterizer_flags & e_rasterizer_flags::bold) FT_GlyphSlot_Embolden(src->freetype.face->glyph);
                     if(src->freetype.rasterizer_flags & e_rasterizer_flags::oblique) FT_GlyphSlot_Oblique(src->freetype.face->glyph);
 
                     if(auto result{ FT_Render_Glyph(src->freetype.face->glyph, src->freetype.render_mode) }; result) {
-                        utils::logger.log(utils::e_log_type::error, "FT_Render_Glyph failed, return code {}.", result);
+                        utils::logger(utils::e_log_type::error, "FT_Render_Glyph failed, return code {}.", result);
                         return;
                     }
 
@@ -151,22 +145,21 @@ namespace null::render {
 
                     const FT_Bitmap* ft_bitmap{ &src->freetype.face->glyph->bitmap };
                     if(!ft_bitmap) {
-                        utils::logger.log(utils::e_log_type::error, "ft_bitmap is empty.");
+                        utils::logger(utils::e_log_type::error, "ft_bitmap is empty.");
                         return;
                     }
 
                     glyph->bitmap.resize(ft_bitmap->width * (ft_bitmap->rows * ft_bitmap->pitch));
                     switch(ft_bitmap->pixel_mode) {
                         case FT_PIXEL_MODE_GRAY: {
-                            std::ranges::for_each(std::views::iota((std::uint32_t)0, ft_bitmap->rows), [&](const std::uint32_t& y) {
-                                std::ranges::for_each(std::views::iota((std::uint32_t)0, ft_bitmap->width), [&](const std::uint32_t& x) {
-                                    std::uint8_t& buffer_data{ ft_bitmap->buffer[y * ft_bitmap->pitch + x] };
-                                    glyph->bitmap[y * (int)glyph->glyph.corners.min.x + x] = buffer_data;
-                                    });
-                                });
+                            for(std::uint32_t y : std::views::iota(0u, ft_bitmap->rows)) {
+	                            for(std::uint32_t x : std::views::iota(0u, ft_bitmap->width)) {
+                                    glyph->bitmap[y * (int)glyph->glyph.corners.min.x + x] = ft_bitmap->buffer[y * ft_bitmap->pitch + x];
+	                            }
+                            }
                         } break;
                         case FT_PIXEL_MODE_MONO: {
-                            for(const std::uint32_t& y : std::views::iota((std::uint32_t)0, ft_bitmap->rows)) {
+                            for(std::uint32_t y : std::views::iota(0u, ft_bitmap->rows)) {
                                 std::uint8_t bits{ };
                                 const std::uint8_t* bits_ptr{ ft_bitmap->buffer + y * ft_bitmap->pitch };
                                 for(uint32_t x{ 0 }; x < ft_bitmap->width; x++, bits <<= 1) {
@@ -175,7 +168,7 @@ namespace null::render {
                                 }
                             }
                         } break;
-                        default: utils::logger.log(utils::e_log_type::error, "unsupported pixel mode.");
+                        default: utils::logger(utils::e_log_type::error, "unsupported pixel mode.");
                     }
 
                     src->rects[index].w = (stbrp_coord)(glyph->glyph.corners.min.x + atlas->texture.glyph_padding);
@@ -185,7 +178,7 @@ namespace null::render {
             }
         }
 
-        for(std::future<void>& future : futures) future.wait();
+        std::ranges::for_each(futures, &std::future<void>::wait);
 
         int surface_sqrt{ (int)std::sqrtf(total_surface) + 1 };
         atlas->texture.size = vec2_t{ (surface_sqrt >= 4096 * 0.7f) ? 4096
@@ -203,7 +196,7 @@ namespace null::render {
 
             stbrp_pack_rects(&pack_context, src.rects, src.glyphs_count);
 
-            for(const int& i : std::views::iota(0, src.glyphs_count)) {
+            for(int i : std::views::iota(0, src.glyphs_count)) {
                 if(src.rects[i].was_packed) atlas->texture.size.y = std::max((int)atlas->texture.size.y, src.rects[i].y + src.rects[i].h);
             }
         }
@@ -211,44 +204,41 @@ namespace null::render {
         atlas->texture.size.y = std::powf(2.f, std::ceilf(std::logf(atlas->texture.size.y) / std::logf(2.f)));
         atlas->texture.pixels_alpha8.resize(atlas->texture.size.x * atlas->texture.size.y);
 
-        for(std::tuple<build_src_t&, c_font::config_t&> tuple : std::views::zip(src_array, atlas->configs)) {
-            build_src_t& src{ std::get<build_src_t&>(tuple) };
-            c_font::config_t& config{ std::get<c_font::config_t&>(tuple) };
-
+        for(auto [src, config] : std::views::zip(src_array, atlas->configs)) {
             if(!src.glyphs_count) continue;
 
             c_font* dst_font{ config.font };
 
             atlas->setup_font(dst_font, &config, src.freetype.info.ascender, src.freetype.info.descender);
 
-            for(const int& i : std::views::iota(0, src.glyphs_count)) {
+            for(int i : std::views::iota(0, src.glyphs_count)) {
                 src_glyph_t& glyph{ src.glyphs_list[i] };
                 stbrp_rect& pack_rect{ src.rects[i] };
-                if(!pack_rect.was_packed) { utils::logger.log(utils::e_log_type::error, "pack_rect not packed."); continue; }
+                if(!pack_rect.was_packed) { utils::logger(utils::e_log_type::error, "pack_rect not packed."); continue; }
                 if(!pack_rect.w && !pack_rect.h) continue;
 
                 if(glyph.glyph.corners.min + atlas->texture.glyph_padding > vec2_t{ pack_rect.w, pack_rect.h }) {
-                    utils::logger.log(utils::e_log_type::error, "info.size + texture.glyph_padding > vec2_t{ pack_rect.w, pack_rect.h }."); continue;
+                    utils::logger(utils::e_log_type::error, "info.size + texture.glyph_padding > vec2_t{ pack_rect.w, pack_rect.h }."); continue;
                 }
 
                 vec2_t<float> t{ vec2_t{ pack_rect.x, pack_rect.y } };
-                for(const int& y : std::views::iota(0, glyph.glyph.corners.min.y)) {
+                for(int y : std::views::iota(0, glyph.glyph.corners.min.y)) {
                     std::copy(std::next(glyph.bitmap.begin(), glyph.glyph.corners.min.x * y),
                         std::next(glyph.bitmap.begin(), glyph.glyph.corners.min.x * (y + 1)),
                         std::next(atlas->texture.pixels_alpha8.begin(), (t.y * atlas->texture.size.x) + t.x + (atlas->texture.size.x * y)));
                 }
 
-                dst_font->add_glyph(&config, (std::uint16_t)glyph.glyph.codepoint, rect_t{ glyph.glyph.texture_coordinates.min + config.glyph_config.offset + vec2_t{ 0.f, round(dst_font->ascent) } } + rect_t{ vec2_t{ }, glyph.glyph.corners.min }, rect_t{ t, t + glyph.glyph.corners.min } / atlas->texture.size, glyph.glyph.advance_x);
+                dst_font->add_glyph(&config, (std::uint16_t)glyph.glyph.codepoint, rect_t{ glyph.glyph.texture_coordinates.min + config.glyph_config.offset + vec2_t{ 0.f, round(dst_font->ascent) } } + rect_t{ vec2_t<float>{ }, glyph.glyph.corners.min }, rect_t{ t, t + glyph.glyph.corners.min } / atlas->texture.size, glyph.glyph.advance_x);
             }
         }
 
         atlas->build_finish();
 
-        std::ranges::for_each(src_array, [](build_src_t& src) {
-            if(src.freetype.face) { FT_Done_Face(src.freetype.face); src.freetype.face = nullptr; }
-            });
+        for(build_src_t& src : src_array) {
+            if (src.freetype.face) { FT_Done_Face(src.freetype.face); src.freetype.face = nullptr; }
+        }
 
         if(auto result{ FT_Done_Library(ft_library) }; result)
-            utils::logger.log(utils::e_log_type::error, "FT_Done_Library failed, result code {}.", result);
+            utils::logger(utils::e_log_type::error, "FT_Done_Library failed, result code {}.", result);
 	}
 }

@@ -6,10 +6,10 @@
 #include <font/loaders/loader.h>
 
 #include <null-sdk.h>
-
+constexpr auto c = sizeof(std::string_view::const_iterator);
 namespace null::render {
     namespace impl {
-        static int get_char_from_utf8(std::uint32_t* out_char, const std::string_view::const_iterator& iterator, const std::string_view::const_iterator& end) {
+        static int get_char_from_utf8(std::uint32_t* out_char, std::string_view::const_iterator iterator, std::string_view::const_iterator end) {
             static constexpr std::array<char, 32> lengths{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 3, 3, 4, 0 };
             static constexpr std::array<int, 5> masks{ 0x00, 0x7f, 0x1f, 0x0f, 0x07 };
             static constexpr std::array<std::uint32_t, 5> mins{ 0x400000, 0, 0x80, 0x800, 0x10000 };
@@ -144,8 +144,8 @@ namespace null::render {
             bool dirty{ };
 
         public:
-            void resize(const int& new_size) {
-                if(advances_x.size() != indexes.size()) utils::logger.log(utils::e_log_type::warning, "advances_x.size() != indexes.size().");
+            void resize(int new_size) {
+                if(advances_x.size() != indexes.size()) utils::logger(utils::e_log_type::warning, "advances_x.size() != indexes.size().");
                 if(new_size <= indexes.size()) return;
                 advances_x.resize(new_size, -1.0f);
                 indexes.resize(new_size, (std::uint16_t)-1);
@@ -172,17 +172,17 @@ namespace null::render {
     public:
         void build_lookup_table();
 
-        glyph_t* find_glyph(const std::uint16_t& c, const bool& fallback = true);
-        void add_glyph(config_t* src_config, const std::uint16_t& c, rect_t<float> corners, const rect_t<float>& texture_coordinates, float advance_x);
+        glyph_t* find_glyph(std::uint16_t c, bool fallback = true);
+        void add_glyph(config_t* src_config, std::uint16_t c, rect_t<float> corners, const rect_t<float>& texture_coordinates, float advance_x);
 
-        void set_fallback_char(const std::uint16_t& c) { fallback_char = c; build_lookup_table(); }
-        void set_glyph_visible(const std::uint16_t& c, const bool& visible) { if(glyph_t* glyph{ find_glyph(c) }) glyph->visible = visible; }
+        void set_fallback_char(std::uint16_t c) { fallback_char = c; build_lookup_table(); }
+        void set_glyph_visible(std::uint16_t c, bool visible) { if(glyph_t* glyph{ find_glyph(c) }) glyph->visible = visible; }
 
         bool is_loaded() const { return container_atlas; }
-        float get_char_advance(const std::uint16_t& c) const { return (c < lookup_table.advances_x.size()) ? lookup_table.advances_x[c] : fallback_advance_x; }
+        float get_char_advance(std::uint16_t c) const { return (c < lookup_table.advances_x.size()) ? lookup_table.advances_x[c] : fallback_advance_x; }
 
-        template <typename char_t> vec2_t<float> calc_text_size(const std::basic_string_view<char_t>& text, const float& custom_size = 0.f);
-        template <typename string_t> vec2_t<float> calc_text_size(const string_t& text, const float& custom_size = 0.f) { return calc_text_size(std::basic_string_view{ text }, custom_size); }
+        template <typename string_t> vec2_t<float> calc_text_size(const string_t& text, float custom_size = 0.f) { return calc_text_size(std::basic_string_view{ text }, custom_size); }
+        template <typename char_t> vec2_t<float> calc_text_size(std::basic_string_view<char_t> text, float custom_size = 0.f);
     };
 
     class c_atlas {
@@ -229,7 +229,7 @@ namespace null::render {
         ~c_atlas() { clear(); }
 
     public:
-        void setup_font(c_font* font, c_font::config_t* config, const float& ascent, const float& descent);
+        void setup_font(c_font* font, c_font::config_t* config, float ascent, float descent);
 
         void build_finish();
 
@@ -237,9 +237,9 @@ namespace null::render {
 
         c_font* add_font(c_font::config_t* config);
         c_font* add_font_default(c_font::config_t* config = nullptr);
-        c_font* add_font_from_file_ttf(const std::string_view& filename, const float& size_pixels, c_font::config_t* config = nullptr, const std::uint16_t* glyph_ranges = c_font::glyph_t::ranges_default());
+        c_font* add_font_from_file_ttf(std::string_view filename, float size_pixels, c_font::config_t* config = nullptr, const std::uint16_t* glyph_ranges = c_font::glyph_t::ranges_default());
         c_font* add_font_from_memory_ttf(const std::vector<char>& font_data, float size_pixels, c_font::config_t* config = nullptr, const std::uint16_t* glyph_ranges = c_font::glyph_t::ranges_default());
-        c_font* add_font_from_memory_compressed_ttf(const std::vector<std::uint8_t>& compressed_ttf, const float& size_pixels, c_font::config_t* config = nullptr, const std::uint16_t* glyph_ranges = c_font::glyph_t::ranges_default());
+        c_font* add_font_from_memory_compressed_ttf(const std::vector<std::uint8_t>& compressed_ttf, float size_pixels, c_font::config_t* config = nullptr, const std::uint16_t* glyph_ranges = c_font::glyph_t::ranges_default());
 
         void clear_input_data();
         void clear() { clear_input_data(); texture.clear(); fonts.clear(); }

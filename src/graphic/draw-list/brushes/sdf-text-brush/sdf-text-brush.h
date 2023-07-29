@@ -8,7 +8,7 @@ namespace null::render {
 		color_t<int> outline_start{ }, outline_end{ };
 
 	public:
-		template <typename self_t> auto&& set_outline(this self_t&& self, const float& thickness, const color_t<int>& start, const color_t<int>& end) {
+		auto&& set_outline(this auto&& self, float thickness, const color_t<int>& start, const color_t<int>& end) {
 			self.outline_thickness = thickness; self.outline_start = start; self.outline_end = end;
 			return self;
 		}

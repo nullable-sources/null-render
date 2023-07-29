@@ -18,8 +18,8 @@ namespace null::render::backend::directx9::shaders {
 		void use() override;
 
 	public:
-		void set_aa(const float& _aa) override { aa = _aa; }
-		void set_outline_thickness(const float& thickness) override { outline_thickness = thickness; }
+		void set_aa(float _aa) override { aa = _aa; }
+		void set_outline_thickness(float thickness) override { outline_thickness = thickness; }
 		void set_outline_start(const color_t<int>& color) override { outline_start = color.cast<float>(); }
 		void set_outline_end(const color_t<int>& color) override { outline_end = color.cast<float>(); }
 	};

@@ -19,7 +19,7 @@ namespace null::render::backend::opengl3::wrapper {
 		virtual bool empty() const { return program == 0; }
 
 	public:
-		void check(const opengl::e_constants& status, const std::string_view& desc) const;
+		void check(opengl::e_constants status, std::string_view desc) const;
 
 	public:
 		virtual operator bool() const { return !empty(); }

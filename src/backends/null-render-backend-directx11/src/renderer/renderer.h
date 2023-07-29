@@ -49,7 +49,7 @@ namespace null::render::backend::directx11 {
 
 		void set_texture(void* texture) override;
 		void set_clip(const rect_t<float>& rect) override;
-		void draw_geometry(const size_t& vertex_count, const size_t& index_count, const size_t& vertex_offset, const size_t& index_offset) override;
+		void draw_geometry(size_t vertex_count, size_t index_count, size_t vertex_offset, size_t index_offset) override;
 
 		void* create_texture(const vec2_t<float>& size, void* data) override;
 		void destroy_texture(void* texture) override;

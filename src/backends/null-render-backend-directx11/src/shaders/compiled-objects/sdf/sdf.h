@@ -21,7 +21,7 @@ namespace null::render::backend::directx11::shaders::compiled_objects {
         wrapper::c_constant_buffer<constant_buffer_t> constant_buffer{ };
 
     public:
-        void set_constant(const constant_buffer_t& constant, const int& slot = 0) {
+        void set_constant(const constant_buffer_t& constant, int slot = 0) {
             constant_buffer.edit_constant(constant);
             set_constant_buffer(constant_buffer.buffer, slot);
         }

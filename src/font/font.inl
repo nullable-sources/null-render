@@ -2,8 +2,8 @@
 
 namespace null::render {
     template <typename char_t>
-    vec2_t<float> c_font::calc_text_size(const std::basic_string_view<char_t>& text, const float& custom_size) {
-        vec2_t result{ }, line_size{ 0.f, custom_size <= 0.f ? size : custom_size };
+    vec2_t<float> c_font::calc_text_size(std::basic_string_view<char_t> text, float custom_size) {
+        vec2_t<float> result{ }, line_size{ 0.f, custom_size <= 0.f ? size : custom_size };
 
         for(auto iterator{ text.begin() }; iterator != text.end();) {
             std::uint32_t symbol{ (std::uint32_t)*iterator };

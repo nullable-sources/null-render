@@ -16,18 +16,18 @@ namespace null::render {
 		e_pen_layer layer{ };
 
 	public:
-		template <typename self_t, typename brush_type_t> auto&& set_brush(this self_t&& self, const brush_type_t& brush) { self.brush = std::make_shared<brush_type_t>(brush); return self; }
-		template <typename self_t> auto&& set_thickness(this self_t&& self, const float& thickness) { self.thickness = thickness; return self; }
-		template <typename self_t> auto&& set_origin(this self_t&& self, const float& origin) { self.origin = origin; return self; }
-		template <typename self_t> auto&& set_layer(this self_t&& self, const e_pen_layer& layer) { self.layer = layer; return self; }
+		template <typename brush_type_t> auto&& set_brush(this auto&& self, const brush_type_t& brush) { self.brush = std::make_shared<brush_type_t>(brush); return self; }
+		auto&& set_thickness(this auto&& self, float thickness) { self.thickness = thickness; return self; }
+		auto&& set_origin(this auto&& self, float origin) { self.origin = origin; return self; }
+		auto&& set_layer(this auto&& self, e_pen_layer layer) { self.layer = layer; return self; }
 		
 	public:
 		std::unique_ptr<commands::i_command> around_convex_shape(const std::unique_ptr<commands::c_geometry>& command) const;
-		std::unique_ptr<commands::i_command> around_stroke(const std::unique_ptr<commands::c_geometry>& command, const std::vector<backend::index_t>& outward_order, const std::vector<backend::index_t>& inward_order, const bool& closed) const;
+		std::unique_ptr<commands::i_command> around_stroke(const std::unique_ptr<commands::c_geometry>& command, const std::vector<backend::index_t>& outward_order, const std::vector<backend::index_t>& inward_order, bool closed) const;
 
 	private:
-		void around_order(std::unique_ptr<commands::c_geometry>& pen_command, const std::unique_ptr<commands::c_geometry>& command, const std::vector<backend::index_t>& order, const math::e_rotation& rotation, backend::index_t first_vertex_offset = { }) const;
+		void around_order(std::unique_ptr<commands::c_geometry>& pen_command, const std::unique_ptr<commands::c_geometry>& command, const std::vector<backend::index_t>& order, math::e_rotation rotation, backend::index_t first_vertex_offset = { }) const;
 
-		void make_geometry(std::unique_ptr<commands::c_geometry>& pen_command, const std::unique_ptr<commands::c_geometry>& command, const backend::index_t& previous, const backend::index_t& current, const backend::index_t& next, const math::e_rotation& rotation, const bool& is_last, const backend::index_t& first_vertex_offset) const;
+		void make_geometry(std::unique_ptr<commands::c_geometry>& pen_command, const std::unique_ptr<commands::c_geometry>& command, backend::index_t previous, backend::index_t current, backend::index_t next, math::e_rotation rotation, bool is_last, backend::index_t first_vertex_offset) const;
 	};
 }

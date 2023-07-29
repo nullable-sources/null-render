@@ -18,25 +18,25 @@ namespace null::render::backend::directx9 {
 		shared.device->SetScissorRect(&_clip_rect);
 	}
 
-	void c_renderer::draw_geometry(const size_t& vertex_count, const size_t& index_count, const size_t& vertex_offset, const size_t& index_offset) {
+	void c_renderer::draw_geometry(size_t vertex_count, size_t index_count, size_t vertex_offset, size_t index_offset) {
 		shared.device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, vertex_offset, 0, vertex_count, index_offset, index_count / 3);
 	}
 
 	void* c_renderer::create_texture(const vec2_t<float>& size, void* data) {
 		IDirect3DTexture9* texture{ };
 		if(auto result{ shared.device->CreateTexture(size.x, size.y, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &texture, nullptr) }; result != D3D_OK) {
-			utils::logger.log(utils::e_log_type::warning, "failed to create texture, return code {}.", result);
+			utils::logger(utils::e_log_type::warning, "failed to create texture, return code {}.", result);
 			return nullptr;
 		}
 
 		if(data) {
 			D3DLOCKED_RECT locked_rect{ };
 			if(auto result{ texture->LockRect(0, &locked_rect, nullptr, 0) }; FAILED(result)) {
-				utils::logger.log(utils::e_log_type::error, "LockRect failed, return code {}.", result);
+				utils::logger(utils::e_log_type::error, "LockRect failed, return code {}.", result);
 				return texture;
 			}
 
-			for(float x{ size.x * 4 }; const int& y : std::views::iota(0, size.y)) {
+			for(float x{ size.x * 4 }; int y : std::views::iota(0, size.y)) {
 				std::memcpy((std::uint8_t*)locked_rect.pBits + locked_rect.Pitch * y, (std::uint8_t*)data + (int)x * y, x);
 			}
 
@@ -48,12 +48,12 @@ namespace null::render::backend::directx9 {
 
 	void c_renderer::destroy_texture(void* texture) {
 		if(!texture) {
-			utils::logger.log(utils::e_log_type::warning, "it is impossible to destroy the texture because it is empty.");
+			utils::logger(utils::e_log_type::warning, "it is impossible to destroy the texture because it is empty.");
 			return;
 		}
 
 		if(auto result{ ((IDirect3DTexture9*)texture)->Release() }; FAILED(result))
-			utils::logger.log(utils::e_log_type::warning, "cant release texture, return code {}.", result);
+			utils::logger(utils::e_log_type::warning, "cant release texture, return code {}.", result);
 		texture = nullptr;
 	}
 
@@ -95,7 +95,7 @@ namespace null::render::backend::directx9 {
 
 	void c_renderer::save_state() {
 		if(auto result{ shared.device->CreateStateBlock(D3DSBT_ALL, &state_block) }; FAILED(result))
-			utils::logger.log(utils::e_log_type::error, "cant create state_block, return code {}.", result);
+			utils::logger(utils::e_log_type::error, "cant create state_block, return code {}.", result);
 	}
 
 	void c_renderer::restore_state() {

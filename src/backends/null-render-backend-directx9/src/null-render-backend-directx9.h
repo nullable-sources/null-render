@@ -18,7 +18,7 @@ namespace null::render::backend::directx9 {
 	public:
 		std::unique_ptr<i_renderer> instance_renderer() override { return std::make_unique<c_renderer>(); }
 		std::unique_ptr<backend::c_mesh> instance_mesh() override { return std::make_unique<c_mesh>(); }
-		std::unique_ptr<i_frame_buffer> instance_frame_buffer(const vec2_t<int>& size, const e_frame_buffer_type& type, const e_frame_buffer_flags& flags) override { return std::make_unique<c_frame_buffer>(size, type, flags); }
+		std::unique_ptr<i_frame_buffer> instance_frame_buffer(const vec2_t<int>& size, e_frame_buffer_type type, e_frame_buffer_flags flags) override { return std::make_unique<c_frame_buffer>(size, type, flags); }
 
 		std::unique_ptr<backend::shaders::i_passthrough_color> instance_passthrough_color_shader() override { return std::make_unique<shaders::c_passthrough_color>(); }
 		std::unique_ptr<backend::shaders::i_passthrough_texture> instance_passthrough_texture_shader() override { return std::make_unique<shaders::c_passthrough_texture>(); }
@@ -44,9 +44,9 @@ namespace null::render::backend::directx9 {
 	public:
 		void on_create() override {
 			if(!(direct3d = Direct3DCreate9(D3D_SDK_VERSION)))
-				utils::logger.log(utils::e_log_type::error, "Direct3DCreate9 return nullptr.");
+				utils::logger(utils::e_log_type::error, "Direct3DCreate9 return nullptr.");
 			if(auto result{ direct3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, wnd_handle, D3DCREATE_HARDWARE_VERTEXPROCESSING, &present_parameters, &device) }; FAILED(result))
-				utils::logger.log(utils::e_log_type::error, "CreateDevice failed, return code {}.", result);
+				utils::logger(utils::e_log_type::error, "CreateDevice failed, return code {}.", result);
 
 			factory = std::make_unique<c_factory>(device);
 			render::initialize(*this);
@@ -93,7 +93,7 @@ namespace null::render::backend::directx9 {
 		void reset_device() {
 			renderer->destroy_objects();
 			if(auto result{ device->Reset(&present_parameters) }; FAILED(result))
-				utils::logger.log(utils::e_log_type::error, "device reset failed, return code {}.", result);
+				utils::logger(utils::e_log_type::error, "device reset failed, return code {}.", result);
 			renderer->create_objects();
 		}
 	};

@@ -17,8 +17,8 @@ namespace null::render::backend::directx11::shaders {
 		void use() override;
 
 	public:
-		virtual void set_aa(const float& aa) override { constant.aa = aa; }
-		virtual void set_outline_thickness(const float& thickness) { constant.outline_thickness = thickness; }
+		virtual void set_aa(float aa) override { constant.aa = aa; }
+		virtual void set_outline_thickness(float thickness) { constant.outline_thickness = thickness; }
 		virtual void set_outline_start(const color_t<int>& color) { constant.outline_start = color; }
 		virtual void set_outline_end(const color_t<int>& color) { constant.outline_end = color; }
 	};

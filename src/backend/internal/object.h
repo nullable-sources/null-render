@@ -25,7 +25,7 @@ namespace null::render::backend {
         }
 
     private:
-        void process_event(const e_object_event_type& id, const std::unordered_map<std::string, std::any>& parameters) override {
+        void process_event(e_object_event_type id, const std::unordered_map<std::string, std::any>& parameters) override {
             switch(id) {
                 case e_object_event_type::create: { on_create(); } break;
                 case e_object_event_type::destroy: { on_destroy(); } break;

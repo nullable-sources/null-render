@@ -23,7 +23,7 @@ namespace null::render::backend::opengl3::shaders {
 		void use() override;
 
 	public:
-		void set_angle(const radians_t& _angle) override { angle.value() = _angle; }
+		void set_angle(radians_t _angle) override { angle.value() = _angle; }
 		void set_stops(const std::vector<std::pair<color_t<int>, float>>& _stops) {
 			for(const int& i : std::views::iota(0u, _stops.size())) {
 				colors.value()[i] = _stops[i].first.cast<float>();

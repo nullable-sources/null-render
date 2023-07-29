@@ -22,7 +22,7 @@ namespace null::render::backend::opengl3 {
 	public:
 		std::unique_ptr<i_renderer> instance_renderer() override { return std::make_unique<c_renderer>(); }
 		std::unique_ptr<backend::c_mesh> instance_mesh() override { return std::make_unique<c_mesh>(); }
-		std::unique_ptr<i_frame_buffer> instance_frame_buffer(const vec2_t<int>& size, const e_frame_buffer_type& type, const e_frame_buffer_flags& flags) override { return std::make_unique<c_frame_buffer>(size, type, flags); }
+		std::unique_ptr<i_frame_buffer> instance_frame_buffer(const vec2_t<int>& size, e_frame_buffer_type type, e_frame_buffer_flags flags) override { return std::make_unique<c_frame_buffer>(size, type, flags); }
 
 		std::unique_ptr<backend::shaders::i_passthrough_color> instance_passthrough_color_shader() override { return std::make_unique<shaders::c_passthrough_color>(); }
 		std::unique_ptr<backend::shaders::i_passthrough_texture> instance_passthrough_texture_shader() override { return std::make_unique<shaders::c_passthrough_texture>(); }
@@ -39,12 +39,12 @@ namespace null::render::backend::opengl3 {
 
 	public:
 		bool create() override {
-			if(!glfwInit()) { utils::logger.log(utils::e_log_type::error, "cant init glfw."); return false; }
+			if(!glfwInit()) { utils::logger(utils::e_log_type::error, "cant init glfw."); return false; }
 
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
-			if(!(glfw_window = glfwCreateWindow(size.x, size.y, name.c_str(), NULL, NULL))) { utils::logger.log(utils::e_log_type::error, "cant create glfw window."); return false; }
+			if(!(glfw_window = glfwCreateWindow(size.x, size.y, name.c_str(), NULL, NULL))) { utils::logger(utils::e_log_type::error, "cant create glfw window."); return false; }
 			glfwSetWindowPos(glfw_window, pos.x, pos.y);
 			glfwMakeContextCurrent(glfw_window);
 			glfwSwapInterval(0);
@@ -70,7 +70,7 @@ namespace null::render::backend::opengl3 {
 		}
 
 		void main_loop() override {
-			if(!wnd_handle) { utils::logger.log(utils::e_log_type::error, "window handle is nullptr."); return; };
+			if(!wnd_handle) { utils::logger(utils::e_log_type::error, "window handle is nullptr."); return; };
 
 			while(!glfwWindowShouldClose(glfw_window)) {
 				glfwPollEvents();

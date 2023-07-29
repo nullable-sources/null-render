@@ -17,7 +17,7 @@ namespace null::render {
             });
 
         if(!backend::factory) {
-            utils::logger.log(utils::e_log_type::error, "backend factory is empty.");
+            utils::logger(utils::e_log_type::error, "backend factory is empty.");
             return;
         }
 

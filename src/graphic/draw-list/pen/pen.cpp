@@ -15,7 +15,7 @@ namespace null::render {
 		return brush->prepare_command(pen_command);
 	}
 
-	std::unique_ptr<commands::i_command> pen_t::around_stroke(const std::unique_ptr<commands::c_geometry>& command, const std::vector<backend::index_t>& outward_order, const std::vector<backend::index_t>& inward_order, const bool& closed) const {
+	std::unique_ptr<commands::i_command> pen_t::around_stroke(const std::unique_ptr<commands::c_geometry>& command, const std::vector<backend::index_t>& outward_order, const std::vector<backend::index_t>& inward_order, bool closed) const {
 		std::unique_ptr<commands::c_geometry> pen_command{ std::make_unique<commands::c_geometry>() };
 
 		if(closed) {
@@ -30,7 +30,7 @@ namespace null::render {
 		return brush->prepare_command(pen_command);
 	}
 
-	void pen_t::around_order(std::unique_ptr<commands::c_geometry>& pen_command, const std::unique_ptr<commands::c_geometry>& command, const std::vector<backend::index_t>& order, const math::e_rotation& rotation, backend::index_t first_vertex_offset) const {
+	void pen_t::around_order(std::unique_ptr<commands::c_geometry>& pen_command, const std::unique_ptr<commands::c_geometry>& command, const std::vector<backend::index_t>& order, math::e_rotation rotation, backend::index_t first_vertex_offset) const {
 		for(const size_t& i : std::views::iota(0u, order.size())) {
 			const size_t previous_i{ (i + order.size() - 1) % order.size() };
 			const size_t next_i{ (i + 1) % order.size() };
@@ -39,7 +39,7 @@ namespace null::render {
 		}
 	}
 
-	void pen_t::make_geometry(std::unique_ptr<commands::c_geometry>& pen_command, const std::unique_ptr<commands::c_geometry>& command, const backend::index_t& previous, const backend::index_t& current, const backend::index_t& next, const math::e_rotation& rotation, const bool& is_last, const backend::index_t& first_vertex_offset) const {
+	void pen_t::make_geometry(std::unique_ptr<commands::c_geometry>& pen_command, const std::unique_ptr<commands::c_geometry>& command, backend::index_t previous, backend::index_t current, backend::index_t next, math::e_rotation rotation, bool is_last, backend::index_t first_vertex_offset) const {
 		const backend::vertex_t& previous_vertex{ backend::mesh->geometry_buffer.vertex_buffer[command->vertex_offset + previous] };
 		const backend::vertex_t& current_vertex{ backend::mesh->geometry_buffer.vertex_buffer[command->vertex_offset + current] };
 		const backend::vertex_t& next_vertex{ backend::mesh->geometry_buffer.vertex_buffer[command->vertex_offset + next] };
@@ -55,14 +55,12 @@ namespace null::render {
 			.add_index(pen_command->vertex_count).add_index(next_vertex_offset + 1).add_index(pen_command->vertex_count + 1);
 
 		const float half_thickness{ thickness / 2.f }, thickness_offset{ origin * 2.f };
-		const vec2_t<float> outward_tesselation{ normal * (half_thickness * thickness_offset) };
-		const vec2_t<float> inward_tesselation{ normal * (half_thickness * (2.f - thickness_offset)) };
+		const vec2_t<float> outward_tessellation{ normal * (half_thickness * thickness_offset) };
+		const vec2_t<float> inward_tessellation{ normal * (half_thickness * (2.f - thickness_offset)) };
 
-		const bool to_next_round{ std::abs(to_next_direction.x) == 1.f || std::abs(to_next_direction.y) == 1.f };
-		const bool from_previous_round{ std::abs(from_previous_direction.x) == 1.f || std::abs(from_previous_direction.y) == 1.f };
 		pen_command->vertex_count += 2;
 		backend::mesh->geometry_buffer
-			.add_vertex({ current_vertex.pos + (to_next_round || from_previous_round ? math::round(outward_tesselation) : outward_tesselation), { }, brush->color })
-			.add_vertex({ current_vertex.pos - (to_next_round || from_previous_round ? math::round(inward_tesselation) : inward_tesselation), { }, brush->color });
+			.add_vertex({ current_vertex.pos + outward_tessellation, { }, brush->color })
+			.add_vertex({ current_vertex.pos - inward_tessellation, { }, brush->color });
 	}
 }

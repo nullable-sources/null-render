@@ -14,7 +14,7 @@ namespace null::render::backend {
 	public:
 		virtual std::unique_ptr<i_renderer> instance_renderer() = 0;
 		virtual std::unique_ptr<c_mesh> instance_mesh() = 0;
-		virtual std::unique_ptr<i_frame_buffer> instance_frame_buffer(const vec2_t<int>& size, const e_frame_buffer_type& type, const e_frame_buffer_flags& flags) = 0;
+		virtual std::unique_ptr<i_frame_buffer> instance_frame_buffer(const vec2_t<int>& size, e_frame_buffer_type type, e_frame_buffer_flags flags) = 0;
 
 		virtual std::unique_ptr<shaders::i_passthrough_color> instance_passthrough_color_shader() = 0;
 		virtual std::unique_ptr<shaders::i_passthrough_texture> instance_passthrough_texture_shader() = 0;

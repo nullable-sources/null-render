@@ -34,8 +34,8 @@ namespace null::render::path {
 	public:
 		rounding_t() { }
 		rounding_t(const std::array<float, 4>& _corners) : corners{ _corners } { }
-		rounding_t(const float& top_left, const float& top_right, const float& bottom_left, const float& bottom_right) : corners{ top_left, top_right, bottom_left, bottom_right } { }
-		rounding_t(const float& rounding, const e_corner_flags& corner_flags = e_corner_flags::all) {
+		rounding_t(float top_left, float top_right, float bottom_left, float bottom_right) : corners{ top_left, top_right, bottom_left, bottom_right } { }
+		rounding_t(float rounding, e_corner_flags corner_flags = e_corner_flags::all) {
 			if(rounding > 0) {
 				if(corner_flags & e_corner_flags::top_left) corner(e_corner_sides::top_left) = rounding;
 				if(corner_flags & e_corner_flags::top_right) corner(e_corner_sides::top_right) = rounding;
@@ -44,7 +44,7 @@ namespace null::render::path {
 			}
 		}
 
-		rounding_t(const float& rounding_first, const float& rounding_second, const e_corner_flags& corner_flags) {
+		rounding_t(float rounding_first, float rounding_second, e_corner_flags corner_flags) {
 			if(rounding_first > 0 || rounding_second > 0) {
 				switch(corner_flags & e_corner_flags::all) {
 					case -e_corner_flags::top: { corner(e_corner_sides::top_left) = rounding_first; corner(e_corner_sides::top_right) = rounding_second; } break;
@@ -58,17 +58,17 @@ namespace null::render::path {
 		}
 
 	public:
-		template <typename self_t> auto&& corner(this self_t&& self, const e_corner_sides& corner) { return self[corner]; }
+		auto&& corner(this auto&& self, e_corner_sides corner) { return self[corner]; }
 		float sum() const { return std::accumulate(corners.begin(), corners.end(), 0.f); }
 
 	public:
-		template <typename self_t> auto&& operator[](this self_t&& self, const e_corner_sides& idx) { return self.corners[-idx]; }
+		auto&& operator[](this auto&& self, e_corner_sides idx) { return self.corners[-idx]; }
 	};
 
-	std::vector<vec2_t<float>> make_arc_fast(const vec2_t<float>& center, const float& radius, const int& a_min_of_12, const int& a_max_of_12);
-	std::vector<vec2_t<float>> make_arc(const vec2_t<float>& center, const float& radius, const float& a_min, const float& a_max, const int& num_segments);
+	std::vector<vec2_t<float>> make_arc_fast(const vec2_t<float>& center, float radius, int a_min_of_12, int a_max_of_12);
+	std::vector<vec2_t<float>> make_arc(const vec2_t<float>& center, float radius, float a_min, float a_max, int num_segments);
 
-	std::vector<vec2_t<float>> make_circle(const vec2_t<float>& center, const float& radius, int num_segments = 0);
+	std::vector<vec2_t<float>> make_circle(const vec2_t<float>& center, float radius, int num_segments = 0);
 	std::vector<vec2_t<float>> make_rect(const vec2_t<float>& a, const vec2_t<float>& b, const rounding_t& rounding = { });
 	static std::vector<vec2_t<float>> make_rect(const rect_t<float>& rect, const rounding_t& rounding = { }) { return make_rect(rect.min, rect.max, rounding); }
 }

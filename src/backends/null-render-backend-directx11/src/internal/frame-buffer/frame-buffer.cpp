@@ -24,12 +24,12 @@ namespace null::render::backend::directx11 {
             };
 
             if(auto result{ shared.device->CreateTexture2D(&texture2d_desc, nullptr, &render_target_texture) }; FAILED(result)) {
-                utils::logger.log(utils::e_log_type::error, "CreateTexture2D failed, return code {}.", result);
+                utils::logger(utils::e_log_type::error, "CreateTexture2D failed, return code {}.", result);
                 return;
             }
         } else {
             if(auto result{ shared.swap_chain->GetBuffer(0, IID_PPV_ARGS(&render_target_texture)) }; FAILED(result)) {
-                utils::logger.log(utils::e_log_type::error, "GetBuffer failed, return code {}.", result);
+                utils::logger(utils::e_log_type::error, "GetBuffer failed, return code {}.", result);
                 return;
             }
         }
@@ -43,7 +43,7 @@ namespace null::render::backend::directx11 {
         };
 
         if(auto result{ shared.device->CreateRenderTargetView(render_target_texture, &render_target_view_desc, &render_target) }; FAILED(result)) {
-            utils::logger.log(utils::e_log_type::error, "CreateRenderTargetView failed, return code {}.", result);
+            utils::logger(utils::e_log_type::error, "CreateRenderTargetView failed, return code {}.", result);
             return;
         }
 
@@ -56,7 +56,7 @@ namespace null::render::backend::directx11 {
             }
         };
         if(auto result{ shared.device->CreateShaderResourceView(render_target_texture, &shader_resource_view_desc, &shader_resource_view) }; FAILED(result)) {
-            utils::logger.log(utils::e_log_type::error, "CreateShaderResourceView failed, return code {}.", result);
+            utils::logger(utils::e_log_type::error, "CreateShaderResourceView failed, return code {}.", result);
             return;
         }
 
@@ -68,7 +68,7 @@ namespace null::render::backend::directx11 {
                 .MultisampleEnable{ render_target_texture_desc.SampleDesc.Count > 1 }
         };
         if(auto result{ shared.device->CreateRasterizerState(&rasterizer_desc, &rasterizer_state) }; FAILED(result)) {
-            utils::logger.log(utils::e_log_type::error, "CreateRasterizerState failed, return code {}.", result);
+            utils::logger(utils::e_log_type::error, "CreateRasterizerState failed, return code {}.", result);
             return;
         }
 
@@ -85,7 +85,7 @@ namespace null::render::backend::directx11 {
         };
 
         if(auto result{ shared.device->CreateTexture2D(&depth_stencil_view_texture2d_desc, nullptr, &depth_stencil_view_texture) }; FAILED(result)) {
-            utils::logger.log(utils::e_log_type::error, "CreateTexture2D failed, return code {}.", result);
+            utils::logger(utils::e_log_type::error, "CreateTexture2D failed, return code {}.", result);
             return;
         }
 
@@ -95,7 +95,7 @@ namespace null::render::backend::directx11 {
         };
 
         if(auto result{ shared.device->CreateDepthStencilView(depth_stencil_view_texture, &depth_stencil_view_desc, &depth_stencil_view) }; FAILED(result)) {
-            utils::logger.log(utils::e_log_type::error, "CreateDepthStencilView failed, return code {}.", result);
+            utils::logger(utils::e_log_type::error, "CreateDepthStencilView failed, return code {}.", result);
             return;
         }
 	}

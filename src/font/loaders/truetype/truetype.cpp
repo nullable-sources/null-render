@@ -4,48 +4,45 @@
 
 namespace null::render {
     void c_truetype_loader::build(c_atlas* atlas) {
-        if(atlas->locked) { utils::logger.log(utils::e_log_type::error, "cannot modify a locked atlas between begin_render() and end_render/render()."); return; }
-        if(atlas->configs.empty()) { utils::logger.log(utils::e_log_type::warning, "configs array is empty."); return; }
+        if(atlas->locked) { utils::logger(utils::e_log_type::error, "cannot modify a locked atlas between begin_render() and end_render/render()."); return; }
+        if(atlas->configs.empty()) { utils::logger(utils::e_log_type::warning, "configs array is empty."); return; }
 
         atlas->texture = c_atlas::texture_t{ };
 
         std::vector<build_src_t> src_array(atlas->configs.size());
         std::vector<build_data_t> dst_array(atlas->fonts.size());
 
-        for(std::tuple<build_src_t&, c_font::config_t&> tuple : std::views::zip(src_array, atlas->configs)) {
-            build_src_t& src{ std::get<build_src_t&>(tuple) };
-            c_font::config_t& config{ std::get<c_font::config_t&>(tuple) };
-
-            if(!config.font) { utils::logger.log(utils::e_log_type::warning, "config font is empty."); continue; }
+        for(auto [src, config] : std::views::zip(src_array, atlas->configs)) {
+            if(!config.font) { utils::logger(utils::e_log_type::warning, "config font is empty."); continue; }
             if(config.font->is_loaded() && config.font->container_atlas != atlas) {
-                utils::logger.log(utils::e_log_type::warning, "font already loaded by another atlas.");
+                utils::logger(utils::e_log_type::warning, "font already loaded by another atlas.");
                 continue;
             }
 
             if(auto iterator{ std::ranges::find_if(atlas->fonts, [=](const std::unique_ptr<c_font>& font) { return config.font == font.get(); }) }; iterator != atlas->fonts.end()) src.dst_index = std::distance(atlas->fonts.begin(), iterator);
-            else { utils::logger.log(utils::e_log_type::error, "font configuration could not be found."); continue; }
+            else { utils::logger(utils::e_log_type::error, "font configuration could not be found."); continue; }
 
             const int font_offset{ stbtt_GetFontOffsetForIndex((std::uint8_t*)config.data.data(), config.index) };
-            if(font_offset < 0) { utils::logger.log(utils::e_log_type::error, "font_data is incorrect, or font_no cannot be found."); continue; }
+            if(font_offset < 0) { utils::logger(utils::e_log_type::error, "font_data is incorrect, or font_no cannot be found."); continue; }
             if(auto result{ stbtt_InitFont(&src.font_info, (std::uint8_t*)config.data.data(), font_offset) }; !result) {
-                utils::logger.log(utils::e_log_type::error, "stbtt_InitFont failed, return code {}.", result);
+                utils::logger(utils::e_log_type::error, "stbtt_InitFont failed, return code {}.", result);
                 continue;
             }
 
-            build_data_t& dst = dst_array[src.dst_index];
+            build_data_t& dst{ dst_array[src.dst_index] };
             src.src_ranges = config.glyph_config.ranges ? config.glyph_config.ranges : c_font::glyph_t::ranges_default();
-            for(const std::uint16_t* src_range = src.src_ranges; src_range[0] && src_range[1]; src_range += 2)
+            for(const std::uint16_t* src_range{ src.src_ranges }; src_range[0] && src_range[1]; src_range += 2)
                 src.glyphs_highest = std::max(src.glyphs_highest, (int)src_range[1]);
             dst.glyphs_highest = std::max(dst.glyphs_highest, src.glyphs_highest);
         }
 
         int total_glyphs_count{ };
         for(build_src_t& src : src_array) {
-            build_data_t& dst = dst_array[src.dst_index];
+            build_data_t& dst{ dst_array[src.dst_index] };
             src.glyphs_set.resize((src.glyphs_highest + 32) >> 5, 0);
             if(dst.glyphs_set.empty()) dst.glyphs_set.resize((dst.glyphs_highest + 31) >> 5, 0);
 
-            for(const std::uint16_t* src_range = src.src_ranges; src_range[0] && src_range[1]; src_range += 2) {
+            for (const std::uint16_t* src_range{ src.src_ranges }; src_range[0] && src_range[1]; src_range += 2) {
                 for(std::uint32_t codepoint : std::views::iota(src_range[0], src_range[1] + (std::uint32_t)1)) {
                     if(dst.glyphs_set[codepoint >> 5] & (std::uint32_t)1 << (codepoint & 31)) continue;
                     if(!stbtt_FindGlyphIndex(&src.font_info, codepoint)) continue;
@@ -61,7 +58,7 @@ namespace null::render {
         }
 
         for(build_src_t& src : src_array) {
-            for(int idx : std::views::iota((size_t)0, src.glyphs_set.size())) {
+            for(int idx : std::views::iota(0u, src.glyphs_set.size())) {
                 if(!src.glyphs_set[idx]) continue;
 
                 for(std::uint32_t bit_n : std::views::iota(0, 32)) {
@@ -71,7 +68,7 @@ namespace null::render {
             }
 
             src.glyphs_set.clear();
-            if(src.glyphs_list.size() != src.glyphs_count) utils::logger.log(utils::e_log_type::error, "src.glyphs_list.size() != src.glyphs_count.");
+            if(src.glyphs_list.size() != src.glyphs_count) utils::logger(utils::e_log_type::error, "src.glyphs_list.size() != src.glyphs_count.");
         }
 
         std::vector<stbrp_rect> buf_rects(total_glyphs_count);
@@ -79,9 +76,7 @@ namespace null::render {
 
         int total_surface{ }, buf_rects_out_n{ }, buf_packedchars_out_n{ };
 
-        for(std::tuple<build_src_t&, c_font::config_t&> tuple : std::views::zip(src_array, atlas->configs)) {
-            build_src_t& src{ std::get<build_src_t&>(tuple) };
-            c_font::config_t& config{ std::get<c_font::config_t&>(tuple) };
+        for(auto [src, config] : std::views::zip(src_array, atlas->configs)) {
             if(!src.glyphs_count) continue;
 
             src.rects = &buf_rects[buf_rects_out_n];
@@ -94,12 +89,12 @@ namespace null::render {
                 src.packed_chars, (std::uint8_t)(sdf ? 1 : config.oversample.x), (std::uint8_t)(sdf ? 1 : config.oversample.y)
             };
 
-            float scale = (sdf || config.size_pixels > 0) ? stbtt_ScaleForPixelHeight(&src.font_info, sdf ? sdf_pixel_size : config.size_pixels) : stbtt_ScaleForMappingEmToPixels(&src.font_info, -config.size_pixels);
-            int padding = atlas->texture.glyph_padding + (2 * sdf_padding + 1);
-            for(int i : std::views::iota((size_t)0, src.glyphs_list.size())) {
+            float scale{ (sdf || config.size_pixels > 0) ? stbtt_ScaleForPixelHeight(&src.font_info, sdf ? sdf_pixel_size : config.size_pixels) : stbtt_ScaleForMappingEmToPixels(&src.font_info, -config.size_pixels) };
+            int padding{ atlas->texture.glyph_padding + (2 * sdf_padding + 1) };
+            for(int i : std::views::iota(0u, src.glyphs_list.size())) {
                 int x0{ }, y0{ }, x1{ }, y1{ };
                 int glyph_index_in_font{ stbtt_FindGlyphIndex(&src.font_info, src.glyphs_list[i]) };
-                if(!glyph_index_in_font) { utils::logger.log(utils::e_log_type::error, "stbtt_FindGlyphIndex return 0."); continue; }
+                if(!glyph_index_in_font) { utils::logger(utils::e_log_type::error, "stbtt_FindGlyphIndex return 0."); continue; }
                 stbtt_GetGlyphBitmapBoxSubpixel(&src.font_info, glyph_index_in_font, scale * (sdf ? 1 : config.oversample.x), scale * (sdf ? 1 : config.oversample.y), 0, 0, &x0, &y0, &x1, &y1);
                 src.rects[i].w = (stbrp_coord)(x1 - x0 + padding + (sdf ? 0 : config.oversample.x - 1));
                 src.rects[i].h = (stbrp_coord)(y1 - y0 + padding + (sdf ? 0 : config.oversample.y - 1));
@@ -146,7 +141,7 @@ namespace null::render {
             if(!src.glyphs_count) continue;
 
             static constexpr int batch_size{ 10 };
-            for(int i = 0; i < src.pack_range.num_chars; i += batch_size) {
+            for(int i{ 0 }; i < src.pack_range.num_chars; i += batch_size) {
                 async_args_t args{ &spc, &src.font_info, src.pack_range, &src.rects[i], config.render_mode_type == e_render_mode_type::sdf };
                 args.range.chardata_for_range = &args.range.chardata_for_range[i];
                 args.range.first_unicode_codepoint_in_range += i;
@@ -162,13 +157,11 @@ namespace null::render {
             }
         }
 
-        for(std::future<void>& future : futures) future.wait();
+        std::ranges::for_each(futures, &std::future<void>::wait);
 
         stbtt_PackEnd(&spc);
 
-        for(std::tuple<build_src_t&, c_font::config_t&> tuple : std::views::zip(src_array, atlas->configs)) {
-            build_src_t& src{ std::get<build_src_t&>(tuple) };
-            c_font::config_t& config{ std::get<c_font::config_t&>(tuple) };
+        for(auto [src, config] : std::views::zip(src_array, atlas->configs)) {
             if(!src.glyphs_count) continue;
 
             c_font* dst_font{ config.font };
@@ -184,7 +177,7 @@ namespace null::render {
             const vec2_t font_off{ config.glyph_config.offset + vec2_t{ 0.f, std::round(dst_font->ascent) } };
 
             for(int glyph_i : std::views::iota(0, src.glyphs_count)) {
-                const int codepoint = src.glyphs_list[glyph_i];
+                const int codepoint{ src.glyphs_list[glyph_i] };
                 stbtt_aligned_quad q{ };
                 float unused_x{ }, unused_y{ };
                 stbtt_GetPackedQuad(src.packed_chars, atlas->texture.size.x, atlas->texture.size.y, glyph_i, &unused_x, &unused_y, &q, 0);

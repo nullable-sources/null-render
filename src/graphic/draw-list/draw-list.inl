@@ -3,7 +3,7 @@
 
 namespace null::render {
 	template <typename char_t>
-	void c_draw_list::add_text(const std::basic_string_view<char_t>& text, vec2_t<float> pos, const text_brush_t& text_brush) {
+	void c_draw_list::add_text(std::basic_string_view<char_t> text, vec2_t<float> pos, const text_brush_t& text_brush) {
 		if(text_brush.color.a <= 0) return;
 
 		std::unique_ptr<commands::c_geometry> command{ std::make_unique<commands::c_geometry>() };

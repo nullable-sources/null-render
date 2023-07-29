@@ -21,9 +21,9 @@ namespace null::render {
 		e_text_align align{ };
 
 	public:
-		template <typename self_t> auto&& set_font(this self_t&& self, c_font* font) { self.font = font; return self; }
-		template <typename self_t> auto&& set_size(this self_t&& self, const float& size) { self.size = size; return self; }
-		template <typename self_t> auto&& set_align(this self_t&& self, const e_text_align& align) { self.align = align; return self; }
+		auto&& set_font(this auto&& self, c_font* font) { self.font = font; return self; }
+		auto&& set_size(this auto&& self, float size) { self.size = size; return self; }
+		auto&& set_align(this auto&& self, e_text_align align) { self.align = align; return self; }
 
 	public:
 		virtual std::unique_ptr<commands::i_command> prepare_command(std::unique_ptr<commands::c_geometry>& command) const override;

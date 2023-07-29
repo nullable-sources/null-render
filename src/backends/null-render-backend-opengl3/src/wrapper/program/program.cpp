@@ -1,7 +1,7 @@
 #include <wrapper/program/program.h>
 
 namespace null::render::backend::opengl3::wrapper {
-	void c_program::check(const opengl::e_constants& status, const std::string_view& desc) const {
+	void c_program::check(opengl::e_constants status, std::string_view desc) const {
 		std::string log{ "empty" };
 
 		int result_status{ }, log_length{ };
@@ -13,6 +13,6 @@ namespace null::render::backend::opengl3::wrapper {
 			opengl::get_program_info_log(program, log_length, nullptr, log.data());
 		}
 
-		if(!result_status) utils::logger.log(utils::e_log_type::warning, "cant '{}' program, log \"{}\".", desc, log);
+		if(!result_status) utils::logger(utils::e_log_type::warning, "cant '{}' program, log \"{}\".", desc, log);
 	}
 }

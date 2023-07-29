@@ -3,7 +3,7 @@
 
 namespace null::render {
 	std::vector<stroke_t::segment_t> stroke_t::build_segments(const std::vector<vec2_t<float>>& points) const {
-		std::vector<stroke_t::segment_t> segments{ };
+		std::vector<segment_t> segments{ };
 		const size_t segments_count{ points.size() };
 
 		for(const size_t& i : std::views::iota(0u, segments_count)) {
@@ -16,14 +16,14 @@ namespace null::render {
 			const vec2_t<float>& current_point{ points[i] };
 			const vec2_t<float>& next_point{ points[next_i] };
 
-			std::shared_ptr<stroke_t::segment_t::edge_t> begin_edge{ }, end_edge{ };
+			std::shared_ptr<segment_t::edge_t> begin_edge{ }, end_edge{ };
 			if(!segments.empty()) begin_edge = segments.back().end_edge;
-			else begin_edge = std::make_shared<stroke_t::segment_t::edge_t>();
+			else begin_edge = std::make_shared<segment_t::edge_t>();
 
 			if(is_last) end_edge = segments.front().begin_edge;
-			else end_edge = std::make_shared<stroke_t::segment_t::edge_t>();
+			else end_edge = std::make_shared<segment_t::edge_t>();
 
-			begin_edge->point = &current_point;
+			begin_edge->point = &points[i];
 
 			begin_edge->to_next_direction = current_point.direction(next_point);
 			begin_edge->from_previous_direction = previous_point.direction(current_point);

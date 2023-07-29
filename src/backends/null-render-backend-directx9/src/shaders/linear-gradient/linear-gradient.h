@@ -20,7 +20,7 @@ namespace null::render::backend::directx9::shaders {
 		void use() override;
 
 	public:
-		void set_angle(const radians_t& _angle) { angle = _angle; }
+		void set_angle(radians_t _angle) { angle = _angle; }
 		void set_stops(const std::vector<std::pair<color_t<int>, float>>& _stops) override {
 			for(const int& i : std::views::iota(0u, _stops.size())) {
 				colors[i] = _stops[i].first.cast<float>();

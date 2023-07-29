@@ -2498,12 +2498,12 @@ namespace opengl {
 
 	class c_opengl_dll : public memory::c_dll {
 	public: using c_dll::c_dll;
-		memory::c_dll::i_export* find_stored_export(const std::string_view& _name) override {
+		memory::c_dll::i_export* find_stored_export(std::string_view _name) override {
 			memory::c_dll::i_export* finded_export{ c_dll::find_stored_export(_name) };
 			return finded_export && finded_export->address ? finded_export : nullptr;
 		}
 
-		memory::address_t load_export(const std::string_view& _name) override {
+		memory::address_t load_export(std::string_view _name) override {
 			if(memory::address_t address{ c_dll::load_export(_name) }; address) return address;
 			return wglGetProcAddress(_name.data());
 		}
@@ -2528,7 +2528,7 @@ namespace opengl {
 	public:
 		return_t operator()(args_t... args) {
 			if(!address) { address = opengl32.load_export(name); }
-			if(!address) { utils::logger.log(utils::e_log_type::error, "'{}' export address == nullptr.", name.empty() ? "unknown" : name); return return_t{ }; }
+			if(!address) { utils::logger(utils::e_log_type::error, "'{}' export address == nullptr.", name.empty() ? "unknown" : name); return return_t{ }; }
 			return ((prototype_t)address)(args...);
 		}
 	};

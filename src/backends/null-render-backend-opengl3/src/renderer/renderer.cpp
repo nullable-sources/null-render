@@ -19,7 +19,7 @@ namespace null::render::backend::opengl3 {
         opengl::scissor(rect.min.x, shared::viewport.y - rect.max.y, size.x, size.y);
     }
     
-    void c_renderer::draw_geometry(const size_t& vertex_count, const size_t& index_count, const size_t& vertex_offset, const size_t& index_offset) {
+    void c_renderer::draw_geometry(size_t vertex_count, size_t index_count, size_t vertex_offset, size_t index_offset) {
         opengl::draw_elements_base_vertex(opengl::e_triangles, index_count, opengl::e_unsigned_int, (void*)(std::intptr_t)(index_offset * sizeof(std::uint32_t)), vertex_offset);
     }
 
@@ -33,7 +33,7 @@ namespace null::render::backend::opengl3 {
         opengl::bind_texture(opengl::e_texture_2d, 0);
 
         if(!texture) {
-            utils::logger.log(utils::e_log_type::warning, "Failed to create texture.");
+            utils::logger(utils::e_log_type::warning, "Failed to create texture.");
             return nullptr;
         }
 
@@ -42,7 +42,7 @@ namespace null::render::backend::opengl3 {
     
     void c_renderer::destroy_texture(void* texture) {
         if(!texture) {
-            utils::logger.log(utils::e_log_type::warning, "It is impossible to destroy the texture because it is empty.");
+            utils::logger(utils::e_log_type::warning, "It is impossible to destroy the texture because it is empty.");
             return;
         }
 

@@ -21,8 +21,8 @@ namespace null::render::backend {
 		e_frame_buffer_flags flags{ };
 
 	public:
-		i_frame_buffer(const vec2_t<int>& _size, const e_frame_buffer_type& _type, const e_frame_buffer_flags& _flags = { }) : size{ _size }, type { _type }, flags{ _flags } { }
-		virtual ~i_frame_buffer() {/* destroy();*/ }
+		i_frame_buffer(const vec2_t<int>& _size, e_frame_buffer_type _type, e_frame_buffer_flags _flags = { }) : size{ _size }, type { _type }, flags{ _flags } { }
+		virtual ~i_frame_buffer() { }
 
 	public:
 		virtual void* get_surface() = 0;

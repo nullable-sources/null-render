@@ -17,7 +17,7 @@ namespace null::render::backend::directx11::shaders {
 		void use() override;
 
 	public:
-		virtual void set_angle(const radians_t& angle) override { constant.angle = angle; }
+		virtual void set_angle(radians_t angle) override { constant.angle = angle; }
 		virtual void set_stops(const std::vector<std::pair<color_t<int>, float>>& stops) {
 			for(const int& i : std::views::iota(0u, stops.size())) {
 				constant.colors[i] = stops[i].first;

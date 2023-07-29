@@ -21,7 +21,7 @@ namespace null::render::backend::directx11 {
         shared.context->RSSetScissorRects(1, &clip);
     }
 
-    void c_renderer::draw_geometry(const size_t& vertex_count, const size_t& index_count, const size_t& vertex_offset, const size_t& index_offset) {
+    void c_renderer::draw_geometry(size_t vertex_count, size_t index_count, size_t vertex_offset, size_t index_offset) {
         shared.context->DrawIndexed(index_count, index_offset, vertex_offset);
     }
 
@@ -47,7 +47,7 @@ namespace null::render::backend::directx11 {
             .SysMemSlicePitch{ 0 }
         };
         if(auto result{ shared.device->CreateTexture2D(&texture_desc, &subresource, &texture) }; FAILED(result))
-            utils::logger.log(utils::e_log_type::error, "cant create texture2d, return code {}.", result);
+            utils::logger(utils::e_log_type::error, "cant create texture2d, return code {}.", result);
 
         ID3D11ShaderResourceView* texture_view{ };
         D3D11_SHADER_RESOURCE_VIEW_DESC shader_resource_view_desc{
@@ -59,22 +59,22 @@ namespace null::render::backend::directx11 {
             }
         };
         if(auto result{ shared.device->CreateShaderResourceView(texture, &shader_resource_view_desc, &texture_view) }; FAILED(result))
-            utils::logger.log(utils::e_log_type::error, "cant create shader resource view, return code {}.", result);
+            utils::logger(utils::e_log_type::error, "cant create shader resource view, return code {}.", result);
 
         if(auto result{ texture->Release() }; FAILED(result))
-            utils::logger.log(utils::e_log_type::warning, "cant release texture, return code {}.", result);
+            utils::logger(utils::e_log_type::warning, "cant release texture, return code {}.", result);
 
         return texture_view;
     }
 
     void c_renderer::destroy_texture(void* texture) {
         if(!texture) {
-            utils::logger.log(utils::e_log_type::warning, "it is impossible to destroy the texture because it is empty.");
+            utils::logger(utils::e_log_type::warning, "it is impossible to destroy the texture because it is empty.");
             return;
         }
 
         if(auto result{ ((ID3D11ShaderResourceView*)texture)->Release() }; FAILED(result))
-            utils::logger.log(utils::e_log_type::warning, "cant release texture, return code {}.", result);
+            utils::logger(utils::e_log_type::warning, "cant release texture, return code {}.", result);
         texture = nullptr;
     }
 
@@ -129,11 +129,11 @@ namespace null::render::backend::directx11 {
         shared.context->PSSetShaderResources(0, 1, &saved_state.shader_resource); if(saved_state.shader_resource) saved_state.shader_resource->Release();
         shared.context->PSSetSamplers(0, 1, &saved_state.sampler); if(saved_state.sampler) saved_state.sampler->Release();
         shared.context->PSSetShader(saved_state.pixel_shader, saved_state.pixel_shader_instances, saved_state.pixel_shader_instances_count); if(saved_state.pixel_shader) saved_state.pixel_shader->Release();
-        for(const std::uint32_t& i : std::views::iota((std::uint32_t)0, saved_state.pixel_shader_instances_count)) if(saved_state.pixel_shader_instances[i]) saved_state.pixel_shader_instances[i]->Release();
+        for(std::uint32_t i : std::views::iota(0u, saved_state.pixel_shader_instances_count)) if(saved_state.pixel_shader_instances[i]) saved_state.pixel_shader_instances[i]->Release();
         shared.context->VSSetShader(saved_state.vertex_shader, saved_state.vertex_shader_instances, saved_state.vertex_shader_instances_count); if(saved_state.vertex_shader) saved_state.vertex_shader->Release();
         shared.context->VSSetConstantBuffers(0, 1, &saved_state.vertex_shader_constant_buffer); if(saved_state.vertex_shader_constant_buffer) saved_state.vertex_shader_constant_buffer->Release();
         shared.context->GSSetShader(saved_state.geometry_shader, saved_state.geometry_shader_instances, saved_state.geometry_shader_instances_count); if(saved_state.geometry_shader) saved_state.geometry_shader->Release();
-        for(const std::uint32_t& i : std::views::iota((std::uint32_t)0, saved_state.vertex_shader_instances_count)) if(saved_state.vertex_shader_instances[i]) saved_state.vertex_shader_instances[i]->Release();
+        for(std::uint32_t i : std::views::iota(0u, saved_state.vertex_shader_instances_count)) if(saved_state.vertex_shader_instances[i]) saved_state.vertex_shader_instances[i]->Release();
         shared.context->IASetPrimitiveTopology(saved_state.primitive_topology);
         shared.context->IASetIndexBuffer(saved_state.index_buffer, saved_state.index_buffer_format, saved_state.index_buffer_offset); if(saved_state.index_buffer) saved_state.index_buffer->Release();
         shared.context->IASetVertexBuffers(0, 1, &saved_state.vertex_buffer, &saved_state.vertex_buffer_stride, &saved_state.vertex_buffer_offset); if(saved_state.vertex_buffer) saved_state.vertex_buffer->Release();
@@ -158,7 +158,7 @@ namespace null::render::backend::directx11 {
                 }
             };
             if(auto result{ shared.device->CreateBlendState(&blend_desc, &internal_objects.blend) }; FAILED(result))
-                utils::logger.log(utils::e_log_type::error, "cant create blend state, return code {}.", result);
+                utils::logger(utils::e_log_type::error, "cant create blend state, return code {}.", result);
         }
 
         if(!internal_objects.depth_stencil) {
@@ -181,7 +181,7 @@ namespace null::render::backend::directx11 {
                 }
             };
             if(auto result{ shared.device->CreateDepthStencilState(&depth_stencil_desc, &internal_objects.depth_stencil) }; FAILED(result))
-                utils::logger.log(utils::e_log_type::error, "cant create depth stencil state, return code {}.", result);
+                utils::logger(utils::e_log_type::error, "cant create depth stencil state, return code {}.", result);
         }
 
         if(!internal_objects.sampler) {
@@ -196,7 +196,7 @@ namespace null::render::backend::directx11 {
                 .MaxLOD{ 0.f }
             };
             if(auto result{ shared.device->CreateSamplerState(&sampler_desc, &internal_objects.sampler) }; FAILED(result))
-                utils::logger.log(utils::e_log_type::error, "cant create sampler state, return code {}.", result);
+                utils::logger(utils::e_log_type::error, "cant create sampler state, return code {}.", result);
         }
     }
 

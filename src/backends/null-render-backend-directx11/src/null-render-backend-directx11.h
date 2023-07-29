@@ -20,7 +20,7 @@ namespace null::render::backend::directx11 {
 	public:
 		std::unique_ptr<i_renderer> instance_renderer() override { return std::make_unique<c_renderer>(); }
 		std::unique_ptr<backend::c_mesh> instance_mesh() override { return std::make_unique<c_mesh>(); }
-		std::unique_ptr<i_frame_buffer> instance_frame_buffer(const vec2_t<int>& size, const e_frame_buffer_type& type, const e_frame_buffer_flags& flags) override { return std::make_unique<c_frame_buffer>(size, type, flags); }
+		std::unique_ptr<i_frame_buffer> instance_frame_buffer(const vec2_t<int>& size, e_frame_buffer_type type, e_frame_buffer_flags flags) override { return std::make_unique<c_frame_buffer>(size, type, flags); }
 
 		std::unique_ptr<backend::shaders::i_passthrough_color> instance_passthrough_color_shader() override { return std::make_unique<shaders::c_passthrough_color>(); }
 		std::unique_ptr<backend::shaders::i_passthrough_texture> instance_passthrough_texture_shader() override { return std::make_unique<shaders::c_passthrough_texture>(); }
@@ -68,7 +68,7 @@ namespace null::render::backend::directx11 {
 			D3D_FEATURE_LEVEL feature_level;
 			if(auto result{ D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, std::vector<D3D_FEATURE_LEVEL>{ D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_0 }.data(), 2,
 				D3D11_SDK_VERSION, &swap_chain_desc, &swap_chain, &device, &feature_level, &context) }; FAILED(result)) {
-				utils::logger.log(utils::e_log_type::error, "D3D11CreateDeviceAndSwapChain failed, return code {}.", result);
+				utils::logger(utils::e_log_type::error, "D3D11CreateDeviceAndSwapChain failed, return code {}.", result);
 			}
 
 			factory = std::make_unique<c_factory>(device, context, swap_chain);
@@ -88,7 +88,7 @@ namespace null::render::backend::directx11 {
 			utils::win::c_window::on_main_loop();
 
 			if(auto result{ swap_chain->Present(1, 0) }; FAILED(result))
-				utils::logger.log(utils::e_log_type::error, "Present failed, return code {}.", result);
+				utils::logger(utils::e_log_type::error, "Present failed, return code {}.", result);
 		}
 
 		std::vector<int> on_wnd_proc(HWND _wnd_handle, UINT msg, WPARAM w_param, LPARAM l_param) override {

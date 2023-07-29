@@ -20,8 +20,8 @@ namespace null::render::filters {
 		void* texture{ };
 
 	public:
-		template <typename self_t> auto&& set_texture(this self_t&& self, void* texture) { self.texture = texture; return self; }
-		template <typename self_t> auto&& set_uvs(this self_t&& self, const rect_t<float>& uvs) { self.uvs = uvs; return self; }
+		auto&& set_texture(this auto&& self, void* texture) { self.texture = texture; return self; }
+		auto&& set_uvs(this auto&& self, const rect_t<float>& uvs) { self.uvs = uvs; return self; }
 
 	public:
 		std::unique_ptr<i_filter> instance_filter(std::unique_ptr<commands::c_geometry>&& child_command) const override {
