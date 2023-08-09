@@ -30,10 +30,10 @@
     <ClCompile Include="src\graphic\draw-list\draw-list.cpp" />
     <ClCompile Include="src\graphic\draw-list\pen\pen.cpp" />
     <ClCompile Include="src\graphic\draw-list\strokes\stroke.cpp" />
-    <ClCompile Include="src\graphic\filters\linear-gradient\linear-gradient.cpp" />
-    <ClCompile Include="src\graphic\filters\quad-gradient\quad-gradient.cpp" />
-    <ClCompile Include="src\graphic\filters\sdf\sdf.cpp" />
-    <ClCompile Include="src\graphic\filters\texture\texture.cpp" />
+    <ClCompile Include="src\graphic\filters\linear-gradient-filter\linear-gradient-filter.cpp" />
+    <ClCompile Include="src\graphic\filters\quad-gradient-filter\quad-gradient-filter.cpp" />
+    <ClCompile Include="src\graphic\filters\sdf-filter\sdf-filter.cpp" />
+    <ClCompile Include="src\graphic\filters\texture-filter\texture-filter.cpp" />
     <ClCompile Include="src\graphic\path\path.cpp" />
     <ClCompile Include="src\null-render.cpp" />
   </ItemGroup>
@@ -49,10 +49,10 @@
     <ClInclude Include="src\backend\internal\mesh.h" />
     <ClInclude Include="src\backend\internal\object.h" />
     <ClInclude Include="src\backend\renderer\renderer.h" />
-    <ClInclude Include="src\backend\shaders\linear-gradient\linear-gradient.h" />
-    <ClInclude Include="src\backend\shaders\passthrough\passthrough.h" />
-    <ClInclude Include="src\backend\shaders\quad-gradient\quad-gradient.h" />
-    <ClInclude Include="src\backend\shaders\sdf\sdf.h" />
+    <ClInclude Include="src\backend\shaders\linear-gradient-shader.h" />
+    <ClInclude Include="src\backend\shaders\passthrough-shader.h" />
+    <ClInclude Include="src\backend\shaders\quad-gradient-shader.h" />
+    <ClInclude Include="src\backend\shaders\sdf-shader.h" />
     <ClInclude Include="src\backend\shaders\shader.h" />
     <ClInclude Include="src\font\font.h" />
     <ClInclude Include="src\font\loaders\freetype\freetype.h" />
@@ -68,10 +68,10 @@
     <ClInclude Include="src\graphic\draw-list\pen\pen.h" />
     <ClInclude Include="src\graphic\draw-list\strokes\stroke.h" />
     <ClInclude Include="src\graphic\filters\filters.h" />
-    <ClInclude Include="src\graphic\filters\linear-gradient\linear-gradient.h" />
-    <ClInclude Include="src\graphic\filters\quad-gradient\quad-gradient.h" />
-    <ClInclude Include="src\graphic\filters\sdf\sdf.h" />
-    <ClInclude Include="src\graphic\filters\texture\texture.h" />
+    <ClInclude Include="src\graphic\filters\linear-gradient-filter\linear-gradient-filter.h" />
+    <ClInclude Include="src\graphic\filters\quad-gradient-filter\quad-gradient-filter.h" />
+    <ClInclude Include="src\graphic\filters\sdf-filter\sdf-filter.h" />
+    <ClInclude Include="src\graphic\filters\texture-filter\texture-filter.h" />
     <ClInclude Include="src\graphic\path\path.h" />
     <ClInclude Include="src\null-render.h" />
   </ItemGroup>

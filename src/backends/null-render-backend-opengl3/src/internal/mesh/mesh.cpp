@@ -1,4 +1,4 @@
-#include "shaders/compiled-objects/passthrough/passthrough.h"
+#include "shaders/shared-compiled-objects/passthrough-object/compiled-object.h"
 #include "internal/mesh/mesh.h"
 
 namespace null::render::opengl3 {

@@ -1,11 +1,11 @@
 #pragma once
 #include "internal/frame-buffer/frame-buffer.h"
 #include "internal/mesh/mesh.h"
-#include "shaders/passthrough-color/passthrough-color.h"
-#include "shaders/passthrough-texture/passthrough-texture.h"
-#include "shaders/quad-gradient/quad-gradient.h"
-#include "shaders/linear-gradient/linear-gradient.h"
-#include "shaders/sdf/sdf.h"
+#include "shaders/passthrough-color-shader/passthrough-color-shader.h"
+#include "shaders/passthrough-texture-shader/passthrough-texture-shader.h"
+#include "shaders/quad-gradient-shader/quad-gradient-shader.h"
+#include "shaders/linear-gradient-shader/linear-gradient-shader.h"
+#include "shaders/sdf-shader/sdf-shader.h"
 
 namespace null::render::directx9 {
 	class c_factory : public backend::i_factory {

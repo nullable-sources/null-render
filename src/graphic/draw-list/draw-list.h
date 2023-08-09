@@ -3,10 +3,10 @@
 #include "graphic/draw-list/pen/pen.h"
 #include "graphic/draw-list/strokes/stroke.h"
 
-#include "graphic/filters/linear-gradient/linear-gradient.h"
-#include "graphic/filters/quad-gradient/quad-gradient.h"
-#include "graphic/filters/sdf/sdf.h"
-#include "graphic/filters/texture/texture.h"
+#include "graphic/filters/linear-gradient-filter/linear-gradient-filter.h"
+#include "graphic/filters/quad-gradient-filter/quad-gradient-filter.h"
+#include "graphic/filters/sdf-filter/sdf-filter.h"
+#include "graphic/filters/texture-filter/texture-filter.h"
 
 namespace null::render {
 	class c_draw_list : public c_command_buffer {

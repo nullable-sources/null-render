@@ -1,15 +1,15 @@
 #pragma once
 #include "graphic/draw-list/brushes/text-brush/text-brush.h"
+#include "backend/shaders/sdf-shader.h"
 
 namespace null::render {
 	struct sdf_text_brush_t : public text_brush_t {
 	public:
-		float outline_thickness{ };
-		color_t<int> outline_start{ }, outline_end{ };
+		backend::i_sdf_shader::constants_t constants{ };
 
 	public:
 		auto&& set_outline(this auto&& self, float thickness, const color_t<int>& start, const color_t<int>& end) {
-			self.outline_thickness = thickness; self.outline_start = start; self.outline_end = end;
+			self.constants.outline_thickness = thickness; self.constants.outline_start = start; self.constants.outline_end = end;
 			return self;
 		}
 

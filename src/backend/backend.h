@@ -1,10 +1,10 @@
 #pragma once
 #include "backend/renderer/renderer.h"
 
-#include "backend/shaders/passthrough/passthrough.h"
-#include "backend/shaders/quad-gradient/quad-gradient.h"
-#include "backend/shaders/linear-gradient/linear-gradient.h"
-#include "backend/shaders/sdf/sdf.h"
+#include "backend/shaders/passthrough-shader.h"
+#include "backend/shaders/quad-gradient-shader.h"
+#include "backend/shaders/linear-gradient-shader.h"
+#include "backend/shaders/sdf-shader.h"
 
 #include "backend/internal/frame-buffer.h"
 #include "backend/internal/mesh.h"
