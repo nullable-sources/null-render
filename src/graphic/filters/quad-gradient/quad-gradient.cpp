@@ -1,7 +1,7 @@
-#include <backend/renderer/renderer.h>
-#include <backend/shaders/passthrough/passthrough.h>
+#include "backend/renderer/renderer.h"
+#include "backend/shaders/passthrough/passthrough.h"
 
-#include <graphic/filters/quad-gradient/quad-gradient.h>
+#include "graphic/filters/quad-gradient/quad-gradient.h"
 
 namespace null::render {
 	void c_quad_gradient_filter::handle() {

@@ -5,17 +5,14 @@
 #include <GLFW/glfw3native.h>
 #endif
 
-#include <null-render.h>
-#include <backend/backend.h>
-
-#include <renderer/renderer.h>
-#include <internal/frame-buffer/frame-buffer.h>
-#include <internal/mesh/mesh.h>
-#include <shaders/passthrough-color/passthrough-color.h>
-#include <shaders/passthrough-texture/passthrough-texture.h>
-#include <shaders/quad-gradient/quad-gradient.h>
-#include <shaders/linear-gradient/linear-gradient.h>
-#include <shaders/sdf/sdf.h>
+#include "renderer/renderer.h"
+#include "internal/frame-buffer/frame-buffer.h"
+#include "internal/mesh/mesh.h"
+#include "shaders/passthrough-color/passthrough-color.h"
+#include "shaders/passthrough-texture/passthrough-texture.h"
+#include "shaders/quad-gradient/quad-gradient.h"
+#include "shaders/linear-gradient/linear-gradient.h"
+#include "shaders/sdf/sdf.h"
 
 namespace null::render::opengl3 {
 	class c_factory : public backend::i_factory {

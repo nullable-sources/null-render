@@ -1,10 +1,7 @@
 #pragma once
-#include <shaders/shader.h>
-#include <backend/renderer/renderer.h>
-#include <backend/shaders/linear-gradient/linear-gradient.h>
-
-#include <shaders/compiled-objects/linear-gradient/linear-gradient.h>
-#include <shaders/compiled-objects/passthrough/passthrough.h>
+#include "shaders/shader.h"
+#include "shaders/compiled-objects/linear-gradient/linear-gradient.h"
+#include "shaders/compiled-objects/passthrough/passthrough.h"
 
 namespace null::render::opengl3 {
 	class c_linear_gradient_shader : public backend::i_linear_gradient_shader, public c_shader {

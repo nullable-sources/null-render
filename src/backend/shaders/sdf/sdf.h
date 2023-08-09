@@ -1,10 +1,11 @@
 #pragma once
-#include <backend/shaders/shader.h>
+#include "backend/shaders/shader.h"
 
 namespace null::render::backend {
 	class i_sdf_shader : public virtual i_shader {
 	public:
 		struct constants_t {
+		public:
 			color_t<int> outline_start{ }, outline_end{ };
 			float aa{ }, outline_thickness{ };
 		};

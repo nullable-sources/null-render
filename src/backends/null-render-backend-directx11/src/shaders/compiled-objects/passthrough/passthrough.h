@@ -1,6 +1,5 @@
 #pragma once
-#include <wrapper/shaders/vertex-shader/vertex-shader.h>
-#include <backend/shaders/shader.h>
+#include "wrapper/shaders/vertex-shader.h"
 
 namespace null::render::directx11 {
     namespace sources {

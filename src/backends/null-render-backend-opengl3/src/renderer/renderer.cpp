@@ -1,9 +1,5 @@
-#include <wrapper/opengl3.h>
-#include <null-render.h>
-
-#include <renderer/renderer.h>
-#include <backend/shaders/shader.h>
-#include <backend/internal/mesh.h>
+#include "renderer/renderer.h"
+#include "wrapper/opengl3.h"
 
 namespace null::render::opengl3 {
     matrix4x4_t c_renderer::get_projection_matrix() const {

@@ -1,6 +1,6 @@
 #pragma once
-#include <backend/shaders/linear-gradient/linear-gradient.h>
-#include <graphic/filters/filters.h>
+#include "backend/shaders/linear-gradient/linear-gradient.h"
+#include "graphic/filters/filters.h"
 
 namespace null::render {
 	class c_linear_gradient_filter : public i_filter {

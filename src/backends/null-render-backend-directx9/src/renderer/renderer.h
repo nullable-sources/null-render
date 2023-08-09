@@ -2,7 +2,7 @@
 #pragma comment (lib,"d3d9.lib")
 #include <d3d9.h>
 
-#include <backend/renderer/renderer.h>
+#include <null-render.h>
 
 namespace null::render::directx9 {
 	struct shared_t {

@@ -1,9 +1,6 @@
 #pragma once
-#include <backend/shaders/shader.h>
-
-#include <wrapper/constant-buffer/constant-buffer.h>
-#include <wrapper/shaders/pixel-shader/pixel-shader.h>
-#include <wrapper/shaders/vertex-shader/vertex-shader.h>
+#include "wrapper/shaders/pixel-shader.h"
+#include "wrapper/shaders/vertex-shader.h"
 
 namespace null::render::directx11 {
 	class c_shader : public virtual backend::i_shader {

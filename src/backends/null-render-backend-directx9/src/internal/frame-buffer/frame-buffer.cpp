@@ -1,6 +1,4 @@
-#include <null-render.h>
-
-#include <internal/frame-buffer/frame-buffer.h>
+#include "internal/frame-buffer/frame-buffer.h"
 
 /* 
 * @note:

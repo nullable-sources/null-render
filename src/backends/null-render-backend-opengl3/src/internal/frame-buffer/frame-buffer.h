@@ -1,5 +1,5 @@
 #pragma once
-#include <backend/internal/frame-buffer.h>
+#include <null-render.h>
 
 namespace null::render::opengl3 {
 	class c_frame_buffer : public backend::i_frame_buffer {

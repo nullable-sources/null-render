@@ -1,6 +1,6 @@
 #pragma once
-#include <renderer/renderer.h>
-#include <wrapper/shader/shader.h>
+#include "renderer/renderer.h"
+#include "wrapper/shader/shader.h"
 
 namespace null::render::directx9 {
 	class c_pixel_shader : public i_compiled_shader {

@@ -1,5 +1,5 @@
 #pragma once
-#include <backend/renderer/renderer.h>
+#include <null-render.h>
 
 namespace null::render::opengl3 {
 	class c_renderer : public backend::i_renderer {

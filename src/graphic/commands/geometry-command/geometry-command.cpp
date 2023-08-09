@@ -1,9 +1,9 @@
 #include <algorithm>
 
-#include <backend/renderer/renderer.h>
-#include <backend/internal/mesh.h>
+#include "backend/renderer/renderer.h"
+#include "backend/internal/mesh.h"
 
-#include <graphic/commands/geometry-command/geometry-command.h>
+#include "graphic/commands/geometry-command/geometry-command.h"
 
 namespace null::render {
 	c_geometry_command::c_geometry_command()

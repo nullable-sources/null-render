@@ -1,8 +1,8 @@
 #include <future>
 #include <stb-decompress.h>
 
-#include <font/loaders/freetype/freetype.h>
-#include <font/font.h>
+#include "font/loaders/freetype/freetype.h"
+#include "font/font.h"
 
 namespace null::render {
     void c_font::build_lookup_table() {

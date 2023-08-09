@@ -1,6 +1,5 @@
 #pragma once
-#include <wrapper/pixel/pixel.h>
-#include <backend/shaders/shader.h>
+#include "wrapper/pixel/pixel.h"
 
 namespace null::render::directx9 {
     namespace sources {

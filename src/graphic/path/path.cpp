@@ -1,5 +1,5 @@
-#include <graphic/path/path.h>
-#include <null-render.h>
+#include "graphic/path/path.h"
+#include "null-render.h"
 
 namespace null::render::path {
     std::vector<vec2_t<float>> make_arc_fast(const vec2_t<float>& center, float radius, int a_min_of_12, int a_max_of_12) {

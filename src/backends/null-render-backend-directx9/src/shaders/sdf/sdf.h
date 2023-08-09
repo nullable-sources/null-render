@@ -1,9 +1,7 @@
 #pragma once
-#include <backend/shaders/sdf/sdf.h>
-#include <shaders/shader.h>
-
-#include <shaders/compiled-objects/sdf/sdf.h>
-#include <shaders/compiled-objects/passthrough/passthrough.h>
+#include "shaders/shader.h"
+#include "shaders/compiled-objects/sdf/sdf.h"
+#include "shaders/compiled-objects/passthrough/passthrough.h"
 
 namespace null::render::directx9 {
 	class c_sdf_shader : public backend::i_sdf_shader, public c_shader {

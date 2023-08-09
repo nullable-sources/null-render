@@ -1,5 +1,5 @@
 #pragma once
-#include <wrapper/shaders/shader.h>
+#include "wrapper/shaders/shader.h"
 
 namespace null::render::directx11 {
 	class c_vertex_shader : public i_compiled_shader {

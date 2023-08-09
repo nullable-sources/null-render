@@ -1,7 +1,6 @@
 #pragma once
-#include <wrapper/vertex/vertex.h>
-#include <wrapper/pixel/pixel.h>
-#include <backend/shaders/shader.h>
+#include "wrapper/vertex/vertex.h"
+#include "wrapper/pixel/pixel.h"
 
 namespace null::render::directx9 {
 	class c_shader : public virtual backend::i_shader {

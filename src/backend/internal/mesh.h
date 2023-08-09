@@ -1,6 +1,6 @@
 #pragma once
-#include <backend/internal/geometry-buffer.h>
-#include <backend/internal/object.h>
+#include "backend/internal/geometry-buffer.h"
+#include "backend/internal/object.h"
 
 namespace null::render::backend {
 	class i_mesh : public i_object {

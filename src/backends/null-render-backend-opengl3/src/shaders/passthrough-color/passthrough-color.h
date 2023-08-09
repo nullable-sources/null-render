@@ -1,10 +1,7 @@
 #pragma once
-#include <shaders/shader.h>
-#include <backend/renderer/renderer.h>
-#include <backend/shaders/passthrough/passthrough.h>
-
-#include <shaders/compiled-objects/passthrough-color/passthrough-color.h>
-#include <shaders/compiled-objects/passthrough/passthrough.h>
+#include "shaders/shader.h"
+#include "shaders/compiled-objects/passthrough-color/passthrough-color.h"
+#include "shaders/compiled-objects/passthrough/passthrough.h"
 
 namespace null::render::opengl3 {
 	class c_passthrough_color_shader : public backend::i_passthrough_color_shader, public c_shader {

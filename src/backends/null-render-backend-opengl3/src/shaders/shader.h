@@ -1,6 +1,5 @@
 #pragma once
-#include <backend/shaders/shader.h>
-#include <wrapper/fields.h>
+#include "wrapper/fields.h"
 
 namespace null::render::opengl3 {
 	class c_shader : private virtual backend::i_shader {

@@ -1,11 +1,4 @@
-#include <null-render.h>
-
-#include <renderer/renderer.h>
-
-#include <backend/renderer/renderer.h>
-#include <backend/internal/mesh.h>
-#include <backend/internal/frame-buffer.h>
-#include <backend/shaders/passthrough/passthrough.h>
+#include "renderer/renderer.h"
 
 namespace null::render::directx11 {
     matrix4x4_t c_renderer::get_projection_matrix() const {

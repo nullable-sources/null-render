@@ -1,6 +1,6 @@
 #include <future>
-#include <font/font.h>
-#include <font/loaders/freetype/freetype.h>
+#include "font/font.h"
+#include "font/loaders/freetype/freetype.h"
 
 namespace null::render {
 	void c_freetype_loader::build(c_atlas* atlas) {

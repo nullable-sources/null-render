@@ -1,6 +1,5 @@
 #pragma once
-#include <backend/shaders/shader.h>
-#include <wrapper/shader.h>
+#include "wrapper/shader.h"
 
 namespace null::render::opengl3 {
     class c_quad_gradient_shader_object : public c_fragment_shader {

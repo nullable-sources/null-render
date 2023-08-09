@@ -1,7 +1,6 @@
 #pragma once
-#include <null-sdk.h>
-#include <wrapper/opengl3.h>
-#include <backend/shaders/shader.h>
+#include <null-render.h>
+#include "wrapper/opengl3.h"
 
 namespace null::render::opengl3 {
 	class i_compiled_shader : public backend::i_compiled_shader_object {

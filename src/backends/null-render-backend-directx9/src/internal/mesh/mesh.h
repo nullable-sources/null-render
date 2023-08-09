@@ -1,6 +1,5 @@
 #pragma once
-#include <renderer/renderer.h>
-#include <backend/internal/mesh.h>
+#include "renderer/renderer.h"
 
 namespace null::render::directx9 {
 	class c_mesh : public backend::c_mesh {

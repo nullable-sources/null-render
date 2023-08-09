@@ -1,5 +1,5 @@
 #include <memory>
-#include <graphic/draw-list/strokes/stroke.h>
+#include "graphic/draw-list/strokes/stroke.h"
 
 namespace null::render {
 	std::vector<stroke_t::segment_t> stroke_t::build_segments(const std::vector<vec2_t<float>>& points) const {

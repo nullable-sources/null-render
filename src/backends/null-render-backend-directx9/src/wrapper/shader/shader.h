@@ -1,5 +1,5 @@
 #pragma once
-#include <backend/shaders/shader.h>
+#include <null-render.h>
 
 namespace null::render::directx9 {
 	class i_compiled_shader : public backend::i_compiled_shader_object {

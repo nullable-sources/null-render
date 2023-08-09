@@ -1,7 +1,7 @@
-#include <backend/renderer/renderer.h>
-#include <backend/shaders/passthrough/passthrough.h>
+#include "backend/renderer/renderer.h"
+#include "backend/shaders/passthrough/passthrough.h"
 
-#include <graphic/filters/linear-gradient/linear-gradient.h>
+#include "graphic/filters/linear-gradient/linear-gradient.h"
 
 namespace null::render {
 	void c_linear_gradient_filter::handle() {

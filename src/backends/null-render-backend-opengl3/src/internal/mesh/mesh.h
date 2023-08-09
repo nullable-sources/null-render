@@ -1,6 +1,5 @@
 #pragma once
-#include <backend/internal/mesh.h>
-#include <wrapper/fields.h>
+#include "wrapper/fields.h"
 
 namespace null::render::opengl3 {
 	class c_mesh : public backend::c_mesh {

@@ -5,8 +5,8 @@
 #include <freetype/ftglyph.h>
 #include <freetype/ftsynth.h>
 
-#include <font/font.h>
-#include <font/loaders/loader.h>
+#include "font/font.h"
+#include "font/loaders/loader.h"
 
 namespace null::render {
 	class c_freetype_loader : public i_font_loader {

@@ -1,4 +1,4 @@
-#include <shaders/linear-gradient/linear-gradient.h>
+#include "shaders/linear-gradient/linear-gradient.h"
 
 namespace null::render::opengl3 {
 	void c_linear_gradient_shader::on_create() {

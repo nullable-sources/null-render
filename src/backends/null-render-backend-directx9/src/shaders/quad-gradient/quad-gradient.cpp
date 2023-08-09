@@ -1,4 +1,4 @@
-#include <shaders/quad-gradient/quad-gradient.h>
+#include "shaders/quad-gradient/quad-gradient.h"
 
 namespace null::render::directx9 {
 	void c_quad_gradient_shader::use() {

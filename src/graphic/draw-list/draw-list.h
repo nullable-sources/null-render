@@ -1,12 +1,12 @@
 #pragma once
-#include <graphic/draw-list/brushes/sdf-text-brush/sdf-text-brush.h>
-#include <graphic/draw-list/pen/pen.h>
-#include <graphic/draw-list/strokes/stroke.h>
+#include "graphic/draw-list/brushes/sdf-text-brush/sdf-text-brush.h"
+#include "graphic/draw-list/pen/pen.h"
+#include "graphic/draw-list/strokes/stroke.h"
 
-#include <graphic/filters/linear-gradient/linear-gradient.h>
-#include <graphic/filters/quad-gradient/quad-gradient.h>
-#include <graphic/filters/sdf/sdf.h>
-#include <graphic/filters/texture/texture.h>
+#include "graphic/filters/linear-gradient/linear-gradient.h"
+#include "graphic/filters/quad-gradient/quad-gradient.h"
+#include "graphic/filters/sdf/sdf.h"
+#include "graphic/filters/texture/texture.h"
 
 namespace null::render {
 	class c_draw_list : public c_command_buffer {

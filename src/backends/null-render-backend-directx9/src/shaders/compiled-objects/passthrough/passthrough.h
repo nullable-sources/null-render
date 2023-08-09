@@ -1,6 +1,5 @@
 #pragma once
-#include <wrapper/vertex/vertex.h>
-#include <backend/shaders/shader.h>
+#include "wrapper/vertex/vertex.h"
 
 namespace null::render::directx9 {
     namespace sources {

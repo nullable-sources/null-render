@@ -1,9 +1,7 @@
 #pragma once
-#include <shaders/shader.h>
-#include <backend/shaders/passthrough/passthrough.h>
-
-#include <shaders/compiled-objects/passthrough-texture/passthrough-texture.h>
-#include <shaders/compiled-objects/passthrough/passthrough.h>
+#include "shaders/shader.h"
+#include "shaders/compiled-objects/passthrough-texture/passthrough-texture.h"
+#include "shaders/compiled-objects/passthrough/passthrough.h"
 
 namespace null::render::directx11 {
 	class c_passthrough_texture_shader : public backend::i_passthrough_texture_shader, public c_shader {

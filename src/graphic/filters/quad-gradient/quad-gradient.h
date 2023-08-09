@@ -1,6 +1,6 @@
 #pragma once
-#include <backend/shaders/quad-gradient/quad-gradient.h>
-#include <graphic/filters/filters.h>
+#include "backend/shaders/quad-gradient/quad-gradient.h"
+#include "graphic/filters/filters.h"
 
 namespace null::render {
 	class c_quad_gradient_filter : public i_filter {

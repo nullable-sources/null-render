@@ -1,6 +1,5 @@
 #pragma once
-#include <wrapper/constant-buffer/constant-buffer.h>
-#include <backend/shaders/shader.h>
+#include "wrapper/constant-buffer/constant-buffer.h"
 
 namespace null::render::directx11 {
 	class i_compiled_shader : public backend::i_compiled_shader_object {
