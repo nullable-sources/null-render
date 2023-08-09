@@ -1,10 +1,10 @@
 #include <shaders/passthrough-color/passthrough-color.h>
 
-namespace null::render::backend::directx9::shaders {
-	void c_passthrough_color::use() {
+namespace null::render::directx9 {
+	void c_passthrough_color_shader::use() {
 		if(empty()) return;
-		i_shader::use();
+		c_shader::use();
 
-		vertex_shader->set_constant(0, renderer->get_matrix().linear_array.data(), 4);
+		vertex_shader->set_constant(0, backend::renderer->get_matrix().linear_array.data(), 4);
 	}
 }

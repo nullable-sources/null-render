@@ -6,13 +6,13 @@
 #include <shaders/compiled-objects/sdf/sdf.h>
 #include <shaders/compiled-objects/passthrough/passthrough.h>
 
-namespace null::render::backend::opengl3::shaders {
-	class c_sdf : public backend::shaders::i_sdf, public i_shader {
+namespace null::render::opengl3 {
+	class c_sdf_shader : public backend::i_sdf_shader, public c_shader {
 	public:
-		wrapper::c_uniform<float> aa{ }, outline_thickness{ };
-		wrapper::c_uniform<vec4_t<float>> outline_start{ }, outline_end{ };
+		c_uniform<float> aa{ }, outline_thickness{ };
+		c_uniform<vec4_t<float>> outline_start{ }, outline_end{ };
 
-		wrapper::c_uniform<matrix4x4_t> matrix{ };
+		c_uniform<matrix4x4_t> matrix{ };
 
 	public:
 		void on_create() override;
@@ -21,9 +21,6 @@ namespace null::render::backend::opengl3::shaders {
 		void use() override;
 
 	public:
-		void set_aa(float _aa) override { aa.value() = _aa; }
-		void set_outline_thickness(float thickness) override { outline_thickness.value() = thickness; }
-		void set_outline_start(const color_t<int>& color) override { outline_start.value() = color.cast<float>(); }
-		void set_outline_end(const color_t<int>& color) override { outline_end.value() = color.cast<float>(); }
+		void set_constants(const constants_t& constants) override;
 	};
 }

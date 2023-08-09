@@ -1,14 +1,14 @@
 #pragma once
 #include <wrapper/shaders/shader.h>
 
-namespace null::render::backend::directx11::wrapper {
-	class c_pixel_shader : public i_shader {
+namespace null::render::directx11 {
+	class c_vertex_shader : public i_compiled_shader {
 	public:
-		ID3D11PixelShader* shader{ };
+		ID3D11VertexShader* shader{ };
 
 	public:
 		void create(const std::vector<std::uint8_t>& source) override {
-			shared.device->CreatePixelShader(source.data(), source.size(), nullptr, &shader);
+			shared.device->CreateVertexShader(source.data(), source.size(), nullptr, &shader);
 		}
 
 		void destroy() override {
@@ -18,11 +18,11 @@ namespace null::render::backend::directx11::wrapper {
 		}
 
 		void set() override {
-			shared.context->PSSetShader(shader, nullptr, 0);
+			shared.context->VSSetShader(shader, nullptr, 0);
 		}
 
 		void set_constant_buffer(ID3D11Buffer* buffer, int slot) override {
-			shared.context->PSSetConstantBuffers(slot, 1, &buffer);
+			shared.context->VSSetConstantBuffers(slot, 1, &buffer);
 		}
 
 	public:

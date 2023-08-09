@@ -33,7 +33,7 @@ namespace null::render::backend {
 
         setup_state();
 
-        shaders::passthrough_color->use();
+        passthrough_color_shader->use();
 
         if(render::shared::msaa_quality != 0) {
             msaa_buffer->set();

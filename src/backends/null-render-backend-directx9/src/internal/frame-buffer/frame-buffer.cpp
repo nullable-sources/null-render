@@ -15,12 +15,12 @@
 *  Если кто-то решит пофиксить это говно – флаг в руки и дай бог здоровья, лично я в ближайшее время рот ебал тратить нервы и время на эту поеботу.
 */
 
-namespace null::render::backend::directx9 {
+namespace null::render::directx9 {
     void c_frame_buffer::on_create() {
         if(!empty()) return;
 
         //@note: creating texture for render target
-        if(type == e_frame_buffer_type::postprocessing) {
+        if(type == backend::e_frame_buffer_type::postprocessing) {
             IDirect3DSurface9* main_surface{ };
             shared.device->GetRenderTarget(0, &main_surface);
 
@@ -32,9 +32,9 @@ namespace null::render::backend::directx9 {
                 return;
             }
 
-			if(flags & e_frame_buffer_flags::msaa ) {
+			if(flags & backend::e_frame_buffer_flags::msaa ) {
                 D3DMULTISAMPLE_TYPE multisample_type{ D3DMULTISAMPLE_NONE };
-                if(flags & e_frame_buffer_flags::msaa && shared::msaa_quality != 1) {
+                if(flags & backend::e_frame_buffer_flags::msaa && shared::msaa_quality != 1) {
                     multisample_type = (D3DMULTISAMPLE_TYPE)shared::msaa_quality;
                 }
 

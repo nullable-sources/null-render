@@ -1,8 +1,8 @@
 #pragma once
 #include <backend/shaders/shader.h>
 
-namespace null::render::backend::directx9::wrapper {
-	class i_shader : public backend::shaders::i_compiled_object {
+namespace null::render::directx9 {
+	class i_compiled_shader : public backend::i_compiled_shader_object {
 	public:
 		virtual void compile(const byte* source) = 0;
 		virtual void destroy() = 0;

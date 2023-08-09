@@ -1,11 +1,24 @@
 #include <shaders/linear-gradient/linear-gradient.h>
 
-namespace null::render::backend::directx11::shaders {
-	void c_linear_gradient::use() {
+namespace null::render::directx11 {
+	void c_linear_gradient_shader::use() {
 		if(empty()) return;
-		i_shader::use();
+		c_shader::use();
 
-		compiled_objects::passthrough.set_constant({ renderer->get_matrix() });
-		compiled_objects::linear_gradient.set_constant(constant);
+		passthrough_shader_object.set_constant({ backend::renderer->get_matrix() });
+	}
+
+	void c_linear_gradient_shader::set_constants(const constants_t& constants) {
+		c_linear_gradient_shader_object::constant_buffer_t constant_buffer{ };
+
+		for (auto [color, stop, pair] : std::views::zip(constant_buffer.colors, constant_buffer.stops, constants.stops)) {
+			color = pair.first;
+			stop.x = pair.second;
+		}
+
+		constant_buffer.stops_count = constants.stops.size();
+		constant_buffer.angle = constants.angle;
+
+		linear_gradient_shader_object.set_constant(constant_buffer);
 	}
 }

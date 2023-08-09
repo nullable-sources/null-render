@@ -2,7 +2,7 @@
 #include <wrapper/pixel/pixel.h>
 #include <backend/shaders/shader.h>
 
-namespace null::render::backend::directx9::shaders::compiled_objects {
+namespace null::render::directx9 {
     namespace sources {
         static const std::vector<byte>& passthrough_color() {
             #include <shaders/compiled-objects/passthrough-color/compiled/passthrough-color.h>
@@ -11,11 +11,11 @@ namespace null::render::backend::directx9::shaders::compiled_objects {
         }
     }
 
-    class c_passthrough_color : public wrapper::c_pixel_shader {
+    class c_passthrough_color_shader_object : public c_pixel_shader {
     public:
         void on_create() override {
             if(!empty()) return;
             compile(sources::passthrough_color().data());
         }
-    } inline passthrough_color{ };
+    } inline passthrough_color_shader_object{ };
 }

@@ -22,12 +22,12 @@ namespace null::render {
 		auto&& set_layer(this auto&& self, e_pen_layer layer) { self.layer = layer; return self; }
 		
 	public:
-		std::unique_ptr<commands::i_command> around_convex_shape(const std::unique_ptr<commands::c_geometry>& command) const;
-		std::unique_ptr<commands::i_command> around_stroke(const std::unique_ptr<commands::c_geometry>& command, const std::vector<backend::index_t>& outward_order, const std::vector<backend::index_t>& inward_order, bool closed) const;
+		std::unique_ptr<i_command> around_convex_shape(const std::unique_ptr<c_geometry_command>& command) const;
+		std::unique_ptr<i_command> around_stroke(const std::unique_ptr<c_geometry_command>& command, const std::vector<backend::index_t>& outward_order, const std::vector<backend::index_t>& inward_order, bool closed) const;
 
 	private:
-		void around_order(std::unique_ptr<commands::c_geometry>& pen_command, const std::unique_ptr<commands::c_geometry>& command, const std::vector<backend::index_t>& order, math::e_rotation rotation, backend::index_t first_vertex_offset = { }) const;
+		void around_order(std::unique_ptr<c_geometry_command>& pen_command, const std::unique_ptr<c_geometry_command>& command, const std::vector<backend::index_t>& order, math::e_rotation rotation, backend::index_t first_vertex_offset = { }) const;
 
-		void make_geometry(std::unique_ptr<commands::c_geometry>& pen_command, const std::unique_ptr<commands::c_geometry>& command, backend::index_t previous, backend::index_t current, backend::index_t next, math::e_rotation rotation, bool is_last, backend::index_t first_vertex_offset) const;
+		void make_geometry(std::unique_ptr<c_geometry_command>& pen_command, const std::unique_ptr<c_geometry_command>& command, backend::index_t previous, backend::index_t current, backend::index_t next, math::e_rotation rotation, bool is_last, backend::index_t first_vertex_offset) const;
 	};
 }

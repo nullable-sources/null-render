@@ -1,8 +1,8 @@
 #pragma once
 #include <backend/renderer/renderer.h>
 
-namespace null::render::backend::opengl3 {
-	class c_renderer : public i_renderer {
+namespace null::render::opengl3 {
+	class c_renderer : public backend::i_renderer {
 	public:
 		struct {
 			std::uint32_t draw_fbo{ }, read_fbo{ }, rbo{ };

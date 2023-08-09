@@ -1,9 +1,8 @@
-#include <wrapper/fields/fields.h>
 #include <internal/mesh/mesh.h>
 
 #include <shaders/compiled-objects/passthrough/passthrough.h>
 
-namespace null::render::backend::opengl3 {
+namespace null::render::opengl3 {
     void c_mesh::on_create() {
         if(vao != 0) return;
 
@@ -12,12 +11,12 @@ namespace null::render::backend::opengl3 {
         opengl::gen_buffers(1, &ibo);
         opengl::bind_vertex_array(vao);
 
-        wrapper::c_program program{ };
+        c_program program{ };
         program.create();
 
-        program.attach_shader(&shaders::compiled_objects::passthrough);
+        program.attach_shader(&passthrough_shader_object);
         program.link();
-        program.detach_shader(&shaders::compiled_objects::passthrough);
+        program.detach_shader(&passthrough_shader_object);
 
         position.get_location(&program, "position");
         uv.get_location(&program, "uv");
@@ -38,14 +37,14 @@ namespace null::render::backend::opengl3 {
         opengl::bind_vertex_array(vao);
 
         opengl::bind_buffer(opengl::e_array_buffer, vbo);
-        opengl::buffer_data(opengl::e_array_buffer, geometry_buffer.vertex_buffer.size() * sizeof(vertex_t), (const void*)geometry_buffer.vertex_buffer.data(), opengl::e_static_draw);
+        opengl::buffer_data(opengl::e_array_buffer, geometry_buffer.vertex_buffer.size() * sizeof(backend::vertex_t), (const void*)geometry_buffer.vertex_buffer.data(), opengl::e_static_draw);
         
         position.set();
         uv.set();
         color.set();
 
         opengl::bind_buffer(opengl::e_element_array_buffer, ibo);
-        opengl::buffer_data(opengl::e_element_array_buffer, geometry_buffer.index_buffer.size() * sizeof(index_t), (const void*)geometry_buffer.index_buffer.data(), opengl::e_static_draw);
+        opengl::buffer_data(opengl::e_element_array_buffer, geometry_buffer.index_buffer.size() * sizeof(backend::index_t), (const void*)geometry_buffer.index_buffer.data(), opengl::e_static_draw);
 
         opengl::bind_vertex_array(0);
     }

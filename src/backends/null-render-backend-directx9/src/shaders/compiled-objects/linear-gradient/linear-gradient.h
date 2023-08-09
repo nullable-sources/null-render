@@ -2,7 +2,7 @@
 #include <wrapper/pixel/pixel.h>
 #include <backend/shaders/shader.h>
 
-namespace null::render::backend::directx9::shaders::compiled_objects {
+namespace null::render::directx9 {
     namespace sources {
         static const std::vector<byte>& linear_gradient() {
 #include <shaders/compiled-objects/linear-gradient/compiled/linear-gradient.h>
@@ -11,11 +11,11 @@ namespace null::render::backend::directx9::shaders::compiled_objects {
         }
     }
 
-    class c_linear_gradient : public wrapper::c_pixel_shader {
+    class c_linear_gradient_shader_object : public c_pixel_shader {
     public:
         void on_create() override {
             if(!empty()) return;
             compile(sources::linear_gradient().data());
         }
-    } inline linear_gradient{ };
+    } inline linear_gradient_shader_object{ };
 }

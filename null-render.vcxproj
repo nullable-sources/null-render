@@ -23,11 +23,8 @@
     <ClCompile Include="src\font\font.cpp" />
     <ClCompile Include="src\font\loaders\freetype\freetype.cpp" />
     <ClCompile Include="src\font\loaders\truetype\truetype.cpp" />
-    <ClCompile Include="src\graphic\commands\clip-command\clip-command.cpp" />
     <ClCompile Include="src\graphic\commands\geometry-command\geometry-command.cpp" />
-    <ClCompile Include="src\graphic\commands\matrix-command\matrix-command.cpp" />
-    <ClCompile Include="src\graphic\commands\setup-state-command\setup-state-command.cpp" />
-    <ClCompile Include="src\graphic\commands\texture-command\texture-command.cpp" />
+    <ClCompile Include="src\graphic\commands\renderer-commands\renderer-commands.cpp" />
     <ClCompile Include="src\graphic\draw-list\brushes\sdf-text-brush\sdf-text-brush.cpp" />
     <ClCompile Include="src\graphic\draw-list\brushes\text-brush\text-brush.cpp" />
     <ClCompile Include="src\graphic\draw-list\draw-list.cpp" />
@@ -61,12 +58,9 @@
     <ClInclude Include="src\font\loaders\freetype\freetype.h" />
     <ClInclude Include="src\font\loaders\loader.h" />
     <ClInclude Include="src\font\loaders\truetype\truetype.h" />
-    <ClInclude Include="src\graphic\commands\clip-command\clip-command.h" />
     <ClInclude Include="src\graphic\commands\commands.h" />
     <ClInclude Include="src\graphic\commands\geometry-command\geometry-command.h" />
-    <ClInclude Include="src\graphic\commands\matrix-command\matrix-command.h" />
-    <ClInclude Include="src\graphic\commands\setup-state-command\setup-state-command.h" />
-    <ClInclude Include="src\graphic\commands\texture-command\texture-command.h" />
+    <ClInclude Include="src\graphic\commands\renderer-commands\renderer-commands.h" />
     <ClInclude Include="src\graphic\draw-list\brushes\brush.h" />
     <ClInclude Include="src\graphic\draw-list\brushes\sdf-text-brush\sdf-text-brush.h" />
     <ClInclude Include="src\graphic\draw-list\brushes\text-brush\text-brush.h" />

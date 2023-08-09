@@ -2,8 +2,8 @@
 #include <renderer/renderer.h>
 #include <wrapper/shader/shader.h>
 
-namespace null::render::backend::directx9::wrapper {
-	class c_vertex_shader : public i_shader {
+namespace null::render::directx9 {
+	class c_vertex_shader : public i_compiled_shader {
 	public:
 		IDirect3DVertexShader9* shader{ };
 

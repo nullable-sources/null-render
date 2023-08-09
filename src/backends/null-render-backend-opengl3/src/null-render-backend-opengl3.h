@@ -17,18 +17,18 @@
 #include <shaders/linear-gradient/linear-gradient.h>
 #include <shaders/sdf/sdf.h>
 
-namespace null::render::backend::opengl3 {
-	class c_factory : public i_factory {
+namespace null::render::opengl3 {
+	class c_factory : public backend::i_factory {
 	public:
-		std::unique_ptr<i_renderer> instance_renderer() override { return std::make_unique<c_renderer>(); }
+		std::unique_ptr<backend::i_renderer> instance_renderer() override { return std::make_unique<c_renderer>(); }
 		std::unique_ptr<backend::c_mesh> instance_mesh() override { return std::make_unique<c_mesh>(); }
-		std::unique_ptr<i_frame_buffer> instance_frame_buffer(const vec2_t<int>& size, e_frame_buffer_type type, e_frame_buffer_flags flags) override { return std::make_unique<c_frame_buffer>(size, type, flags); }
+		std::unique_ptr<backend::i_frame_buffer> instance_frame_buffer(const vec2_t<int>& size, backend::e_frame_buffer_type type, backend::e_frame_buffer_flags flags) override { return std::make_unique<c_frame_buffer>(size, type, flags); }
 
-		std::unique_ptr<backend::shaders::i_passthrough_color> instance_passthrough_color_shader() override { return std::make_unique<shaders::c_passthrough_color>(); }
-		std::unique_ptr<backend::shaders::i_passthrough_texture> instance_passthrough_texture_shader() override { return std::make_unique<shaders::c_passthrough_texture>(); }
-		std::unique_ptr<backend::shaders::i_quad_gradient> instance_quad_gradient_shader() override { return std::make_unique<shaders::c_quad_gradient>(); }
-		std::unique_ptr<backend::shaders::i_linear_gradient> instance_linear_gradient_shader() override { return std::make_unique<shaders::c_linear_gradient>(); }
-		std::unique_ptr<backend::shaders::i_sdf> instance_sdf_shader() override { return std::make_unique<shaders::c_sdf>(); }
+		std::unique_ptr<backend::i_passthrough_color_shader> instance_passthrough_color_shader() override { return std::make_unique<c_passthrough_color_shader>(); }
+		std::unique_ptr<backend::i_passthrough_texture_shader> instance_passthrough_texture_shader() override { return std::make_unique<c_passthrough_texture_shader>(); }
+		std::unique_ptr<backend::i_quad_gradient_shader> instance_quad_gradient_shader() override { return std::make_unique<c_quad_gradient_shader>(); }
+		std::unique_ptr<backend::i_linear_gradient_shader> instance_linear_gradient_shader() override { return std::make_unique<c_linear_gradient_shader>(); }
+		std::unique_ptr<backend::i_sdf_shader> instance_sdf_shader() override { return std::make_unique<c_sdf_shader>(); }
 	};
 
 #ifdef null_renderer_use_glfw
@@ -55,7 +55,7 @@ namespace null::render::backend::opengl3 {
 
 			wnd_handle = glfwGetWin32Window(glfw_window);
 
-			factory = std::make_unique<c_factory>();
+			backend::factory = std::make_unique<c_factory>();
 
 			render::initialize(*this);
 			

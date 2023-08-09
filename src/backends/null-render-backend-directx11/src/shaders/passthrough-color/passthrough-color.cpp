@@ -1,10 +1,10 @@
 #include <shaders/passthrough-color/passthrough-color.h>
 
-namespace null::render::backend::directx11::shaders {
-	void c_passthrough_color::use() {
+namespace null::render::directx11 {
+	void c_passthrough_color_shader::use() {
 		if(empty()) return;
-		i_shader::use();
+		c_shader::use();
 
-		compiled_objects::passthrough.set_constant({ renderer->get_matrix() });
+		passthrough_shader_object.set_constant({ backend::renderer->get_matrix() });
 	}
 }

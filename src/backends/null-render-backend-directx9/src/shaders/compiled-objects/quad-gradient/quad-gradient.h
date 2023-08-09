@@ -2,7 +2,7 @@
 #include <wrapper/pixel/pixel.h>
 #include <backend/shaders/shader.h>
 
-namespace null::render::backend::directx9::shaders::compiled_objects {
+namespace null::render::directx9 {
     namespace sources {
         static const std::vector<byte>& quad_gradient() {
             #include <shaders/compiled-objects/quad-gradient/compiled/quad-gradient.h>
@@ -11,11 +11,11 @@ namespace null::render::backend::directx9::shaders::compiled_objects {
         }
     }
 
-    class c_quad_gradient : public wrapper::c_pixel_shader {
+    class c_quad_gradient_shader_object : public c_pixel_shader {
     public:
         void on_create() override {
             if(!empty()) return;
             compile(sources::quad_gradient().data());
         }
-    } inline quad_gradient{ };
+    } inline quad_gradient_shader_object{ };
 }

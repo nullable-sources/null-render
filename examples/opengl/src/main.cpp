@@ -4,7 +4,7 @@
 #include <null-render-backend-opengl3.h>
 #include <null-render.h>
 
-null::render::backend::opengl3::c_window window{ };
+null::render::opengl3::c_window window{ };
 utils::c_cumulative_time_measurement frame_counter{ 60 };
 
 void draw_example(const std::string_view& name, const null::render::brush_t& brush, const float& y, const null::render::pen_t& pen) {
@@ -48,7 +48,7 @@ void draw_example(const std::string_view& name, const null::render::brush_t& bru
 }
 
 void main_loop() {
-	null::render::filters::quad_gradient_t quad_gradient_filter{ };
+	null::render::quad_gradient_filter_t quad_gradient_filter{ };
 	quad_gradient_filter
 		.set_top_left_color({ 255, 255, 255 })
 		.set_top_right_color({ 255, 100, 0 })

@@ -1,6 +1,6 @@
 #include <wrapper/pixel/pixel.h>
 
-namespace null::render::backend::directx9::wrapper {
+namespace null::render::directx9 {
 	void c_pixel_shader::compile(const byte* source) {
 		if(auto result{ shared.device->CreatePixelShader((const DWORD*)source, &shader) }; FAILED(result))
 			utils::logger(utils::e_log_type::warning, "cant create pixel shader, return code {}.", result);

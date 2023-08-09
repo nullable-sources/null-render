@@ -37,15 +37,6 @@
     <Filter Include="src\internal\mesh">
       <UniqueIdentifier>{f83f074c-4bb0-4c11-a868-3770f6b2a6e0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\wrapper\shader">
-      <UniqueIdentifier>{7a320df5-1b53-478e-a9a5-cd5b1cdcc3bb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\wrapper\program">
-      <UniqueIdentifier>{078b6144-301d-4467-a73c-b0b1f5dfbdd9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\wrapper\fields">
-      <UniqueIdentifier>{6937bc07-2f6e-449a-88cc-a582ec9fd054}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\shaders\compiled-objects">
       <UniqueIdentifier>{3b0398e2-854e-4455-8512-fc8a229e4c8c}</UniqueIdentifier>
     </Filter>
@@ -99,15 +90,6 @@
     <ClCompile Include="src\renderer\renderer.cpp">
       <Filter>src\renderer</Filter>
     </ClCompile>
-    <ClCompile Include="src\wrapper\shader\shader.cpp">
-      <Filter>src\wrapper\shader</Filter>
-    </ClCompile>
-    <ClCompile Include="src\wrapper\fields\fields.cpp">
-      <Filter>src\wrapper\fields</Filter>
-    </ClCompile>
-    <ClCompile Include="src\wrapper\program\program.cpp">
-      <Filter>src\wrapper\program</Filter>
-    </ClCompile>
     <ClCompile Include="src\shaders\passthrough-color\passthrough-color.cpp">
       <Filter>src\shaders\passthrough-color</Filter>
     </ClCompile>
@@ -149,15 +131,6 @@
     <ClInclude Include="src\wrapper\opengl3.h">
       <Filter>src\wrapper</Filter>
     </ClInclude>
-    <ClInclude Include="src\wrapper\shader\shader.h">
-      <Filter>src\wrapper\shader</Filter>
-    </ClInclude>
-    <ClInclude Include="src\wrapper\fields\fields.h">
-      <Filter>src\wrapper\fields</Filter>
-    </ClInclude>
-    <ClInclude Include="src\wrapper\program\program.h">
-      <Filter>src\wrapper\program</Filter>
-    </ClInclude>
     <ClInclude Include="src\shaders\passthrough-color\passthrough-color.h">
       <Filter>src\shaders\passthrough-color</Filter>
     </ClInclude>
@@ -184,6 +157,15 @@
     </ClInclude>
     <ClInclude Include="src\shaders\compiled-objects\linear-gradient\linear-gradient.h">
       <Filter>src\shaders\compiled-objects\linear-gradient</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wrapper\shader.h">
+      <Filter>src\wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wrapper\program.h">
+      <Filter>src\wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wrapper\fields.h">
+      <Filter>src\wrapper</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

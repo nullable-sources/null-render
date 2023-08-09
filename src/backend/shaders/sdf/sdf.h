@@ -1,12 +1,15 @@
 #pragma once
 #include <backend/shaders/shader.h>
 
-namespace null::render::backend::shaders {
-	class i_sdf : public virtual i_shader {
+namespace null::render::backend {
+	class i_sdf_shader : public virtual i_shader {
 	public:
-		virtual void set_aa(float aa) = 0;
-		virtual void set_outline_thickness(float thickness) = 0;
-		virtual void set_outline_start(const color_t<int>& color) = 0;
-		virtual void set_outline_end(const color_t<int>& color) = 0;
-	}; inline std::unique_ptr<i_sdf> sdf{ };
+		struct constants_t {
+			color_t<int> outline_start{ }, outline_end{ };
+			float aa{ }, outline_thickness{ };
+		};
+
+	public:
+		virtual void set_constants(const constants_t& constants) = 0;
+	}; inline std::unique_ptr<i_sdf_shader> sdf_shader{ };
 }

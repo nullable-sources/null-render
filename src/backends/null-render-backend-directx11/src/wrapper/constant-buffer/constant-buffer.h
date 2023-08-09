@@ -1,7 +1,7 @@
 #pragma once
 #include <renderer/renderer.h>
 
-namespace null::render::backend::directx11::wrapper {
+namespace null::render::directx11 {
 	template <typename struct_t>
 	class c_constant_buffer {
 	public:
@@ -27,7 +27,8 @@ namespace null::render::backend::directx11::wrapper {
 				utils::logger(utils::e_log_type::warning, "cant map constant buffer, return code {}.", result);
 				return;
 			}
-			*(struct_t*)subresource.pData = constant;
+			auto c = (struct_t*)subresource.pData;
+			*c = constant;
 			shared.context->Unmap(buffer, 0);
 		}
 

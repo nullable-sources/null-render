@@ -1,15 +1,15 @@
 #pragma once
+#include <backend/shaders/sdf/sdf.h>
 #include <graphic/filters/texture/texture.h>
 
-namespace null::render::filters {
-	class c_sdf : public c_texture {
+namespace null::render {
+	class c_sdf_filter : public c_texture_filter {
 	public:
-		float size{ }, thickness{ };
-		color_t<int> outline_start{ }, outline_end{ };
+		backend::i_sdf_shader::constants_t constants{ };
 
 	public:
-		c_sdf(std::unique_ptr<commands::i_command>&& _child_command, void* _texture, float _thickness, float _size, const color_t<int>& _outline_start, const color_t<int>& _outline_end)
-			: c_texture{ std::move(_child_command), _texture }, thickness{ _thickness }, size{ _size }, outline_start{ _outline_start }, outline_end{ _outline_end } { }
+		c_sdf_filter(std::unique_ptr<i_command>&& _child_command, void* _texture, float outline_thickness, float _size, const color_t<int>& outline_start, const color_t<int>& outline_end)
+			: c_texture_filter{ std::move(_child_command), _texture }, constants{ outline_start, outline_end, _size, outline_thickness } { }
 
 	public:
 		virtual void handle() override;

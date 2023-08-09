@@ -1,7 +1,7 @@
 #pragma once
-#include <wrapper/program/program.h>
+#include <wrapper/program.h>
 
-namespace null::render::backend::opengl3::wrapper {
+namespace null::render::opengl3 {
 	class i_field {
 	public:
 		int location{ };

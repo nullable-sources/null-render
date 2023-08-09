@@ -40,18 +40,6 @@
     <Filter Include="src\graphic\commands\geometry-command">
       <UniqueIdentifier>{9f208b51-7095-4022-a67c-1be385c31ddf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\graphic\commands\clip-command">
-      <UniqueIdentifier>{e64acf16-d8b5-44ad-a353-9d93dbedef93}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\commands\texture-command">
-      <UniqueIdentifier>{bb60c0b8-9a58-49c1-99a8-41e290e5ddda}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\commands\matrix-command">
-      <UniqueIdentifier>{ff1cd921-4e46-4ae1-af84-98b929399108}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\commands\setup-state-command">
-      <UniqueIdentifier>{8bf788b1-78db-4efa-bd63-9150747d8aab}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\backend">
       <UniqueIdentifier>{a8cb3f04-36e6-4fa7-bc91-69471392379b}</UniqueIdentifier>
     </Filter>
@@ -97,6 +85,9 @@
     <Filter Include="src\graphic\draw-list\brushes\sdf-text-brush">
       <UniqueIdentifier>{adef3365-a84c-4412-abc6-206a8836e514}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\graphic\commands\renderer-commands">
+      <UniqueIdentifier>{94cfcd2a-1754-4aa0-bc12-0a06417e3a06}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\font\font.cpp">
@@ -123,18 +114,6 @@
     <ClCompile Include="src\graphic\draw-list\draw-list.cpp">
       <Filter>src\graphic\draw-list</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphic\commands\texture-command\texture-command.cpp">
-      <Filter>src\graphic\commands\texture-command</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphic\commands\clip-command\clip-command.cpp">
-      <Filter>src\graphic\commands\clip-command</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphic\commands\setup-state-command\setup-state-command.cpp">
-      <Filter>src\graphic\commands\setup-state-command</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphic\commands\matrix-command\matrix-command.cpp">
-      <Filter>src\graphic\commands\matrix-command</Filter>
-    </ClCompile>
     <ClCompile Include="src\backend\renderer\renderer.cpp">
       <Filter>src\backend\renderer</Filter>
     </ClCompile>
@@ -158,6 +137,9 @@
     </ClCompile>
     <ClCompile Include="src\graphic\draw-list\brushes\text-brush\text-brush.cpp">
       <Filter>src\graphic\draw-list\brushes\text-brush</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\commands\renderer-commands\renderer-commands.cpp">
+      <Filter>src\graphic\commands\renderer-commands</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -199,18 +181,6 @@
     </ClInclude>
     <ClInclude Include="src\graphic\draw-list\brushes\brush.h">
       <Filter>src\graphic\draw-list\brushes</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\commands\texture-command\texture-command.h">
-      <Filter>src\graphic\commands\texture-command</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\commands\clip-command\clip-command.h">
-      <Filter>src\graphic\commands\clip-command</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\commands\setup-state-command\setup-state-command.h">
-      <Filter>src\graphic\commands\setup-state-command</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\commands\matrix-command\matrix-command.h">
-      <Filter>src\graphic\commands\matrix-command</Filter>
     </ClInclude>
     <ClInclude Include="src\backend\backend.h">
       <Filter>src\backend</Filter>
@@ -262,6 +232,9 @@
     </ClInclude>
     <ClInclude Include="src\graphic\draw-list\brushes\text-brush\text-brush.h">
       <Filter>src\graphic\draw-list\brushes\text-brush</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\commands\renderer-commands\renderer-commands.h">
+      <Filter>src\graphic\commands\renderer-commands</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

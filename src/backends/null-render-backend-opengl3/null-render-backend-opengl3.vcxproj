@@ -27,9 +27,6 @@
     <ClCompile Include="src\shaders\passthrough-texture\passthrough-texture.cpp" />
     <ClCompile Include="src\shaders\quad-gradient\quad-gradient.cpp" />
     <ClCompile Include="src\shaders\sdf\sdf.cpp" />
-    <ClCompile Include="src\wrapper\fields\fields.cpp" />
-    <ClCompile Include="src\wrapper\program\program.cpp" />
-    <ClCompile Include="src\wrapper\shader\shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\internal\frame-buffer\frame-buffer.h" />
@@ -48,10 +45,10 @@
     <ClInclude Include="src\shaders\quad-gradient\quad-gradient.h" />
     <ClInclude Include="src\shaders\sdf\sdf.h" />
     <ClInclude Include="src\shaders\shader.h" />
-    <ClInclude Include="src\wrapper\fields\fields.h" />
+    <ClInclude Include="src\wrapper\fields.h" />
     <ClInclude Include="src\wrapper\opengl3.h" />
-    <ClInclude Include="src\wrapper\program\program.h" />
-    <ClInclude Include="src\wrapper\shader\shader.h" />
+    <ClInclude Include="src\wrapper\program.h" />
+    <ClInclude Include="src\wrapper\shader.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\null-render.vcxproj">

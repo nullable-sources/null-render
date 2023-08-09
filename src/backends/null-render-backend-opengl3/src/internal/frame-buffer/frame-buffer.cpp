@@ -3,17 +3,17 @@
 
 #include <internal/frame-buffer/frame-buffer.h>
 
-namespace null::render::backend::opengl3 {
+namespace null::render::opengl3 {
 	void c_frame_buffer::on_create() {
 		if(!empty()) return;
 
-		if(type == e_frame_buffer_type::postprocessing) {
+		if(type == backend::e_frame_buffer_type::postprocessing) {
 			opengl::gen_framebuffers(1, &fbo);
 			opengl::bind_framebuffer(opengl::e_framebuffer, fbo);
 
-			if(flags & e_frame_buffer_flags::msaa) {
+			if(flags & backend::e_frame_buffer_flags::msaa) {
 				//@note: depth buffer
-				if(flags & e_frame_buffer_flags::depth_buffer) {
+				if(flags & backend::e_frame_buffer_flags::depth_buffer) {
 					opengl::gen_renderbuffers(1, &depth_buffer);
 					opengl::bind_renderbuffer(opengl::e_renderbuffer, depth_buffer);
 					opengl::renderbuffer_storage_multisample(opengl::e_renderbuffer, shared::msaa_quality, opengl::e_depth_component, size.x, size.y);
@@ -27,7 +27,7 @@ namespace null::render::backend::opengl3 {
 				opengl::framebuffer_renderbuffer(opengl::e_framebuffer, opengl::e_color_attachment0, opengl::e_renderbuffer, fbo_attachment);
 			} else {
 				//@note: depth buffer
-				if(flags & e_frame_buffer_flags::depth_buffer) {
+				if(flags & backend::e_frame_buffer_flags::depth_buffer) {
 					opengl::gen_textures(1, &depth_buffer);
 					opengl::bind_texture(opengl::e_texture_2d, depth_buffer);
 
@@ -61,9 +61,9 @@ namespace null::render::backend::opengl3 {
 	}
 
 	void c_frame_buffer::on_destroy() {
-		if(flags & e_frame_buffer_flags::depth_buffer) opengl::delete_renderbuffers(1, &depth_buffer);
+		if(flags & backend::e_frame_buffer_flags::depth_buffer) opengl::delete_renderbuffers(1, &depth_buffer);
 
-		if(flags & e_frame_buffer_flags::msaa) opengl::delete_renderbuffers(1, &fbo_attachment);
+		if(flags & backend::e_frame_buffer_flags::msaa) opengl::delete_renderbuffers(1, &fbo_attachment);
 		else opengl::delete_textures(1, &fbo_attachment);
 		opengl::delete_framebuffers(1, &fbo);
 	}

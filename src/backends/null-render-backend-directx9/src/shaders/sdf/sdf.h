@@ -5,22 +5,15 @@
 #include <shaders/compiled-objects/sdf/sdf.h>
 #include <shaders/compiled-objects/passthrough/passthrough.h>
 
-namespace null::render::backend::directx9::shaders {
-	class c_sdf : public backend::shaders::i_sdf, public i_shader {
+namespace null::render::directx9 {
+	class c_sdf_shader : public backend::i_sdf_shader, public c_shader {
 	public:
-		float aa{ }, outline_thickness{ };
-		color_t<float> outline_start{ }, outline_end{ };
-
-	public:
-		c_sdf() : i_shader{ &compiled_objects::sdf, &compiled_objects::passthrough } { }
+		c_sdf_shader() : c_shader{ &sdf_shader_object, &passthrough_shader_object } { }
 
 	public:
 		void use() override;
 
 	public:
-		void set_aa(float _aa) override { aa = _aa; }
-		void set_outline_thickness(float thickness) override { outline_thickness = thickness; }
-		void set_outline_start(const color_t<int>& color) override { outline_start = color.cast<float>(); }
-		void set_outline_end(const color_t<int>& color) override { outline_end = color.cast<float>(); }
+		void set_constants(const constants_t& constants) override;
 	};
 }

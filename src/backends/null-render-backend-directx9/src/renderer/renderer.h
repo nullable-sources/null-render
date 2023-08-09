@@ -4,13 +4,13 @@
 
 #include <backend/renderer/renderer.h>
 
-namespace null::render::backend::directx9 {
+namespace null::render::directx9 {
 	struct shared_t {
 	public:
 		IDirect3DDevice9* device{ };
 	} inline shared{ };
 
-	class c_renderer : public i_renderer {
+	class c_renderer : public backend::i_renderer {
 	public:
 		IDirect3DStateBlock9* state_block{ };
 

@@ -1,15 +1,17 @@
 #include <shaders/sdf/sdf.h>
 
-namespace null::render::backend::directx9::shaders {
-	void c_sdf::use() {
+namespace null::render::directx9 {
+	void c_sdf_shader::use() {
 		if(empty()) return;
-		i_shader::use();
+		c_shader::use();
 
-		vertex_shader->set_constant(0, renderer->get_matrix().linear_array.data(), 4);
+		vertex_shader->set_constant(0, backend::renderer->get_matrix().linear_array.data(), 4);
+	}
 
-		pixel_shader->set_constant(0, &aa);
-		pixel_shader->set_constant(1, &outline_thickness);
-		pixel_shader->set_constant(2, outline_start.channels.data());
-		pixel_shader->set_constant(3, outline_end.channels.data());
+	void c_sdf_shader::set_constants(const constants_t& constants) {
+		pixel_shader->set_constant(0, &constants.aa);
+		pixel_shader->set_constant(1, &constants.outline_thickness);
+		pixel_shader->set_constant(2, constants.outline_start.cast<float>().channels.data());
+		pixel_shader->set_constant(3, constants.outline_end.cast<float>().channels.data());
 	}
 }

@@ -1,13 +1,13 @@
 #pragma once
 #include <backend/internal/mesh.h>
-#include <wrapper/fields/fields.h>
+#include <wrapper/fields.h>
 
-namespace null::render::backend::opengl3 {
+namespace null::render::opengl3 {
 	class c_mesh : public backend::c_mesh {
 	public:
-		wrapper::c_vertex_element<vertex_t, 2, opengl::e_float, false, offsetof(vertex_t, pos)> position{ };
-		wrapper::c_vertex_element<vertex_t, 4, opengl::e_int, false, offsetof(vertex_t, color)> color{ };
-		wrapper::c_vertex_element<vertex_t, 2, opengl::e_float, false, offsetof(vertex_t, uv)> uv{ };
+		c_vertex_element<backend::vertex_t, 2, opengl::e_float, false, offsetof(backend::vertex_t, pos)> position{ };
+		c_vertex_element<backend::vertex_t, 4, opengl::e_int, false, offsetof(backend::vertex_t, color)> color{ };
+		c_vertex_element<backend::vertex_t, 2, opengl::e_float, false, offsetof(backend::vertex_t, uv)> uv{ };
 		std::uint32_t vao{ }, vbo{ }, ibo{ };
 
 	public:

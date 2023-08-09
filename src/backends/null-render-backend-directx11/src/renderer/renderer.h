@@ -4,7 +4,7 @@
 
 #include <backend/renderer/renderer.h>
 
-namespace null::render::backend::directx11 {
+namespace null::render::directx11 {
 	struct shared_t {
 	public:
 		ID3D11Device* device{ };
@@ -12,7 +12,7 @@ namespace null::render::backend::directx11 {
 		IDXGISwapChain* swap_chain{ };
 	} inline shared{ };
 
-	class c_renderer : public i_renderer {
+	class c_renderer : public backend::i_renderer {
 	public:
 		struct {
 			UINT scissor_rects_count{ }, viewports_count{ };

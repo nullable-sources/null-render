@@ -1,9 +1,15 @@
 #pragma once
 #include <backend/shaders/shader.h>
 
-namespace null::render::backend::shaders {
-	class i_quad_gradient : public virtual i_shader {
+namespace null::render::backend {
+	class i_quad_gradient_shader : public virtual i_shader {
 	public:
-		virtual void set_colors(const std::array<color_t<int>, 4>& colors) = 0;
-	}; inline std::unique_ptr<i_quad_gradient> quad_gradient{ };
+		struct constants_t {
+		public:
+			std::array<color_t<int>, 4> colors{ };
+		};
+
+	public:
+		virtual void set_constants(const constants_t& constants) = 0;
+	}; inline std::unique_ptr<i_quad_gradient_shader> quad_gradient_shader{ };
 }

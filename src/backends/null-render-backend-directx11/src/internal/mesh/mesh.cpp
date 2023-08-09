@@ -1,16 +1,16 @@
 #include <internal/mesh/mesh.h>
 #include <shaders/compiled-objects/passthrough/passthrough.h>
 
-namespace null::render::backend::directx11 {
+namespace null::render::directx11 {
     void c_mesh::on_create() {
         if(input_layout) return;
 
         D3D11_INPUT_ELEMENT_DESC desc[] = {
-            { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT,      0, (UINT)offsetof(vertex_t, pos), D3D11_INPUT_PER_VERTEX_DATA, 0 },
-            { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,      0, (UINT)offsetof(vertex_t, uv),  D3D11_INPUT_PER_VERTEX_DATA, 0 },
-            { "COLOR",    0, DXGI_FORMAT_R32G32B32A32_UINT, 0, (UINT)offsetof(vertex_t, color), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT,      0, (UINT)offsetof(backend::vertex_t, pos), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,      0, (UINT)offsetof(backend::vertex_t, uv),  D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "COLOR",    0, DXGI_FORMAT_R32G32B32A32_UINT, 0, (UINT)offsetof(backend::vertex_t, color), D3D11_INPUT_PER_VERTEX_DATA, 0 },
         };
-        if(auto result{ shared.device->CreateInputLayout(desc, 3, shaders::compiled_objects::sources::passthrough().data(), shaders::compiled_objects::sources::passthrough().size(), &input_layout) }; FAILED(result))
+        if(auto result{ shared.device->CreateInputLayout(desc, 3, sources::passthrough().data(), sources::passthrough().size(), &input_layout) }; FAILED(result))
             utils::logger(utils::e_log_type::error, "cant create vertex input layout, return code {}.", result);
     }
 
@@ -26,7 +26,7 @@ namespace null::render::backend::directx11 {
             if(vertex_buffer) { vertex_buffer->Release(); vertex_buffer = nullptr; }
             vertex_buffer_size = geometry_buffer.vertex_buffer.size() + 5000;
             D3D11_BUFFER_DESC buffer_desc{
-                .ByteWidth{ vertex_buffer_size * sizeof(vertex_t) },
+                .ByteWidth{ vertex_buffer_size * sizeof(backend::vertex_t) },
                 .Usage{ D3D11_USAGE_DYNAMIC },
                 .BindFlags{ D3D11_BIND_VERTEX_BUFFER },
                 .CPUAccessFlags{ D3D11_CPU_ACCESS_WRITE },
@@ -42,7 +42,7 @@ namespace null::render::backend::directx11 {
             if(index_buffer) { index_buffer->Release(); index_buffer = nullptr; }
             index_buffer_size = geometry_buffer.index_buffer.size() + 10000;
             D3D11_BUFFER_DESC buffer_desc{
-                .ByteWidth{ index_buffer_size * sizeof(index_t) },
+                .ByteWidth{ index_buffer_size * sizeof(backend::index_t) },
                 .Usage{ D3D11_USAGE_DYNAMIC },
                 .BindFlags{ D3D11_BIND_INDEX_BUFFER },
                 .CPUAccessFlags{ D3D11_CPU_ACCESS_WRITE },
@@ -65,15 +65,15 @@ namespace null::render::backend::directx11 {
             return;
         }
 
-        std::ranges::move(geometry_buffer.vertex_buffer, (vertex_t*)vertex_buffer_subresource.pData);
-        std::ranges::move(geometry_buffer.index_buffer, (index_t*)index_buffer_subresource.pData);
+        std::ranges::move(geometry_buffer.vertex_buffer, (backend::vertex_t*)vertex_buffer_subresource.pData);
+        std::ranges::move(geometry_buffer.index_buffer, (backend::index_t*)index_buffer_subresource.pData);
 
         shared.context->Unmap(vertex_buffer, 0);
         shared.context->Unmap(index_buffer, 0);
 	}
 
 	void c_mesh::set() {
-        std::uint32_t stride{ sizeof(vertex_t) };
+        std::uint32_t stride{ sizeof(backend::vertex_t) };
         std::uint32_t offset{ };
         shared.context->IASetInputLayout(input_layout);
         shared.context->IASetVertexBuffers(0, 1, &vertex_buffer, &stride, &offset);

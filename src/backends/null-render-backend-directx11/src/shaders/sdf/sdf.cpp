@@ -1,11 +1,14 @@
 #include <shaders/sdf/sdf.h>
 
-namespace null::render::backend::directx11::shaders {
-	void c_sdf::use() {
+namespace null::render::directx11 {
+	void c_sdf_shader::use() {
 		if(empty()) return;
-		i_shader::use();
+		c_shader::use();
 
-		compiled_objects::passthrough.set_constant({ renderer->get_matrix() });
-		compiled_objects::sdf.set_constant(constant);
+		passthrough_shader_object.set_constant({ backend::renderer->get_matrix() });
+	}
+
+	void c_sdf_shader::set_constants(const constants_t& constants) {
+		sdf_shader_object.set_constant(constants);
 	}
 }

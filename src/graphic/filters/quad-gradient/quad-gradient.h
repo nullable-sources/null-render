@@ -1,20 +1,21 @@
 #pragma once
+#include <backend/shaders/quad-gradient/quad-gradient.h>
 #include <graphic/filters/filters.h>
 
-namespace null::render::filters {
-	class c_quad_gradient : public i_filter {
+namespace null::render {
+	class c_quad_gradient_filter : public i_filter {
 	public:
-		std::array<color_t<int>, 4> colors{ };
+		backend::i_quad_gradient_shader::constants_t constants{ };
 
 	public:
-		c_quad_gradient(std::unique_ptr<commands::i_command>&& _child_command, const std::array<color_t<int>, 4>& _colors)
-			: i_filter{ std::move(_child_command) }, colors { _colors } { }
+		c_quad_gradient_filter(std::unique_ptr<i_command>&& _child_command, const std::array<color_t<int>, 4>& colors)
+			: i_filter{ std::move(_child_command) }, constants{ colors } { }
 
 	public:
 		virtual void handle() override;
 	};
 
-	struct quad_gradient_t : public i_filter_instancer {
+	struct quad_gradient_filter_t : public i_filter_instancer {
 	public:
 		std::array<color_t<int>, 4> colors{ };
 
@@ -26,9 +27,9 @@ namespace null::render::filters {
 		auto&& set_bottom_right_color(this auto&& self, const color_t<int>& color) { self.colors[3] = color; return self; }
 
 	public:
-		std::unique_ptr<i_filter> instance_filter(std::unique_ptr<commands::c_geometry>&& child_command) const override {
+		std::unique_ptr<i_filter> instance_filter(std::unique_ptr<c_geometry_command>&& child_command) const override {
 			child_command->set_default_uvs();
-			return std::make_unique<c_quad_gradient>(std::move(child_command), colors);
+			return std::make_unique<c_quad_gradient_filter>(std::move(child_command), colors);
 		}
 	};
 }

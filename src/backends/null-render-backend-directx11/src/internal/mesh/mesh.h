@@ -2,7 +2,7 @@
 #include <renderer/renderer.h>
 #include <backend/internal/mesh.h>
 
-namespace null::render::backend::directx11 {
+namespace null::render::directx11 {
 	class c_mesh : public backend::c_mesh {
 	public:
 		ID3D11InputLayout* input_layout{ };

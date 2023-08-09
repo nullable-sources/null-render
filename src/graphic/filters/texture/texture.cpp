@@ -3,14 +3,14 @@
 
 #include <graphic/filters/texture/texture.h>
 
-namespace null::render::filters {
-	void c_texture::handle() {
+namespace null::render {
+	void c_texture_filter::handle() {
 		backend::renderer->set_texture(texture);
-		backend::shaders::passthrough_texture->use();
+		backend::passthrough_texture_shader->use();
 
 		child_command->handle();
 
-		backend::shaders::passthrough_color->use();
+		backend::passthrough_color_shader->use();
 		backend::renderer->set_texture(nullptr);
 	}
 }

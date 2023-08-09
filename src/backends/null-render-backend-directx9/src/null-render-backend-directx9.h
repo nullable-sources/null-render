@@ -10,21 +10,21 @@
 #include <shaders/linear-gradient/linear-gradient.h>
 #include <shaders/sdf/sdf.h>
 
-namespace null::render::backend::directx9 {
-	class c_factory : public i_factory {
+namespace null::render::directx9 {
+	class c_factory : public backend::i_factory {
 	public:
 		c_factory(IDirect3DDevice9* device) { shared.device = device; }
 
 	public:
-		std::unique_ptr<i_renderer> instance_renderer() override { return std::make_unique<c_renderer>(); }
+		std::unique_ptr<backend::i_renderer> instance_renderer() override { return std::make_unique<c_renderer>(); }
 		std::unique_ptr<backend::c_mesh> instance_mesh() override { return std::make_unique<c_mesh>(); }
-		std::unique_ptr<i_frame_buffer> instance_frame_buffer(const vec2_t<int>& size, e_frame_buffer_type type, e_frame_buffer_flags flags) override { return std::make_unique<c_frame_buffer>(size, type, flags); }
+		std::unique_ptr<backend::i_frame_buffer> instance_frame_buffer(const vec2_t<int>& size, backend::e_frame_buffer_type type, backend::e_frame_buffer_flags flags) override { return std::make_unique<c_frame_buffer>(size, type, flags); }
 
-		std::unique_ptr<backend::shaders::i_passthrough_color> instance_passthrough_color_shader() override { return std::make_unique<shaders::c_passthrough_color>(); }
-		std::unique_ptr<backend::shaders::i_passthrough_texture> instance_passthrough_texture_shader() override { return std::make_unique<shaders::c_passthrough_texture>(); }
-		std::unique_ptr<backend::shaders::i_quad_gradient> instance_quad_gradient_shader() override { return std::make_unique<shaders::c_quad_gradient>(); }
-		std::unique_ptr<backend::shaders::i_linear_gradient> instance_linear_gradient_shader() override { return std::make_unique<shaders::c_linear_gradient>(); }
-		std::unique_ptr<backend::shaders::i_sdf> instance_sdf_shader() override { return std::make_unique<shaders::c_sdf>(); }
+		std::unique_ptr<backend::i_passthrough_color_shader> instance_passthrough_color_shader() override { return std::make_unique<c_passthrough_color_shader>(); }
+		std::unique_ptr<backend::i_passthrough_texture_shader> instance_passthrough_texture_shader() override { return std::make_unique<c_passthrough_texture_shader>(); }
+		std::unique_ptr<backend::i_quad_gradient_shader> instance_quad_gradient_shader() override { return std::make_unique<c_quad_gradient_shader>(); }
+		std::unique_ptr<backend::i_linear_gradient_shader> instance_linear_gradient_shader() override { return std::make_unique<c_linear_gradient_shader>(); }
+		std::unique_ptr<backend::i_sdf_shader> instance_sdf_shader() override { return std::make_unique<c_sdf_shader>(); }
 	};
 
 	class c_window : public utils::win::c_window {
@@ -48,7 +48,7 @@ namespace null::render::backend::directx9 {
 			if(auto result{ direct3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, wnd_handle, D3DCREATE_HARDWARE_VERTEXPROCESSING, &present_parameters, &device) }; FAILED(result))
 				utils::logger(utils::e_log_type::error, "CreateDevice failed, return code {}.", result);
 
-			factory = std::make_unique<c_factory>(device);
+			backend::factory = std::make_unique<c_factory>(device);
 			render::initialize(*this);
 			utils::win::c_window::on_create();
 		}
@@ -91,10 +91,10 @@ namespace null::render::backend::directx9 {
 		}
 
 		void reset_device() {
-			renderer->destroy_objects();
+			backend::renderer->destroy_objects();
 			if(auto result{ device->Reset(&present_parameters) }; FAILED(result))
 				utils::logger(utils::e_log_type::error, "device reset failed, return code {}.", result);
-			renderer->create_objects();
+			backend::renderer->create_objects();
 		}
 	};
 }

@@ -28,11 +28,11 @@ namespace null::render {
         backend::msaa_buffer = backend::factory->instance_frame_buffer(shared::viewport, backend::e_frame_buffer_type::postprocessing, backend::e_frame_buffer_flags::msaa);
         backend::rendering_buffer = backend::factory->instance_frame_buffer(shared::viewport, backend::e_frame_buffer_type::backbuffer, backend::e_frame_buffer_flags::none);
 
-        backend::shaders::passthrough_color = backend::factory->instance_passthrough_color_shader();
-        backend::shaders::passthrough_texture = backend::factory->instance_passthrough_texture_shader();
-        backend::shaders::quad_gradient = backend::factory->instance_quad_gradient_shader();
-        backend::shaders::linear_gradient = backend::factory->instance_linear_gradient_shader();
-        backend::shaders::sdf = backend::factory->instance_sdf_shader();
+        backend::passthrough_color_shader = backend::factory->instance_passthrough_color_shader();
+        backend::passthrough_texture_shader = backend::factory->instance_passthrough_texture_shader();
+        backend::quad_gradient_shader = backend::factory->instance_quad_gradient_shader();
+        backend::linear_gradient_shader = backend::factory->instance_linear_gradient_shader();
+        backend::sdf_shader = backend::factory->instance_sdf_shader();
     }
 
     void begin_frame(const utils::win::c_window& window) {

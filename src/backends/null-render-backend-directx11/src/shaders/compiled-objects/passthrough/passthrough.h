@@ -2,7 +2,7 @@
 #include <wrapper/shaders/vertex-shader/vertex-shader.h>
 #include <backend/shaders/shader.h>
 
-namespace null::render::backend::directx11::shaders::compiled_objects {
+namespace null::render::directx11 {
     namespace sources {
         static const std::vector<byte>& passthrough() {
             #include <shaders/compiled-objects/passthrough/compiled/passthrough.h>
@@ -11,10 +11,10 @@ namespace null::render::backend::directx11::shaders::compiled_objects {
         }
     }
 
-    class c_passthrough : public wrapper::c_vertex_shader {
+    class c_passthrough_shader_object : public c_vertex_shader {
     public:
         struct constant_buffer_t { matrix4x4_t matrix{ }; };
-        wrapper::c_constant_buffer<constant_buffer_t> constant_buffer{ };
+        c_constant_buffer<constant_buffer_t> constant_buffer{ };
 
     public:
         void set_constant(const constant_buffer_t& constant, int slot = 0) {
@@ -30,5 +30,5 @@ namespace null::render::backend::directx11::shaders::compiled_objects {
         }
 
         void on_destroy() override { destroy(); constant_buffer.destroy(); }
-    } inline passthrough{ };
+    } inline passthrough_shader_object{ };
 }

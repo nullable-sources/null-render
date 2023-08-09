@@ -1,9 +1,9 @@
 #pragma once
-#include <wrapper/shader/shader.h>
 #include <backend/shaders/shader.h>
+#include <wrapper/shader.h>
 
-namespace null::render::backend::opengl3::shaders::compiled_objects {
-    class c_passthrough_color : public wrapper::c_fragment_shader, public backend::shaders::i_compiled_object {
+namespace null::render::opengl3 {
+    class c_passthrough_color_shader_object : public c_fragment_shader {
     public:
         void on_create() override {
             if(!empty()) return;
@@ -15,5 +15,5 @@ namespace null::render::backend::opengl3::shaders::compiled_objects {
 
     public:
         bool empty() const override { return shader == 0; }
-    } inline passthrough_color{ };
+    } inline passthrough_color_shader_object{ };
 }

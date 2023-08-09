@@ -26,6 +26,6 @@ namespace null::render {
 		auto&& set_align(this auto&& self, e_text_align align) { self.align = align; return self; }
 
 	public:
-		virtual std::unique_ptr<commands::i_command> prepare_command(std::unique_ptr<commands::c_geometry>& command) const override;
+		virtual std::unique_ptr<i_command> prepare_command(std::unique_ptr<c_geometry_command>& command) const override;
 	};
 }

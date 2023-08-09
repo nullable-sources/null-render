@@ -2,8 +2,8 @@
 #include <renderer/renderer.h>
 #include <backend/internal/frame-buffer.h>
 
-namespace null::render::backend::directx11 {
-	class c_frame_buffer : public i_frame_buffer {
+namespace null::render::directx11 {
+	class c_frame_buffer : public backend::i_frame_buffer {
 	public: using i_frame_buffer::i_frame_buffer;
 		ID3D11RasterizerState* rasterizer_state{ };
 		ID3D11Texture2D* render_target_texture{ }, *depth_stencil_view_texture{ };

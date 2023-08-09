@@ -2,12 +2,12 @@
 
 #include <internal/frame-buffer/frame-buffer.h>
 
-namespace null::render::backend::directx11 {
+namespace null::render::directx11 {
 	void c_frame_buffer::on_create() {
         if(!empty()) return;
 
         //@note: creating texture for render target
-        if(type == e_frame_buffer_type::postprocessing) {
+        if(type == backend::e_frame_buffer_type::postprocessing) {
             D3D11_TEXTURE2D_DESC texture2d_desc{
                .Width{ (std::uint32_t)size.x },
                .Height{ (std::uint32_t)size.y },
@@ -15,7 +15,7 @@ namespace null::render::backend::directx11 {
                .ArraySize{ 1 },
                .Format{ DXGI_FORMAT_R8G8B8A8_UNORM },
                .SampleDesc{
-                   .Count{ flags & e_frame_buffer_flags::msaa ? render::shared::msaa_quality : 1 },
+                   .Count{ flags & backend::e_frame_buffer_flags::msaa ? render::shared::msaa_quality : 1 },
                    .Quality{ 0 }
                },
                .Usage{ D3D11_USAGE_DEFAULT },
@@ -123,7 +123,7 @@ namespace null::render::backend::directx11 {
         D3D11_TEXTURE2D_DESC desc{ };
         render_target_texture->GetDesc(&desc);
 
-        if(another_frame_buffer->flags & e_frame_buffer_flags::msaa) {
+        if(another_frame_buffer->flags & backend::e_frame_buffer_flags::msaa) {
             shared.context->ResolveSubresource(render_target_texture, 0, (ID3D11Resource*)another_frame_buffer->get_surface(), 0, desc.Format);
         } else {
             shared.context->CopyResource(render_target_texture, (ID3D11Resource*)another_frame_buffer->get_surface());

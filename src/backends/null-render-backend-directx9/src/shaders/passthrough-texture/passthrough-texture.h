@@ -5,10 +5,10 @@
 #include <shaders/compiled-objects/passthrough-texture/passthrough-texture.h>
 #include <shaders/compiled-objects/passthrough/passthrough.h>
 
-namespace null::render::backend::directx9::shaders {
-	class c_passthrough_texture : public backend::shaders::i_passthrough_texture, public i_shader {
+namespace null::render::directx9 {
+	class c_passthrough_texture_shader : public backend::i_passthrough_texture_shader, public c_shader {
 	public:
-		c_passthrough_texture() : i_shader{ &compiled_objects::passthrough_texture, &compiled_objects::passthrough } { }
+		c_passthrough_texture_shader() : c_shader{ &passthrough_texture_shader_object, &passthrough_shader_object } { }
 
 	public:
 		void use() override;

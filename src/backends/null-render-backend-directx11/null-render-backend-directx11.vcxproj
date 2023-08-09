@@ -54,9 +54,9 @@
     <ClInclude Include="src\shaders\sdf\sdf.h" />
     <ClInclude Include="src\shaders\shader.h" />
     <ClInclude Include="src\wrapper\constant-buffer\constant-buffer.h" />
-    <ClInclude Include="src\wrapper\shaders\pixel-shader\pixel-shader.h" />
+    <ClInclude Include="src\wrapper\shaders\pixel-shader.h" />
     <ClInclude Include="src\wrapper\shaders\shader.h" />
-    <ClInclude Include="src\wrapper\shaders\vertex-shader\vertex-shader.h" />
+    <ClInclude Include="src\wrapper\shaders\vertex-shader.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\shaders\compiled-objects\linear-gradient\hlsl\linear-gradient.hlsl">

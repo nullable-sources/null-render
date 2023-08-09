@@ -1,14 +1,14 @@
 #include <shaders/quad-gradient/quad-gradient.h>
 
-namespace null::render::backend::directx11::shaders {
-	void c_quad_gradient::use() {
+namespace null::render::directx11 {
+	void c_quad_gradient_shader::use() {
 		if(empty()) return;
-		i_shader::use();
+		c_shader::use();
 
-		compiled_objects::passthrough.set_constant({ renderer->get_matrix() });
+		passthrough_shader_object.set_constant({ backend::renderer->get_matrix() });
 	}
 
-	void c_quad_gradient::set_colors(const std::array<color_t<int>, 4>& colors) {
-		compiled_objects::quad_gradient.set_constant({ colors });
+	void c_quad_gradient_shader::set_constants(const constants_t& constants) {
+		quad_gradient_shader_object.set_constant(constants);
 	}
 }

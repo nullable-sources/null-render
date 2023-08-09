@@ -5,15 +5,15 @@
 #include <shaders/compiled-objects/quad-gradient/quad-gradient.h>
 #include <shaders/compiled-objects/passthrough/passthrough.h>
 
-namespace null::render::backend::directx11::shaders {
-	class c_quad_gradient : public backend::shaders::i_quad_gradient, public i_shader {
+namespace null::render::directx11 {
+	class c_quad_gradient_shader : public backend::i_quad_gradient_shader, public c_shader {
 	public:
-		c_quad_gradient() : i_shader{ &compiled_objects::quad_gradient, &compiled_objects::passthrough } { }
+		c_quad_gradient_shader() : c_shader{ &quad_gradient_shader_object, &passthrough_shader_object } { }
 
 	public:
 		void use() override;
 
 	public:
-		void set_colors(const std::array<color_t<int>, 4>& colors) override;
+		void set_constants(const constants_t& constants) override;
 	};
 }

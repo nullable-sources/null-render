@@ -1,7 +1,7 @@
 ﻿#include <iostream>
 #include <null-render-backend-directx11.h>
 #include <null-render.h>
-null::render::backend::directx11::c_window window{ };
+null::render::directx11::c_window window{ };
 utils::c_cumulative_time_measurement frame_counter{ 60 };
 
 void draw_example(const std::string_view& name, const null::render::brush_t& brush, const float& y, const null::render::pen_t& pen) {
@@ -45,7 +45,7 @@ void draw_example(const std::string_view& name, const null::render::brush_t& bru
 }
 
 void main_loop() {	
-	null::render::filters::quad_gradient_t quad_gradient_filter{ };
+	null::render::quad_gradient_filter_t quad_gradient_filter{ };
 	quad_gradient_filter
 		.set_top_left_color({ 255, 255, 255 })
 		.set_top_right_color({ 255, 100, 0 })
@@ -84,7 +84,7 @@ void main_loop() {
 }
 
 int main(HINSTANCE instance) {
-	window = null::render::backend::directx11::c_window{ instance };
+	window = null::render::directx11::c_window{ instance };
 
 	window.callbacks.at<utils::win::e_window_callbacks::on_create>().add([&] { frame_counter.begin(); });
 	window.callbacks.at<utils::win::e_window_callbacks::on_main_loop>().add([&] { frame_counter.update(); });

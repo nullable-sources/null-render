@@ -2,7 +2,7 @@
 #include <wrapper/shaders/pixel-shader/pixel-shader.h>
 #include <backend/shaders/shader.h>
 
-namespace null::render::backend::directx11::shaders::compiled_objects {
+namespace null::render::directx11 {
     namespace sources {
         static const std::vector<byte>& quad_gradient() {
             #include <shaders/compiled-objects/quad-gradient/compiled/quad-gradient.h>
@@ -11,13 +11,12 @@ namespace null::render::backend::directx11::shaders::compiled_objects {
         }
     }
 
-    class c_quad_gradient : public wrapper::c_pixel_shader {
+    class c_quad_gradient_shader_object : public c_pixel_shader {
     public:
-        struct constant_buffer_t { std::array<color_t<int>, 4> colors{ }; };
-        wrapper::c_constant_buffer<constant_buffer_t> constant_buffer{ };
+        c_constant_buffer<backend::i_quad_gradient_shader::constants_t> constant_buffer{ };
 
     public:
-        void set_constant(const constant_buffer_t& constant, int slot = 0) {
+        void set_constant(const backend::i_quad_gradient_shader::constants_t& constant, int slot = 0) {
             constant_buffer.edit_constant(constant);
             set_constant_buffer(constant_buffer.buffer, slot);
         }
@@ -30,5 +29,5 @@ namespace null::render::backend::directx11::shaders::compiled_objects {
         }
 
         void on_destroy() override { destroy(); constant_buffer.destroy(); }
-    } inline quad_gradient{ };
+    } inline quad_gradient_shader_object{ };
 }

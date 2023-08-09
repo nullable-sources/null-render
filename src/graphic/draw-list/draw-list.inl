@@ -6,7 +6,7 @@ namespace null::render {
 	void c_draw_list::add_text(std::basic_string_view<char_t> text, vec2_t<float> pos, const text_brush_t& text_brush) {
 		if(text_brush.color.a <= 0) return;
 
-		std::unique_ptr<commands::c_geometry> command{ std::make_unique<commands::c_geometry>() };
+		std::unique_ptr<c_geometry_command> command{ std::make_unique<c_geometry_command>() };
 
 		float new_line_pos{ pos.x };
 		if(text_brush.align != e_text_align::none) {

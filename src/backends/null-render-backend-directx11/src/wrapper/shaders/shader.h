@@ -2,8 +2,8 @@
 #include <wrapper/constant-buffer/constant-buffer.h>
 #include <backend/shaders/shader.h>
 
-namespace null::render::backend::directx11::wrapper {
-	class i_shader : public backend::shaders::i_compiled_object {
+namespace null::render::directx11 {
+	class i_compiled_shader : public backend::i_compiled_shader_object {
 	public:
 		virtual void create(const std::vector<std::uint8_t>& source) = 0;
 		virtual void destroy() = 0;

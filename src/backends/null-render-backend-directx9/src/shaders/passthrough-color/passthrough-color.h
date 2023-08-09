@@ -5,10 +5,10 @@
 #include <shaders/compiled-objects/passthrough-color/passthrough-color.h>
 #include <shaders/compiled-objects/passthrough/passthrough.h>
 
-namespace null::render::backend::directx9::shaders {
-	class c_passthrough_color : public backend::shaders::i_passthrough_color, public i_shader {
+namespace null::render::directx9 {
+	class c_passthrough_color_shader : public backend::i_passthrough_color_shader, public c_shader {
 	public:
-		c_passthrough_color() : i_shader{ &compiled_objects::passthrough_color, &compiled_objects::passthrough } { }
+		c_passthrough_color_shader() : c_shader{ &passthrough_color_shader_object, &passthrough_shader_object } { }
 
 	public:
 		void use() override;

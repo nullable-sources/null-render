@@ -2,7 +2,7 @@
 #include <wrapper/vertex/vertex.h>
 #include <backend/shaders/shader.h>
 
-namespace null::render::backend::directx9::shaders::compiled_objects {
+namespace null::render::directx9 {
     namespace sources {
         static const std::vector<byte>& passthrough() {
             #include <shaders/compiled-objects/passthrough/compiled/passthrough.h>
@@ -11,11 +11,11 @@ namespace null::render::backend::directx9::shaders::compiled_objects {
         }
     }
 
-    class c_passthrough : public wrapper::c_vertex_shader {
+    class c_passthrough_shader_object : public c_vertex_shader {
     public:
         void on_create() override {
             if(!empty()) return;
             compile(sources::passthrough().data());
         }
-    } inline passthrough{ };
+    } inline passthrough_shader_object{ };
 }

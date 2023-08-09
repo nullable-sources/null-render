@@ -5,26 +5,15 @@
 #include <shaders/compiled-objects/linear-gradient/linear-gradient.h>
 #include <shaders/compiled-objects/passthrough/passthrough.h>
 
-namespace null::render::backend::directx11::shaders {
-	class c_linear_gradient : public backend::shaders::i_linear_gradient, public i_shader {
+namespace null::render::directx11 {
+	class c_linear_gradient_shader : public backend::i_linear_gradient_shader, public c_shader {
 	public:
-		compiled_objects::c_linear_gradient::constant_buffer_t constant{ };
-
-	public:
-		c_linear_gradient() : i_shader{ &compiled_objects::linear_gradient, &compiled_objects::passthrough } { }
+		c_linear_gradient_shader() : c_shader{ &linear_gradient_shader_object, &passthrough_shader_object } { }
 
 	public:
 		void use() override;
 
 	public:
-		virtual void set_angle(radians_t angle) override { constant.angle = angle; }
-		virtual void set_stops(const std::vector<std::pair<color_t<int>, float>>& stops) {
-			for(const int& i : std::views::iota(0u, stops.size())) {
-				constant.colors[i] = stops[i].first;
-				constant.stops[i].x = stops[i].second;
-			}
-
-			constant.stops_count = stops.size();
-		}
+		void set_constants(const constants_t& constants) override;
 	};
 }

@@ -1,9 +1,10 @@
 #pragma once
 #include <null-sdk.h>
 #include <wrapper/opengl3.h>
+#include <backend/shaders/shader.h>
 
-namespace null::render::backend::opengl3::wrapper {
-	class i_shader {
+namespace null::render::opengl3 {
+	class i_compiled_shader : public backend::i_compiled_shader_object {
 	public:
 		std::uint32_t shader{ };
 
@@ -40,12 +41,12 @@ namespace null::render::backend::opengl3::wrapper {
 		virtual operator bool() const { return !empty(); }
 	};
 
-	class c_vertex_shader : public i_shader {
+	class c_vertex_shader : public i_compiled_shader {
 	public:
 		virtual void create() override { shader = opengl::create_shader(opengl::e_vertex_shader); }
 	};
 
-	class c_fragment_shader : public i_shader {
+	class c_fragment_shader : public i_compiled_shader {
 	public:
 		virtual void create() override { shader = opengl::create_shader(opengl::e_fragment_shader); }
 	};

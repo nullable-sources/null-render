@@ -5,7 +5,7 @@
 #include <backend/shaders/shader.h>
 #include <backend/internal/mesh.h>
 
-namespace null::render::backend::opengl3 {
+namespace null::render::opengl3 {
     matrix4x4_t c_renderer::get_projection_matrix() const {
         return matrix4x4_t::projection_ortho(0.f, shared::viewport.x, shared::viewport.y, 0.f, -10000.f, 10000.f);
     }
@@ -64,9 +64,9 @@ namespace null::render::backend::opengl3 {
 
         set_clip({ { 0 }, shared::viewport });
         set_matrix(get_projection_matrix());
-        object_event_dispatcher.setup_state();
+        backend::object_event_dispatcher.setup_state();
 
-        mesh->set();
+        backend::mesh->set();
     }
 
     void c_renderer::save_state() {

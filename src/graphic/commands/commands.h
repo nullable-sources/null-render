@@ -1,7 +1,7 @@
 #pragma once
 #include <null-sdk.h>
 
-namespace null::render::commands {
+namespace null::render {
 	class i_command {
 	public:
 		i_command() { }

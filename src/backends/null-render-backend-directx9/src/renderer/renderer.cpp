@@ -4,7 +4,7 @@
 #include <backend/shaders/shader.h>
 #include <backend/internal/mesh.h>
 
-namespace null::render::backend::directx9 {
+namespace null::render::directx9 {
 	matrix4x4_t c_renderer::get_projection_matrix() const {
 		return matrix4x4_t::projection_ortho(0.5f, render::shared::viewport.x + 0.5f, render::shared::viewport.y + 0.5f, 0.5f, -10000.f, 10000.f);
 	}
@@ -88,9 +88,9 @@ namespace null::render::backend::directx9 {
 
 		set_clip({ { 0 }, render::shared::viewport });
 		set_matrix(get_projection_matrix());
-		object_event_dispatcher.setup_state();
+		backend::object_event_dispatcher.setup_state();
 
-		mesh->set();
+		backend::mesh->set();
 	}
 
 	void c_renderer::save_state() {

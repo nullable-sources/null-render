@@ -6,7 +6,7 @@
 namespace null::render {
 	void c_draw_list::add_poly_line(const std::vector<vec2_t<float>>& points, const stroke_t& stroke, const brush_t& brush, const pen_t& pen) {
 		if(points.size() < 2) return;
-		std::unique_ptr<commands::c_geometry> command{ std::make_unique<commands::c_geometry>() };
+		std::unique_ptr<c_geometry_command> command{ std::make_unique<c_geometry_command>() };
 
 		const bool have_pen{ stroke.line_join != e_line_join::none && pen.brush };
 		std::vector<backend::index_t> outward_order{ }, inward_order{ };
@@ -97,7 +97,7 @@ namespace null::render {
 			}
 		}
 
-		std::unique_ptr<commands::i_command> pen_command{ };
+		std::unique_ptr<i_command> pen_command{ };
 		if(have_pen) pen_command = std::move(pen.around_stroke(command, outward_order, inward_order, stroke.line_cap == e_line_cap::joint));
 		if(have_pen && pen.layer == e_pen_layer::background) add_command(std::move(pen_command));
 		add_command(brush.prepare_command(command));
@@ -106,7 +106,7 @@ namespace null::render {
 
 	void c_draw_list::add_convex_shape(const std::vector<vec2_t<float>>& points, const brush_t& brush, const pen_t& pen) {
 		if(points.size() < 3) return;
-		std::unique_ptr<commands::c_geometry> command{ std::make_unique<commands::c_geometry>() };
+		std::unique_ptr<c_geometry_command> command{ std::make_unique<c_geometry_command>() };
 
 		command->index_count += (points.size() - 2) * 3;
 		for(const int& i : std::views::iota(2u, points.size()))
@@ -117,7 +117,7 @@ namespace null::render {
 			backend::mesh->geometry_buffer.add_vertex({ current_point, { }, brush.color });
 		}
 
-		std::unique_ptr<commands::i_command> pen_command{ };
+		std::unique_ptr<i_command> pen_command{ };
 		if(pen.brush) pen_command = std::move(pen.around_convex_shape(command));
 		if(pen.brush && pen.layer == e_pen_layer::background) add_command(std::move(pen_command));
 		add_command(brush.prepare_command(command));

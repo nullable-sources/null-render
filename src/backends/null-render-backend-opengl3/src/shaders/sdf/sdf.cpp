@@ -1,18 +1,18 @@
 #include <shaders/sdf/sdf.h>
 
-namespace null::render::backend::opengl3::shaders {
-	void c_sdf::on_create() {
+namespace null::render::opengl3 {
+	void c_sdf_shader::on_create() {
 		if(!empty()) return;
-		program = std::make_unique<wrapper::c_program>();
+		program = std::make_unique<c_program>();
 		program->create();
 
-		program->attach_shader(&compiled_objects::sdf);
-		program->attach_shader(&compiled_objects::passthrough);
+		program->attach_shader(&sdf_shader_object);
+		program->attach_shader(&passthrough_shader_object);
 
 		program->link();
 
-		program->detach_shader(&compiled_objects::sdf);
-		program->detach_shader(&compiled_objects::passthrough);
+		program->detach_shader(&sdf_shader_object);
+		program->detach_shader(&passthrough_shader_object);
 
 		matrix.get_location(program.get(), "matrix");
 
@@ -22,19 +22,26 @@ namespace null::render::backend::opengl3::shaders {
 		outline_end.get_location(program.get(), "outline_end");
 	}
 
-	void c_sdf::on_destroy() {
+	void c_sdf_shader::on_destroy() {
 		program->destroy();
 	}
 
-	void c_sdf::use() {
+	void c_sdf_shader::use() {
 		if(empty()) return;
 		program->use();
 
-		matrix.set(renderer->get_matrix());
+		matrix.set(backend::renderer->get_matrix());
 
 		aa.set();
 		outline_thickness.set();
 		outline_start.set();
 		outline_end.set();
+	}
+
+	void c_sdf_shader::set_constants(const constants_t& constants) {
+		aa.value() = constants.aa;
+		outline_thickness.value() = constants.outline_thickness;
+		outline_start.value() = constants.outline_start.cast<float>();
+		outline_end.value() = constants.outline_end.cast<float>();
 	}
 }

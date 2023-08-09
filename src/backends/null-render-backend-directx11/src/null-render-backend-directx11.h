@@ -10,23 +10,23 @@
 #include <shaders/linear-gradient/linear-gradient.h>
 #include <shaders/sdf/sdf.h>
 
-namespace null::render::backend::directx11 {
-	class c_factory : public i_factory {
+namespace null::render::directx11 {
+	class c_factory : public backend::i_factory {
 	public:
 		c_factory(ID3D11Device* device, ID3D11DeviceContext* context, IDXGISwapChain* swap_chain) {
 			shared.device = device; shared.context = context, shared.swap_chain = swap_chain;
 		}
 
 	public:
-		std::unique_ptr<i_renderer> instance_renderer() override { return std::make_unique<c_renderer>(); }
+		std::unique_ptr<backend::i_renderer> instance_renderer() override { return std::make_unique<c_renderer>(); }
 		std::unique_ptr<backend::c_mesh> instance_mesh() override { return std::make_unique<c_mesh>(); }
-		std::unique_ptr<i_frame_buffer> instance_frame_buffer(const vec2_t<int>& size, e_frame_buffer_type type, e_frame_buffer_flags flags) override { return std::make_unique<c_frame_buffer>(size, type, flags); }
+		std::unique_ptr<backend::i_frame_buffer> instance_frame_buffer(const vec2_t<int>& size, backend::e_frame_buffer_type type, backend::e_frame_buffer_flags flags) override { return std::make_unique<c_frame_buffer>(size, type, flags); }
 
-		std::unique_ptr<backend::shaders::i_passthrough_color> instance_passthrough_color_shader() override { return std::make_unique<shaders::c_passthrough_color>(); }
-		std::unique_ptr<backend::shaders::i_passthrough_texture> instance_passthrough_texture_shader() override { return std::make_unique<shaders::c_passthrough_texture>(); }
-		std::unique_ptr<backend::shaders::i_quad_gradient> instance_quad_gradient_shader() override { return std::make_unique<shaders::c_quad_gradient>(); }
-		std::unique_ptr<backend::shaders::i_linear_gradient> instance_linear_gradient_shader() override { return std::make_unique<shaders::c_linear_gradient>(); }
-		std::unique_ptr<backend::shaders::i_sdf> instance_sdf_shader() override { return std::make_unique<shaders::c_sdf>(); }
+		std::unique_ptr<backend::i_passthrough_color_shader> instance_passthrough_color_shader() override { return std::make_unique<c_passthrough_color_shader>(); }
+		std::unique_ptr<backend::i_passthrough_texture_shader> instance_passthrough_texture_shader() override { return std::make_unique<c_passthrough_texture_shader>(); }
+		std::unique_ptr<backend::i_quad_gradient_shader> instance_quad_gradient_shader() override { return std::make_unique<c_quad_gradient_shader>(); }
+		std::unique_ptr<backend::i_linear_gradient_shader> instance_linear_gradient_shader() override { return std::make_unique<c_linear_gradient_shader>(); }
+		std::unique_ptr<backend::i_sdf_shader> instance_sdf_shader() override { return std::make_unique<c_sdf_shader>(); }
 	};
 
 	class c_window : public utils::win::c_window {
@@ -71,7 +71,7 @@ namespace null::render::backend::directx11 {
 				utils::logger(utils::e_log_type::error, "D3D11CreateDeviceAndSwapChain failed, return code {}.", result);
 			}
 
-			factory = std::make_unique<c_factory>(device, context, swap_chain);
+			backend::factory = std::make_unique<c_factory>(device, context, swap_chain);
 			render::initialize(*this);
 
 			utils::win::c_window::on_create();
@@ -96,14 +96,14 @@ namespace null::render::backend::directx11 {
 			switch(msg) {
 				case WM_SIZE: {
 					if(device && w_param != SIZE_MINIMIZED) {
-						msaa_buffer->on_destroy();
-						rendering_buffer->on_destroy();
+						backend::msaa_buffer->on_destroy();
+						backend::rendering_buffer->on_destroy();
 
 						render::shared::viewport = vec2_t{ (std::uint32_t)LOWORD(l_param), (std::uint32_t)HIWORD(l_param) };
 						swap_chain->ResizeBuffers(0, (std::uint32_t)render::shared::viewport.x, (std::uint32_t)render::shared::viewport.y, DXGI_FORMAT_UNKNOWN, 0);
 
-						msaa_buffer->on_create();
-						rendering_buffer->on_create();
+						backend::msaa_buffer->on_create();
+						backend::rendering_buffer->on_create();
 					}
 				} return { 0 };
 			}

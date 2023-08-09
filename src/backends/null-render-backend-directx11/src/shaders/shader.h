@@ -5,14 +5,14 @@
 #include <wrapper/shaders/pixel-shader/pixel-shader.h>
 #include <wrapper/shaders/vertex-shader/vertex-shader.h>
 
-namespace null::render::backend::directx11::shaders {
-	class i_shader : public virtual backend::shaders::i_shader {
+namespace null::render::directx11 {
+	class c_shader : public virtual backend::i_shader {
 	public:
-		wrapper::c_pixel_shader* pixel_shader{ };
-		wrapper::c_vertex_shader* vertex_shader{ };
+		c_pixel_shader* pixel_shader{ };
+		c_vertex_shader* vertex_shader{ };
 
 	public:
-		i_shader(wrapper::c_pixel_shader* _pixel_shader, wrapper::c_vertex_shader* _vertex_shader) : pixel_shader{ _pixel_shader }, vertex_shader{ _vertex_shader } { }
+		c_shader(c_pixel_shader* _pixel_shader, c_vertex_shader* _vertex_shader) : pixel_shader{ _pixel_shader }, vertex_shader{ _vertex_shader } { }
 
 	public:
 		virtual void on_create() override { }

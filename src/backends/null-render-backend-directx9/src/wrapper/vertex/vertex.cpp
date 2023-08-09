@@ -1,6 +1,6 @@
 #include <wrapper/vertex/vertex.h>
 
-namespace null::render::backend::directx9::wrapper {
+namespace null::render::directx9 {
 	void c_vertex_shader::compile(const byte* source) {
 		if(auto result{ shared.device->CreateVertexShader((const DWORD*)source, &shader) }; FAILED(result))
 			utils::logger(utils::e_log_type::warning, "cant create vertex shader, return code {}.", result);

@@ -1,14 +1,16 @@
 #include <shaders/quad-gradient/quad-gradient.h>
 
-namespace null::render::backend::directx9::shaders {
-	void c_quad_gradient::use() {
+namespace null::render::directx9 {
+	void c_quad_gradient_shader::use() {
 		if(empty()) return;
-		i_shader::use();
+		c_shader::use();
 
-		vertex_shader->set_constant(0, renderer->get_matrix().linear_array.data(), 4);
-		pixel_shader->set_constant(0, colors[0].channels.data(), 1);
-		pixel_shader->set_constant(1, colors[1].channels.data(), 1);
-		pixel_shader->set_constant(2, colors[2].channels.data(), 1);
-		pixel_shader->set_constant(3, colors[3].channels.data(), 1);
+		vertex_shader->set_constant(0, backend::renderer->get_matrix().linear_array.data(), 4);
+	}
+
+	void c_quad_gradient_shader::set_constants(const constants_t& constants) {
+		for(auto [i, color] : constants.colors | std::views::enumerate) {
+			pixel_shader->set_constant(i, color.cast<float>().channels.data(), 1);
+		}
 	}
 }
