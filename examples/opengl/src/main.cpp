@@ -13,6 +13,7 @@ void draw_example(const std::string_view& name, const null::render::brush_t& bru
 
 	null::render::stroke_t stroke{ };
 	stroke.set_cap(null::render::e_line_cap::joint);
+	stroke.set_origin(0.f);
 
 	null::render::sdf_text_brush_t text_brush{ };
 	text_brush

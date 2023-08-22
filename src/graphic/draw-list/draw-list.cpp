@@ -12,7 +12,11 @@ namespace null::render {
 		std::vector<backend::index_t> outward_order{ }, inward_order{ };
 
 		const float half_thickness{ stroke.thickness / 2.f };
-		for(const stroke_t::segment_t& segment : stroke.build_segments(points)) {
+		const float outward_thickness{ stroke.thickness * stroke.origin };
+		const float inward_thickness{ stroke.thickness * (1.f - stroke.origin) };
+
+		const std::vector<stroke_t::segment_t> segments{ stroke.build_segments(points) };
+		for(const stroke_t::segment_t& segment : segments) {
 			if(have_pen) {
 				outward_order.push_back(command->vertex_count + segment.begin_edge->outward_begin);
 				if(segment.begin_edge->outward_begin != segment.begin_edge->outward_end)
@@ -36,29 +40,34 @@ namespace null::render {
 				const vec2_t<float>& cap_direction{ segment.is_first ? -segment.begin_edge->to_next_direction : segment.begin_edge->from_previous_direction };
 				
 				const vec2_t<float>& direction{ segment.is_first ? segment.begin_edge->to_next_direction : segment.begin_edge->from_previous_direction };
-				const vec2_t<float> outward_delta{ math::invert_vector_axis(direction, math::e_rotation::ccw) };
-				const vec2_t<float> inward_delta{ math::invert_vector_axis(direction, math::e_rotation::cw) };
+				const vec2_t<float> outward_delta{ math::invert_vector_axis(direction, math::e_rotation::ccw) * outward_thickness };
+				const vec2_t<float> inward_delta{ math::invert_vector_axis(direction, math::e_rotation::cw) * inward_thickness };
 
-				const vec2_t<float> outward_vertex{ *segment.begin_edge->point + outward_delta * half_thickness + cap_direction * (stroke.line_cap == e_line_cap::square ? half_thickness : 0.f) };
-				const vec2_t<float> inward_vertex{ *segment.begin_edge->point + inward_delta * half_thickness + cap_direction * (stroke.line_cap == e_line_cap::square ? half_thickness : 0.f) };
+				const vec2_t<float> outward_vertex{ *segment.begin_edge->point + outward_delta + cap_direction * (stroke.line_cap == e_line_cap::square ? outward_thickness : 0.f) };
+				const vec2_t<float> inward_vertex{ *segment.begin_edge->point + inward_delta + cap_direction * (stroke.line_cap == e_line_cap::square ? outward_thickness : 0.f) };
 
 				command->vertex_count += 2;
 				backend::mesh->geometry_buffer
 					.add_vertex({ outward_vertex, { }, brush.color })
 					.add_vertex({ inward_vertex, { }, brush.color });
 			} else {
-				vec2_t<float> distance{ segment.begin_edge->normal * std::min(half_thickness / segment.begin_edge->miter_angle.cos(), (double)segment.begin_edge->max_miter_dist) };
 				if(stroke.line_join == e_line_join::bevel) {
+					vec2_t<float> distance{ segment.begin_edge->get_mitter_offset(half_thickness) };
 					const math::e_rotation rotation{ segment.begin_edge->inversed ? math::e_rotation::cw : math::e_rotation::ccw };
 					if(!segment.begin_edge->inversed)
 						distance *= -1.f;
 
+					vec2_t<float> origin_offset{  };
+					if(stroke.origin != 0.5f)
+						origin_offset = segment.begin_edge->get_mitter_offset(inward_thickness > outward_thickness ? (outward_thickness - half_thickness) : (half_thickness - inward_thickness));
+
 					command->index_count += 3;
 					backend::mesh->geometry_buffer.add_index(command->vertex_count).add_index(command->vertex_count + 1).add_index(command->vertex_count + 2);
 
-					const vec2_t<float> miter_vertex{ *segment.begin_edge->point + distance };
-					const vec2_t<float> to_previous_vertex{ *segment.begin_edge->point + math::invert_vector_axis(segment.begin_edge->from_previous_direction, rotation) * half_thickness };
-					const vec2_t<float> to_next_vertex{ *segment.begin_edge->point + math::invert_vector_axis(segment.begin_edge->to_next_direction, rotation) * half_thickness };
+					const vec2_t<float> point{ *segment.begin_edge->point + origin_offset };
+					const vec2_t<float> miter_vertex{ point + distance };
+					const vec2_t<float> to_previous_vertex{ point + math::invert_vector_axis(segment.begin_edge->from_previous_direction, rotation) * half_thickness };
+					const vec2_t<float> to_next_vertex{ point + math::invert_vector_axis(segment.begin_edge->to_next_direction, rotation) * half_thickness };
 
 					command->vertex_count += 3;
 					backend::mesh->geometry_buffer
@@ -66,18 +75,16 @@ namespace null::render {
 						.add_vertex({ to_previous_vertex, { }, brush.color })
 						.add_vertex({ to_next_vertex, { }, brush.color });
 				} else if(stroke.line_join == e_line_join::miter) {
-					const vec2_t<float> outward_vertex{ *segment.begin_edge->point + distance };
-					const vec2_t<float> inward_vertex{ *segment.begin_edge->point - distance };
+					const vec2_t<float> outward_vertex{ *segment.begin_edge->point + segment.begin_edge->get_mitter_offset(outward_thickness) };
+					const vec2_t<float> inward_vertex{ *segment.begin_edge->point - segment.begin_edge->get_mitter_offset(inward_thickness) };
 
 					command->vertex_count += 2;
 					backend::mesh->geometry_buffer
 						.add_vertex({ outward_vertex, { }, brush.color })
 						.add_vertex({ inward_vertex, { }, brush.color });
 				} else {
-					vec2_t<float> direction{ segment.begin_edge->to_next_direction * half_thickness };
-
-					const vec2_t<float> outward_vertex{ *segment.begin_edge->point + math::invert_vector_axis(segment.begin_edge->to_next_direction, math::e_rotation::ccw) * half_thickness };
-					const vec2_t<float> inward_vertex{ *segment.begin_edge->point + math::invert_vector_axis(segment.begin_edge->to_next_direction, math::e_rotation::cw) * half_thickness };
+					const vec2_t<float> outward_vertex{ *segment.begin_edge->point + math::invert_vector_axis(segment.begin_edge->to_next_direction, math::e_rotation::ccw) * outward_thickness };
+					const vec2_t<float> inward_vertex{ *segment.begin_edge->point + math::invert_vector_axis(segment.begin_edge->to_next_direction, math::e_rotation::cw) * inward_thickness };
 
 					command->vertex_count += 2;
 					backend::mesh->geometry_buffer
@@ -86,9 +93,10 @@ namespace null::render {
 				}
 			}
 
-			if(stroke.line_join == e_line_join::none) {
-				const vec2_t<float> outward_vertex{ *segment.end_edge->point + math::invert_vector_axis(segment.begin_edge->to_next_direction, math::e_rotation::ccw) * half_thickness };
-				const vec2_t<float> inward_vertex{ *segment.end_edge->point + math::invert_vector_axis(segment.begin_edge->to_next_direction, math::e_rotation::cw) * half_thickness };
+			//@note: in e_line_join::none each segment itself creates an end in addition to the beginning, the check is needed so that e_line_cap is displayed correctly
+			if(stroke.line_join == e_line_join::none && !segment.is_last && *segment.end_edge->point != *std::prev(points.end())) {
+				const vec2_t<float> outward_vertex{ *segment.end_edge->point + math::invert_vector_axis(segment.begin_edge->to_next_direction, math::e_rotation::ccw) * outward_thickness };
+				const vec2_t<float> inward_vertex{ *segment.end_edge->point + math::invert_vector_axis(segment.begin_edge->to_next_direction, math::e_rotation::cw) * inward_thickness };
 
 				command->vertex_count += 2;
 				backend::mesh->geometry_buffer

@@ -1,5 +1,6 @@
 #include "graphic/draw-list/pen/pen.h"
 #include "backend/internal/mesh.h"
+#include "graphic/draw-list/strokes/stroke.h"
 
 namespace null::render {
 	std::unique_ptr<i_command> pen_t::around_convex_shape(const std::unique_ptr<c_geometry_command>& command) const {
@@ -44,19 +45,19 @@ namespace null::render {
 		const backend::vertex_t& current_vertex{ backend::mesh->geometry_buffer.vertex_buffer[command->vertex_offset + current] };
 		const backend::vertex_t& next_vertex{ backend::mesh->geometry_buffer.vertex_buffer[command->vertex_offset + next] };
 
-		const vec2_t<float> to_next_direction{ current_vertex.pos.direction(next_vertex.pos) };
-		const vec2_t<float> from_previous_direction{ previous_vertex.pos.direction(current_vertex.pos) };
-		const vec2_t<float> normal{ math::vectors_bisector(to_next_direction, from_previous_direction, rotation) };
-
 		const size_t next_vertex_offset{ is_last ? first_vertex_offset : pen_command->vertex_count + 2 };
 		pen_command->index_count += 6;
 		backend::mesh->geometry_buffer
 			.add_index(pen_command->vertex_count).add_index(next_vertex_offset).add_index(next_vertex_offset + 1)
 			.add_index(pen_command->vertex_count).add_index(next_vertex_offset + 1).add_index(pen_command->vertex_count + 1);
 
+		stroke_t::segment_t::i_edge current_edge{ };
+		current_edge.from_points(previous_vertex.pos, current_vertex.pos, next_vertex.pos, rotation);
+
 		const float half_thickness{ thickness / 2.f }, thickness_offset{ origin * 2.f };
-		const vec2_t<float> outward_tessellation{ normal * (half_thickness * thickness_offset) };
-		const vec2_t<float> inward_tessellation{ normal * (half_thickness * (2.f - thickness_offset)) };
+		const float outward_thickness{ half_thickness * thickness_offset }, inward_thickness{ half_thickness * (2.f - thickness_offset) };
+		const vec2_t<float> outward_tessellation{ edge == e_pen_edge::miter ? current_edge.get_mitter_offset(outward_thickness) : current_edge.normal * outward_thickness };
+		const vec2_t<float> inward_tessellation{ edge == e_pen_edge::miter ? current_edge.get_mitter_offset(inward_thickness) : current_edge.normal * inward_thickness };
 
 		pen_command->vertex_count += 2;
 		backend::mesh->geometry_buffer
