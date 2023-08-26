@@ -94,7 +94,7 @@ namespace null::render {
 			}
 
 			//@note: in e_line_join::none each segment itself creates an end in addition to the beginning, the check is needed so that e_line_cap is displayed correctly
-			if(stroke.line_join == e_line_join::none && !segment.is_last && *segment.end_edge->point != *std::prev(points.end())) {
+			if(stroke.line_join == e_line_join::none && ((!segment.is_last && *segment.end_edge->point != *std::prev(points.end())) || stroke.line_cap == e_line_cap::joint)) {
 				const vec2_t<float> outward_vertex{ *segment.end_edge->point + math::invert_vector_axis(segment.begin_edge->to_next_direction, math::e_rotation::ccw) * outward_thickness };
 				const vec2_t<float> inward_vertex{ *segment.end_edge->point + math::invert_vector_axis(segment.begin_edge->to_next_direction, math::e_rotation::cw) * inward_thickness };
 
