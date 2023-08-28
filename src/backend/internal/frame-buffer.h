@@ -21,7 +21,7 @@ namespace null::render::backend {
 		e_frame_buffer_flags flags{ };
 
 	public:
-		i_frame_buffer(const vec2_t<int>& _size, e_frame_buffer_type _type, e_frame_buffer_flags _flags = { }) : size{ _size }, type { _type }, flags{ _flags } { }
+		i_frame_buffer(const vec2_t<int>& _size, e_frame_buffer_type _type, e_frame_buffer_flags _flags = { }) : size{ _size }, type{ _type }, flags{ _flags } { }
 		virtual ~i_frame_buffer() { }
 
 	public:
@@ -31,7 +31,7 @@ namespace null::render::backend {
 	public:
 		virtual void clear() = 0;
 		virtual void set() = 0;
-		
+
 	public:
 		virtual void copy_from(const std::unique_ptr<i_frame_buffer>& another_frame_buffer) = 0;
 

@@ -8,7 +8,8 @@ namespace null::render {
 		backend::i_sdf_shader::constants_t constants{ };
 
 	public:
-		auto&& set_outline(this auto&& self, float thickness, const color_t<int>& start, const color_t<int>& end) {
+		template <typename self_t>
+		auto&& set_outline(this self_t&& self, float thickness, const color_t<int>& start, const color_t<int>& end) {
 			self.constants.outline_thickness = thickness; self.constants.outline_start = start; self.constants.outline_end = end;
 			return self;
 		}

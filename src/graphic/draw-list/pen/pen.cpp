@@ -53,6 +53,7 @@ namespace null::render {
 
 		stroke_t::segment_t::i_edge current_edge{ };
 		current_edge.from_points(previous_vertex.pos, current_vertex.pos, next_vertex.pos, rotation);
+		if(edge == e_pen_edge::miter) current_edge.miter_from_points(previous_vertex.pos, current_vertex.pos, next_vertex.pos);
 
 		const float half_thickness{ thickness / 2.f }, thickness_offset{ origin * 2.f };
 		const float outward_thickness{ half_thickness * thickness_offset }, inward_thickness{ half_thickness * (2.f - thickness_offset) };

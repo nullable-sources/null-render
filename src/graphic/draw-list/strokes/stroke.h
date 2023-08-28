@@ -26,10 +26,11 @@ namespace null::render {
 
 			public:
 				void from_points(const vec2_t<float>& previous_point, const vec2_t<float>& current_point, const vec2_t<float>& next_point, math::e_rotation normal_rotation = math::e_rotation::ccw);
+				void miter_from_points(const vec2_t<float>& previous_point, const vec2_t<float>& current_point, const vec2_t<float>& next_point);
 
 			public:
 				vec2_t<float> get_mitter_offset(float distance) {
-					return normal * std::min(distance / miter_angle.cos(), (double)max_miter_dist);
+					return normal * std::min(distance / miter_angle.cos(), static_cast<double>(max_miter_dist));
 				}
 			};
 
@@ -61,6 +62,6 @@ namespace null::render {
 		auto&& set_cap(this auto&& self, e_line_cap line_cap) { self.line_cap = line_cap; return self; }
 
 	public:
-		std::vector<segment_t> build_segments(const std::vector<vec2_t<float>>& points) const;
+		void build_segments(std::vector<segment_t>& segments, const std::vector<vec2_t<float>>& points) const;
 	};
 }

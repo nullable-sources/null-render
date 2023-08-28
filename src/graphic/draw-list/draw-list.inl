@@ -13,8 +13,7 @@ namespace null::render {
 			vec2_t text_size{ text_brush.font->calc_text_size<char_t>(text, text_brush.size) };
 			if(text_size <= 0.f) return;
 
-			if(text_brush.align & e_text_align::right)
-				pos.x -= text_size.x;
+			if(text_brush.align & e_text_align::right) pos.x -= text_size.x;
 			if(text_brush.align & e_text_align::bottom) pos.y -= text_size.y;
 			if(text_brush.align & e_text_align::center_x) pos.x -= text_size.x / 2.f;
 			if(text_brush.align & e_text_align::center_y) pos.y -= text_size.y / 2.f;

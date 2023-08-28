@@ -19,7 +19,7 @@ namespace null::render::backend {
 
 		virtual void* create_texture(const vec2_t<float>& size, void* data) = 0;
 		virtual void destroy_texture(void* texture) = 0;
-	
+
 		virtual void setup_state() = 0;
 
 	private:
@@ -28,7 +28,7 @@ namespace null::render::backend {
 
 		virtual void create_internal_objects() { }
 		virtual void destroy_internal_objects() { }
-	
+
 	public:
 		void begin_render();
 		void end_render();

@@ -27,7 +27,7 @@ namespace null::render {
 		auto&& set_origin(this auto&& self, float origin) { self.origin = origin; return self; }
 		auto&& set_layer(this auto&& self, e_pen_layer layer) { self.layer = layer; return self; }
 		auto&& set_edge(this auto&& self, e_pen_edge edge) { self.edge = edge; return self; }
-		
+
 	public:
 		std::unique_ptr<i_command> around_convex_shape(const std::unique_ptr<c_geometry_command>& command) const;
 		std::unique_ptr<i_command> around_stroke(const std::unique_ptr<c_geometry_command>& command, const std::vector<backend::index_t>& outward_order, const std::vector<backend::index_t>& inward_order, bool closed) const;

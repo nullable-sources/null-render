@@ -11,7 +11,7 @@ namespace null::render::backend {
 
 	public:
 		virtual void clear_geometry() = 0;
-	};;
+	};
 
 	class c_mesh : public i_mesh {
 	public:

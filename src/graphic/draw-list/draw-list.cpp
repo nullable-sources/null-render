@@ -15,7 +15,8 @@ namespace null::render {
 		const float outward_thickness{ stroke.thickness * stroke.origin };
 		const float inward_thickness{ stroke.thickness * (1.f - stroke.origin) };
 
-		const std::vector<stroke_t::segment_t> segments{ stroke.build_segments(points) };
+		std::vector<stroke_t::segment_t> segments{ };
+		stroke.build_segments(segments, points);
 		for(const stroke_t::segment_t& segment : segments) {
 			if(have_pen) {
 				outward_order.push_back(command->vertex_count + segment.begin_edge->outward_begin);
@@ -38,7 +39,7 @@ namespace null::render {
 
 			if(stroke.line_cap != e_line_cap::joint && (segment.is_first || segment.is_last)) {
 				const vec2_t<float>& cap_direction{ segment.is_first ? -segment.begin_edge->to_next_direction : segment.begin_edge->from_previous_direction };
-				
+
 				const vec2_t<float>& direction{ segment.is_first ? segment.begin_edge->to_next_direction : segment.begin_edge->from_previous_direction };
 				const vec2_t<float> outward_delta{ math::invert_vector_axis(direction, math::e_rotation::ccw) * outward_thickness };
 				const vec2_t<float> inward_delta{ math::invert_vector_axis(direction, math::e_rotation::cw) * inward_thickness };
@@ -57,7 +58,7 @@ namespace null::render {
 					if(!segment.begin_edge->inversed)
 						distance *= -1.f;
 
-					vec2_t<float> origin_offset{  };
+					vec2_t<float> origin_offset{ };
 					if(stroke.origin != 0.5f)
 						origin_offset = segment.begin_edge->get_mitter_offset(inward_thickness > outward_thickness ? (outward_thickness - half_thickness) : (half_thickness - inward_thickness));
 
