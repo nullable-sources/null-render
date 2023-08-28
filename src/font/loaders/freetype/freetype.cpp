@@ -235,7 +235,7 @@ namespace null::render {
 		atlas->build_finish();
 
 		for(build_src_t& src : src_array) {
-			if (src.freetype.face) { FT_Done_Face(src.freetype.face); src.freetype.face = nullptr; }
+			if(src.freetype.face) { FT_Done_Face(src.freetype.face); src.freetype.face = nullptr; }
 		}
 
 		if(auto result{ FT_Done_Library(ft_library) }; result)

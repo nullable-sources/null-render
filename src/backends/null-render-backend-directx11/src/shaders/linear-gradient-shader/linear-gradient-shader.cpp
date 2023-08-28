@@ -11,7 +11,7 @@ namespace null::render::directx11 {
 	void c_linear_gradient_shader::set_constants(const constants_t& constants) {
 		c_linear_gradient_shader_object::constant_buffer_t constant_buffer{ };
 
-		for (auto [color, stop, pair] : std::views::zip(constant_buffer.colors, constant_buffer.stops, constants.stops)) {
+		for(auto [color, stop, pair] : std::views::zip(constant_buffer.colors, constant_buffer.stops, constants.stops)) {
 			color = pair.first;
 			stop.x = pair.second;
 		}

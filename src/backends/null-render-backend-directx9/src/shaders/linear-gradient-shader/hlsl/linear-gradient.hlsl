@@ -16,7 +16,7 @@ float4 main(ps_input_t input) : COLOR {
 	float t = 0.5f + length(uv) * cos(atan2(-uv.y, uv.x) + angle);
 	
 	float4 color = colors[0] / 255.f;
-	for (int i = 1; i < stops_count; ++i) {
+	for(int i = 1; i < stops_count; ++i) {
 		color = lerp(color, colors[i] / 255.f, smoothstep(stops[i - 1].x, stops[i].x, t));
 	}
 	return color * input.color;

@@ -38,7 +38,7 @@ namespace null::render::opengl3 {
 	}
 
 	void c_linear_gradient_shader::set_constants(const constants_t& constants) {
-		for (auto [color, stop, pair] : std::views::zip(colors.value(), stops.value(), constants.stops)) {
+		for(auto [color, stop, pair] : std::views::zip(colors.value(), stops.value(), constants.stops)) {
 			color = pair.first.cast<float>();
 			stop = pair.second;
 		}

@@ -2,15 +2,13 @@
 #include "graphic/draw-list/strokes/stroke.h"
 
 namespace null::render {
-	void stroke_t::segment_t::i_edge::from_points(const vec2_t<float>& previous_point,
-		const vec2_t<float>& current_point, const vec2_t<float>& next_point, math::e_rotation normal_rotation) {
+	void stroke_t::segment_t::i_edge::from_points(const vec2_t<float>& previous_point, const vec2_t<float>& current_point, const vec2_t<float>& next_point, math::e_rotation normal_rotation) {
 		to_next_direction = current_point.direction(next_point);
 		from_previous_direction = previous_point.direction(current_point);
 		normal = vectors_bisector(to_next_direction, from_previous_direction, normal_rotation);
 	}
 
-	void stroke_t::segment_t::i_edge::miter_from_points(const vec2_t<float>& previous_point,
-		const vec2_t<float>& current_point, const vec2_t<float>& next_point) {
+	void stroke_t::segment_t::i_edge::miter_from_points(const vec2_t<float>& previous_point, const vec2_t<float>& current_point, const vec2_t<float>& next_point) {
 		miter_angle = angle_t<radians_t>{ math::angle_between(
 			invert_vector_axis(to_next_direction, math::e_rotation::cw),
 			invert_vector_axis(from_previous_direction, math::e_rotation::cw)
@@ -21,7 +19,6 @@ namespace null::render {
 	void stroke_t::build_segments(std::vector<segment_t>& segments, const std::vector<vec2_t<float>>& points) const {
 		const size_t segments_count{ points.size() };
 
-		std::unique_ptr<segment_t::edge_t> first_edge{ };
 		for(size_t i : std::views::iota(0u, segments_count)) {
 			const size_t previous_i{ (i + segments_count - 1) % segments_count };
 			const size_t next_i{ (i + 1) % segments_count };

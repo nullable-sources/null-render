@@ -17,7 +17,7 @@ float stretch(float low, float high, float x) {
 
 void main() {
 	float distance = texture(sampler, frag_uv.st).a;
-	if (distance >= 0.5f + aa) {
+	if(distance >= 0.5f + aa) {
 		out_color = frag_color;
 		return;
 	}
@@ -25,7 +25,7 @@ void main() {
 		discard;
 
 	vec4 outer = vec4(0.f, 0.f, 0.f, 0.f);
-	if (outline_thickness != 0.5f)
+	if(outline_thickness != 0.5f)
 		outer = mix(outline_end / 255.f, outline_start / 255.f, stretch(outline_thickness, 0.5f, distance));
 	outer.a *= stretch(outline_thickness - aa, outline_thickness + aa, distance);
 

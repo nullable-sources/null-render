@@ -26,12 +26,12 @@ namespace null::render::opengl3 {
 			opengl::get_programiv(program, status, &result_status);
 			opengl::get_programiv(program, opengl::e_info_log_length, &log_length);
 
-			if (log_length > 1) {
+			if(log_length > 1) {
 				log = std::string(log_length + 1, char{ });
 				opengl::get_program_info_log(program, log_length, nullptr, log.data());
 			}
 
-			if (!result_status) utils::logger(utils::e_log_type::warning, "cant '{}' program, log \"{}\".", desc, log);
+			if(!result_status) utils::logger(utils::e_log_type::warning, "cant '{}' program, log \"{}\".", desc, log);
 		}
 
 	public:

@@ -24,7 +24,7 @@ float4 main(ps_input_t input) : COLOR {
 		discard;
 	
 	float4 outer;
-	if (outline_thickness != 0.5f)
+	if(outline_thickness != 0.5f)
 		outer = lerp(outline_end / 255.f, outline_start / 255.f, stretch(outline_thickness, 0.5f, distance));
 	outer.a *= stretch(outline_thickness - aa, outline_thickness + aa, distance);
 	
