@@ -37,7 +37,7 @@
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{776422f8-e5e3-4cda-9ddb-cc1150db0964}</ProjectGuid>
     <RootNamespace>directx11</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'" Label="Configuration">
