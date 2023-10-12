@@ -721,8 +721,8 @@ FT_BEGIN_HEADER
    *     --------------------------------------------------------------
    *       v1.0   normal  normal  B/W           B/W    bi-level
    *       v1.6   high    high    gray          gray   grayscale
-   *       v1.8   high    normal  color  B/W    (GDI) ClearType
-   *       v1.9   high    high    color  gray   Color ClearType
+   *       v1.8   high    normal  color-filter  B/W    (GDI) ClearType
+   *       v1.9   high    high    color-filter  gray   Color ClearType
    *       v2.1   high    normal  gray          B/W    Gray ClearType
    *       v2.1   high    high    gray          gray   Gray ClearType
    *   ```
