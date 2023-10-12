@@ -17,7 +17,7 @@
     <Import Condition="Exists('$(SolutionDir)$(NullRenderBackendDirectx9SdkDependencies)')" Project="$(SolutionDir)$(NullRenderBackendDirectx9SdkDependencies)" />
     <Import Condition="!Exists('$(SolutionDir)$(NullRenderBackendDirectx9SdkDependencies)')" Project="..\..\$(NullRenderBackendDirectx9SdkDependencies)" />
 
-    <Import Project="..\..\..\null-render.static-linking.props" />
+    <Import Project="..\..\null-render.static-linking.props" />
   </ImportGroup>
   
   <PropertyGroup>
