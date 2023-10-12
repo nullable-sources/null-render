@@ -1,5 +1,5 @@
 #pragma once
-#include "../../commands/geometry-command/geometry-command.h"
+#include "../../commands/geometry/geometry.h"
 
 namespace null::render {
 	class i_filter : public i_command {

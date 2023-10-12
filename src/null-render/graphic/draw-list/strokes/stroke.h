@@ -1,5 +1,5 @@
 #pragma once
-#include "../../commands/geometry-command/geometry-command.h"
+#include "../../commands/geometry/geometry.h"
 
 namespace null::render {
 	enum class e_line_join {

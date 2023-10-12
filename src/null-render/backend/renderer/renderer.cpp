@@ -3,7 +3,7 @@
 #include "renderer.h"
 #include "../internal/mesh.h"
 #include "../internal/frame-buffer.h"
-#include "../shaders/passthrough-shader.h"
+#include "../shaders/passthrough.h"
 
 namespace null::render::backend {
 	void i_renderer::create_objects() {

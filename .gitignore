@@ -2,16 +2,16 @@ build/
 .vs/
 *.user
 
-src/backends/null-render-backend-directx9/src/shaders/shared-compiled-objects/passthrough-object/compiled
-src/backends/null-render-backend-directx9/src/shaders/passthrough-color-shader/compiled
-src/backends/null-render-backend-directx9/src/shaders/passthrough-texture-shader/compiled
-src/backends/null-render-backend-directx9/src/shaders/quad-gradient-shader/compiled
-src/backends/null-render-backend-directx9/src/shaders/linear-gradient-shader/compiled
-src/backends/null-render-backend-directx9/src/shaders/sdf-shader/compiled
+backends/directx9/src/null-render-backend-directx9/shaders/shared-objects/passthrough/compiled
+backends/directx9/src/null-render-backend-directx9/shaders/passthrough-color/compiled
+backends/directx9/src/null-render-backend-directx9/shaders/passthrough-texture/compiled
+backends/directx9/src/null-render-backend-directx9/shaders/quad-gradient/compiled
+backends/directx9/src/null-render-backend-directx9/shaders/linear-gradient/compiled
+backends/directx9/src/null-render-backend-directx9/shaders/sdf/compiled
 
-src/backends/null-render-backend-directx11/src/shaders/shared-compiled-objects/passthrough-object/compiled
-src/backends/null-render-backend-directx11/src/shaders/passthrough-color-shader/compiled
-src/backends/null-render-backend-directx11/src/shaders/passthrough-texture-shader/compiled
-src/backends/null-render-backend-directx11/src/shaders/quad-gradient-shader/compiled
-src/backends/null-render-backend-directx11/src/shaders/linear-gradient-shader/compiled
-src/backends/null-render-backend-directx11/src/shaders/sdf-shader/compiled
+backends/directx11/src/null-render-backend-directx11/shaders/shared-objects/passthrough/compiled
+backends/directx11/src/null-render-backend-directx11/shaders/passthrough-color/compiled
+backends/directx11/src/null-render-backend-directx11/shaders/passthrough-texture/compiled
+backends/directx11/src/null-render-backend-directx11/shaders/quad-gradient/compiled
+backends/directx11/src/null-render-backend-directx11/shaders/linear-gradient/compiled
+backends/directx11/src/null-render-backend-directx11/shaders/sdf/compiled

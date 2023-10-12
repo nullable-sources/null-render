@@ -1,6 +1,6 @@
 #pragma once
 #include "../../filters/filters.h"
-#include "../../commands/geometry-command/geometry-command.h"
+#include "../../commands/geometry/geometry.h"
 
 namespace null::render {
 	struct brush_t {

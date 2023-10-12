@@ -1,8 +1,0 @@
-null-render:opengl:shaders:passthrough.vert			null-render:opengl:resources	"../src/null-render-backend-opengl3/shaders/shared-compiled-objects/passthrough-object/glsl/passthrough.vert"
-
-null-render:opengl:shaders:passthrough-color.frag		null-render:opengl:resources	"../src/null-render-backend-opengl3/shaders/passthrough-color-shader/glsl/passthrough-color.frag"
-null-render:opengl:shaders:passthrough-texture.frag		null-render:opengl:resources	"../src/null-render-backend-opengl3/shaders/passthrough-texture-shader/glsl/passthrough-texture.frag"
-
-null-render:opengl:shaders:sdf.frag					null-render:opengl:resources	"../src/null-render-backend-opengl3/shaders/sdf-shader/glsl/sdf.frag"
-null-render:opengl:shaders:quad-gradient.frag		null-render:opengl:resources	"../src/null-render-backend-opengl3/shaders/quad-gradient-shader/glsl/quad-gradient.frag"
-null-render:opengl:shaders:linear-gradient.frag		null-render:opengl:resources	"../src/null-render-backend-opengl3/shaders/linear-gradient-shader/glsl/linear-gradient.frag"

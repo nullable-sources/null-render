@@ -1,5 +1,5 @@
 #include "null-render/backend/internal/mesh.h"
-#include "../commands/geometry-command/geometry-command.h"
+#include "../commands/geometry/geometry.h"
 
 #include "draw-list.h"
 
