@@ -4,14 +4,19 @@
     <ProjectGuid>{d51ad3ae-de95-488a-b202-a4192f685a59}</ProjectGuid>
   </PropertyGroup>
   
+  <PropertyGroup Label="NullProperties">
+    <NullRenderBackendDirectx11SdkDependencies>third-party\null-sdk\null-sdk.static-linking.props</NullRenderBackendDirectx11SdkDependencies>
+  </PropertyGroup>
+
   <Import Project="null-render-backend-directx11.vcxproj" />
   <ItemGroup>
     <ProjectReference Remove="@(ProjectReference)" />
   </ItemGroup>
   <ImportGroup Label="PropertySheets">
-    <Import Condition="Exists('$(SolutionDir)third-party\null-sdk\null-sdk.static-linking.props')" Project="$(SolutionDir)third-party\null-sdk\null-sdk.static-linking.props" />
-    <Import Condition="Exists('..\..\..\third-party\null-sdk\null-sdk.static-linking.props')" Project="..\..\..\third-party\null-sdk\null-sdk.static-linking.props" />
-    <Import Project="..\..\..\null-render.static-linking.props" />
+    <Import Condition="Exists('$(SolutionDir)$(NullRenderBackendDirectx11SdkDependencies)')" Project="$(SolutionDir)$(NullRenderBackendDirectx11SdkDependencies)" />
+    <Import Condition="!Exists('$(SolutionDir)$(NullRenderBackendDirectx11SdkDependencies)')" Project="..\..\$(NullRenderBackendDirectx11SdkDependencies)" />
+    
+    <Import Project="..\..\null-render.static-linking.props" />
   </ImportGroup>
   
   <PropertyGroup>
