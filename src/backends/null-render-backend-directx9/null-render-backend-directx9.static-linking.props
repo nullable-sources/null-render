@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup Label="NullProperties">
+        <NullRenderBackendDirectx9Root>$(MSBuildThisFileDirectory)</NullRenderBackendDirectx9Root>
+        <NullRenderBackendDirectx9Configuration Condition="'$(UseDebugLibraries)' == 'true'">debug</NullRenderBackendDirectx9Configuration>
+        <NullRenderBackendDirectx9Configuration Condition="'$(UseDebugLibraries)' == 'false'">release</NullRenderBackendDirectx9Configuration>
+    </PropertyGroup>
+
+    <ItemDefinitionGroup>
+        <ClCompile>
+            <AdditionalIncludeDirectories>$(NullRenderBackendDirectx9Root)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+        </ClCompile>
+        <Lib>
+            <AdditionalLibraryDirectories>$(NullRenderBackendDirectx9Root)build;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+            <AdditionalDependencies>null-render-backend-directx9-$(NullRenderBackendDirectx9Configuration)-$(LibrariesArchitecture).lib;%(AdditionalDependencies)</AdditionalDependencies>
+        </Lib>
+        <Link>
+            <AdditionalLibraryDirectories>$(NullRenderBackendDirectx9Root)build;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+            <AdditionalDependencies>null-render-backend-directx9-$(NullRenderBackendDirectx9Configuration)-$(LibrariesArchitecture).lib;%(AdditionalDependencies)</AdditionalDependencies>
+        </Link>
+    </ItemDefinitionGroup>
+</Project>
