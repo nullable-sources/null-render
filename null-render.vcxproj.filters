@@ -78,55 +78,55 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\font\font.cpp">
+    <ClCompile Include="src\null-render\font\font.cpp">
       <Filter>src\font</Filter>
     </ClCompile>
-    <ClCompile Include="src\font\loaders\truetype\truetype.cpp">
+    <ClCompile Include="src\null-render\font\loaders\truetype\truetype.cpp">
       <Filter>src\font\loaders\truetype</Filter>
     </ClCompile>
-    <ClCompile Include="src\font\loaders\freetype\freetype.cpp">
+    <ClCompile Include="src\null-render\font\loaders\freetype\freetype.cpp">
       <Filter>src\font\loaders\freetype</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphic\commands\geometry-command\geometry-command.cpp">
+    <ClCompile Include="src\null-render\graphic\commands\geometry-command\geometry-command.cpp">
       <Filter>src\graphic\commands\geometry-command</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphic\draw-list\draw-list.cpp">
+    <ClCompile Include="src\null-render\graphic\draw-list\draw-list.cpp">
       <Filter>src\graphic\draw-list</Filter>
     </ClCompile>
-    <ClCompile Include="src\backend\renderer\renderer.cpp">
+    <ClCompile Include="src\null-render\backend\renderer\renderer.cpp">
       <Filter>src\backend\renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\null-render.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphic\draw-list\strokes\stroke.cpp">
+    <ClCompile Include="src\null-render\graphic\draw-list\strokes\stroke.cpp">
       <Filter>src\graphic\draw-list\strokes</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphic\draw-list\pen\pen.cpp">
+    <ClCompile Include="src\null-render\graphic\draw-list\pen\pen.cpp">
       <Filter>src\graphic\draw-list\pen</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphic\path\path.cpp">
+    <ClCompile Include="src\null-render\graphic\path\path.cpp">
       <Filter>src\graphic\path</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphic\draw-list\brushes\sdf-text-brush\sdf-text-brush.cpp">
+    <ClCompile Include="src\null-render\graphic\draw-list\brushes\sdf-text-brush\sdf-text-brush.cpp">
       <Filter>src\graphic\draw-list\brushes\sdf-text-brush</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphic\draw-list\brushes\text-brush\text-brush.cpp">
+    <ClCompile Include="src\null-render\graphic\draw-list\brushes\text-brush\text-brush.cpp">
       <Filter>src\graphic\draw-list\brushes\text-brush</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphic\commands\renderer-commands\renderer-commands.cpp">
+    <ClCompile Include="src\null-render\graphic\commands\renderer-commands\renderer-commands.cpp">
       <Filter>src\graphic\commands\renderer-commands</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphic\filters\linear-gradient-filter\linear-gradient-filter.cpp">
+    <ClCompile Include="src\null-render\graphic\filters\linear-gradient-filter\linear-gradient-filter.cpp">
       <Filter>src\graphic\filters\linear-gradient-filter</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphic\filters\quad-gradient-filter\quad-gradient-filter.cpp">
+    <ClCompile Include="src\null-render\graphic\filters\quad-gradient-filter\quad-gradient-filter.cpp">
       <Filter>src\graphic\filters\quad-gradient-filter</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphic\filters\sdf-filter\sdf-filter.cpp">
+    <ClCompile Include="src\null-render\graphic\filters\sdf-filter\sdf-filter.cpp">
       <Filter>src\graphic\filters\sdf-filter</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphic\filters\texture-filter\texture-filter.cpp">
+    <ClCompile Include="src\null-render\graphic\filters\texture-filter\texture-filter.cpp">
       <Filter>src\graphic\filters\texture-filter</Filter>
     </ClCompile>
   </ItemGroup>
@@ -134,102 +134,102 @@
     <ClInclude Include="src\null-render.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\font\font.h">
+    <ClInclude Include="src\null-render\font\font.h">
       <Filter>src\font</Filter>
     </ClInclude>
-    <ClInclude Include="src\font\loaders\truetype\truetype.h">
+    <ClInclude Include="src\null-render\font\loaders\truetype\truetype.h">
       <Filter>src\font\loaders\truetype</Filter>
     </ClInclude>
-    <ClInclude Include="src\font\loaders\freetype\freetype.h">
+    <ClInclude Include="src\null-render\font\loaders\freetype\freetype.h">
       <Filter>src\font\loaders\freetype</Filter>
     </ClInclude>
-    <ClInclude Include="src\font\loaders\loader.h">
+    <ClInclude Include="src\null-render\font\loaders\loader.h">
       <Filter>src\font\loaders</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphic\filters\filters.h">
+    <ClInclude Include="src\null-render\graphic\filters\filters.h">
       <Filter>src\graphic\filters</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphic\commands\geometry-command\geometry-command.h">
+    <ClInclude Include="src\null-render\graphic\commands\geometry-command\geometry-command.h">
       <Filter>src\graphic\commands\geometry-command</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphic\commands\commands.h">
+    <ClInclude Include="src\null-render\graphic\commands\commands.h">
       <Filter>src\graphic\commands</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphic\draw-list\draw-list.h">
+    <ClInclude Include="src\null-render\graphic\draw-list\draw-list.h">
       <Filter>src\graphic\draw-list</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphic\draw-list\brushes\brush.h">
+    <ClInclude Include="src\null-render\graphic\draw-list\brushes\brush.h">
       <Filter>src\graphic\draw-list\brushes</Filter>
     </ClInclude>
-    <ClInclude Include="src\backend\backend.h">
+    <ClInclude Include="src\null-render\backend\backend.h">
       <Filter>src\backend</Filter>
     </ClInclude>
-    <ClInclude Include="src\backend\renderer\renderer.h">
+    <ClInclude Include="src\null-render\backend\renderer\renderer.h">
       <Filter>src\backend\renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\backend\internal\frame-buffer.h">
+    <ClInclude Include="src\null-render\backend\internal\frame-buffer.h">
       <Filter>src\backend\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\backend\internal\geometry-buffer.h">
+    <ClInclude Include="src\null-render\backend\internal\geometry-buffer.h">
       <Filter>src\backend\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\backend\internal\mesh.h">
+    <ClInclude Include="src\null-render\backend\internal\mesh.h">
       <Filter>src\backend\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\backend\shaders\shader.h">
+    <ClInclude Include="src\null-render\backend\shaders\shader.h">
       <Filter>src\backend\shaders</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphic\draw-list\pen\pen.h">
+    <ClInclude Include="src\null-render\graphic\draw-list\pen\pen.h">
       <Filter>src\graphic\draw-list\pen</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphic\path\path.h">
+    <ClInclude Include="src\null-render\graphic\path\path.h">
       <Filter>src\graphic\path</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphic\draw-list\strokes\stroke.h">
+    <ClInclude Include="src\null-render\graphic\draw-list\strokes\stroke.h">
       <Filter>src\graphic\draw-list\strokes</Filter>
     </ClInclude>
-    <ClInclude Include="src\backend\internal\object.h">
+    <ClInclude Include="src\null-render\backend\internal\object.h">
       <Filter>src\backend\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphic\draw-list\brushes\sdf-text-brush\sdf-text-brush.h">
+    <ClInclude Include="src\null-render\graphic\draw-list\brushes\sdf-text-brush\sdf-text-brush.h">
       <Filter>src\graphic\draw-list\brushes\sdf-text-brush</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphic\draw-list\brushes\text-brush\text-brush.h">
+    <ClInclude Include="src\null-render\graphic\draw-list\brushes\text-brush\text-brush.h">
       <Filter>src\graphic\draw-list\brushes\text-brush</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphic\commands\renderer-commands\renderer-commands.h">
+    <ClInclude Include="src\null-render\graphic\commands\renderer-commands\renderer-commands.h">
       <Filter>src\graphic\commands\renderer-commands</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphic\filters\linear-gradient-filter\linear-gradient-filter.h">
+    <ClInclude Include="src\null-render\graphic\filters\linear-gradient-filter\linear-gradient-filter.h">
       <Filter>src\graphic\filters\linear-gradient-filter</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphic\filters\quad-gradient-filter\quad-gradient-filter.h">
+    <ClInclude Include="src\null-render\graphic\filters\quad-gradient-filter\quad-gradient-filter.h">
       <Filter>src\graphic\filters\quad-gradient-filter</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphic\filters\sdf-filter\sdf-filter.h">
+    <ClInclude Include="src\null-render\graphic\filters\sdf-filter\sdf-filter.h">
       <Filter>src\graphic\filters\sdf-filter</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphic\filters\texture-filter\texture-filter.h">
+    <ClInclude Include="src\null-render\graphic\filters\texture-filter\texture-filter.h">
       <Filter>src\graphic\filters\texture-filter</Filter>
     </ClInclude>
-    <ClInclude Include="src\backend\shaders\passthrough-shader.h">
+    <ClInclude Include="src\null-render\backend\shaders\passthrough-shader.h">
       <Filter>src\backend\shaders</Filter>
     </ClInclude>
-    <ClInclude Include="src\backend\shaders\quad-gradient-shader.h">
+    <ClInclude Include="src\null-render\backend\shaders\quad-gradient-shader.h">
       <Filter>src\backend\shaders</Filter>
     </ClInclude>
-    <ClInclude Include="src\backend\shaders\sdf-shader.h">
+    <ClInclude Include="src\null-render\backend\shaders\sdf-shader.h">
       <Filter>src\backend\shaders</Filter>
     </ClInclude>
-    <ClInclude Include="src\backend\shaders\linear-gradient-shader.h">
+    <ClInclude Include="src\null-render\backend\shaders\linear-gradient-shader.h">
       <Filter>src\backend\shaders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\font\font.inl">
+    <None Include="src\null-render\font\font.inl">
       <Filter>src\font</Filter>
     </None>
-    <None Include="src\graphic\draw-list\draw-list.inl">
+    <None Include="src\null-render\graphic\draw-list\draw-list.inl">
       <Filter>src\graphic\draw-list</Filter>
     </None>
   </ItemGroup>

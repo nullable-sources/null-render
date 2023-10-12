@@ -25,7 +25,7 @@
     <ProjectReference Include="..\..\null-render.vcxproj">
       <Project>{4abcf635-9767-40f9-989e-f0cdf5fb68ae}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\backends\null-render-backend-opengl3\null-render-backend-opengl3.vcxproj">
+    <ProjectReference Include="..\..\src\null-render\backends\null-render-backend-opengl3\null-render-backend-opengl3.vcxproj">
       <Project>{97a6b7ae-9878-4584-a0b8-15287db604ac}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\third-party\null-sdk\null-sdk.vcxproj">
@@ -132,7 +132,7 @@
       <AdditionalDependencies>glfw3-$(PlatformShortName).lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\src\backends\null-render-backend-opengl3\resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\src\null-render\backends\null-render-backend-opengl3\resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
@@ -159,7 +159,7 @@
       <AdditionalDependencies>glfw3-$(PlatformShortName).lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\src\backends\null-render-backend-opengl3\resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\src\null-render\backends\null-render-backend-opengl3\resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='debug|x64'">

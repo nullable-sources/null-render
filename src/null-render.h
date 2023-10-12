@@ -2,12 +2,12 @@
 #pragma once
 #include <null-sdk.h>
 
-#include "font/loaders/freetype/freetype.h"
-#include "font/loaders/truetype/truetype.h"
-#include "graphic/commands/renderer-commands/renderer-commands.h"
-#include "graphic/draw-list/draw-list.h"
-#include "graphic/path/path.h"
-#include "backend/backend.h"
+#include "null-render/font/loaders/freetype/freetype.h"
+#include "null-render/font/loaders/truetype/truetype.h"
+#include "null-render/graphic/commands/renderer-commands/renderer-commands.h"
+#include "null-render/graphic/draw-list/draw-list.h"
+#include "null-render/graphic/path/path.h"
+#include "null-render/backend/backend.h"
 
 namespace null::render {
 	namespace shared {
