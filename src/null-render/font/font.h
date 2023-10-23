@@ -16,11 +16,11 @@ namespace null::render {
 			static constexpr std::array<std::uint32_t, 5> mins{ 0x400000, 0, 0x80, 0x800, 0x10000 };
 			static constexpr std::array<int, 5> shiftc{ 0, 18, 12, 6, 0 };
 			static constexpr std::array<int, 5> shifte{ 0, 6, 4, 2, 0 };
-			int len{ lengths[*(const unsigned char*)iterator._Unwrapped() >> 3] };
-			int wanted{ len + !len };
+			int len = lengths[*(const unsigned char*)iterator._Unwrapped() >> 3];
+			int wanted = len + !len;
 
 			std::array<std::uint8_t, 4> s{ };
-			for(int i{ 0 }; std::next(iterator, i) != end && i < s.size(); i++) {
+			for(int i = 0; std::next(iterator, i) != end && i < s.size(); i++) {
 				s[i] = *std::next(iterator, i);
 			}
 
@@ -30,7 +30,7 @@ namespace null::render {
 			*out_char |= (std::uint32_t)(s[3] & 0x3f) << 0;
 			*out_char >>= shiftc[len];
 
-			int e{ (*out_char < mins[len]) << 6 };
+			int e = (*out_char < mins[len]) << 6;
 			e |= ((*out_char >> 11) == 0x1b) << 7;
 			e |= (*out_char > 0xFFFF) << 8;
 			e |= (s[1] & 0xc0) >> 2;
@@ -177,12 +177,12 @@ namespace null::render {
 		void add_glyph(config_t* src_config, std::uint16_t c, rect_t<float> corners, const rect_t<float>& texture_coordinates, float advance_x);
 
 		void set_fallback_char(std::uint16_t c) { fallback_char = c; build_lookup_table(); }
-		void set_glyph_visible(std::uint16_t c, bool visible) { if(glyph_t* glyph{ find_glyph(c) }) glyph->visible = visible; }
+		void set_glyph_visible(std::uint16_t c, bool visible) { if(glyph_t* glyph = find_glyph(c)) glyph->visible = visible; }
 
 		bool is_loaded() const { return container_atlas; }
 		float get_char_advance(std::uint16_t c) const { return (c < lookup_table.advances_x.size()) ? lookup_table.advances_x[c] : fallback_advance_x; }
 
-		template <typename string_t> vec2_t<float> calc_text_size(const string_t& text, float custom_size = 0.f) { return calc_text_size(std::basic_string_view{ text }, custom_size); }
+		template <typename string_t> vec2_t<float> calc_text_size(const string_t& text, float custom_size = 0.f) { return calc_text_size(std::basic_string_view(text), custom_size); }
 		template <typename char_t> vec2_t<float> calc_text_size(std::basic_string_view<char_t> text, float custom_size = 0.f);
 	};
 

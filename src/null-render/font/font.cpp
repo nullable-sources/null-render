@@ -6,7 +6,7 @@
 
 namespace null::render {
 	void c_font::build_lookup_table() {
-		int max_codepoint{ (int)(*std::ranges::max_element(glyphs, [](const glyph_t& a, const glyph_t& b) { return a.codepoint < b.codepoint; })).codepoint };
+		int max_codepoint = std::ranges::max_element(glyphs, [](const glyph_t& a, const glyph_t& b) { return a.codepoint < b.codepoint; })->codepoint;
 
 		if(glyphs.size() >= std::numeric_limits<std::uint16_t>::max()) {
 			utils::logger(utils::e_log_type::error, "glyphs.size() >= 0xFFFF.");
@@ -24,7 +24,7 @@ namespace null::render {
 		if(find_glyph((std::uint16_t)' ')) {
 			if(glyphs.back().codepoint != '\t')
 				glyphs.resize(glyphs.size() + 1);
-			glyph_t& tab_glyph{ glyphs.back() };
+			glyph_t& tab_glyph = glyphs.back();
 			tab_glyph = *find_glyph((std::uint16_t)' ');
 			tab_glyph.codepoint = '\t';
 			tab_glyph.advance_x *= 4;
@@ -43,24 +43,24 @@ namespace null::render {
 
 	c_font::glyph_t* c_font::find_glyph(std::uint16_t c, bool fallback) {
 		if(c >= lookup_table.indexes.size()) return fallback ? fallback_glyph : nullptr;
-		const std::uint16_t i{ lookup_table.indexes[c] };
+		const std::uint16_t i = lookup_table.indexes[c];
 		if(i == (std::uint16_t)-1) return fallback ? fallback_glyph : nullptr;
 		return &glyphs[i];
 	}
 
 	void c_font::add_glyph(config_t* cfg, std::uint16_t codepoint, rect_t<float> corners, const rect_t<float>& texture_coordinates, float advance_x) {
 		if(cfg) {
-			const float advance_x_original{ advance_x };
+			const float advance_x_original = advance_x;
 			advance_x = std::clamp(advance_x, cfg->glyph_config.min_advance_x, cfg->glyph_config.max_advance_x);
 			if(advance_x != advance_x_original) {
-				corners += vec2_t{ cfg->pixel_snap_h ? floor((advance_x - advance_x_original) * 0.5f) : (advance_x - advance_x_original) * 0.5f, 0.f };
+				corners += vec2_t(cfg->pixel_snap_h ? floor((advance_x - advance_x_original) * 0.5f) : (advance_x - advance_x_original) * 0.5f, 0.f);
 			}
 
 			if(cfg->pixel_snap_h) advance_x = round(advance_x);
 			advance_x += cfg->glyph_config.extra_spacing.x;
 		}
 
-		glyphs.push_back({ codepoint, corners.min != corners.max, advance_x, corners, texture_coordinates });
+		glyphs.push_back(glyph_t(codepoint, corners.min != corners.max, advance_x, corners, texture_coordinates));
 		lookup_table.dirty = true;
 	}
 
@@ -72,9 +72,9 @@ namespace null::render {
 
 		if(pixels_rgba32.empty()) {
 			pixels_rgba32.resize(size.x * size.y * 4);
-			const std::uint8_t* src{ pixels_alpha8.data() };
-			std::uint32_t* dst{ pixels_rgba32.data() };
-			for(const int& n : std::views::iota(1, size.x * size.y + 1) | std::views::reverse)
+			const std::uint8_t* src = pixels_alpha8.data();
+			std::uint32_t* dst = pixels_rgba32.data();
+			for(int n : std::views::iota(1, size.x * size.y + 1) | std::views::reverse)
 				*dst++ = (*src++ << 24) | 0xFFFFFF;
 		}
 	}
@@ -112,7 +112,7 @@ namespace null::render {
 		fonts.push_back(std::make_unique<c_font>());
 
 		configs.push_back(*config);
-		c_font::config_t& cfg{ configs.back() };
+		c_font::config_t& cfg = configs.back();
 
 		if(!cfg.font) cfg.font = fonts.back().get();
 		if(cfg.data.empty()) cfg.data = config->data;
@@ -122,7 +122,7 @@ namespace null::render {
 	}
 
 	c_font* c_atlas::add_font_default(c_font::config_t* config) {
-		c_font::config_t cfg{ config ? *config : c_font::config_t{ } };
+		c_font::config_t cfg = config ? *config : c_font::config_t{ };
 		if(!config) {
 			cfg.oversample = 1;
 			cfg.pixel_snap_h = true;
@@ -136,7 +136,7 @@ namespace null::render {
 	c_font* c_atlas::add_font_from_file_ttf(std::string_view filename, float size_pixels, c_font::config_t* config, const std::uint16_t* glyph_ranges) {
 		if(locked) { utils::logger(utils::e_log_type::error, "cannot modify a locked atlas between begin_render() and end_render/render()."); return nullptr; }
 
-		std::ifstream file{ filename.data(), std::ios::in | std::ios::binary | std::ios::ate };
+		std::ifstream file(filename.data(), std::ios::in | std::ios::binary | std::ios::ate);
 		if(!file.is_open()) { utils::logger(utils::e_log_type::error, "cannot open font file."); return nullptr; }
 
 		std::vector<char> font_file((std::size_t)file.tellg());
@@ -150,7 +150,7 @@ namespace null::render {
 	c_font* c_atlas::add_font_from_memory_ttf(const std::vector<char>& font_file, float size_pixels, c_font::config_t* config, const std::uint16_t* glyph_ranges) {
 		if(locked) { utils::logger(utils::e_log_type::error, "cannot modify a locked atlas between begin_render() and end_render/render()."); return nullptr; }
 
-		c_font::config_t cfg{ config ? *config : c_font::config_t{ } };
+		c_font::config_t cfg = config ? *config : c_font::config_t{ };
 		if(!cfg.data.empty()) utils::logger(utils::e_log_type::warning, "config font data is not empty.");
 
 		cfg.data = font_file;
@@ -164,7 +164,7 @@ namespace null::render {
 		std::vector<char> buf_decompressed_data(stb::decompress_length((std::uint8_t*)compressed_ttf.data()));
 		stb::decompress((std::uint8_t*)buf_decompressed_data.data(), compressed_ttf.data());
 
-		c_font::config_t cfg{ config ? *config : c_font::config_t{ } };
+		c_font::config_t cfg = config ? *config : c_font::config_t{ };
 		if(!cfg.data.empty()) utils::logger(utils::e_log_type::warning, "config font data is not empty.");
 
 		return add_font_from_memory_ttf(buf_decompressed_data, size_pixels, &cfg, glyph_ranges);

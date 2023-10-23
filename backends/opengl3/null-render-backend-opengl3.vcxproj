@@ -126,28 +126,28 @@
     <OutDir>$(ProjectDir)build\</OutDir>
     <IntDir>$(SolutionDir)build\$(Configuration)-$(PlatformShortName)\obj-$(ProjectName)\</IntDir>
     <PublicIncludeDirectories>src\;resources</PublicIncludeDirectories>
-    <TargetName>$(ProjectName)-$(Configuration)-$(PlatformShortName)</TargetName>
+    <TargetName>null-render-backend-opengl3-$(Configuration)-$(PlatformShortName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(ProjectDir)build\</OutDir>
     <IntDir>$(SolutionDir)build\$(Configuration)-$(PlatformShortName)\obj-$(ProjectName)\</IntDir>
     <PublicIncludeDirectories>src\</PublicIncludeDirectories>
-    <TargetName>$(ProjectName)-$(Configuration)-$(PlatformShortName)</TargetName>
+    <TargetName>null-render-backend-opengl3-$(Configuration)-$(PlatformShortName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(ProjectDir)build\</OutDir>
     <IntDir>$(SolutionDir)build\$(Configuration)-$(PlatformShortName)\obj-$(ProjectName)\</IntDir>
     <PublicIncludeDirectories>src\;resources\</PublicIncludeDirectories>
-    <TargetName>$(ProjectName)-$(Configuration)-$(PlatformShortName)</TargetName>
+    <TargetName>null-render-backend-opengl3-$(Configuration)-$(PlatformShortName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(ProjectDir)build\</OutDir>
     <IntDir>$(SolutionDir)build\$(Configuration)-$(PlatformShortName)\obj-$(ProjectName)\</IntDir>
     <PublicIncludeDirectories>src\</PublicIncludeDirectories>
-    <TargetName>$(ProjectName)-$(Configuration)-$(PlatformShortName)</TargetName>
+    <TargetName>null-render-backend-opengl3-$(Configuration)-$(PlatformShortName)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
     <ClCompile>
@@ -162,7 +162,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>$(ProjectDir)src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
       <EnableModules>false</EnableModules>
     </ClCompile>
     <Link>
@@ -186,7 +186,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>$(ProjectDir)src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
       <EnableModules>false</EnableModules>
     </ClCompile>
     <Link>
@@ -210,7 +210,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>$(ProjectDir)src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
       <EnableModules>false</EnableModules>
     </ClCompile>
     <Link>
@@ -234,7 +234,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>$(ProjectDir)src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
       <EnableModules>false</EnableModules>
     </ClCompile>
     <Link>

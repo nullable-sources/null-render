@@ -17,7 +17,7 @@ namespace null::render::directx9 {
 			stop.x = pair.second;
 		}
 
-		const float stops_count{ (float)constants.stops.size() };
+		const float stops_count = (float)constants.stops.size();
 		pixel_shader->set_constant(0, (float*)&constants.angle);
 		pixel_shader->set_constant(1, &stops_count);
 		pixel_shader->set_constant(2, (float*)stops.data(), 16);

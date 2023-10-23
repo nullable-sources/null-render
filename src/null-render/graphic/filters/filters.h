@@ -7,7 +7,7 @@ namespace null::render {
 		std::unique_ptr<i_command> child_command{ };
 
 	public:
-		i_filter(std::unique_ptr<i_command>&& _child_command) : child_command{ std::move(_child_command) } { }
+		i_filter(std::unique_ptr<i_command>&& _child_command) : child_command(std::move(_child_command)) { }
 	};
 
 	class i_filter_instancer {

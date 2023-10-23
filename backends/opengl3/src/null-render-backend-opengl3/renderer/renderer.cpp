@@ -11,12 +11,12 @@ namespace null::render::opengl3 {
 	}
 	
 	void c_renderer::set_clip(const rect_t<float>& rect) {
-		const vec2_t size{ rect.size() };
+		const vec2_t size = rect.size();
 		opengl::scissor(rect.min.x, shared::viewport.y - rect.max.y, size.x, size.y);
 	}
-	
-	void c_renderer::draw_geometry(size_t vertex_count, size_t index_count, size_t vertex_offset, size_t index_offset) {
-		opengl::draw_elements_base_vertex(opengl::e_triangles, index_count, opengl::e_unsigned_int, (void*)(std::intptr_t)(index_offset * sizeof(std::uint32_t)), vertex_offset);
+
+	void c_renderer::draw_geometry(backend::e_topology topology, size_t vertex_count, size_t index_count, size_t vertex_offset, size_t index_offset) {
+		opengl::draw_elements_base_vertex(topology == backend::e_topology::triangle_list ? opengl::e_triangles : opengl::e_triangle_strip, index_count, opengl::e_unsigned_int, (void*)(std::intptr_t)(index_offset * sizeof(std::uint32_t)), vertex_offset);
 	}
 
 	void* c_renderer::create_texture(const vec2_t<float>& size, void* data) {

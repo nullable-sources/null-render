@@ -5,11 +5,13 @@ namespace null::render {
 	enum class e_line_join {
 		miter,
 		bevel,
+		round,
 		none
 	};
 
 	enum class e_line_cap {
 		butt,
+		round,
 		square,
 		joint
 	};

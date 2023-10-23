@@ -15,7 +15,7 @@ namespace null::render::directx11 {
 				.BindFlags{ D3D11_BIND_CONSTANT_BUFFER },
 				.CPUAccessFlags{ D3D11_CPU_ACCESS_WRITE }
 			};
-			if(auto result{ shared.device->CreateBuffer(&desc, NULL, &buffer) }; FAILED(result))
+			if(auto result = shared.device->CreateBuffer(&desc, NULL, &buffer); FAILED(result))
 				utils::logger(utils::e_log_type::warning, "cant create constant buffer, return code {}.", result);
 		}
 
@@ -23,7 +23,7 @@ namespace null::render::directx11 {
 
 		virtual void edit_constant(const struct_t& constant) {
 			D3D11_MAPPED_SUBRESOURCE subresource{ };
-			if(auto result{ shared.context->Map(buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &subresource) }; FAILED(result)) {
+			if(auto result = shared.context->Map(buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &subresource); FAILED(result)) {
 				utils::logger(utils::e_log_type::warning, "cant map constant buffer, return code {}.", result);
 				return;
 			}

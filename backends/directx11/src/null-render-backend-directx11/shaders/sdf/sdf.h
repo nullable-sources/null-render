@@ -6,7 +6,7 @@
 namespace null::render::directx11 {
 	class c_sdf_shader : public backend::i_sdf_shader, public c_shader {
 	public:
-		c_sdf_shader() : c_shader{ &sdf_shader_object, &passthrough_shader_object } { }
+		c_sdf_shader() : c_shader(&sdf_shader_object, &passthrough_shader_object) { }
 
 	public:
 		void use() override;

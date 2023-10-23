@@ -63,8 +63,8 @@ namespace null::render::directx11 {
 			swap_chain_desc.OutputWindow = wnd_handle;
 
 			D3D_FEATURE_LEVEL feature_level;
-			if(auto result{ D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, std::vector<D3D_FEATURE_LEVEL>{ D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_0 }.data(), 2,
-				D3D11_SDK_VERSION, &swap_chain_desc, &swap_chain, &device, &feature_level, &context) }; FAILED(result)) {
+			if(auto result = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, std::vector<D3D_FEATURE_LEVEL>{ D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_0 }.data(), 2,
+				D3D11_SDK_VERSION, &swap_chain_desc, &swap_chain, &device, &feature_level, &context); FAILED(result)) {
 				utils::logger(utils::e_log_type::error, "D3D11CreateDeviceAndSwapChain failed, return code {}.", result);
 			}
 
@@ -84,19 +84,19 @@ namespace null::render::directx11 {
 			backend::rendering_buffer->clear();
 			utils::win::c_window::on_main_loop();
 
-			if(auto result{ swap_chain->Present(1, 0) }; FAILED(result))
+			if(auto result = swap_chain->Present(1, 0); FAILED(result))
 				utils::logger(utils::e_log_type::error, "Present failed, return code {}.", result);
 		}
 
 		std::vector<int> on_wnd_proc(HWND _wnd_handle, UINT msg, WPARAM w_param, LPARAM l_param) override {
-			std::vector<int> callback_results{ utils::win::c_window::on_wnd_proc(_wnd_handle, msg, w_param, l_param) };
+			std::vector<int> callback_results = utils::win::c_window::on_wnd_proc(_wnd_handle, msg, w_param, l_param);
 			switch(msg) {
 				case WM_SIZE: {
 					if(device && w_param != SIZE_MINIMIZED) {
 						backend::msaa_buffer->on_destroy();
 						backend::rendering_buffer->on_destroy();
 
-						render::shared::viewport = vec2_t{ (std::uint32_t)LOWORD(l_param), (std::uint32_t)HIWORD(l_param) };
+						render::shared::viewport = vec2_t<std::uint32_t>(LOWORD(l_param), HIWORD(l_param));
 						swap_chain->ResizeBuffers(0, (std::uint32_t)render::shared::viewport.x, (std::uint32_t)render::shared::viewport.y, DXGI_FORMAT_UNKNOWN, 0);
 
 						backend::msaa_buffer->on_create();

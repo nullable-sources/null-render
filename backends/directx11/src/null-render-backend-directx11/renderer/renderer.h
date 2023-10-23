@@ -14,6 +14,8 @@ namespace null::render::directx11 {
 
 	class c_renderer : public backend::i_renderer {
 	public:
+		backend::e_topology old_topology{ };
+
 		struct {
 			UINT scissor_rects_count{ }, viewports_count{ };
 			D3D11_RECT scissor_rects[D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE]{ };
@@ -49,7 +51,7 @@ namespace null::render::directx11 {
 
 		void set_texture(void* texture) override;
 		void set_clip(const rect_t<float>& rect) override;
-		void draw_geometry(size_t vertex_count, size_t index_count, size_t vertex_offset, size_t index_offset) override;
+		void draw_geometry(backend::e_topology topology, size_t vertex_count, size_t index_count, size_t vertex_offset, size_t index_offset) override;
 
 		void* create_texture(const vec2_t<float>& size, void* data) override;
 		void destroy_texture(void* texture) override;

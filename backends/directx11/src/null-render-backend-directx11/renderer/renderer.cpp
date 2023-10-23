@@ -10,11 +10,15 @@ namespace null::render::directx11 {
 	}
 
 	void c_renderer::set_clip(const rect_t<float>& rect) {
-		const D3D11_RECT clip{ (LONG)rect.min.x, (LONG)rect.min.y, (LONG)rect.max.x, (LONG)rect.max.y };
+		const D3D11_RECT clip(rect.min.x, rect.min.y, rect.max.x, rect.max.y);
 		shared.context->RSSetScissorRects(1, &clip);
 	}
 
-	void c_renderer::draw_geometry(size_t vertex_count, size_t index_count, size_t vertex_offset, size_t index_offset) {
+	void c_renderer::draw_geometry(backend::e_topology topology, size_t vertex_count, size_t index_count, size_t vertex_offset, size_t index_offset) {
+		if(old_topology != topology) {
+			shared.context->IASetPrimitiveTopology(topology == backend::e_topology::triangle_list ? D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST : D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+			old_topology = topology;
+		}
 		shared.context->DrawIndexed(index_count, index_offset, vertex_offset);
 	}
 
@@ -39,7 +43,7 @@ namespace null::render::directx11 {
 			.SysMemPitch{ texture_desc.Width * 4 },
 			.SysMemSlicePitch{ 0 }
 		};
-		if(auto result{ shared.device->CreateTexture2D(&texture_desc, &subresource, &texture) }; FAILED(result))
+		if(auto result = shared.device->CreateTexture2D(&texture_desc, &subresource, &texture); FAILED(result))
 			utils::logger(utils::e_log_type::error, "cant create texture2d, return code {}.", result);
 
 		ID3D11ShaderResourceView* texture_view{ };
@@ -51,10 +55,10 @@ namespace null::render::directx11 {
 				.MipLevels{ texture_desc.MipLevels }
 			}
 		};
-		if(auto result{ shared.device->CreateShaderResourceView(texture, &shader_resource_view_desc, &texture_view) }; FAILED(result))
+		if(auto result = shared.device->CreateShaderResourceView(texture, &shader_resource_view_desc, &texture_view); FAILED(result))
 			utils::logger(utils::e_log_type::error, "cant create shader resource view, return code {}.", result);
 
-		if(auto result{ texture->Release() }; FAILED(result))
+		if(auto result = texture->Release(); FAILED(result))
 			utils::logger(utils::e_log_type::warning, "cant release texture, return code {}.", result);
 
 		return texture_view;
@@ -66,7 +70,7 @@ namespace null::render::directx11 {
 			return;
 		}
 
-		if(auto result{ ((ID3D11ShaderResourceView*)texture)->Release() }; FAILED(result))
+		if(auto result = ((ID3D11ShaderResourceView*)texture)->Release(); FAILED(result))
 			utils::logger(utils::e_log_type::warning, "cant release texture, return code {}.", result);
 		texture = nullptr;
 	}
@@ -150,7 +154,7 @@ namespace null::render::directx11 {
 					}
 				}
 			};
-			if(auto result{ shared.device->CreateBlendState(&blend_desc, &internal_objects.blend) }; FAILED(result))
+			if(auto result = shared.device->CreateBlendState(&blend_desc, &internal_objects.blend); FAILED(result))
 				utils::logger(utils::e_log_type::error, "cant create blend state, return code {}.", result);
 		}
 
@@ -173,7 +177,7 @@ namespace null::render::directx11 {
 					.StencilFunc{ D3D11_COMPARISON_ALWAYS }
 				}
 			};
-			if(auto result{ shared.device->CreateDepthStencilState(&depth_stencil_desc, &internal_objects.depth_stencil) }; FAILED(result))
+			if(auto result = shared.device->CreateDepthStencilState(&depth_stencil_desc, &internal_objects.depth_stencil); FAILED(result))
 				utils::logger(utils::e_log_type::error, "cant create depth stencil state, return code {}.", result);
 		}
 
@@ -188,7 +192,7 @@ namespace null::render::directx11 {
 				.MinLOD{ 0.f },
 				.MaxLOD{ 0.f }
 			};
-			if(auto result{ shared.device->CreateSamplerState(&sampler_desc, &internal_objects.sampler) }; FAILED(result))
+			if(auto result = shared.device->CreateSamplerState(&sampler_desc, &internal_objects.sampler); FAILED(result))
 				utils::logger(utils::e_log_type::error, "cant create sampler state, return code {}.", result);
 		}
 	}

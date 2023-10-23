@@ -8,7 +8,7 @@ namespace null::render {
 
 	public:
 		c_texture_filter(std::unique_ptr<i_command>&& _child_command, void* _texture)
-			: i_filter{ std::move(_child_command) }, texture { _texture } { }
+			: i_filter(std::move(_child_command)), texture(_texture) { }
 
 	public:
 		virtual void handle() override;

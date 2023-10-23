@@ -5,6 +5,7 @@ namespace null::render::directx9 {
 	class c_mesh : public backend::c_mesh {
 	public:
 		struct directx_vertex_t {
+		public:
 			vec2_t<float> pos{ }, uv{ };
 			sdk::i_color<byte> color{ };
 		};

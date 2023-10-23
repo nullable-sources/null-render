@@ -5,7 +5,7 @@ namespace null::render::directx9 {
 	namespace sources {
 		static const std::vector<byte>& passthrough_color() {
 			#include "compiled/passthrough-color.h"
-			static const std::vector<byte> source{ shader_data, shader_data + sizeof(shader_data) };
+			static const std::vector<byte> source(shader_data, shader_data + sizeof(shader_data));
 			return source;
 		}
 	}

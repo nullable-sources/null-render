@@ -1,5 +1,5 @@
 #pragma once
-#include "null-render/graphic/draw-list/draw-list.h"
+#include "../internal/geometry-buffer.h"
 
 namespace null::render::backend {
 	class i_renderer {
@@ -15,7 +15,7 @@ namespace null::render::backend {
 
 		virtual void set_texture(void* texture) = 0;
 		virtual void set_clip(const rect_t<float>& rect) = 0;
-		virtual void draw_geometry(size_t vertex_count, size_t index_count, size_t vertex_offset, size_t index_offset) = 0;
+		virtual void draw_geometry(e_topology topology, size_t vertex_count, size_t index_count, size_t vertex_offset, size_t index_offset) = 0;
 
 		virtual void* create_texture(const vec2_t<float>& size, void* data) = 0;
 		virtual void destroy_texture(void* texture) = 0;

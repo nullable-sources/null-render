@@ -42,7 +42,7 @@ namespace null::render::directx9 {
 		void on_create() override {
 			if(!(direct3d = Direct3DCreate9(D3D_SDK_VERSION)))
 				utils::logger(utils::e_log_type::error, "Direct3DCreate9 return nullptr.");
-			if(auto result{ direct3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, wnd_handle, D3DCREATE_HARDWARE_VERTEXPROCESSING, &present_parameters, &device) }; FAILED(result))
+			if(auto result = direct3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, wnd_handle, D3DCREATE_HARDWARE_VERTEXPROCESSING, &present_parameters, &device); FAILED(result))
 				utils::logger(utils::e_log_type::error, "CreateDevice failed, return code {}.", result);
 
 			backend::factory = std::make_unique<c_factory>(device);
@@ -76,7 +76,7 @@ namespace null::render::directx9 {
 			switch(msg) {
 				case WM_SIZE: {
 					if(device && w_param != SIZE_MINIMIZED) {
-						shared::viewport = vec2_t{ LOWORD(l_param), HIWORD(l_param) };
+						shared::viewport = vec2_t(LOWORD(l_param), HIWORD(l_param));
 						present_parameters.BackBufferWidth = LOWORD(l_param);
 						present_parameters.BackBufferHeight = HIWORD(l_param);
 						reset_device();
@@ -89,7 +89,7 @@ namespace null::render::directx9 {
 
 		void reset_device() {
 			backend::renderer->destroy_objects();
-			if(auto result{ device->Reset(&present_parameters) }; FAILED(result))
+			if(auto result = device->Reset(&present_parameters); FAILED(result))
 				utils::logger(utils::e_log_type::error, "device reset failed, return code {}.", result);
 			backend::renderer->create_objects();
 		}

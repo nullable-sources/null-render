@@ -12,7 +12,7 @@ namespace null::render {
 		void* texture{ };
 
 	public:
-		c_texture_command(void* _texture) : texture{ _texture } { }
+		c_texture_command(void* _texture) : texture(_texture) { }
 
 	public:
 		void handle() override;
@@ -23,7 +23,7 @@ namespace null::render {
 		matrix4x4_t matrix{ };
 
 	public:
-		c_matrix_command(const matrix4x4_t& _matrix) : matrix{ _matrix } { }
+		c_matrix_command(const matrix4x4_t& _matrix) : matrix(_matrix) { }
 
 	public:
 		void handle() override;
@@ -34,7 +34,7 @@ namespace null::render {
 		rect_t<float> rect{ };
 
 	public:
-		c_clip_command(const rect_t<float>& _rect) : rect{ _rect } { }
+		c_clip_command(const rect_t<float>& _rect) : rect(_rect) { }
 
 	public:
 		void handle() override;

@@ -9,7 +9,7 @@ namespace null::render::directx11 {
 		c_vertex_shader* vertex_shader{ };
 
 	public:
-		c_shader(c_pixel_shader* _pixel_shader, c_vertex_shader* _vertex_shader) : pixel_shader{ _pixel_shader }, vertex_shader{ _vertex_shader } { }
+		c_shader(c_pixel_shader* _pixel_shader, c_vertex_shader* _vertex_shader) : pixel_shader(_pixel_shader), vertex_shader(_vertex_shader) { }
 
 	public:
 		virtual void on_create() override { }

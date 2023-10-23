@@ -1,9 +1,11 @@
 #pragma once
+#include "null-render/backend/internal/geometry-buffer.h"
 #include "../commands.h"
 
 namespace null::render {
 	class c_geometry_command : public i_command {
 	public:
+		backend::e_topology topology{ };
 		size_t index_offset{ }, vertex_offset{ };
 		size_t index_count{ }, vertex_count{ };
 

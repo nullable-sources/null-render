@@ -18,10 +18,4 @@
 
     <Import Project="..\..\null-render.static-linking.props" />
   </ImportGroup>
-  
-  <PropertyGroup>
-    <NullProjectName>null-render-backend-opengl3</NullProjectName>
-    <IntDir>$(SolutionDir)build\$(Configuration)-$(PlatformShortName)\obj-$(NullProjectName)\</IntDir>
-    <TargetName>$(NullProjectName)-$(Configuration)-$(PlatformShortName)</TargetName>
-  </PropertyGroup>
 </Project>

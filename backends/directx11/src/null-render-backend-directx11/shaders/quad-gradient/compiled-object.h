@@ -5,7 +5,7 @@ namespace null::render::directx11 {
 	namespace sources {
 		static const std::vector<byte>& quad_gradient() {
 			#include "compiled/quad-gradient.h"
-			static const std::vector<byte> source{ shader_data, shader_data + sizeof(shader_data) };
+			static const std::vector<byte> source(shader_data, shader_data + sizeof(shader_data));
 			return source;
 		}
 	}

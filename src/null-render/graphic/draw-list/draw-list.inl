@@ -6,11 +6,11 @@ namespace null::render {
 	void c_draw_list::add_text(std::basic_string_view<char_t> text, vec2_t<float> pos, const text_brush_t& text_brush) {
 		if(text_brush.color.a <= 0) return;
 
-		std::unique_ptr<c_geometry_command> command{ std::make_unique<c_geometry_command>() };
+		std::unique_ptr<c_geometry_command> command = std::make_unique<c_geometry_command>();
 
-		float new_line_pos{ pos.x };
+		float new_line_pos = pos.x;
 		if(text_brush.align != e_text_align::none) {
-			vec2_t text_size{ text_brush.font->calc_text_size<char_t>(text, text_brush.size) };
+			vec2_t text_size = text_brush.font->calc_text_size<char_t>(text, text_brush.size);
 			if(text_size <= 0.f) return;
 
 			if(text_brush.align & e_text_align::right) pos.x -= text_size.x;
@@ -22,8 +22,8 @@ namespace null::render {
 		}
 
 		pos = math::floor(pos);
-		for(auto iterator{ text.begin() }; iterator != text.end();) {
-			std::uint32_t symbol{ (std::uint32_t)*iterator };
+		for(auto iterator = text.begin(); iterator != text.end();) {
+			std::uint32_t symbol = (std::uint32_t)*iterator;
 			iterator += impl::char_converters::converter<char_t>::convert(symbol, iterator, text.end());
 			if(!symbol) break;
 
@@ -34,12 +34,12 @@ namespace null::render {
 				continue;
 			}
 
-			const c_font::glyph_t* glyph{ text_brush.font->find_glyph((std::uint16_t)symbol) };
+			const c_font::glyph_t* glyph = text_brush.font->find_glyph((std::uint16_t)symbol);
 			if(!glyph) continue;
 
 			if(glyph->visible) {
-				rect_t corners{ rect_t{ pos } + glyph->corners * (text_brush.size / text_brush.font->size) };
-				rect_t uvs{ glyph->texture_coordinates };
+				rect_t corners = rect_t(pos) + glyph->corners * (text_brush.size / text_brush.font->size);
+				rect_t uvs = glyph->texture_coordinates;
 
 				command->index_count += 6;
 				backend::mesh->geometry_buffer
@@ -48,10 +48,10 @@ namespace null::render {
 
 				command->vertex_count += 4;
 				backend::mesh->geometry_buffer
-					.add_vertex({ corners.min, uvs.min, text_brush.color })
-					.add_vertex({ { corners.max.x, corners.min.y }, { uvs.max.x, uvs.min.y }, text_brush.color })
-					.add_vertex({ corners.max, uvs.max, text_brush.color })
-					.add_vertex({ { corners.min.x, corners.max.y }, { uvs.min.x, uvs.max.y }, text_brush.color });
+					.add_vertex(corners.min, uvs.min, text_brush.color)
+					.add_vertex(vec2_t(corners.max.x, corners.min.y), vec2_t(uvs.max.x, uvs.min.y), text_brush.color)
+					.add_vertex(corners.max, uvs.max, text_brush.color)
+					.add_vertex(vec2_t(corners.min.x, corners.max.y), vec2_t(uvs.min.x, uvs.max.y), text_brush.color);
 			}
 			pos.x += glyph->advance_x * (text_brush.size / text_brush.font->size);
 		}

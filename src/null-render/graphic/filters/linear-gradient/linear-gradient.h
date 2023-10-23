@@ -9,7 +9,7 @@ namespace null::render {
 
 	public:
 		c_linear_gradient_filter(std::unique_ptr<i_command> _child_command, const backend::i_linear_gradient_shader::constants_t& _constants)
-			: i_filter{ std::move(_child_command) }, constants{ _constants } { }
+			: i_filter(std::move(_child_command)), constants(_constants) { }
 
 	public:
 		virtual void handle() override;

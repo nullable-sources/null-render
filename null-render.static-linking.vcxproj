@@ -11,10 +11,4 @@
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)third-party\null-sdk\null-sdk.static-linking.props" />
   </ImportGroup>
-  
-  <PropertyGroup>
-    <NullProjectName>null-render</NullProjectName>
-    <IntDir>$(SolutionDir)build\$(Configuration)-$(PlatformShortName)\obj-$(NullProjectName)\</IntDir>
-    <TargetName>$(NullProjectName)-$(Configuration)-$(PlatformShortName)</TargetName>
-  </PropertyGroup>
 </Project>

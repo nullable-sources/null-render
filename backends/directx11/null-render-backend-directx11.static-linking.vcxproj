@@ -18,10 +18,4 @@
     
     <Import Project="..\..\null-render.static-linking.props" />
   </ImportGroup>
-  
-  <PropertyGroup>
-    <NullProjectName>null-render-backend-directx11</NullProjectName>
-    <IntDir>$(SolutionDir)build\$(Configuration)-$(PlatformShortName)\obj-$(NullProjectName)\</IntDir>
-    <TargetName>$(NullProjectName)-$(Configuration)-$(PlatformShortName)</TargetName>
-  </PropertyGroup>
 </Project>

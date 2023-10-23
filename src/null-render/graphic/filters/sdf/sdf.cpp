@@ -8,7 +8,7 @@
 
 namespace null::render {
 	void c_sdf_filter::handle() {
-		float aa{ 0.25f / sdf_padding * float(sdf_pixel_size) / constants.aa };
+		float aa = 0.25f / sdf_padding * float(sdf_pixel_size) / constants.aa;
 		if(constants.aa < 16.f)
 			aa *= std::pow(constants.aa / 16.f, 2);
 

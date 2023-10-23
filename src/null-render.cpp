@@ -6,14 +6,14 @@ namespace null::render {
 		shared::viewport = window.get_window_size();
 
 		std::ranges::for_each(std::views::iota(0, (int)shared::circle_segments.size()), [=](const int& i) {
-			float radius{ i + 1.f };
+			float radius = i + 1.f;
 			shared::circle_segments[i] = std::min(std::clamp((std::numbers::pi * 2.f) / std::acosf((radius - shared::circle_segment_max_error) / radius), 12., 512.), 255.);
 		});
 
 		shared::arc_fast_vertex.resize(shared::arc_fast_tessellation_multiplier * 12);
 		std::ranges::for_each(std::views::iota(0, (int)shared::arc_fast_vertex.size()), [=](const int& i) {
-			float a{ float(i * 2.f * std::numbers::pi) / shared::arc_fast_vertex.size() };
-			shared::arc_fast_vertex[i] = vec2_t{ std::cosf(a), std::sinf(a) };
+			float a = i * 2.f * std::numbers::pi / shared::arc_fast_vertex.size();
+			shared::arc_fast_vertex[i] = vec2_t(std::cosf(a), std::sinf(a));
 		});
 
 		if(!backend::factory) {
