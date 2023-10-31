@@ -8,7 +8,7 @@
 
     <ItemDefinitionGroup>
         <ClCompile>
-            <AdditionalIncludeDirectories>$(NullRenderRoot)src;$(NullRenderRoot)third-party\stb;$(NullRenderRoot)third-party\freetype\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+            <AdditionalIncludeDirectories>$(NullRenderRoot)src;$(NullRenderRoot)third-party\stb;$(NullRenderRoot)third-party\freetype\include;$(NullRenderRoot)third-party\micro-tess;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
         </ClCompile>
         <Lib>
             <AdditionalLibraryDirectories>$(NullRenderRoot)build;$(NullRenderRoot)third-party\freetype\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
