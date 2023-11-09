@@ -7,138 +7,141 @@
 #include <null-sdk.h>
 
 namespace null::render {
-    enum class e_fill_rule { non_zero, even_odd };
-    enum class e_tessellation_quality { constant_memory, fine, better, extra_vertices };
+	enum class e_fill_rule { non_zero, even_odd };
+	enum class e_tessellation_quality { constant_memory, fine, better, extra_vertices };
 
 	struct path_t {
 	public:
-        using chunker_t = microtess::allocator_aware_chunker<vec2_t<float>, microtess::dynamic_array>;
+		using chunker_t = microtess::allocator_aware_chunker<vec2_t<float>, microtess::dynamic_array>;
 
-    public:
-        chunker_t paths_vertices{ };
+	public:
+		chunker_t paths_vertices{ };
 
-        e_fill_rule fill_rule{ e_fill_rule::non_zero };
-        e_tessellation_quality quality{ e_tessellation_quality::better };
-        e_line_cap line_cap{ e_line_cap::butt };
-        e_line_join line_join{ e_line_join::bevel };
-        float stroke_width{ 1.f };
-        float miter_limit{ 4.f };
-        std::array<int, 2> dash_pattern{ };
-        float dash_offset{ };
+		e_fill_rule fill_rule{ e_fill_rule::non_zero };
+		e_tessellation_quality quality{ e_tessellation_quality::better };
+		e_line_cap line_cap{ e_line_cap::butt };
+		e_line_join line_join{ e_line_join::bevel };
+		float stroke_width{ 1.f };
+		float miter_limit{ 4.f };
+		std::array<int, 2> dash_pattern{ };
+		float dash_offset{ };
 
-    public:
-        path_t() { }
+	public:
+		path_t() { }
 
 	private:
-        vec2_t<float> curr_subpath_last_point() const {
-            auto current_path = paths_vertices.back();
-            return current_path[current_path.size() - 1];
-        }
+		vec2_t<float> curr_subpath_last_point() const {
+			auto current_path = paths_vertices.back();
+			return current_path[current_path.size() - 1];
+		}
 
 	public:
-        auto& set_fill_rule(this path_t& self, e_fill_rule fill_rule) { self.fill_rule = fill_rule; return self; }
-        auto& set_tessellation_quality(this path_t& self, e_tessellation_quality quality) { self.quality = quality; return self; }
-
-        auto& set_line_cap(this path_t& self, e_line_cap line_cap) { self.line_cap = line_cap; return self; }
-        auto& set_line_join(this path_t& self, e_line_join line_join) { self.line_join = line_join; return self; }
-
-        auto& set_stroke_width(this path_t& self, float stroke_width) { self.stroke_width = stroke_width; return self; }
-        auto& set_miter_limit(this path_t& self, float miter_limit) { self.miter_limit = miter_limit; return self; }
-        auto& set_dash_pattern(this path_t& self, const std::array<int, 2>& dash_pattern) { self.dash_pattern = dash_pattern; return self; }
-        auto& set_dash_offset(this path_t& self, float dash_offset) { self.dash_offset = dash_offset; return self; }
+		path_t& set_fill_rule(this path_t& self, e_fill_rule fill_rule) { self.fill_rule = fill_rule; return self; }
+		path_t& set_quality(this path_t& self, e_tessellation_quality quality) { self.quality = quality; return self; }
+		path_t& set_line_cap(this path_t& self, e_line_cap line_cap) { self.line_cap = line_cap; return self; }
+		path_t& set_line_join(this path_t& self, e_line_join line_join) { self.line_join = line_join; return self; }
+		path_t& set_stroke_width(this path_t& self, float stroke_width) { self.stroke_width = stroke_width; return self; }
+		path_t& set_miter_limit(this path_t& self, float miter_limit) { self.miter_limit = miter_limit; return self; }
+		path_t& set_dash_pattern(this path_t& self, const std::array<int, 2>& dash_pattern) { self.dash_pattern = dash_pattern; return self; }
+		path_t& set_dash_offset(this path_t& self, float dash_offset) { self.dash_offset = dash_offset; return self; }
 
 	public:
-        auto& clear(this path_t& self) { self.paths_vertices.clear(); return self; }
-        auto& add_path(this path_t& self, const path_t& path) { self.paths_vertices.push_back(path.paths_vertices); return self; }
+		path_t& clear(this path_t& self) {
+			self.paths_vertices.clear();
+			return self;
+		}
 
-        auto& close(this path_t& self) {
-            if(self.paths_vertices.back().size() == 0) return self;
+		path_t& add_path(this path_t& self, const path_t& path) {
+			self.paths_vertices.push_back(path.paths_vertices);
+			return self;
+		}
 
-            // @note: move the pen to the first vertex of the sub-path and
-            const vec2_t<float> last_point = self.curr_subpath_last_point();
+		path_t& close(this path_t& self) {
+			if(self.paths_vertices.back().size() == 0) return self;
 
-            // @note: if two last points equal the first one, it is a close path signal
-            self.paths_vertices.push_back(last_point);
-            self.paths_vertices.push_back(last_point);
-            self.paths_vertices.cut_chunk_if_current_not_empty();
-            return self;
-        }
+			// @note: move the pen to the first vertex of the sub-path and
+			const vec2_t<float> last_point = self.curr_subpath_last_point();
 
-        auto& move_to(this path_t& self, const vec2_t<float>& point) {
-            self.paths_vertices.cut_chunk_if_current_not_empty();
-            self.paths_vertices.push_back(point);
-            return self;
-        }
+			// @note: if two last points equal the first one, it is a close path signal
+			self.paths_vertices.push_back(last_point);
+			self.paths_vertices.push_back(last_point);
+			self.paths_vertices.cut_chunk_if_current_not_empty();
+			return self;
+		}
 
-        auto& line_to(this path_t& self, const vec2_t<float>& point, float threshold = 1.f) {
-            auto current_path = self.paths_vertices.back();
+		path_t& move_to(this path_t& self, const vec2_t<float>& point) {
+			self.paths_vertices.cut_chunk_if_current_not_empty();
+			self.paths_vertices.push_back(point);
+			return self;
+		}
 
-            threshold = std::max(0.f, threshold);
-            bool avoid{ };
-            if(current_path.size()) {
-                const vec2_t<float> vec = current_path[current_path.size() - 1] - point;
-                avoid = vec.dot(vec) <= threshold * threshold;
-            }
+		path_t& line_to(this path_t& self, const vec2_t<float>& point, float threshold = 1.f) {
+			auto current_path = self.paths_vertices.back();
 
-            if(!avoid) {
-                if(current_path.size() == 0) {
-                    const auto paths = self.paths_vertices.size();
-                    if(paths >= 2) {
-                        auto last_path = self.paths_vertices[paths - 2];
-                        self.paths_vertices.push_back(last_path[last_path.size() - 1]);
-                    }
-                }
-                self.paths_vertices.push_back(point);
-            }
-            return self;
-        }
+			threshold = std::max(0.f, threshold);
+			bool avoid{ };
+			if(current_path.size()) {
+				const vec2_t<float> vec = current_path[current_path.size() - 1] - point;
+				avoid = vec.dot(vec) <= threshold * threshold;
+			}
 
-        auto& lines_to(this path_t& self, const std::vector<vec2_t<float>>& lines) {
-            for(const vec2_t<float>& point : lines) self.line_to(point);
-            return self;
-        }
+			if(!avoid) {
+				if(current_path.size() == 0) {
+					const auto paths = self.paths_vertices.size();
+					if(paths >= 2) {
+						auto last_path = self.paths_vertices[paths - 2];
+						self.paths_vertices.push_back(last_path[last_path.size() - 1]);
+					}
+				}
+				self.paths_vertices.push_back(point);
+			}
+			return self;
+		}
 
-        auto& add_poly(this path_t& self, const std::vector<vec2_t<float>>& poly) {
-            if(poly.empty() == 0) return self;
-            self.paths_vertices.cut_chunk_if_current_not_empty();
-            return self.lines_to(poly);
-        }
+		path_t& lines_to(this path_t& self, const std::vector<vec2_t<float>>& lines) {
+			for(const vec2_t<float>& point : lines) self.line_to(point);
+			return self;
+		}
 
-        auto& rect(this path_t& self, const vec2_t<float>& point, const vec2_t<float>& size, math::e_rotation rotation = math::e_rotation::cw) {
-            self.move_to(point);
-            if(rotation == math::e_rotation::cw) {
-                self.line_to({ point.x + size.x, point.y });
-                self.line_to({ point.x + size.x, point.y + size.y });
-                self.line_to({ point.x, point.y + size.y });
-            } else {
-                self.line_to({ point.x, point.y + size.y });
-                self.line_to({ point.x + size.x, point.y + size.y });
-                self.line_to({ point.x + size.x, point.y });
-            }
-            return self.close();
-        }
+		path_t& add_poly(this path_t& self, const std::vector<vec2_t<float>>& poly) {
+			if(poly.empty() == 0) return self;
+			self.paths_vertices.cut_chunk_if_current_not_empty();
+			return self.lines_to(poly);
+		}
 
-        auto& ellipse(this path_t& self, const vec2_t<float>& point, float radius_x, float radius_y, radians_t rotation_angle, radians_t start_angle, radians_t end_angle, math::e_rotation rotation = math::e_rotation::cw, unsigned divisions_count = 32) {
-            microtess::dynamic_array<vec2_t<float>> output{ divisions_count, vec2_t<float>() };
-            output.clear();
+		path_t& rect(this path_t& self, const vec2_t<float>& point, const vec2_t<float>& size, math::e_rotation rotation = math::e_rotation::cw) {
+			self.move_to(point);
+			if(rotation == math::e_rotation::cw) {
+				self.line_to({ point.x + size.x, point.y });
+				self.line_to({ point.x + size.x, point.y + size.y });
+				self.line_to({ point.x, point.y + size.y });
+			} else {
+				self.line_to({ point.x, point.y + size.y });
+				self.line_to({ point.x + size.x, point.y + size.y });
+				self.line_to({ point.x + size.x, point.y });
+			}
+			return self.close();
+		}
 
-        	microtess::elliptic_arc_divider<float, decltype(output)>::compute(
-                output, point.x, point.y,
-                radius_x, radius_y, rotation_angle, start_angle, end_angle, divisions_count, rotation == math::e_rotation::ccw
-            );
+		path_t& ellipse(this path_t& self, const vec2_t<float>& point, float radius_x, float radius_y, radians_t rotation_angle, radians_t start_angle, radians_t end_angle, math::e_rotation rotation = math::e_rotation::cw, unsigned divisions_count = 32) {
+			microtess::dynamic_array<vec2_t<float>> output{ divisions_count, vec2_t<float>() };
+			output.clear();
 
-            for(const vec2_t<float> point : output) self.line_to(point);
-            return self;
-        }
+			microtess::elliptic_arc_divider<float, decltype(output)>::compute(
+				output, point.x, point.y,
+				radius_x, radius_y, rotation_angle, start_angle, end_angle, divisions_count, rotation == math::e_rotation::ccw
+			);
 
-        auto& circle(this path_t& self, const vec2_t<float> point, float radius, math::e_rotation rotation = math::e_rotation::cw, unsigned divisions_count = 32) {
-            constexpr radians_t end_angle = angle_t<degrees_t>(360.f);
-            return self.ellipse(point, radius, radius, 0, 0, end_angle, rotation, divisions_count);
-        }
+			for(const vec2_t<float> point : output) self.line_to(point);
+			return self;
+		}
 
-        auto& arc(this path_t& self, const vec2_t<float>& point, float radius, radians_t start_angle, radians_t end_angle, math::e_rotation rotation = math::e_rotation::cw, unsigned divisions_count = 32) {
-            return self.ellipse(point, radius, radius, 0, start_angle, end_angle, rotation, divisions_count);
-        }
+		path_t& circle(this path_t& self, const vec2_t<float> point, float radius, math::e_rotation rotation = math::e_rotation::cw, unsigned divisions_count = 32) {
+			constexpr radians_t end_angle = angle_t<degrees_t>(360.f);
+			return self.ellipse(point, radius, radius, 0, 0, end_angle, rotation, divisions_count);
+		}
+
+		path_t& arc(this path_t& self, const vec2_t<float>& point, float radius, radians_t start_angle, radians_t end_angle, math::e_rotation rotation = math::e_rotation::cw, unsigned divisions_count = 32) { return self.ellipse(point, radius, radius, 0, start_angle, end_angle, rotation, divisions_count); }
 	};
 
 	namespace path {

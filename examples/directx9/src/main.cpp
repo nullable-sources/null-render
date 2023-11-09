@@ -13,7 +13,7 @@ void draw_example(const std::string_view& name, const null::render::brush_t& bru
 	stroke.set_cap(null::render::e_line_cap::joint);
 	stroke.set_origin(0.f);
 
-	null::render::sdf_text_brush_t text_brush{ };
+	null::render::sdf_brush_t text_brush{ };
 	text_brush
 		.set_align(text_align)
 		.set_size(30.f);
@@ -69,7 +69,7 @@ void main_loop() {
 	pen_gradient.set_brush(quad_gradient_brush);
 
 	null::render::begin_frame(window); {
-		null::render::sdf_text_brush_t text_brush{ };
+		null::render::sdf_brush_t text_brush{ };
 		text_brush
 			.set_size(30.f)
 			.set_outline(1.f, { 100, 100, 255 }, { 100, 100, 255, 0 });

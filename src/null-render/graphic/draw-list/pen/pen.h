@@ -22,11 +22,11 @@ namespace null::render {
 		e_pen_edge edge{ };
 
 	public:
-		template <typename brush_type_t> auto&& set_brush(this auto&& self, const brush_type_t& brush) { self.brush = std::make_shared<brush_type_t>(brush); return self; }
-		auto&& set_thickness(this auto&& self, float thickness) { self.thickness = thickness; return self; }
-		auto&& set_origin(this auto&& self, float origin) { self.origin = origin; return self; }
-		auto&& set_layer(this auto&& self, e_pen_layer layer) { self.layer = layer; return self; }
-		auto&& set_edge(this auto&& self, e_pen_edge edge) { self.edge = edge; return self; }
+		template <typename self_t, typename brush_type_t> auto& set_brush(this self_t& self, const brush_type_t& brush) { self.brush = std::make_shared<brush_type_t>(brush); return self; }
+		template <typename self_t> self_t& set_thickness(this self_t& self, float thickness) { self.thickness = thickness; return self; }
+		template <typename self_t> self_t& set_origin(this self_t& self, float origin) { self.origin = origin; return self; }
+		template <typename self_t> self_t& set_layer(this self_t& self, e_pen_layer layer) { self.layer = layer; return self; }
+		template <typename self_t> self_t& set_edge(this self_t& self, e_pen_edge edge) { self.edge = edge; return self; }
 
 	public:
 		std::unique_ptr<i_command> around_convex_shape(const std::unique_ptr<c_geometry_command>& command) const;

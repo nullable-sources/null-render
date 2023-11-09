@@ -172,7 +172,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnableModules>false</EnableModules>
       <AdditionalIncludeDirectories>$(ProjectDir)src\;$(ProjectDir)third-party\micro-tess\;$(ProjectDir)third-party\stb\;$(ProjectDir)third-party\freetype\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
@@ -200,7 +200,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnableModules>false</EnableModules>
       <AdditionalIncludeDirectories>$(ProjectDir)src\;$(ProjectDir)third-party\micro-tess\;$(ProjectDir)third-party\stb\;$(ProjectDir)third-party\freetype\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
@@ -228,7 +228,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnableModules>false</EnableModules>
       <AdditionalIncludeDirectories>$(ProjectDir)src\;$(ProjectDir)third-party\micro-tess\;$(ProjectDir)third-party\stb\;$(ProjectDir)third-party\freetype\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
@@ -256,7 +256,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnableModules>false</EnableModules>
       <AdditionalIncludeDirectories>$(ProjectDir)src\;$(ProjectDir)third-party\micro-tess\;$(ProjectDir)third-party\stb\;$(ProjectDir)third-party\freetype\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
