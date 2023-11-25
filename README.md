@@ -24,4 +24,4 @@ To connect opengl3-renderer you need:
 - create a .rc file in the project and include "null-render-backend-opengl3-resources.rc" into it
 
 # dependencies
-[null-sdk](https://github.com/nullptr-sources/null-sdk)
+[null-sdk](https://github.com/nullable-sources/null-sdk)

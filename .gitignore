@@ -1,6 +1,7 @@
 build/
 .vs/
 *.user
+*.static-linking.log
 
 backends/directx9/src/null-render-backend-directx9/shaders/shared-objects/passthrough/compiled
 backends/directx9/src/null-render-backend-directx9/shaders/passthrough-color/compiled

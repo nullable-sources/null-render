@@ -50,11 +50,17 @@
     <ClInclude Include="src\null-render-backend-opengl3\wrapper\program.h" />
     <ClInclude Include="src\null-render-backend-opengl3\wrapper\shader.h" />
   </ItemGroup>
+
+  <PropertyGroup Label="NullVCXProperties">
+    <NullRenderBackendOpengl3DependenciesPath Condition="Exists('$(SolutionDir)third-party\null-sdk\null-sdk.vcxproj')">$(SolutionDir)third-party\</NullRenderBackendOpengl3DependenciesPath>
+    <NullRenderBackendOpengl3DependenciesPath Condition="!Exists('$(SolutionDir)third-party\null-sdk\null-sdk.vcxproj')">..\..\..\</NullRenderBackendOpengl3DependenciesPath>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\null-render.vcxproj">
       <Project>{4abcf635-9767-40f9-989e-f0cdf5fb68ae}</Project>
     </ProjectReference>
-    <ProjectReference Include="$(SolutionDir)third-party\null-sdk\null-sdk.vcxproj">
+    <ProjectReference Include="$(NullRenderBackendOpengl3DependenciesPath)null-sdk\null-sdk.vcxproj">
       <Project>{f7a10a5c-0fae-424b-8f2b-6cc4e4d898d1}</Project>
     </ProjectReference>
   </ItemGroup>

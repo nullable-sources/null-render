@@ -3,18 +3,13 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{97a6b7ae-9878-4584-a0b8-15287db604ac}</ProjectGuid>
   </PropertyGroup>
-  
-  <PropertyGroup Label="NullProperties">
-    <NullRenderBackendOpengl3SdkDependencies>third-party\null-sdk\null-sdk.static-linking.props</NullRenderBackendOpengl3SdkDependencies>
-  </PropertyGroup>
 
   <Import Project="null-render-backend-opengl3.vcxproj" />
   <ItemGroup>
     <ProjectReference Remove="@(ProjectReference)" />
   </ItemGroup>
   <ImportGroup Label="PropertySheets">
-    <Import Condition="Exists('$(SolutionDir)$(NullRenderBackendOpengl3SdkDependencies)')" Project="$(SolutionDir)$(NullRenderBackendOpengl3SdkDependencies)" />
-    <Import Condition="!Exists('$(SolutionDir)$(NullRenderBackendOpengl3SdkDependencies)')" Project="..\..\$(NullRenderBackendOpengl3SdkDependencies)" />
+    <Import Project="$(NullRenderBackendOpengl3DependenciesPath)null-sdk\null-sdk.static-linking.props" />
 
     <Import Project="..\..\null-render.static-linking.props" />
   </ImportGroup>

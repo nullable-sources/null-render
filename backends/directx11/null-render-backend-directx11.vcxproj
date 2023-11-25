@@ -18,8 +18,14 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+
+  <PropertyGroup Label="NullVCXProperties">
+    <NullRenderBackendDirectx11DependenciesPath Condition="Exists('$(SolutionDir)third-party\null-sdk\null-sdk.vcxproj')">$(SolutionDir)third-party\</NullRenderBackendDirectx11DependenciesPath>
+    <NullRenderBackendDirectx11DependenciesPath Condition="!Exists('$(SolutionDir)third-party\null-sdk\null-sdk.vcxproj')">..\..\..\</NullRenderBackendDirectx11DependenciesPath>
+  </PropertyGroup>
+
   <ItemGroup>
-    <ProjectReference Include="$(SolutionDir)third-party\null-sdk\null-sdk.vcxproj">
+    <ProjectReference Include="$(NullRenderBackendDirectx11DependenciesPath)null-sdk\null-sdk.vcxproj">
       <Project>{f7a10a5c-0fae-424b-8f2b-6cc4e4d898d1}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\null-render.vcxproj">
