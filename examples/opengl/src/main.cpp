@@ -56,15 +56,11 @@ void main_loop() {
 		.set_bottom_left_color({ 255, 0, 100 })
 		.set_bottom_right_color({ 100, 100, 255 });
 
-
-	//auto brush = null::render::text_brush();
-	//brush->set_color(color_t<int>(233, 241, 123));
-
 	null::render::brush_t brush{ };
 	brush.set_color({ 100, 100, 255 });
 
 	null::render::filter_brush_t quad_gradient_brush{ };
-	//quad_gradient_brush.set_filter(quad_gradient_filter);
+	quad_gradient_brush.set_filter(quad_gradient_filter);
 
 	null::render::pen_t pen_brush{ };
 	pen_brush.set_layer(null::render::e_pen_layer::background);

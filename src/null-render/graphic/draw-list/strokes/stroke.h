@@ -58,10 +58,10 @@ namespace null::render {
 		e_line_cap line_cap{ };
 
 	public:
-		template <typename self_t> self_t& set_thickness(this self_t& self, float thickness) { self.thickness = std::max(thickness, 1.f); return self; }
-		template <typename self_t> self_t& set_origin(this self_t& self, float origin) { self.origin = std::clamp(origin, 0.f, 1.f); return self; }
-		template <typename self_t> self_t& set_join(this self_t& self, e_line_join line_join) { self.line_join = line_join; return self; }
-		template <typename self_t> self_t& set_cap(this self_t& self, e_line_cap line_cap) { self.line_cap = line_cap; return self; }
+		template <typename self_t> auto&& set_thickness(this self_t&& self, float thickness) { self.thickness = std::max(thickness, 1.f); return self; }
+		template <typename self_t> auto&& set_origin(this self_t&& self, float origin) { self.origin = std::clamp(origin, 0.f, 1.f); return self; }
+		template <typename self_t> auto&& set_join(this self_t&& self, e_line_join line_join) { self.line_join = line_join; return self; }
+		template <typename self_t> auto&& set_cap(this self_t&& self, e_line_cap line_cap) { self.line_cap = line_cap; return self; }
 
 	public:
 		void build_segments(std::vector<segment_t>& segments, const std::vector<vec2_t<float>>& points) const;

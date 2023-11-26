@@ -20,9 +20,9 @@ namespace null::render {
 		backend::i_linear_gradient_shader::constants_t constants{ };
 
 	public:
-		template <typename self_t> self_t& set_angle(this self_t& self, radians_t angle) { self.constants.angle = angle; return self; }
-		template <typename self_t> self_t& set_stops(this self_t& self, const std::vector<std::pair<color_t<int>, float>>& stops) { self.constants.stops = stops; return self; }
-		template <typename self_t> self_t& add_stop(this self_t& self, const color_t<int>& color, float uv) { self.constants.stops.push_back({ color, uv }); return self; }
+		template <typename self_t> auto&& set_angle(this self_t&& self, radians_t angle) { self.constants.angle = angle; return self; }
+		template <typename self_t> auto&& set_stops(this self_t&& self, const std::vector<std::pair<color_t<int>, float>>& stops) { self.constants.stops = stops; return self; }
+		template <typename self_t> auto&& add_stop(this self_t&& self, const color_t<int>& color, float uv) { self.constants.stops.push_back({ color, uv }); return self; }
 
 	public:
 		std::unique_ptr<i_filter> instance_filter(std::unique_ptr<c_geometry_command>&& child_command) const override {
