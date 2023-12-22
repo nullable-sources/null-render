@@ -10,11 +10,11 @@ namespace null::render::opengl3 {
 		std::uint32_t vao{ }, vbo{ }, ibo{ };
 
 	public:
-		void on_create() override;
-		void on_destroy() override;
+		void create() override;
+		void destroy() override;
 
 		void compile() override;
 
-		void set() override;
+		void use() override;
 	};
 }

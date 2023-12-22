@@ -2,9 +2,8 @@
 #include "null-render.h"
 
 namespace null::render {
-	void initialize(const utils::win::c_window& window) {
-		shared::viewport = window.get_window_size();
-
+	void initialize(const vec2_t<float>& viewport) {
+		shared::viewport = viewport;
 		std::ranges::for_each(std::views::iota(0, (int)shared::circle_segments.size()), [=](const int& i) {
 			float radius = i + 1.f;
 			shared::circle_segments[i] = std::min(std::clamp((std::numbers::pi * 2.f) / std::acosf((radius - shared::circle_segment_max_error) / radius), 12., 512.), 255.);
@@ -21,22 +20,27 @@ namespace null::render {
 			return;
 		}
 
+		backend::state_pipeline = backend::factory->instance_state_pipeline();
 		backend::renderer = backend::factory->instance_renderer();
-		backend::mesh = backend::factory->instance_mesh();
+		draw_list = c_draw_list::instance(backend::factory->instance_mesh());
 
 		//@note: main buffers
 		backend::msaa_buffer = backend::factory->instance_frame_buffer(shared::viewport, backend::e_frame_buffer_type::postprocessing, backend::e_frame_buffer_flags::msaa);
 		backend::rendering_buffer = backend::factory->instance_frame_buffer(shared::viewport, backend::e_frame_buffer_type::backbuffer, backend::e_frame_buffer_flags::none);
 
+		backend::post_processing = std::make_unique<backend::c_post_processing>();
+		backend::post_processing->initialize();
+
 		backend::passthrough_color_shader = backend::factory->instance_passthrough_color_shader();
 		backend::passthrough_texture_shader = backend::factory->instance_passthrough_texture_shader();
+		backend::blur_shader = backend::factory->instance_blur_shader();
 		backend::quad_gradient_shader = backend::factory->instance_quad_gradient_shader();
 		backend::linear_gradient_shader = backend::factory->instance_linear_gradient_shader();
+		backend::radial_gradient_shader = backend::factory->instance_radial_gradient_shader();
 		backend::sdf_shader = backend::factory->instance_sdf_shader();
 	}
 
-	void begin_frame(const utils::win::c_window& window) {
-		shared::viewport = window.get_window_size();
+	void begin_frame() {
 		backend::renderer->create_objects();
 
 		atlas.locked = true;

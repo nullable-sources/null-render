@@ -12,9 +12,6 @@ namespace null::render::directx9 {
 
 	class c_sdf_shader_object : public c_pixel_shader {
 	public:
-		void on_create() override {
-			if(!empty()) return;
-			compile(sources::sdf().data());
-		}
+		virtual const byte* get_source() override { return sources::sdf().data(); }
 	} inline sdf_shader_object{ };
 }

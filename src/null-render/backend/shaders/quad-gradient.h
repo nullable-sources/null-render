@@ -1,5 +1,5 @@
 #pragma once
-#include "shader.h"
+#include "../internal/shader.h"
 
 namespace null::render::backend {
 	class i_quad_gradient_shader : public virtual i_shader {

@@ -1,20 +1,9 @@
 #include "sdf.h"
 
 namespace null::render::opengl3 {
-	void c_sdf_shader::on_create() {
+	void c_sdf_shader::create() {
 		if(!empty()) return;
-		program = std::make_unique<c_program>();
-		program->create();
-
-		program->attach_shader(&sdf_shader_object);
-		program->attach_shader(&passthrough_shader_object);
-
-		program->link();
-
-		program->detach_shader(&sdf_shader_object);
-		program->detach_shader(&passthrough_shader_object);
-
-		matrix.get_location(program.get(), "matrix");
+		c_default_shader::create();
 
 		aa.get_location(program.get(), "aa");
 		outline_thickness.get_location(program.get(), "outline_thickness");
@@ -22,15 +11,9 @@ namespace null::render::opengl3 {
 		outline_end.get_location(program.get(), "outline_end");
 	}
 
-	void c_sdf_shader::on_destroy() {
-		program->destroy();
-	}
-
 	void c_sdf_shader::use() {
 		if(empty()) return;
-		program->use();
-
-		matrix.set(backend::renderer->get_matrix());
+		c_default_shader::use();
 
 		aa.set();
 		outline_thickness.set();

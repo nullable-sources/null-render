@@ -12,7 +12,7 @@ namespace null::render::directx9 {
 
 	class c_renderer : public backend::i_renderer {
 	public:
-		IDirect3DStateBlock9* state_block{ };
+		constexpr bool framebuffer_uvs_flipped() override { return false; }
 
 	public:
 		matrix4x4_t get_projection_matrix() const override;
@@ -23,12 +23,6 @@ namespace null::render::directx9 {
 
 		void* create_texture(const vec2_t<float>& size, void* data) override;
 		void destroy_texture(void* texture) override;
-
-		void setup_state() override;
-
-	private:
-		void save_state() override;
-		void restore_state() override;
 
 	public:
 		bool empty() const override { return !shared.device; }

@@ -34,17 +34,23 @@
     <ClCompile Include="src\null-render-backend-directx11\internal\frame-buffer\frame-buffer.cpp" />
     <ClCompile Include="src\null-render-backend-directx11\internal\mesh\mesh.cpp" />
     <ClCompile Include="src\null-render-backend-directx11\renderer\renderer.cpp" />
+    <ClCompile Include="src\null-render-backend-directx11\shaders\blur\blur.cpp" />
     <ClCompile Include="src\null-render-backend-directx11\shaders\linear-gradient\linear-gradient.cpp" />
     <ClCompile Include="src\null-render-backend-directx11\shaders\passthrough-color\passthrough-color.cpp" />
     <ClCompile Include="src\null-render-backend-directx11\shaders\passthrough-texture\passthrough-texture.cpp" />
     <ClCompile Include="src\null-render-backend-directx11\shaders\quad-gradient\quad-gradient.cpp" />
+    <ClCompile Include="src\null-render-backend-directx11\shaders\radial-gradient\radial-gradient.cpp" />
     <ClCompile Include="src\null-render-backend-directx11\shaders\sdf\sdf.cpp" />
+    <ClCompile Include="src\null-render-backend-directx11\state-pipeline\state-pipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\null-render-backend-directx11\internal\frame-buffer\frame-buffer.h" />
     <ClInclude Include="src\null-render-backend-directx11\internal\mesh\mesh.h" />
     <ClInclude Include="src\null-render-backend-directx11.h" />
+    <ClInclude Include="src\null-render-backend-directx11\internal\shader.h" />
     <ClInclude Include="src\null-render-backend-directx11\renderer\renderer.h" />
+    <ClInclude Include="src\null-render-backend-directx11\shaders\blur\blur.h" />
+    <ClInclude Include="src\null-render-backend-directx11\shaders\blur\compiled-object.h" />
     <ClInclude Include="src\null-render-backend-directx11\shaders\linear-gradient\compiled-object.h" />
     <ClInclude Include="src\null-render-backend-directx11\shaders\linear-gradient\linear-gradient.h" />
     <ClInclude Include="src\null-render-backend-directx11\shaders\passthrough-color\compiled-object.h" />
@@ -53,16 +59,44 @@
     <ClInclude Include="src\null-render-backend-directx11\shaders\passthrough-texture\passthrough-texture.h" />
     <ClInclude Include="src\null-render-backend-directx11\shaders\quad-gradient\compiled-object.h" />
     <ClInclude Include="src\null-render-backend-directx11\shaders\quad-gradient\quad-gradient.h" />
+    <ClInclude Include="src\null-render-backend-directx11\shaders\radial-gradient\compiled-object.h" />
+    <ClInclude Include="src\null-render-backend-directx11\shaders\radial-gradient\radial-gradient.h" />
     <ClInclude Include="src\null-render-backend-directx11\shaders\sdf\compiled-object.h" />
     <ClInclude Include="src\null-render-backend-directx11\shaders\sdf\sdf.h" />
-    <ClInclude Include="src\null-render-backend-directx11\shaders\shader.h" />
     <ClInclude Include="src\null-render-backend-directx11\shaders\shared-objects\passthrough\compiled-object.h" />
+    <ClInclude Include="src\null-render-backend-directx11\state-pipeline\state-pipeline.h" />
     <ClInclude Include="src\null-render-backend-directx11\wrapper\constant-buffer\constant-buffer.h" />
     <ClInclude Include="src\null-render-backend-directx11\wrapper\shaders\pixel.h" />
     <ClInclude Include="src\null-render-backend-directx11\wrapper\shaders\shader.h" />
     <ClInclude Include="src\null-render-backend-directx11\wrapper\shaders\vertex.h" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="src\null-render-backend-directx11\shaders\blur\hlsl\blur.hlsl">
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
+      </ObjectFileOutput>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
+      </ObjectFileOutput>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='release|x64'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='release|x64'">
+      </ObjectFileOutput>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|x64'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
+      </ObjectFileOutput>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='release|Win32'">shader_data</VariableName>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">shader_data</VariableName>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='release|x64'">shader_data</VariableName>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='debug|x64'">shader_data</VariableName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='debug|x64'">4.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="src\null-render-backend-directx11\shaders\linear-gradient\hlsl\linear-gradient.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|Win32'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|Win32'">4.0</ShaderModel>
@@ -166,6 +200,32 @@
       <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|x64'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
       </ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="src\null-render-backend-directx11\shaders\radial-gradient\hlsl\radial-gradient.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|x64'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='debug|x64'">Pixel</ShaderType>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
+      </ObjectFileOutput>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
+      </ObjectFileOutput>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='release|x64'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='release|x64'">
+      </ObjectFileOutput>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|x64'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
+      </ObjectFileOutput>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='release|Win32'">shader_data</VariableName>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">shader_data</VariableName>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='release|x64'">shader_data</VariableName>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='debug|x64'">shader_data</VariableName>
     </FxCompile>
     <FxCompile Include="src\null-render-backend-directx11\shaders\sdf\hlsl\sdf.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|Win32'">Pixel</ShaderType>

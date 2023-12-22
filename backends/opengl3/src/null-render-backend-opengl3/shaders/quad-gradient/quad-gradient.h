@@ -1,18 +1,18 @@
 #pragma once
-#include "../shader.h"
+#include "../../internal/shader/shader.h"
 #include "../shared-objects/passthrough/compiled-object.h"
 #include "compiled-object.h"
 
 namespace null::render::opengl3 {
-	class c_quad_gradient_shader : public backend::i_quad_gradient_shader, public c_shader {
+	class c_quad_gradient_shader : public backend::i_quad_gradient_shader, public c_default_shader {
 	public:
 		c_uniform<vec4_t<float>> top_left_color{ }, top_right_color{ }, bottom_right_color{ }, bottom_left_color{ };
 
-		c_uniform<matrix4x4_t> matrix{ };
+	public:
+		c_quad_gradient_shader() : c_default_shader(&quad_gradient_shader_object, &passthrough_shader_object) { }
 
 	public:
-		void on_create() override;
-		void on_destroy() override;
+		void create() override;
 
 		void use() override;
 

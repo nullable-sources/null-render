@@ -1,5 +1,5 @@
 #pragma once
-#include "../shader.h"
+#include "../../internal/shader.h"
 #include "../shared-objects/passthrough/compiled-object.h"
 #include "compiled-object.h"
 
@@ -12,6 +12,6 @@ namespace null::render::directx11 {
 		void use() override;
 
 	public:
-		virtual void set_constants(const constants_t& _constants) override;
+		void set_constants(const constants_t& _constants) override;
 	};
 }

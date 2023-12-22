@@ -1,15 +1,12 @@
-#include "null-render/backend/renderer/renderer.h"
-#include "null-render/backend/shaders/passthrough.h"
+#include "../../../backend/state-pipeline/state-pipeline.h"
 
 #include "linear-gradient.h"
 
 namespace null::render {
 	void c_linear_gradient_filter::handle() {
 		backend::linear_gradient_shader->set_constants(constants);
-		backend::linear_gradient_shader->use();
-
+		backend::state_pipeline->shaders.push(backend::linear_gradient_shader);
 		child_command->handle();
-
-		backend::passthrough_color_shader->use();
+		backend::state_pipeline->shaders.pop();
 	}
 }

@@ -8,7 +8,13 @@ namespace null::render::opengl3 {
 		std::uint32_t shader{ };
 
 	public:
-		virtual void create() = 0;
+		virtual void destroy() override {
+			if(shader) {
+				opengl::delete_shader(shader); check(opengl::e_delete_status, "destroy"); shader = 0;
+			}
+		}
+
+		virtual memory::resource_t get_source() = 0;
 		virtual void compile(const memory::resource_t& resource) { compile((const char*)resource.locked_data, resource.locked_data_size); }
 		virtual void compile(const char* source, int length) {
 			opengl::shader_source(shader, 1, (const char* const*)&source, &length);
@@ -16,13 +22,12 @@ namespace null::render::opengl3 {
 			check(opengl::e_compile_status, "compile");
 		}
 
-		virtual void destroy() { if(shader) { opengl::delete_shader(shader); check(opengl::e_delete_status, "destroy"); shader = 0; } }
 
-		virtual bool empty() const { return shader == 0; }
+		virtual bool empty() const override { return shader == 0; }
 
 	public:
 		void check(opengl::e_constants status, std::string_view desc) {
-			std::string log{ "empty" };
+			std::string log = "empty";
 
 			int result_status{ }, log_length{ };
 			opengl::get_shaderiv(shader, status, &result_status);
@@ -42,11 +47,19 @@ namespace null::render::opengl3 {
 
 	class c_vertex_shader : public i_compiled_shader {
 	public:
-		virtual void create() override { shader = opengl::create_shader(opengl::e_vertex_shader); }
+		virtual void create() override {
+			if(!empty()) return;
+			shader = opengl::create_shader(opengl::e_vertex_shader);
+			compile(get_source().load());
+		}
 	};
 
 	class c_fragment_shader : public i_compiled_shader {
 	public:
-		virtual void create() override { shader = opengl::create_shader(opengl::e_fragment_shader); }
+		virtual void create() override {
+			if(!empty()) return;
+			shader = opengl::create_shader(opengl::e_fragment_shader);
+			compile(get_source().load());
+		}
 	};
 }

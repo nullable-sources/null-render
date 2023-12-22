@@ -12,9 +12,6 @@ namespace null::render::directx9 {
 
 	class c_linear_gradient_shader_object : public c_pixel_shader {
 	public:
-		void on_create() override {
-			if(!empty()) return;
-			compile(sources::linear_gradient().data());
-		}
+		virtual const byte* get_source() override { return sources::linear_gradient().data(); }
 	} inline linear_gradient_shader_object{ };
 }

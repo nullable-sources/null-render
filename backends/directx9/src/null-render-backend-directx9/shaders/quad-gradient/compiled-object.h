@@ -12,9 +12,6 @@ namespace null::render::directx9 {
 
 	class c_quad_gradient_shader_object : public c_pixel_shader {
 	public:
-		void on_create() override {
-			if(!empty()) return;
-			compile(sources::quad_gradient().data());
-		}
+		virtual const byte* get_source() override { return sources::quad_gradient().data(); }
 	} inline quad_gradient_shader_object{ };
 }

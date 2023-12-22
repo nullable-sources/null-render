@@ -1,20 +1,9 @@
 #include "quad-gradient.h"
 
 namespace null::render::opengl3 {
-	void c_quad_gradient_shader::on_create() {
+	void c_quad_gradient_shader::create() {
 		if(!empty()) return;
-		program = std::make_unique<c_program>();
-		program->create();
-
-		program->attach_shader(&quad_gradient_shader_object);
-		program->attach_shader(&passthrough_shader_object);
-
-		program->link();
-
-		program->detach_shader(&quad_gradient_shader_object);
-		program->detach_shader(&passthrough_shader_object);
-
-		matrix.get_location(program.get(), "matrix");
+		c_default_shader::create();
 
 		top_left_color.get_location(program.get(), "color_tl");
 		top_right_color.get_location(program.get(), "color_tr");
@@ -22,14 +11,9 @@ namespace null::render::opengl3 {
 		bottom_left_color.get_location(program.get(), "color_bl");
 	}
 
-	void c_quad_gradient_shader::on_destroy() {
-		program->destroy();
-	}
-
 	void c_quad_gradient_shader::use() {
-		program->use();
-
-		matrix.set(backend::renderer->get_matrix());
+		if(empty()) return;
+		c_default_shader::use();
 
 		top_left_color.set();
 		top_right_color.set();

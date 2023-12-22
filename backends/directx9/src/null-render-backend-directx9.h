@@ -1,10 +1,13 @@
 #pragma once
+#include "null-render-backend-directx9/state-pipeline/state-pipeline.h"
 #include "null-render-backend-directx9/internal/frame-buffer/frame-buffer.h"
 #include "null-render-backend-directx9/internal/mesh/mesh.h"
 #include "null-render-backend-directx9/shaders/passthrough-color/passthrough-color.h"
 #include "null-render-backend-directx9/shaders/passthrough-texture/passthrough-texture.h"
+#include "null-render-backend-directx9/shaders/blur/blur.h"
 #include "null-render-backend-directx9/shaders/quad-gradient/quad-gradient.h"
 #include "null-render-backend-directx9/shaders/linear-gradient/linear-gradient.h"
+#include "null-render-backend-directx9/shaders/radial-gradient/radial-gradient.h"
 #include "null-render-backend-directx9/shaders/sdf/sdf.h"
 
 namespace null::render::directx9 {
@@ -16,11 +19,14 @@ namespace null::render::directx9 {
 		std::unique_ptr<backend::i_renderer> instance_renderer() override { return std::make_unique<c_renderer>(); }
 		std::unique_ptr<backend::c_mesh> instance_mesh() override { return std::make_unique<c_mesh>(); }
 		std::unique_ptr<backend::i_frame_buffer> instance_frame_buffer(const vec2_t<int>& size, backend::e_frame_buffer_type type, backend::e_frame_buffer_flags flags) override { return std::make_unique<c_frame_buffer>(size, type, flags); }
+		std::unique_ptr<backend::i_state_pipeline> instance_state_pipeline() override { return std::make_unique<c_state_pipeline>(); }
 
 		std::unique_ptr<backend::i_passthrough_color_shader> instance_passthrough_color_shader() override { return std::make_unique<c_passthrough_color_shader>(); }
 		std::unique_ptr<backend::i_passthrough_texture_shader> instance_passthrough_texture_shader() override { return std::make_unique<c_passthrough_texture_shader>(); }
+		std::unique_ptr<backend::i_blur_shader> instance_blur_shader() override { return std::make_unique<c_blur_shader>(); }
 		std::unique_ptr<backend::i_quad_gradient_shader> instance_quad_gradient_shader() override { return std::make_unique<c_quad_gradient_shader>(); }
 		std::unique_ptr<backend::i_linear_gradient_shader> instance_linear_gradient_shader() override { return std::make_unique<c_linear_gradient_shader>(); }
+		std::unique_ptr<backend::i_radial_gradient_shader> instance_radial_gradient_shader() override { return std::make_unique<c_radial_gradient_shader>(); }
 		std::unique_ptr<backend::i_sdf_shader> instance_sdf_shader() override { return std::make_unique<c_sdf_shader>(); }
 	};
 
@@ -46,7 +52,7 @@ namespace null::render::directx9 {
 				utils::logger(utils::e_log_type::error, "CreateDevice failed, return code {}.", result);
 
 			backend::factory = std::make_unique<c_factory>(device);
-			render::initialize(*this);
+			render::initialize(size);
 			utils::win::c_window::on_create();
 		}
 
@@ -62,7 +68,7 @@ namespace null::render::directx9 {
 			device->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
 			device->Clear(0, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_RGBA(clear_color.r, clear_color.g, clear_color.b, clear_color.a), 1.0f, 0);
 			if(device->BeginScene() >= 0) {
-				device->Clear(0, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_RGBA(clear_color.r, clear_color.g, clear_color.b, clear_color.a), 1.0f, 0);
+				//device->Clear(0, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_RGBA(clear_color.r, clear_color.g, clear_color.b, clear_color.a), 1.0f, 0);
 				utils::win::c_window::on_main_loop();
 				device->EndScene();
 			}
@@ -72,14 +78,15 @@ namespace null::render::directx9 {
 		}
 
 		std::vector<int> on_wnd_proc(HWND _wnd_handle, UINT msg, WPARAM w_param, LPARAM l_param) override {
-			std::vector<int> callback_results{ utils::win::c_window::on_wnd_proc(_wnd_handle, msg, w_param, l_param) };
+			std::vector<int> callback_results = utils::win::c_window::on_wnd_proc(_wnd_handle, msg, w_param, l_param);
 			switch(msg) {
 				case WM_SIZE: {
 					if(device && w_param != SIZE_MINIMIZED) {
-						shared::viewport = vec2_t(LOWORD(l_param), HIWORD(l_param));
+						backend::renderer->begin_resize_viewport(vec2_t(LOWORD(l_param), HIWORD(l_param)));
 						present_parameters.BackBufferWidth = LOWORD(l_param);
 						present_parameters.BackBufferHeight = HIWORD(l_param);
 						reset_device();
+						backend::renderer->end_resize_viewport();
 					}
 				} return { 0 };
 			}

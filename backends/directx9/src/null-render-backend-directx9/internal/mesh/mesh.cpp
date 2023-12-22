@@ -1,7 +1,7 @@
 #include "mesh.h"
 
 namespace null::render::directx9 {
-	void c_mesh::on_create() {
+	void c_mesh::create() {
 		if(vertex_declaration) return;
 
 		constexpr D3DVERTEXELEMENT9 elements[]{
@@ -15,13 +15,15 @@ namespace null::render::directx9 {
 			utils::logger(utils::e_log_type::error, "cant create vertex input layout, return code {}.", result);
 	}
 
-	void c_mesh::on_destroy() {
+	void c_mesh::destroy() {
 		if(index_buffer) { index_buffer->Release(); index_buffer = nullptr; }
 		if(vertex_buffer) { vertex_buffer->Release(); vertex_buffer = nullptr; }
 		if(vertex_declaration) { vertex_declaration->Release(); vertex_declaration = nullptr; }
 	}
 
 	void c_mesh::compile() {
+		if(!vertex_declaration) create();
+
 		static int vtx_buffer_size = 5000, idx_buffer_size = 10000;
 		if(!vertex_buffer || vtx_buffer_size < geometry_buffer.vertex_buffer.size()) {
 			if(vertex_buffer) { vertex_buffer->Release(); vertex_buffer = nullptr; }
@@ -51,7 +53,7 @@ namespace null::render::directx9 {
 		index_buffer->Unlock();
 	}
 
-	void c_mesh::set() {
+	void c_mesh::use() {
 		shared.device->SetStreamSource(0, vertex_buffer, 0, sizeof(directx_vertex_t));
 		shared.device->SetIndices(index_buffer);
 		shared.device->SetVertexDeclaration(vertex_declaration);

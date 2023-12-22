@@ -12,11 +12,9 @@ namespace null::render::directx11 {
 
 	class c_passthrough_color_shader_object : public c_pixel_shader {
 	public:
-		void on_create() override {
+		void create() override {
 			if(!empty()) return;
-			create(sources::passthrough_color());
+			compile(sources::passthrough_color());
 		}
-
-		void on_destroy() override { destroy(); }
 	} inline passthrough_color_shader_object{ };
 }

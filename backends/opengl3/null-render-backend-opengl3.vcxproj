@@ -21,18 +21,23 @@
   <ItemGroup>
     <ClCompile Include="src\null-render-backend-opengl3\internal\frame-buffer\frame-buffer.cpp" />
     <ClCompile Include="src\null-render-backend-opengl3\internal\mesh\mesh.cpp" />
+    <ClCompile Include="src\null-render-backend-opengl3\internal\shader\shader.cpp" />
     <ClCompile Include="src\null-render-backend-opengl3\renderer\renderer.cpp" />
+    <ClCompile Include="src\null-render-backend-opengl3\shaders\blur\blur.cpp" />
     <ClCompile Include="src\null-render-backend-opengl3\shaders\linear-gradient\linear-gradient.cpp" />
-    <ClCompile Include="src\null-render-backend-opengl3\shaders\passthrough-color\passthrough-color.cpp" />
-    <ClCompile Include="src\null-render-backend-opengl3\shaders\passthrough-texture\passthrough-texture.cpp" />
     <ClCompile Include="src\null-render-backend-opengl3\shaders\quad-gradient\quad-gradient.cpp" />
+    <ClCompile Include="src\null-render-backend-opengl3\shaders\radial-gradient\radial-gradient.cpp" />
     <ClCompile Include="src\null-render-backend-opengl3\shaders\sdf\sdf.cpp" />
+    <ClCompile Include="src\null-render-backend-opengl3\state-pipeline\state-pipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\null-render-backend-opengl3\internal\frame-buffer\frame-buffer.h" />
     <ClInclude Include="src\null-render-backend-opengl3\internal\mesh\mesh.h" />
     <ClInclude Include="src\null-render-backend-opengl3.h" />
+    <ClInclude Include="src\null-render-backend-opengl3\internal\shader\shader.h" />
     <ClInclude Include="src\null-render-backend-opengl3\renderer\renderer.h" />
+    <ClInclude Include="src\null-render-backend-opengl3\shaders\blur\compiled-object.h" />
+    <ClInclude Include="src\null-render-backend-opengl3\shaders\blur\blur.h" />
     <ClInclude Include="src\null-render-backend-opengl3\shaders\linear-gradient\compiled-object.h" />
     <ClInclude Include="src\null-render-backend-opengl3\shaders\linear-gradient\linear-gradient.h" />
     <ClInclude Include="src\null-render-backend-opengl3\shaders\passthrough-color\compiled-object.h" />
@@ -41,10 +46,12 @@
     <ClInclude Include="src\null-render-backend-opengl3\shaders\passthrough-texture\passthrough-texture.h" />
     <ClInclude Include="src\null-render-backend-opengl3\shaders\quad-gradient\compiled-object.h" />
     <ClInclude Include="src\null-render-backend-opengl3\shaders\quad-gradient\quad-gradient.h" />
+    <ClInclude Include="src\null-render-backend-opengl3\shaders\radial-gradient\compiled-object.h" />
+    <ClInclude Include="src\null-render-backend-opengl3\shaders\radial-gradient\radial-gradient.h" />
     <ClInclude Include="src\null-render-backend-opengl3\shaders\sdf\compiled-object.h" />
     <ClInclude Include="src\null-render-backend-opengl3\shaders\sdf\sdf.h" />
-    <ClInclude Include="src\null-render-backend-opengl3\shaders\shader.h" />
     <ClInclude Include="src\null-render-backend-opengl3\shaders\shared-objects\passthrough\compiled-object.h" />
+    <ClInclude Include="src\null-render-backend-opengl3\state-pipeline\state-pipeline.h" />
     <ClInclude Include="src\null-render-backend-opengl3\wrapper\fields.h" />
     <ClInclude Include="src\null-render-backend-opengl3\wrapper\opengl3.h" />
     <ClInclude Include="src\null-render-backend-opengl3\wrapper\program.h" />
@@ -66,10 +73,12 @@
     <ResourceCompile Include="resources\null-render-backend-opengl3-resources.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\null-render-backend-opengl3\shaders\blur\glsl\blur.frag" />
     <None Include="src\null-render-backend-opengl3\shaders\linear-gradient\glsl\linear-gradient.frag" />
     <None Include="src\null-render-backend-opengl3\shaders\passthrough-color\glsl\passthrough-color.frag" />
     <None Include="src\null-render-backend-opengl3\shaders\passthrough-texture\glsl\passthrough-texture.frag" />
     <None Include="src\null-render-backend-opengl3\shaders\quad-gradient\glsl\quad-gradient.frag" />
+    <None Include="src\null-render-backend-opengl3\shaders\radial-gradient\glsl\radial-gradient.frag" />
     <None Include="src\null-render-backend-opengl3\shaders\sdf\glsl\sdf.frag" />
     <None Include="src\null-render-backend-opengl3\shaders\shared-objects\passthrough\glsl\passthrough.vert" />
   </ItemGroup>

@@ -1,14 +1,22 @@
 #include <micro-tess/planarize_division.h>
 #include <micro-tess/stroke_tessellation.h>
 
-#include "null-render/backend/internal/mesh.h"
-#include "../commands/geometry/geometry.h"
+#include "../../backend/shaders/passthrough.h"
+#include "../../backend/state-pipeline/state-pipeline.h"
 
 #include "draw-list.h"
 
 namespace null::render {
-	void c_draw_list::stroke_path(const path_t& path, const brush_t& brush) {
-		std::unique_ptr<c_geometry_command> command = std::make_unique<c_geometry_command>();
+	void c_draw_list::handle() {
+		backend::state_pipeline->meshes.push(mesh);
+		backend::state_pipeline->shaders.push(backend::passthrough_color_shader);
+		c_command_buffer::handle();
+		backend::state_pipeline->meshes.pop();
+		backend::state_pipeline->shaders.pop();
+	}
+
+	void c_draw_list::stroke_path(const path_t& path, const std::shared_ptr<c_brush>& brush) {
+		std::shared_ptr<c_geometry_command> command = std::make_shared<c_geometry_command>(&mesh->geometry_buffer);
 		command->topology = backend::e_topology::triangle_strip;
 
 		microtess::dynamic_array<vec2_t<float>> vertecies{ };
@@ -41,18 +49,18 @@ namespace null::render {
 		}
 
 		command->index_count += indices.size();
-		std::ranges::move(indices, std::back_inserter(backend::mesh->geometry_buffer.index_buffer));
+		std::ranges::move(indices, std::back_inserter(mesh->geometry_buffer.index_buffer));
 
 		command->vertex_count += vertecies.size();
 		for(const vec2_t<float>& current_point : vertecies) {
-			backend::mesh->geometry_buffer.add_vertex(current_point, { }, brush.color);
+			mesh->geometry_buffer.add_vertex(current_point, { }, brush->color);
 		}
 
-		add_command(brush.prepare_command(command));
+		add_command(brush->prepare_command(std::move(command)));
 	}
 
-	void c_draw_list::fill_path(const path_t& path, const brush_t& brush) {
-		std::unique_ptr<c_geometry_command> command = std::make_unique<c_geometry_command>();
+	void c_draw_list::fill_path(const path_t& path, const std::shared_ptr<c_brush>& brush) {
+		std::shared_ptr<c_geometry_command> command = std::make_shared<c_geometry_command>(&mesh->geometry_buffer);
 
 		microtess::dynamic_array<vec2_t<float>> vertecies{ };
 		microtess::dynamic_array<backend::index_t> indecies{ };
@@ -64,19 +72,19 @@ namespace null::render {
 		);
 
 		command->index_count += indecies.size();
-		std::ranges::move(indecies, std::back_inserter(backend::mesh->geometry_buffer.index_buffer));
+		std::ranges::move(indecies, std::back_inserter(mesh->geometry_buffer.index_buffer));
 
 		command->vertex_count += vertecies.size();
 		for(const vec2_t<float>& point : vertecies) {
-			backend::mesh->geometry_buffer.add_vertex(point, { }, brush.color);
+			mesh->geometry_buffer.add_vertex(point, { }, brush->color);
 		}
 
-		add_command(brush.prepare_command(command));
+		add_command(brush->prepare_command(std::move(command)));
 	}
 
-	void c_draw_list::add_poly_line(const std::vector<vec2_t<float>>& points, const stroke_t& stroke, const brush_t& brush, const pen_t& pen) {
+	void c_draw_list::add_poly_line(const std::vector<vec2_t<float>>& points, const stroke_t& stroke, const std::shared_ptr<c_brush>& brush, const pen_t& pen) {
 		if(points.size() < 2) return;
-		std::unique_ptr<c_geometry_command> command = std::make_unique<c_geometry_command>();
+		std::shared_ptr<c_geometry_command> command = std::make_shared<c_geometry_command>(&mesh->geometry_buffer);
 
 		const bool have_pen = stroke.line_join != e_line_join::none && pen.brush;
 		std::vector<backend::index_t> outward_order{ }, inward_order{ };
@@ -102,7 +110,7 @@ namespace null::render {
 				const size_t next_edge_offset = segment.is_last && stroke.line_join != e_line_join::none ? 0u : command->vertex_count + segment.begin_edge->join_size;
 
 				command->index_count += 6;
-				backend::mesh->geometry_buffer
+				mesh->geometry_buffer
 					.add_index(command->vertex_count + segment.begin_edge->outward_end).add_index(next_edge_offset + segment.end_edge->outward_begin).add_index(next_edge_offset + segment.end_edge->inward_begin)
 					.add_index(command->vertex_count + segment.begin_edge->outward_end).add_index(next_edge_offset + segment.end_edge->inward_begin).add_index(command->vertex_count + segment.begin_edge->inward_end);
 			}
@@ -118,9 +126,9 @@ namespace null::render {
 				const vec2_t<float> inward_vertex = *segment.begin_edge->point + inward_delta + cap_direction * (stroke.line_cap == e_line_cap::square ? outward_thickness : 0.f);
 
 				command->vertex_count += 2;
-				backend::mesh->geometry_buffer
-					.add_vertex(outward_vertex, { }, brush.color)
-					.add_vertex(inward_vertex, { }, brush.color);
+				mesh->geometry_buffer
+					.add_vertex(outward_vertex, { }, brush->color)
+					.add_vertex(inward_vertex, { }, brush->color);
 			} else {
 				if(stroke.line_join == e_line_join::bevel) {
 					vec2_t<float> distance = segment.begin_edge->get_mitter_offset(half_thickness);
@@ -133,7 +141,7 @@ namespace null::render {
 						origin_offset = segment.begin_edge->get_mitter_offset(inward_thickness > outward_thickness ? (outward_thickness - half_thickness) : (half_thickness - inward_thickness));
 
 					command->index_count += 3;
-					backend::mesh->geometry_buffer.add_index(command->vertex_count).add_index(command->vertex_count + 1).add_index(command->vertex_count + 2);
+					mesh->geometry_buffer.add_index(command->vertex_count).add_index(command->vertex_count + 1).add_index(command->vertex_count + 2);
 
 					const vec2_t<float> point = *segment.begin_edge->point + origin_offset;
 					const vec2_t<float> miter_vertex = point + distance;
@@ -141,26 +149,26 @@ namespace null::render {
 					const vec2_t<float> to_next_vertex = point + math::invert_vector_axis(segment.begin_edge->to_next_direction, rotation) * half_thickness;
 
 					command->vertex_count += 3;
-					backend::mesh->geometry_buffer
-						.add_vertex(miter_vertex, { }, brush.color)
-						.add_vertex(to_previous_vertex, { }, brush.color)
-						.add_vertex(to_next_vertex, { }, brush.color);
+					mesh->geometry_buffer
+						.add_vertex(miter_vertex, { }, brush->color)
+						.add_vertex(to_previous_vertex, { }, brush->color)
+						.add_vertex(to_next_vertex, { }, brush->color);
 				} else if(stroke.line_join == e_line_join::miter) {
 					const vec2_t<float> outward_vertex = *segment.begin_edge->point + segment.begin_edge->get_mitter_offset(outward_thickness);
 					const vec2_t<float> inward_vertex = *segment.begin_edge->point - segment.begin_edge->get_mitter_offset(inward_thickness);
 
 					command->vertex_count += 2;
-					backend::mesh->geometry_buffer
-						.add_vertex(outward_vertex, { }, brush.color)
-						.add_vertex(inward_vertex, { }, brush.color);
+					mesh->geometry_buffer
+						.add_vertex(outward_vertex, { }, brush->color)
+						.add_vertex(inward_vertex, { }, brush->color);
 				} else {
 					const vec2_t<float> outward_vertex = *segment.begin_edge->point + math::invert_vector_axis(segment.begin_edge->to_next_direction, math::e_rotation::ccw) * outward_thickness;
 					const vec2_t<float> inward_vertex = *segment.begin_edge->point + math::invert_vector_axis(segment.begin_edge->to_next_direction, math::e_rotation::cw) * inward_thickness;
 
 					command->vertex_count += 2;
-					backend::mesh->geometry_buffer
-						.add_vertex(outward_vertex, { }, brush.color)
-						.add_vertex(inward_vertex, { }, brush.color);
+					mesh->geometry_buffer
+						.add_vertex(outward_vertex, { }, brush->color)
+						.add_vertex(inward_vertex, { }, brush->color);
 				}
 			}
 
@@ -170,36 +178,45 @@ namespace null::render {
 				const vec2_t<float> inward_vertex = *segment.end_edge->point + math::invert_vector_axis(segment.begin_edge->to_next_direction, math::e_rotation::cw) * inward_thickness;
 
 				command->vertex_count += 2;
-				backend::mesh->geometry_buffer
-					.add_vertex(outward_vertex, { }, brush.color)
-					.add_vertex(inward_vertex, { }, brush.color);
+				mesh->geometry_buffer
+					.add_vertex(outward_vertex, { }, brush->color)
+					.add_vertex(inward_vertex, { }, brush->color);
 			}
 		}
 
-		std::unique_ptr<i_command> pen_command{ };
-		if(have_pen) pen_command = std::move(pen.around_stroke(command, outward_order, inward_order, stroke.line_cap == e_line_cap::joint));
-		if(have_pen && pen.layer == e_pen_layer::background) add_command(std::move(pen_command));
-		add_command(brush.prepare_command(command));
-		if(have_pen && pen.layer == e_pen_layer::foreground) add_command(std::move(pen_command));
+		std::shared_ptr<i_command> pen_command{ };
+		if(pen.brush) pen_command = std::move(pen.around_stroke(command, outward_order, inward_order, stroke.line_cap == e_line_cap::joint));
+		if(pen.brush && pen.layer == e_pen_layer::background) add_command(std::move(pen_command));
+		add_command(brush->prepare_command(std::move(command)));
+		if(pen.brush && pen.layer == e_pen_layer::foreground) add_command(std::move(pen_command));
 	}
 
-	void c_draw_list::add_convex_shape(const std::vector<vec2_t<float>>& points, const brush_t& brush, const pen_t& pen) {
+	void c_draw_list::add_convex_shape(const std::vector<vec2_t<float>>& points, const std::shared_ptr<c_brush>& brush, const pen_t& pen) {
 		if(points.size() < 3) return;
-		std::unique_ptr<c_geometry_command> command = std::make_unique<c_geometry_command>();
+		std::shared_ptr<c_geometry_command> command = c_geometry_command::instance(&mesh->geometry_buffer);
 
 		command->index_count += (points.size() - 2) * 3;
 		for(int i : std::views::iota(2u, points.size()))
-			backend::mesh->geometry_buffer.add_index(0).add_index(i - 1).add_index(i);
+			mesh->geometry_buffer.add_index(0).add_index(i - 1).add_index(i);
 
 		command->vertex_count += points.size();
 		for(const vec2_t<float>& current_point : points) {
-			backend::mesh->geometry_buffer.add_vertex(current_point, { }, brush.color);
+			mesh->geometry_buffer.add_vertex(current_point, { }, brush->color);
 		}
 
-		std::unique_ptr<i_command> pen_command{ };
+		std::shared_ptr<i_command> pen_command{ };
 		if(pen.brush) pen_command = std::move(pen.around_convex_shape(command));
 		if(pen.brush && pen.layer == e_pen_layer::background) add_command(std::move(pen_command));
-		add_command(brush.prepare_command(command));
+		add_command(brush->prepare_command(std::move(command)));
 		if(pen.brush && pen.layer == e_pen_layer::foreground) add_command(std::move(pen_command));
+	}
+
+	void c_draw_list::compile() {
+		mesh->compile();
+	}
+
+	void c_draw_list::clear() {
+		c_command_buffer::clear();
+		mesh->clear_geometry();
 	}
 }

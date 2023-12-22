@@ -1,5 +1,5 @@
 #pragma once
-#include "shader.h"
+#include "../internal/shader.h"
 
 namespace null::render::backend {
 	class i_passthrough_color_shader : public virtual i_shader { }; inline std::unique_ptr<i_passthrough_color_shader> passthrough_color_shader{ };

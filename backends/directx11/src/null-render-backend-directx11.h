@@ -1,10 +1,13 @@
 #pragma once
 #include "null-render-backend-directx11/internal/frame-buffer/frame-buffer.h"
 #include "null-render-backend-directx11/internal/mesh/mesh.h"
+#include "null-render-backend-directx11/state-pipeline/state-pipeline.h"
 #include "null-render-backend-directx11/shaders/passthrough-color/passthrough-color.h"
 #include "null-render-backend-directx11/shaders/passthrough-texture/passthrough-texture.h"
+#include "null-render-backend-directx11/shaders/blur/blur.h"
 #include "null-render-backend-directx11/shaders/quad-gradient/quad-gradient.h"
 #include "null-render-backend-directx11/shaders/linear-gradient/linear-gradient.h"
+#include "null-render-backend-directx11/shaders/radial-gradient/radial-gradient.h"
 #include "null-render-backend-directx11/shaders/sdf/sdf.h"
 
 namespace null::render::directx11 {
@@ -18,11 +21,14 @@ namespace null::render::directx11 {
 		std::unique_ptr<backend::i_renderer> instance_renderer() override { return std::make_unique<c_renderer>(); }
 		std::unique_ptr<backend::c_mesh> instance_mesh() override { return std::make_unique<c_mesh>(); }
 		std::unique_ptr<backend::i_frame_buffer> instance_frame_buffer(const vec2_t<int>& size, backend::e_frame_buffer_type type, backend::e_frame_buffer_flags flags) override { return std::make_unique<c_frame_buffer>(size, type, flags); }
+		std::unique_ptr<backend::i_state_pipeline> instance_state_pipeline() override { return std::make_unique<c_state_pipeline>(); }
 
 		std::unique_ptr<backend::i_passthrough_color_shader> instance_passthrough_color_shader() override { return std::make_unique<c_passthrough_color_shader>(); }
 		std::unique_ptr<backend::i_passthrough_texture_shader> instance_passthrough_texture_shader() override { return std::make_unique<c_passthrough_texture_shader>(); }
+		std::unique_ptr<backend::i_blur_shader> instance_blur_shader() override { return std::make_unique<c_blur_shader>(); }
 		std::unique_ptr<backend::i_quad_gradient_shader> instance_quad_gradient_shader() override { return std::make_unique<c_quad_gradient_shader>(); }
 		std::unique_ptr<backend::i_linear_gradient_shader> instance_linear_gradient_shader() override { return std::make_unique<c_linear_gradient_shader>(); }
+		std::unique_ptr<backend::i_radial_gradient_shader> instance_radial_gradient_shader() override { return std::make_unique<c_radial_gradient_shader>(); }
 		std::unique_ptr<backend::i_sdf_shader> instance_sdf_shader() override { return std::make_unique<c_sdf_shader>(); }
 	};
 
@@ -69,7 +75,7 @@ namespace null::render::directx11 {
 			}
 
 			backend::factory = std::make_unique<c_factory>(device, context, swap_chain);
-			render::initialize(*this);
+			render::initialize(size);
 
 			utils::win::c_window::on_create();
 		}
@@ -93,14 +99,9 @@ namespace null::render::directx11 {
 			switch(msg) {
 				case WM_SIZE: {
 					if(device && w_param != SIZE_MINIMIZED) {
-						backend::msaa_buffer->on_destroy();
-						backend::rendering_buffer->on_destroy();
-
-						render::shared::viewport = vec2_t<std::uint32_t>(LOWORD(l_param), HIWORD(l_param));
+						backend::renderer->begin_resize_viewport(vec2_t<std::uint32_t>(LOWORD(l_param), HIWORD(l_param)));
 						swap_chain->ResizeBuffers(0, (std::uint32_t)render::shared::viewport.x, (std::uint32_t)render::shared::viewport.y, DXGI_FORMAT_UNKNOWN, 0);
-
-						backend::msaa_buffer->on_create();
-						backend::rendering_buffer->on_create();
+						backend::renderer->end_resize_viewport();
 					}
 				} return { 0 };
 			}

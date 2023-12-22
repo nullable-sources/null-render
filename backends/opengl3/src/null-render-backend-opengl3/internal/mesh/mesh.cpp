@@ -2,7 +2,7 @@
 #include "mesh.h"
 
 namespace null::render::opengl3 {
-	void c_mesh::on_create() {
+	void c_mesh::create() {
 		if(vao != 0) return;
 
 		opengl::gen_vertex_arrays(1, &vao);
@@ -26,13 +26,15 @@ namespace null::render::opengl3 {
 		opengl::bind_vertex_array(0);
 	}
 
-	void c_mesh::on_destroy() {
+	void c_mesh::destroy() {
 		opengl::delete_vertex_arrays(1, &vao);
 		opengl::delete_buffers(1, &vbo);
 		opengl::delete_buffers(1, &ibo);
+		vao = vbo = ibo = 0;
 	}
 
 	void c_mesh::compile() {
+		if(vao == 0) create();
 		opengl::bind_vertex_array(vao);
 
 		opengl::bind_buffer(opengl::e_array_buffer, vbo);
@@ -48,7 +50,8 @@ namespace null::render::opengl3 {
 		opengl::bind_vertex_array(0);
 	}
 
-	void c_mesh::set() {
+	void c_mesh::use() {
+		if(vao == 0) create();
 		opengl::bind_vertex_array(vao);
 	}
 }

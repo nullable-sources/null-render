@@ -2,7 +2,7 @@
 #include "frame-buffer.h"
 
 namespace null::render::opengl3 {
-	void c_frame_buffer::on_create() {
+	void c_frame_buffer::create() {
 		if(!empty()) return;
 
 		if(type == backend::e_frame_buffer_type::postprocessing) {
@@ -58,26 +58,35 @@ namespace null::render::opengl3 {
 		}
 	}
 
-	void c_frame_buffer::on_destroy() {
-		if(flags & backend::e_frame_buffer_flags::depth_buffer) opengl::delete_renderbuffers(1, &depth_buffer);
+	void c_frame_buffer::destroy() {
+		if(type != backend::e_frame_buffer_type::postprocessing) return;
+		if(flags & backend::e_frame_buffer_flags::depth_buffer) {
+			opengl::delete_renderbuffers(1, &depth_buffer);
+			depth_buffer = 0;
+		}
 
 		if(flags & backend::e_frame_buffer_flags::msaa) opengl::delete_renderbuffers(1, &fbo_attachment);
 		else opengl::delete_textures(1, &fbo_attachment);
+
 		opengl::delete_framebuffers(1, &fbo);
+		fbo = fbo_attachment = 0;
 	}
 
 	void c_frame_buffer::clear() {
-		opengl::clear_color(0.f, 0.f, 0.f, 0.f);
-		opengl::clear(opengl::e_color_buffer_bit | opengl::e_depth_buffer_bit);
+		constexpr float color[4] = { 0.f, 0.f, 0.f, 0.f };
+		opengl::clear_named_framebufferfv(fbo, opengl::e_color, 0, color);
 	}
 
-	void c_frame_buffer::set() {
+	void c_frame_buffer::use() {
 		opengl::bind_framebuffer(opengl::e_framebuffer, fbo);
 	}
 
 	void c_frame_buffer::copy_from(const std::unique_ptr<i_frame_buffer>& another_frame_buffer) {
-		opengl::bind_framebuffer(opengl::e_read_framebuffer, (std::uint32_t)another_frame_buffer->get_surface());
-		opengl::bind_framebuffer(opengl::e_draw_framebuffer, fbo);
-		opengl::blit_framebuffer(0, 0, another_frame_buffer->size.x, another_frame_buffer->size.y, 0, 0, size.x, size.y, opengl::e_color_buffer_bit | opengl::e_depth_buffer_bit, opengl::e_nearest);
+		opengl::blit_named_framebuffer(
+			(std::uint32_t)another_frame_buffer->get_surface(), fbo,
+			0, 0, another_frame_buffer->size.x, another_frame_buffer->size.y,
+			0, 0, size.x, size.y,
+			opengl::e_color_buffer_bit | opengl::e_depth_buffer_bit, opengl::e_nearest
+		);
 	}
 }

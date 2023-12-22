@@ -8,11 +8,15 @@ backends/directx9/src/null-render-backend-directx9/shaders/passthrough-color/com
 backends/directx9/src/null-render-backend-directx9/shaders/passthrough-texture/compiled
 backends/directx9/src/null-render-backend-directx9/shaders/quad-gradient/compiled
 backends/directx9/src/null-render-backend-directx9/shaders/linear-gradient/compiled
+backends/directx9/src/null-render-backend-directx9/shaders/radial-gradient/compiled
 backends/directx9/src/null-render-backend-directx9/shaders/sdf/compiled
+backends/directx9/src/null-render-backend-directx9/shaders/blur/compiled
 
 backends/directx11/src/null-render-backend-directx11/shaders/shared-objects/passthrough/compiled
 backends/directx11/src/null-render-backend-directx11/shaders/passthrough-color/compiled
 backends/directx11/src/null-render-backend-directx11/shaders/passthrough-texture/compiled
 backends/directx11/src/null-render-backend-directx11/shaders/quad-gradient/compiled
 backends/directx11/src/null-render-backend-directx11/shaders/linear-gradient/compiled
+backends/directx11/src/null-render-backend-directx11/shaders/radial-gradient/compiled
 backends/directx11/src/null-render-backend-directx11/shaders/sdf/compiled
+backends/directx11/src/null-render-backend-directx11/shaders/blur/compiled

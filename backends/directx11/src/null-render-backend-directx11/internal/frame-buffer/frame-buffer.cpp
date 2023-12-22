@@ -1,7 +1,7 @@
 #include "frame-buffer.h"
 
 namespace null::render::directx11 {
-	void c_frame_buffer::on_create() {
+	void c_frame_buffer::create() {
 		if(!empty()) return;
 
 		//@note: creating texture for render target
@@ -98,7 +98,7 @@ namespace null::render::directx11 {
 		}
 	}
 
-	void c_frame_buffer::on_destroy() {
+	void c_frame_buffer::destroy() {
 		if(rasterizer_state) { rasterizer_state->Release(); rasterizer_state = nullptr; }
 		if(render_target_texture) { render_target_texture->Release(); render_target_texture = nullptr; }
 		if(depth_stencil_view_texture) { depth_stencil_view_texture->Release(); depth_stencil_view_texture = nullptr; }
@@ -112,16 +112,16 @@ namespace null::render::directx11 {
 		shared.context->ClearDepthStencilView(depth_stencil_view, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	}
 
-	void c_frame_buffer::set() {
+	void c_frame_buffer::use() {
 		shared.context->OMSetRenderTargets(1, &render_target, depth_stencil_view);
 		shared.context->RSSetState(rasterizer_state);
 	}
 
 	void c_frame_buffer::copy_from(const std::unique_ptr<i_frame_buffer>& another_frame_buffer) {
-		D3D11_TEXTURE2D_DESC desc{ };
-		render_target_texture->GetDesc(&desc);
-
 		if(another_frame_buffer->flags & backend::e_frame_buffer_flags::msaa) {
+			D3D11_TEXTURE2D_DESC desc{ };
+			render_target_texture->GetDesc(&desc);
+
 			shared.context->ResolveSubresource(render_target_texture, 0, (ID3D11Resource*)another_frame_buffer->get_surface(), 0, desc.Format);
 		} else {
 			shared.context->CopyResource(render_target_texture, (ID3D11Resource*)another_frame_buffer->get_surface());

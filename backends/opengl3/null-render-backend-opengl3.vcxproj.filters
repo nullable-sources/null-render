@@ -64,6 +64,24 @@
     <Filter Include="src\shaders\shared-objects\passthrough\glsl">
       <UniqueIdentifier>{a7585922-2663-4809-8cc0-1bc806087d55}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\shaders\radial-gradient">
+      <UniqueIdentifier>{93b905aa-edaf-4351-b1a5-d37db81ca30c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\radial-gradient\glsl">
+      <UniqueIdentifier>{4f416f0f-8821-4cb9-9a2d-57113d96aa6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\blur">
+      <UniqueIdentifier>{351a1c63-0328-471c-a5df-489b70041ace}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\blur\glsl">
+      <UniqueIdentifier>{2a27a5a6-e6a2-4c1b-ac2f-ad90a66e0fd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\internal\shader">
+      <UniqueIdentifier>{afb406e5-5631-4bc0-870f-1c0b42597eaa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\state-pipeline">
+      <UniqueIdentifier>{428d8328-f8c6-4bf3-83b7-a2c9a8b0bf2c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\null-render-backend-opengl3\internal\mesh\mesh.cpp">
@@ -81,22 +99,25 @@
     <ClCompile Include="src\null-render-backend-opengl3\shaders\quad-gradient\quad-gradient.cpp">
       <Filter>src\shaders\quad-gradient</Filter>
     </ClCompile>
-    <ClCompile Include="src\null-render-backend-opengl3\shaders\passthrough-texture\passthrough-texture.cpp">
-      <Filter>src\shaders\passthrough-texture</Filter>
-    </ClCompile>
-    <ClCompile Include="src\null-render-backend-opengl3\shaders\passthrough-color\passthrough-color.cpp">
-      <Filter>src\shaders\passthrough-color</Filter>
-    </ClCompile>
     <ClCompile Include="src\null-render-backend-opengl3\shaders\linear-gradient\linear-gradient.cpp">
       <Filter>src\shaders\linear-gradient</Filter>
+    </ClCompile>
+    <ClCompile Include="src\null-render-backend-opengl3\shaders\radial-gradient\radial-gradient.cpp">
+      <Filter>src\shaders\radial-gradient</Filter>
+    </ClCompile>
+    <ClCompile Include="src\null-render-backend-opengl3\shaders\blur\blur.cpp">
+      <Filter>src\shaders\blur</Filter>
+    </ClCompile>
+    <ClCompile Include="src\null-render-backend-opengl3\internal\shader\shader.cpp">
+      <Filter>src\internal\shader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\null-render-backend-opengl3\state-pipeline\state-pipeline.cpp">
+      <Filter>src\state-pipeline</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\null-render-backend-opengl3.h">
       <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\null-render-backend-opengl3\shaders\shader.h">
-      <Filter>src\shaders</Filter>
     </ClInclude>
     <ClInclude Include="src\null-render-backend-opengl3\internal\mesh\mesh.h">
       <Filter>src\internal\mesh</Filter>
@@ -152,6 +173,24 @@
     <ClInclude Include="src\null-render-backend-opengl3\shaders\shared-objects\passthrough\compiled-object.h">
       <Filter>src\shaders\shared-objects\passthrough</Filter>
     </ClInclude>
+    <ClInclude Include="src\null-render-backend-opengl3\shaders\radial-gradient\radial-gradient.h">
+      <Filter>src\shaders\radial-gradient</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render-backend-opengl3\shaders\radial-gradient\compiled-object.h">
+      <Filter>src\shaders\radial-gradient</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render-backend-opengl3\shaders\blur\blur.h">
+      <Filter>src\shaders\blur</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render-backend-opengl3\internal\shader\shader.h">
+      <Filter>src\internal\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render-backend-opengl3\state-pipeline\state-pipeline.h">
+      <Filter>src\state-pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render-backend-opengl3\shaders\blur\compiled-object.h">
+      <Filter>src\shaders\blur</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resources\null-render-backend-opengl3-resources.rc">
@@ -176,6 +215,12 @@
     </None>
     <None Include="src\null-render-backend-opengl3\shaders\shared-objects\passthrough\glsl\passthrough.vert">
       <Filter>src\shaders\shared-objects\passthrough\glsl</Filter>
+    </None>
+    <None Include="src\null-render-backend-opengl3\shaders\radial-gradient\glsl\radial-gradient.frag">
+      <Filter>src\shaders\radial-gradient\glsl</Filter>
+    </None>
+    <None Include="src\null-render-backend-opengl3\shaders\blur\glsl\blur.frag">
+      <Filter>src\shaders\blur\glsl</Filter>
     </None>
   </ItemGroup>
 </Project>

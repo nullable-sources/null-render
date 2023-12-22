@@ -1,8 +1,7 @@
-#include "null-render/font/font.h"
-#include "null-render/font/loaders/truetype/truetype.h"
+#include "../../../font/font.h"
+#include "../../../font/loaders/truetype/truetype.h"
 
-#include "null-render/backend/renderer/renderer.h"
-#include "null-render/backend/shaders/passthrough.h"
+#include "../../../backend/state-pipeline/state-pipeline.h"
 
 #include "sdf.h"
 
@@ -15,13 +14,11 @@ namespace null::render {
 		constants.aa = aa;
 		constants.outline_thickness = std::clamp(0.5f - constants.outline_thickness / 2.0f, constants.aa, 0.5f);
 
-		backend::renderer->set_texture(texture);
 		backend::sdf_shader->set_constants(constants);
-		backend::sdf_shader->use();
-
+		backend::state_pipeline->shaders.push(backend::sdf_shader);
+		backend::state_pipeline->textures.push(texture);
 		child_command->handle();
-
-		backend::passthrough_color_shader->use();
-		backend::renderer->set_texture(nullptr);
+		backend::state_pipeline->textures.pop();
+		backend::state_pipeline->shaders.pop();
 	}
 }

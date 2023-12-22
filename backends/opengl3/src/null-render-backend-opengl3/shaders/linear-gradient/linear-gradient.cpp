@@ -1,37 +1,23 @@
 #include "linear-gradient.h"
 
 namespace null::render::opengl3 {
-	void c_linear_gradient_shader::on_create() {
+	void c_linear_gradient_shader::create() {
 		if(!empty()) return;
-		program = std::make_unique<c_program>();
-		program->create();
-
-		program->attach_shader(&linear_gradient_shader_object);
-		program->attach_shader(&passthrough_shader_object);
-
-		program->link();
-
-		program->detach_shader(&linear_gradient_shader_object);
-		program->detach_shader(&passthrough_shader_object);
-
-		matrix.get_location(program.get(), "matrix");
+		c_default_shader::create();
 
 		angle.get_location(program.get(), "angle");
+		origin.get_location(program.get(), "origin");
 		stops_count.get_location(program.get(), "stops_count");
 		colors.get_location(program.get(), "colors");
 		stops.get_location(program.get(), "stops");
 	}
 
-	void c_linear_gradient_shader::on_destroy() {
-		program->destroy();
-	}
-
 	void c_linear_gradient_shader::use() {
-		program->use();
-
-		matrix.set(backend::renderer->get_matrix());
+		if(empty()) return;
+		c_default_shader::use();
 
 		angle.set();
+		origin.set();
 		stops_count.set();
 		colors.set();
 		stops.set();
@@ -45,5 +31,6 @@ namespace null::render::opengl3 {
 
 		stops_count.value() = constants.stops.size();
 		angle.value() = constants.angle;
+		origin.value() = constants.origin;
 	}
 }

@@ -2,6 +2,12 @@
 #pragma once
 #include <null-sdk.h>
 
+#include "null-render/graphic/filters/linear-gradient/linear-gradient.h"
+#include "null-render/graphic/filters/radial-gradient/radial-gradient.h"
+#include "null-render/graphic/filters/blur/blur.h"
+#include "null-render/graphic/filters/quad-gradient/quad-gradient.h"
+#include "null-render/graphic/filters/sdf/sdf.h"
+
 #include "null-render/font/loaders/freetype/freetype.h"
 #include "null-render/font/loaders/truetype/truetype.h"
 #include "null-render/graphic/commands/renderer/renderer.h"
@@ -10,20 +16,8 @@
 #include "null-render/backend/backend.h"
 
 namespace null::render {
-	namespace shared {
-		inline vec2_t<float> viewport{ };
-		inline std::uint32_t msaa_quality{ 8 };
+	void initialize(const vec2_t<float>& viewport);
 
-		inline int arc_fast_tessellation_multiplier{ 1 };
-		inline float circle_segment_max_error{ 1.6f };
-		inline int circle_auto_segment_max{ 512 };
-
-		inline std::array<std::uint8_t, 64> circle_segments{ };
-		inline std::vector<vec2_t<float>> arc_fast_vertex{ };
-	}
-
-	void initialize(const utils::win::c_window& window);
-
-	void begin_frame(const utils::win::c_window& window);
+	void begin_frame();
 	void end_frame();
 }

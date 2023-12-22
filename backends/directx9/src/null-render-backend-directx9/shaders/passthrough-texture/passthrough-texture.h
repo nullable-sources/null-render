@@ -1,14 +1,11 @@
 #pragma once
-#include "../shader.h"
+#include "../../internal/shader.h"
 #include "../shared-objects/passthrough/compiled-object.h"
 #include "compiled-object.h"
 
 namespace null::render::directx9 {
-	class c_passthrough_texture_shader : public backend::i_passthrough_texture_shader, public c_shader {
+	class c_passthrough_texture_shader : public backend::i_passthrough_texture_shader, public c_default_shader {
 	public:
-		c_passthrough_texture_shader() : c_shader{ &passthrough_texture_shader_object, &passthrough_shader_object } { }
-
-	public:
-		void use() override;
+		c_passthrough_texture_shader() : c_default_shader(&passthrough_texture_shader_object, &passthrough_shader_object) { }
 	};
 }

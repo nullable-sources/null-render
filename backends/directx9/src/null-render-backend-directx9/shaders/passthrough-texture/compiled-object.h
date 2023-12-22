@@ -12,9 +12,6 @@ namespace null::render::directx9 {
 
 	class c_passthrough_texture_shader_object : public c_pixel_shader {
 	public:
-		void on_create() override {
-			if(!empty()) return;
-			compile(sources::passthrough_texture().data());
-		}
+		virtual const byte* get_source() override { return sources::passthrough_texture().data(); }
 	} inline passthrough_texture_shader_object{ };
 }

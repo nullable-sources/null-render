@@ -67,6 +67,21 @@
     <Filter Include="src\shaders\linear-gradient\hlsl">
       <UniqueIdentifier>{ff6bdf84-77d6-4af5-9a94-f4c1cf7d123c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\shaders\radial-gradient">
+      <UniqueIdentifier>{64423046-1d23-416a-828b-51067786360a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\radial-gradient\hlsl">
+      <UniqueIdentifier>{22613903-cdd9-4e1c-a6c6-30b46975e047}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\blur">
+      <UniqueIdentifier>{3e78a32e-68bf-4e18-bd9d-5536491ddb04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\blur\hlsl">
+      <UniqueIdentifier>{b7a29695-6613-4b05-8347-d6fac6467764}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\state-pipeline">
+      <UniqueIdentifier>{cb7f967c-abce-4390-ba9d-169287b9df6c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\null-render-backend-directx11\internal\frame-buffer\frame-buffer.cpp">
@@ -93,13 +108,19 @@
     <ClCompile Include="src\null-render-backend-directx11\shaders\linear-gradient\linear-gradient.cpp">
       <Filter>src\shaders\linear-gradient</Filter>
     </ClCompile>
+    <ClCompile Include="src\null-render-backend-directx11\shaders\radial-gradient\radial-gradient.cpp">
+      <Filter>src\shaders\radial-gradient</Filter>
+    </ClCompile>
+    <ClCompile Include="src\null-render-backend-directx11\shaders\blur\blur.cpp">
+      <Filter>src\shaders\blur</Filter>
+    </ClCompile>
+    <ClCompile Include="src\null-render-backend-directx11\state-pipeline\state-pipeline.cpp">
+      <Filter>src\state-pipeline</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\null-render-backend-directx11.h">
       <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\null-render-backend-directx11\shaders\shader.h">
-      <Filter>src\shaders</Filter>
     </ClInclude>
     <ClInclude Include="src\null-render-backend-directx11\wrapper\shaders\shader.h">
       <Filter>src\wrapper\shaders</Filter>
@@ -155,6 +176,24 @@
     <ClInclude Include="src\null-render-backend-directx11\shaders\linear-gradient\linear-gradient.h">
       <Filter>src\shaders\linear-gradient</Filter>
     </ClInclude>
+    <ClInclude Include="src\null-render-backend-directx11\shaders\radial-gradient\radial-gradient.h">
+      <Filter>src\shaders\radial-gradient</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render-backend-directx11\shaders\radial-gradient\compiled-object.h">
+      <Filter>src\shaders\radial-gradient</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render-backend-directx11\internal\shader.h">
+      <Filter>src\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render-backend-directx11\shaders\blur\blur.h">
+      <Filter>src\shaders\blur</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render-backend-directx11\shaders\blur\compiled-object.h">
+      <Filter>src\shaders\blur</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render-backend-directx11\state-pipeline\state-pipeline.h">
+      <Filter>src\state-pipeline</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\null-render-backend-directx11\shaders\shared-objects\passthrough\hlsl\passthrough.hlsl">
@@ -174,6 +213,12 @@
     </FxCompile>
     <FxCompile Include="src\null-render-backend-directx11\shaders\linear-gradient\hlsl\linear-gradient.hlsl">
       <Filter>src\shaders\linear-gradient\hlsl</Filter>
+    </FxCompile>
+    <FxCompile Include="src\null-render-backend-directx11\shaders\radial-gradient\hlsl\radial-gradient.hlsl">
+      <Filter>src\shaders\radial-gradient\hlsl</Filter>
+    </FxCompile>
+    <FxCompile Include="src\null-render-backend-directx11\shaders\blur\hlsl\blur.hlsl">
+      <Filter>src\shaders\blur\hlsl</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

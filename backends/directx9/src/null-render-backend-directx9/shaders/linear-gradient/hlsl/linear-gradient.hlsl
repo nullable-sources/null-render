@@ -1,23 +1,27 @@
 struct ps_input_t {
-	float4 position : POSITION0;
-	float2 uv : TEXCOORD0;
-	float4 color : COLOR0;
+    float4 position : POSITION0;
+    float2 uv : TEXCOORD0;
+    float4 color : COLOR0;
 };
 
-//@note: Тварь которая придумала упаковку в регистрах – я ебал твою мать, надеюсь в аду ты вечно будешь писать шейдеры на блядском hlsl
-//	   https://geidav.wordpress.com/2013/03/05/hidden-hlsl-performance-hit-accessing-unpadded-arrays-in-constant-buffers/
 float angle : register(c0);
-float stops_count : register(c1); //@note: к сожалению, i регистры приняли ислам и наглухо отказываются компилиться((9((
-float4 stops[16] : register(c2); //@note: можно конечно уложиться в [4], но ебаться с доступом к элементам мне вообще не хочется
-float4 colors[16] : register(c18);
+float stops_count : register(c1);
+float2 origin : register(c2);
+float4 stops[16] : register(c3);
+float4 colors[16] : register(c19);
 
 float4 main(ps_input_t input) : COLOR {
-	float2 uv = input.uv - 0.5f;
-	float t = 0.5f + length(uv) * cos(atan2(-uv.y, uv.x) + angle);
-	
-	float4 color = colors[0] / 255.f;
-	for(int i = 1; i < stops_count; ++i) {
-		color = lerp(color, colors[i] / 255.f, smoothstep(stops[i - 1].x, stops[i].x, t));
-	}
-	return color * input.color;
+    float2 uv = input.uv - origin;
+    float _angle = angle + atan2(uv.x, -uv.y);
+    float len = length(uv);
+    float2 t = float2(cos(_angle) * len, sin(_angle) * len) + origin;
+
+    float4 color = colors[0] / 255.f;
+    color.rgb *= color.a;
+    for(int i = 1; i < stops_count; ++i) {
+        float4 premultiplied = colors[i] / 255.f;
+        premultiplied.rgb *= premultiplied.a;
+        color = lerp(color, premultiplied, smoothstep(stops[i - 1].x, stops[i].x, t.x));
+    }
+    return color;
 }

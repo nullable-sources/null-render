@@ -26,6 +26,7 @@ namespace null::render::directx9 {
 		}
 
 		if(data) {
+			std::unique_ptr<std::uint8_t[]> premultiplied = premultiply_texture_alpha(size, (std::uint8_t*)data);
 			D3DLOCKED_RECT locked_rect{ };
 			if(auto result = texture->LockRect(0, &locked_rect, nullptr, 0); FAILED(result)) {
 				utils::logger(utils::e_log_type::error, "LockRect failed, return code {}.", result);
@@ -33,7 +34,7 @@ namespace null::render::directx9 {
 			}
 
 			for(float x = size.x * 4; int y : std::views::iota(0, size.y)) {
-				std::memcpy((std::uint8_t*)locked_rect.pBits + locked_rect.Pitch * y, (std::uint8_t*)data + (int)x * y, x);
+				std::memcpy((std::uint8_t*)locked_rect.pBits + locked_rect.Pitch * y, premultiplied.get() + (int)x * y, x);
 			}
 
 			texture->UnlockRect(0);
@@ -50,55 +51,5 @@ namespace null::render::directx9 {
 
 		if(auto result = ((IDirect3DTexture9*)texture)->Release(); FAILED(result))
 			utils::logger(utils::e_log_type::warning, "cant release texture, return code {}.", result);
-		texture = nullptr;
-	}
-
-	void c_renderer::setup_state() {
-		D3DVIEWPORT9 viewport{ 0, 0,
-			render::shared::viewport.x,
-			render::shared::viewport.y,
-			0.0f, 1.0f
-		};
-		shared.device->SetViewport(&viewport);
-
-		shared.device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-		shared.device->SetRenderState(D3DRS_LIGHTING, false);
-		shared.device->SetRenderState(D3DRS_ZENABLE, false);
-		shared.device->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
-		shared.device->SetRenderState(D3DRS_ALPHATESTENABLE, false);
-		shared.device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
-		shared.device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-		shared.device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-		shared.device->SetRenderState(D3DRS_SCISSORTESTENABLE, true);
-		shared.device->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
-		shared.device->SetRenderState(D3DRS_FOGENABLE, false);
-		shared.device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-		shared.device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-		shared.device->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-		shared.device->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
-		shared.device->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-		shared.device->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
-		shared.device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-		shared.device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-
-
-		set_clip({ { 0 }, render::shared::viewport });
-		set_matrix(get_projection_matrix());
-		backend::object_event_dispatcher.setup_state();
-
-		backend::mesh->set();
-	}
-
-	void c_renderer::save_state() {
-		if(auto result = shared.device->CreateStateBlock(D3DSBT_ALL, &state_block); FAILED(result))
-			utils::logger(utils::e_log_type::error, "cant create state_block, return code {}.", result);
-	}
-
-	void c_renderer::restore_state() {
-		if(state_block) {
-			state_block->Apply();
-			state_block->Release();
-			state_block = nullptr;
-		}
 	}
 }

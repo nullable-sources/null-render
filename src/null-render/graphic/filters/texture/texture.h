@@ -1,32 +1,31 @@
 #pragma once
-#include "../filters.h"
+#include "../filter.h"
 
 namespace null::render {
 	class c_texture_filter : public i_filter {
 	public:
-		void* texture{ };
+		static std::shared_ptr<c_texture_filter> instance() { return std::make_shared<c_texture_filter>(); }
+		static std::shared_ptr<c_texture_filter> instance(void* texture, const rect_t<float>& uvs) { return std::make_shared<c_texture_filter>(texture, uvs); }
 
-	public:
-		c_texture_filter(std::unique_ptr<i_command>&& _child_command, void* _texture)
-			: i_filter(std::move(_child_command)), texture(_texture) { }
-
-	public:
-		virtual void handle() override;
-	};
-
-	struct texture_filter_t : public i_filter_instancer {
 	public:
 		rect_t<float> uvs{ std::numeric_limits<float>::max() };
 		void* texture{ };
 
 	public:
-		template <typename self_t> auto&& set_texture(this self_t&& self, void* texture) { self.texture = texture; return self; }
-		template <typename self_t> auto&& set_uvs(this self_t&& self, const rect_t<float>& uvs) { self.uvs = uvs; return self; }
+		c_texture_filter() { }
+		c_texture_filter(void* _texture, const rect_t<float>& _uvs) : texture(_texture), uvs(_uvs) { }
+		virtual ~c_texture_filter() { }
 
 	public:
-		std::unique_ptr<i_filter> instance_filter(std::unique_ptr<c_geometry_command>&& child_command) const override {
-			if(uvs != std::numeric_limits<float>::max()) child_command->set_uvs(uvs);
-			return std::make_unique<c_texture_filter>(std::move(child_command), texture);
+		void set_texture(void* _texture) { texture = _texture; }
+		void set_uvs(const rect_t<float>& _uvs) { uvs = _uvs; }
+
+	public:
+		virtual void set_child_command(std::shared_ptr<c_geometry_command>& _child_command) override {
+			if(uvs != std::numeric_limits<float>::max()) _child_command->set_uvs(uvs);
+			i_filter::set_child_command(_child_command);
 		}
+
+		virtual void handle() override;
 	};
 }

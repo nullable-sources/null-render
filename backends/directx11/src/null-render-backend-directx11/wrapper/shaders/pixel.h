@@ -7,7 +7,7 @@ namespace null::render::directx11 {
 		ID3D11PixelShader* shader{ };
 
 	public:
-		void create(const std::vector<std::uint8_t>& source) override {
+		void compile(const std::vector<std::uint8_t>& source) override {
 			shared.device->CreatePixelShader(source.data(), source.size(), nullptr, &shader);
 		}
 

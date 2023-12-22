@@ -21,12 +21,12 @@ namespace null::render::directx11 {
 		}
 
 	public:
-		void on_create() override {
+		void create() override {
 			if(!empty()) return;
-			create(sources::quad_gradient());
+			compile(sources::quad_gradient());
 			constant_buffer.create();
 		}
 
-		void on_destroy() override { destroy(); constant_buffer.destroy(); }
+		void destroy() override { c_pixel_shader::destroy(); constant_buffer.destroy(); }
 	} inline quad_gradient_shader_object{ };
 }

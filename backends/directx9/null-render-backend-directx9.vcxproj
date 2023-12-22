@@ -22,11 +22,12 @@
     <ClCompile Include="src\null-render-backend-directx9\internal\frame-buffer\frame-buffer.cpp" />
     <ClCompile Include="src\null-render-backend-directx9\internal\mesh\mesh.cpp" />
     <ClCompile Include="src\null-render-backend-directx9\renderer\renderer.cpp" />
+    <ClCompile Include="src\null-render-backend-directx9\shaders\blur\blur.cpp" />
     <ClCompile Include="src\null-render-backend-directx9\shaders\linear-gradient\linear-gradient.cpp" />
-    <ClCompile Include="src\null-render-backend-directx9\shaders\passthrough-color\passthrough-color.cpp" />
-    <ClCompile Include="src\null-render-backend-directx9\shaders\passthrough-texture\passthrough-texture.cpp" />
     <ClCompile Include="src\null-render-backend-directx9\shaders\quad-gradient\quad-gradient.cpp" />
+    <ClCompile Include="src\null-render-backend-directx9\shaders\radial-gradient\radial-gradient.cpp" />
     <ClCompile Include="src\null-render-backend-directx9\shaders\sdf\sdf.cpp" />
+    <ClCompile Include="src\null-render-backend-directx9\state-pipeline\state-pipeline.cpp" />
     <ClCompile Include="src\null-render-backend-directx9\wrapper\pixel\pixel.cpp" />
     <ClCompile Include="src\null-render-backend-directx9\wrapper\vertex\vertex.cpp" />
   </ItemGroup>
@@ -46,7 +47,10 @@
     <ClInclude Include="src\null-render-backend-directx9\internal\frame-buffer\frame-buffer.h" />
     <ClInclude Include="src\null-render-backend-directx9\internal\mesh\mesh.h" />
     <ClInclude Include="src\null-render-backend-directx9.h" />
+    <ClInclude Include="src\null-render-backend-directx9\internal\shader.h" />
     <ClInclude Include="src\null-render-backend-directx9\renderer\renderer.h" />
+    <ClInclude Include="src\null-render-backend-directx9\shaders\blur\blur.h" />
+    <ClInclude Include="src\null-render-backend-directx9\shaders\blur\compiled-object.h" />
     <ClInclude Include="src\null-render-backend-directx9\shaders\linear-gradient\compiled-object.h" />
     <ClInclude Include="src\null-render-backend-directx9\shaders\linear-gradient\linear-gradient.h" />
     <ClInclude Include="src\null-render-backend-directx9\shaders\passthrough-color\compiled-object.h" />
@@ -55,15 +59,43 @@
     <ClInclude Include="src\null-render-backend-directx9\shaders\passthrough-texture\passthrough-texture.h" />
     <ClInclude Include="src\null-render-backend-directx9\shaders\quad-gradient\compiled-object.h" />
     <ClInclude Include="src\null-render-backend-directx9\shaders\quad-gradient\quad-gradient.h" />
+    <ClInclude Include="src\null-render-backend-directx9\shaders\radial-gradient\compiled-object.h" />
+    <ClInclude Include="src\null-render-backend-directx9\shaders\radial-gradient\radial-gradient.h" />
     <ClInclude Include="src\null-render-backend-directx9\shaders\sdf\compiled-object.h" />
     <ClInclude Include="src\null-render-backend-directx9\shaders\sdf\sdf.h" />
-    <ClInclude Include="src\null-render-backend-directx9\shaders\shader.h" />
     <ClInclude Include="src\null-render-backend-directx9\shaders\shared-objects\passthrough\compiled-object.h" />
+    <ClInclude Include="src\null-render-backend-directx9\state-pipeline\state-pipeline.h" />
     <ClInclude Include="src\null-render-backend-directx9\wrapper\pixel\pixel.h" />
-    <ClInclude Include="src\null-render-backend-directx9\wrapper\shader.h" />
+    <ClInclude Include="src\null-render-backend-directx9\wrapper\compiled-shader.h" />
     <ClInclude Include="src\null-render-backend-directx9\wrapper\vertex\vertex.h" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="src\null-render-backend-directx9\shaders\blur\hlsl\blur.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|Win32'">3.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">3.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|x64'">3.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='debug|x64'">3.0</ShaderModel>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
+      </ObjectFileOutput>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
+      </ObjectFileOutput>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='release|x64'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='release|x64'">
+      </ObjectFileOutput>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|x64'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
+      </ObjectFileOutput>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='release|Win32'">shader_data</VariableName>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">shader_data</VariableName>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='release|x64'">shader_data</VariableName>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='debug|x64'">shader_data</VariableName>
+    </FxCompile>
     <FxCompile Include="src\null-render-backend-directx9\shaders\linear-gradient\hlsl\linear-gradient.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|Win32'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|Win32'">3.0</ShaderModel>
@@ -167,6 +199,32 @@
       <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|x64'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
       </ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="src\null-render-backend-directx9\shaders\radial-gradient\hlsl\radial-gradient.hlsl">
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
+      </ObjectFileOutput>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
+      </ObjectFileOutput>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='release|x64'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='release|x64'">
+      </ObjectFileOutput>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|x64'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
+      </ObjectFileOutput>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='release|Win32'">shader_data</VariableName>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">shader_data</VariableName>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='release|x64'">shader_data</VariableName>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='debug|x64'">shader_data</VariableName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|Win32'">3.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">3.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|x64'">3.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='debug|x64'">3.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="src\null-render-backend-directx9\shaders\sdf\hlsl\sdf.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|Win32'">Pixel</ShaderType>
@@ -279,6 +337,8 @@
     <IntDir>$(SolutionDir)build\$(Configuration)-$(PlatformShortName)\obj-$(ProjectName)\</IntDir>
     <PublicIncludeDirectories>src\</PublicIncludeDirectories>
     <TargetName>null-render-backend-directx9-$(Configuration)-$(PlatformShortName)</TargetName>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <ReferencePath>$(VC_ReferencesPath_x86);</ReferencePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -286,6 +346,8 @@
     <IntDir>$(SolutionDir)build\$(Configuration)-$(PlatformShortName)\obj-$(ProjectName)\</IntDir>
     <PublicIncludeDirectories>src\</PublicIncludeDirectories>
     <TargetName>null-render-backend-directx9-$(Configuration)-$(PlatformShortName)</TargetName>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <ReferencePath>$(VC_ReferencesPath_x86);</ReferencePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -293,6 +355,8 @@
     <IntDir>$(SolutionDir)build\$(Configuration)-$(PlatformShortName)\obj-$(ProjectName)\</IntDir>
     <PublicIncludeDirectories>src\</PublicIncludeDirectories>
     <TargetName>null-render-backend-directx9-$(Configuration)-$(PlatformShortName)</TargetName>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <ReferencePath>$(VC_ReferencesPath_x64);</ReferencePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -300,6 +364,8 @@
     <IntDir>$(SolutionDir)build\$(Configuration)-$(PlatformShortName)\obj-$(ProjectName)\</IntDir>
     <PublicIncludeDirectories>src\</PublicIncludeDirectories>
     <TargetName>null-render-backend-directx9-$(Configuration)-$(PlatformShortName)</TargetName>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <ReferencePath>$(VC_ReferencesPath_x64);</ReferencePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
     <ClCompile>
@@ -312,7 +378,7 @@
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(ProjectDir)src\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src\;</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <EnableModules>false</EnableModules>
@@ -324,6 +390,8 @@
     </Link>
     <Lib>
       <AdditionalOptions>/ignore:4221,4006 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
@@ -339,7 +407,7 @@
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(ProjectDir)src\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src\;</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <EnableModules>false</EnableModules>
@@ -353,6 +421,8 @@
     </Link>
     <Lib>
       <AdditionalOptions>/ignore:4221,4006 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
@@ -366,7 +436,7 @@
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(ProjectDir)src\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src\;</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <EnableModules>false</EnableModules>
@@ -378,6 +448,8 @@
     </Link>
     <Lib>
       <AdditionalOptions>/ignore:4221,4006 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='release|x64'">
@@ -393,7 +465,7 @@
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(ProjectDir)src\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src\;</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <EnableModules>false</EnableModules>
@@ -407,6 +479,8 @@
     </Link>
     <Lib>
       <AdditionalOptions>/ignore:4221,4006 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

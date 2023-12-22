@@ -1,5 +1,7 @@
 #pragma once
-#include <null-sdk.h>
+#include <memory>
+#include <algorithm>
+#include <vector>
 
 namespace null::render {
 	class i_command {
@@ -13,7 +15,7 @@ namespace null::render {
 
 	class c_command_buffer : public i_command {
 	public:
-		std::vector<std::unique_ptr<i_command>> command_buffer{ };
+		std::vector<std::shared_ptr<i_command>> command_buffer{ };
 
 	public:
 		virtual void handle() override { std::ranges::for_each(command_buffer, &i_command::handle); }
@@ -21,13 +23,13 @@ namespace null::render {
 
 	public:
 		template <typename command_t>
-		void add_command(std::unique_ptr<command_t>&& command) {
-			command_buffer.push_back(std::move(command));
+		void add_command(std::shared_ptr<command_t> command) {
+			command_buffer.push_back(command);
 		}
 
 		template <typename command_t, typename ... args_t>
 		void add_command(args_t&& ... args) {
-			command_buffer.push_back(std::make_unique<command_t>(std::forward<args_t>(args) ...));
+			command_buffer.push_back(std::make_shared<command_t>(std::forward<args_t>(args) ...));
 		}
 	};
 }

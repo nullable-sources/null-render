@@ -15,14 +15,13 @@ namespace null::render::directx11 {
 		void* get_texture() override { return shader_resource_view; }
 
 	public:
-		void on_create() override;
-		void on_destroy() override;
+		void create() override;
+		void destroy() override;
 
 	public:
 		void clear() override;
-		void set() override;
+		void use() override;
 
-	public:
 		void copy_from(const std::unique_ptr<i_frame_buffer>& another_frame_buffer) override;
 
 	public:

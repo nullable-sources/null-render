@@ -1,5 +1,5 @@
 #pragma once
-#include "../shader.h"
+#include "../../internal/shader.h"
 #include "../shared-objects/passthrough/compiled-object.h"
 #include "compiled-object.h"
 

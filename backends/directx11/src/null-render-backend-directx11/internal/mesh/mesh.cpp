@@ -2,7 +2,7 @@
 #include "mesh.h"
 
 namespace null::render::directx11 {
-	void c_mesh::on_create() {
+	void c_mesh::create() {
 		if(input_layout) return;
 
 		D3D11_INPUT_ELEMENT_DESC desc[] = {
@@ -14,13 +14,15 @@ namespace null::render::directx11 {
 			utils::logger(utils::e_log_type::error, "cant create vertex input layout, return code {}.", result);
 	}
 
-	void c_mesh::on_destroy() {
+	void c_mesh::destroy() {
 		if(index_buffer) { index_buffer->Release(); index_buffer = nullptr; }
 		if(vertex_buffer) { vertex_buffer->Release(); vertex_buffer = nullptr; }
 		if(input_layout) { input_layout->Release(); input_layout = nullptr; }
 	}
 
 	void c_mesh::compile() {
+		if(!input_layout) create();
+
 		static int vertex_buffer_size = 5000, index_buffer_size = 10000;
 		if(!vertex_buffer || vertex_buffer_size < geometry_buffer.vertex_buffer.size()) {
 			if(vertex_buffer) { vertex_buffer->Release(); vertex_buffer = nullptr; }
@@ -72,7 +74,7 @@ namespace null::render::directx11 {
 		shared.context->Unmap(index_buffer, 0);
 	}
 
-	void c_mesh::set() {
+	void c_mesh::use() {
 		std::uint32_t stride{ sizeof(backend::vertex_t) };
 		std::uint32_t offset{ };
 		shared.context->IASetInputLayout(input_layout);

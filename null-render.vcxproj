@@ -19,23 +19,29 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\null-render\backend\post-processing\post-processing.cpp" />
     <ClCompile Include="src\null-render\backend\renderer\renderer.cpp" />
+    <ClCompile Include="src\null-render\backend\state-pipeline\state-pipeline.cpp" />
     <ClCompile Include="src\null-render\font\font.cpp" />
     <ClCompile Include="src\null-render\font\loaders\freetype\freetype.cpp" />
     <ClCompile Include="src\null-render\font\loaders\truetype\truetype.cpp" />
+    <ClCompile Include="src\null-render\graphic\brushes\brush.cpp" />
+    <ClCompile Include="src\null-render\graphic\brushes\filter-brush.cpp" />
+    <ClCompile Include="src\null-render\graphic\brushes\sdf-text\sdf-text.cpp" />
+    <ClCompile Include="src\null-render\graphic\brushes\text\text.cpp" />
     <ClCompile Include="src\null-render\graphic\commands\geometry\geometry.cpp" />
     <ClCompile Include="src\null-render\graphic\commands\renderer\renderer.cpp" />
-    <ClCompile Include="src\null-render\graphic\draw-list\brushes\sdf-text\sdf-text.cpp" />
-    <ClCompile Include="src\null-render\graphic\draw-list\brushes\text\text.cpp" />
     <ClCompile Include="src\null-render\graphic\draw-list\draw-list.cpp" />
-    <ClCompile Include="src\null-render\graphic\draw-list\pen\pen.cpp" />
-    <ClCompile Include="src\null-render\graphic\draw-list\strokes\stroke.cpp" />
+    <ClCompile Include="src\null-render\graphic\filters\blur\blur.cpp" />
     <ClCompile Include="src\null-render\graphic\filters\linear-gradient\linear-gradient.cpp" />
     <ClCompile Include="src\null-render\graphic\filters\quad-gradient\quad-gradient.cpp" />
+    <ClCompile Include="src\null-render\graphic\filters\radial-gradient\radial-gradient.cpp" />
     <ClCompile Include="src\null-render\graphic\filters\sdf\sdf.cpp" />
     <ClCompile Include="src\null-render\graphic\filters\texture\texture.cpp" />
     <ClCompile Include="src\null-render\graphic\path\path.cpp" />
     <ClCompile Include="src\null-render.cpp" />
+    <ClCompile Include="src\null-render\graphic\pen\pen.cpp" />
+    <ClCompile Include="src\null-render\graphic\stroke\stroke.cpp" />
   </ItemGroup>
   <PropertyGroup Label="NullVCXProperties">
     <NullRenderDependenciesPath Condition="Exists('$(SolutionDir)third-party\null-sdk\null-sdk.vcxproj')">$(SolutionDir)third-party\</NullRenderDependenciesPath>
@@ -48,36 +54,44 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\null-render\backend\backend.h" />
+    <ClInclude Include="src\null-render\backend\internal\renderer-events.h" />
     <ClInclude Include="src\null-render\backend\internal\frame-buffer.h" />
     <ClInclude Include="src\null-render\backend\internal\geometry-buffer.h" />
     <ClInclude Include="src\null-render\backend\internal\mesh.h" />
     <ClInclude Include="src\null-render\backend\internal\object.h" />
+    <ClInclude Include="src\null-render\backend\internal\shader.h" />
+    <ClInclude Include="src\null-render\backend\post-processing\post-processing.h" />
     <ClInclude Include="src\null-render\backend\renderer\renderer.h" />
+    <ClInclude Include="src\null-render\backend\shaders\blur.h" />
     <ClInclude Include="src\null-render\backend\shaders\linear-gradient.h" />
     <ClInclude Include="src\null-render\backend\shaders\passthrough.h" />
     <ClInclude Include="src\null-render\backend\shaders\quad-gradient.h" />
+    <ClInclude Include="src\null-render\backend\shaders\radial-gradient.h" />
     <ClInclude Include="src\null-render\backend\shaders\sdf.h" />
-    <ClInclude Include="src\null-render\backend\shaders\shader.h" />
+    <ClInclude Include="src\null-render\backend\state-pipeline\state-pipeline.h" />
     <ClInclude Include="src\null-render\font\font.h" />
     <ClInclude Include="src\null-render\font\loaders\freetype\freetype.h" />
     <ClInclude Include="src\null-render\font\loaders\loader.h" />
     <ClInclude Include="src\null-render\font\loaders\truetype\truetype.h" />
+    <ClInclude Include="src\null-render\graphic\brushes\brush.h" />
+    <ClInclude Include="src\null-render\graphic\brushes\filter-brush.h" />
+    <ClInclude Include="src\null-render\graphic\brushes\sdf-text\sdf-text.h" />
+    <ClInclude Include="src\null-render\graphic\brushes\text\text.h" />
     <ClInclude Include="src\null-render\graphic\commands\commands.h" />
     <ClInclude Include="src\null-render\graphic\commands\geometry\geometry.h" />
     <ClInclude Include="src\null-render\graphic\commands\renderer\renderer.h" />
-    <ClInclude Include="src\null-render\graphic\draw-list\brushes\brush.h" />
-    <ClInclude Include="src\null-render\graphic\draw-list\brushes\sdf-text\sdf-text.h" />
-    <ClInclude Include="src\null-render\graphic\draw-list\brushes\text\text.h" />
     <ClInclude Include="src\null-render\graphic\draw-list\draw-list.h" />
-    <ClInclude Include="src\null-render\graphic\draw-list\pen\pen.h" />
-    <ClInclude Include="src\null-render\graphic\draw-list\strokes\stroke.h" />
-    <ClInclude Include="src\null-render\graphic\filters\filters.h" />
+    <ClInclude Include="src\null-render\graphic\filters\blur\blur.h" />
+    <ClInclude Include="src\null-render\graphic\filters\filter.h" />
     <ClInclude Include="src\null-render\graphic\filters\linear-gradient\linear-gradient.h" />
     <ClInclude Include="src\null-render\graphic\filters\quad-gradient\quad-gradient.h" />
+    <ClInclude Include="src\null-render\graphic\filters\radial-gradient\radial-gradient.h" />
     <ClInclude Include="src\null-render\graphic\filters\sdf\sdf.h" />
     <ClInclude Include="src\null-render\graphic\filters\texture\texture.h" />
     <ClInclude Include="src\null-render\graphic\path\path.h" />
     <ClInclude Include="src\null-render.h" />
+    <ClInclude Include="src\null-render\graphic\pen\pen.h" />
+    <ClInclude Include="src\null-render\graphic\stroke\stroke.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\null-render\font\font.inl" />

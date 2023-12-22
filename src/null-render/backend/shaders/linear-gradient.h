@@ -1,5 +1,5 @@
 #pragma once
-#include "shader.h"
+#include "../internal/shader.h"
 
 namespace null::render::backend {
 	class i_linear_gradient_shader : public virtual i_shader {
@@ -7,6 +7,7 @@ namespace null::render::backend {
 		struct constants_t {
 		public:
 			radians_t angle{ };
+			vec2_t<float> origin{ };
 			std::vector<std::pair<color_t<int>, float>> stops{ };
 		};
 

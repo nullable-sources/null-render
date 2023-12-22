@@ -21,12 +21,12 @@ namespace null::render::directx11 {
 		}
 
 	public:
-		void on_create() override {
+		void create() override {
 			if(!empty()) return;
-			create(sources::sdf());
+			compile(sources::sdf());
 			constant_buffer.create();
 		}
 
-		void on_destroy() override { destroy(); constant_buffer.destroy(); }
+		void destroy() override { c_pixel_shader::destroy(); constant_buffer.destroy(); }
 	} inline sdf_shader_object{ };
 }

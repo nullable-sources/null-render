@@ -1,35 +1,34 @@
 #pragma once
-#include "null-render/backend/shaders/quad-gradient.h"
-#include "../filters.h"
+#include "../../../backend/shaders/quad-gradient.h"
+#include "../filter.h"
 
 namespace null::render {
 	class c_quad_gradient_filter : public i_filter {
 	public:
-		backend::i_quad_gradient_shader::constants_t constants{ };
+		static std::shared_ptr<c_quad_gradient_filter> instance() { return std::make_shared<c_quad_gradient_filter>(); }
+		static std::shared_ptr<c_quad_gradient_filter> instance(const std::array<color_t<int>, 4>& colors) { return std::make_shared<c_quad_gradient_filter>(colors); }
 
-	public:
-		c_quad_gradient_filter(std::unique_ptr<i_command>&& _child_command, const backend::i_quad_gradient_shader::constants_t& _constants)
-			: i_filter(std::move(_child_command)), constants(_constants) { }
-
-	public:
-		virtual void handle() override;
-	};
-
-	struct quad_gradient_filter_t : public i_filter_instancer {
 	public:
 		backend::i_quad_gradient_shader::constants_t constants{ };
 
 	public:
-		template <typename self_t> auto&& set_colors(this self_t&& self, const std::array<color_t<int>, 4>& colors) { self.constants.colors = colors; return self; }
-		template <typename self_t> auto&& set_top_left_color(this self_t&& self, const color_t<int>& color) { self.constants.colors[0] = color; return self; }
-		template <typename self_t> auto&& set_top_right_color(this self_t&& self, const color_t<int>& color) { self.constants.colors[1] = color; return self; }
-		template <typename self_t> auto&& set_bottom_left_color(this self_t&& self, const color_t<int>& color) { self.constants.colors[2] = color; return self; }
-		template <typename self_t> auto&& set_bottom_right_color(this self_t&& self, const color_t<int>& color) { self.constants.colors[3] = color; return self; }
+		c_quad_gradient_filter() { }
+		c_quad_gradient_filter(const std::array<color_t<int>, 4>& colors) : constants(colors) { }
+		virtual ~c_quad_gradient_filter() { }
 
 	public:
-		std::unique_ptr<i_filter> instance_filter(std::unique_ptr<c_geometry_command>&& child_command) const override {
-			child_command->set_default_uvs();
-			return std::make_unique<c_quad_gradient_filter>(std::move(child_command), constants);
+		void set_colors(const std::array<color_t<int>, 4>& colors) { constants.colors = colors; }
+		void set_top_left_color(const color_t<int>& color) { constants.colors[0] = color; }
+		void set_top_right_color(const color_t<int>& color) { constants.colors[1] = color; }
+		void set_bottom_left_color(const color_t<int>& color) { constants.colors[2] = color; }
+		void set_bottom_right_color(const color_t<int>& color) { constants.colors[3] = color; }
+
+	public:
+		virtual void set_child_command(std::shared_ptr<c_geometry_command>& _child_command) override {
+			_child_command->set_default_uvs();
+			i_filter::set_child_command(_child_command);
 		}
+
+		virtual void handle() override;
 	};
 }

@@ -12,7 +12,11 @@ namespace null::render::directx11 {
 
 	class c_passthrough_shader_object : public c_vertex_shader {
 	public:
-		struct constant_buffer_t { matrix4x4_t matrix{ }; };
+		struct constant_buffer_t {
+		public:
+			matrix4x4_t matrix{ };
+			vec2_t<float> translation{ };
+		};
 		c_constant_buffer<constant_buffer_t> constant_buffer{ };
 
 	public:
@@ -22,12 +26,12 @@ namespace null::render::directx11 {
 		}
 
 	public:
-		void on_create() override {
+		void create() override {
 			if(!empty()) return;
-			create(sources::passthrough());
+			compile(sources::passthrough());
 			constant_buffer.create();
 		}
 
-		void on_destroy() override { destroy(); constant_buffer.destroy(); }
+		void destroy() override { c_vertex_shader::destroy(); constant_buffer.destroy(); }
 	} inline passthrough_shader_object{ };
 }

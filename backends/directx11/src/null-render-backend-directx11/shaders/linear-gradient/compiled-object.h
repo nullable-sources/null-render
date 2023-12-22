@@ -16,6 +16,7 @@ namespace null::render::directx11 {
 		public:
 			std::array<color_t<int>, 16> colors{ };
 			std::array<vec4_t<float>, 16> stops{ };
+			vec2_t<float> origin{ };
 			float angle{ };
 			int stops_count{ };
 		};
@@ -28,12 +29,12 @@ namespace null::render::directx11 {
 		}
 
 	public:
-		void on_create() override {
+		void create() override {
 			if(!empty()) return;
-			create(sources::linear_gradient());
+			compile(sources::linear_gradient());
 			constant_buffer.create();
 		}
 
-		void on_destroy() override { destroy(); constant_buffer.destroy(); }
+		void destroy() override { c_pixel_shader::destroy(); constant_buffer.destroy(); }
 	} inline linear_gradient_shader_object{ };
 }

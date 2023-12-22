@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <null-render.h>
 
 namespace null::render::opengl3 {
@@ -11,14 +11,12 @@ namespace null::render::opengl3 {
 		void* get_texture() override { return (void*)fbo_attachment; }
 
 	public:
-		void on_create() override;
-		void on_destroy() override;
+		void create() override;
+		void destroy() override;
 
-	public:
 		void clear() override;
-		void set() override;
+		void use() override;
 
-	public:
 		void copy_from(const std::unique_ptr<i_frame_buffer>& another_frame_buffer) override;
 
 	public:
