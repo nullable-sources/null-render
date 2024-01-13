@@ -31,14 +31,11 @@ namespace null::render {
 	public:
 		static std::shared_ptr<c_text_brush> instance() { return std::make_shared<c_text_brush>(); }
 
-	private:
-		std::shared_ptr<c_texture_filter> filter{ };
-
 	public:
-		c_text_brush() : filter(c_texture_filter::instance()) { }
+		c_text_brush() { }
 		virtual ~c_text_brush() { }
 
 	public:
-		virtual std::shared_ptr<i_command>&& prepare_command(std::shared_ptr<c_geometry_command>&& command) const override;
+		virtual std::shared_ptr<i_command> prepare_command(std::shared_ptr<c_geometry_command>&& command) const override;
 	};
 }

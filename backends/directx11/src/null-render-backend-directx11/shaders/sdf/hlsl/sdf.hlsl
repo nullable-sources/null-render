@@ -17,6 +17,9 @@ float stretch(float low, float high, float x) {
 }
 
 float4 main(ps_input_t input) : SV_Target {
+    //return input.color * texture_source.Sample(texture_sampler, input.uv);
+
+
 	float distance = texture_source.Sample(texture_sampler, input.uv).a;
 	if(distance >= 0.5f + aa)
 		return input.color;
@@ -38,5 +41,5 @@ float4 main(ps_input_t input) : SV_Target {
 	float ia = m * input.color.a;
 	float oa = (1 - m) * outer.a;
 	float a = ia + oa;
-	return float4((input.color.rgb * ia + outer.rgb * oa) / a, a);
+    return float4((input.color.rgb * ia + outer.rgb * oa) / a * a, a);
 }

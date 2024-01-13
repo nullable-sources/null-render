@@ -27,5 +27,10 @@ namespace null::render {
 		}
 
 		virtual void handle() override;
+
+	public:
+		virtual std::shared_ptr<i_filter> clone() const override {
+			return std::shared_ptr<c_texture_filter>(new c_texture_filter(*this));
+		}
 	};
 }

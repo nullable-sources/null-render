@@ -38,5 +38,5 @@ float4 main(ps_input_t input) : COLOR {
 	float ia = m * input.color.a;
 	float oa = (1 - m) * outer.a;
 	float a = ia + oa;
-	return float4((input.color.rgb * ia + outer.rgb * oa) / a, a);
+	return float4((input.color.rgb * ia + outer.rgb * oa) / a * a, a);
 }

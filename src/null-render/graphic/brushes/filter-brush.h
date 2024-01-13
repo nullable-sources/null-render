@@ -20,6 +20,6 @@ namespace null::render {
 		void set_filter(const std::shared_ptr<i_filter>& _filter) { filter = _filter; }
 
 	public:
-		virtual std::shared_ptr<i_command>&& prepare_command(std::shared_ptr<c_geometry_command>&& command) const;
+		virtual std::shared_ptr<i_command> prepare_command(std::shared_ptr<c_geometry_command>&& command) const;
 	};
 }

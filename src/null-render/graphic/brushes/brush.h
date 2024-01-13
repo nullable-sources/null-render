@@ -19,6 +19,6 @@ namespace null::render {
 		void set_color(const color_t<int>& _color) { color = _color; }
 
 	public:
-		virtual std::shared_ptr<i_command>&& prepare_command(std::shared_ptr<c_geometry_command>&& command) const;
+		virtual std::shared_ptr<i_command> prepare_command(std::shared_ptr<c_geometry_command>&& command) const;
 	};
 }

@@ -14,7 +14,9 @@ namespace null::render {
 	public:
 		c_quad_gradient_filter() { }
 		c_quad_gradient_filter(const std::array<color_t<int>, 4>& colors) : constants(colors) { }
-		virtual ~c_quad_gradient_filter() { }
+		virtual ~c_quad_gradient_filter() {
+			int i = 0;
+		}
 
 	public:
 		void set_colors(const std::array<color_t<int>, 4>& colors) { constants.colors = colors; }
@@ -30,5 +32,10 @@ namespace null::render {
 		}
 
 		virtual void handle() override;
+
+	public:
+		virtual std::shared_ptr<i_filter> clone() const override {
+			return std::shared_ptr<c_quad_gradient_filter>(new c_quad_gradient_filter(*this));
+		}
 	};
 }

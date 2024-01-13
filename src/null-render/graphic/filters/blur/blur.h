@@ -48,5 +48,10 @@ namespace null::render {
 	public:
 		virtual void set_child_command(std::shared_ptr<c_geometry_command>& _child_command) override;
 		virtual void handle() override;
+
+	public:
+		virtual std::shared_ptr<i_filter> clone() const override {
+			return std::shared_ptr<c_blur_filter>(new c_blur_filter(*this));
+		}
 	};
 }

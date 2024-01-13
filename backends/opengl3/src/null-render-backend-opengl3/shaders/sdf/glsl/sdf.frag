@@ -39,5 +39,5 @@ void main() {
 	float ia = m * frag_color.a;
 	float oa = (1.0 - m) * outer.a;
 	float a = ia + oa;
-	out_color = vec4((frag_color.rgb * ia + outer.rgb * oa) / a, a);
+	out_color = vec4((frag_color.rgb * ia + outer.rgb * oa) / a * a, a);
 };

@@ -30,5 +30,10 @@ namespace null::render {
 		}
 
 		virtual void handle() override;
+
+	public:
+		virtual std::shared_ptr<i_filter> clone() const override {
+			return std::shared_ptr<c_radial_gradient_filter>(new c_radial_gradient_filter(*this));
+		}
 	};
 }
