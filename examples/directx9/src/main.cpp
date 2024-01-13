@@ -12,36 +12,40 @@ void draw_example(const std::string_view& name, const std::shared_ptr<null::rend
 	stroke.set_cap(null::render::e_line_cap::joint);
 	stroke.set_origin(0.f);
 
+	null::render::draw_list->add_command(null::render::c_update_translation_command::instance({ 0.f, y }));
+
 	std::shared_ptr<null::render::c_sdf_brush> text_brush = null::render::c_sdf_brush::instance();
 	text_brush->set_align(text_align);
 	text_brush->set_size(30.f);
-	null::render::draw_list->add_text(name, { 280, y + 50 }, text_brush);
+	null::render::draw_list->add_text(name, { 280, 50 }, text_brush);
 
 	null::render::draw_list->add_convex_shape(
-		null::render::make_rect({ 290, y }, { 390, y + 100 }, rect_path_rounding),
+		null::render::make_rect({ 290, 0 }, { 390, 100 }, rect_path_rounding),
 		brush,
 		pen
 	);
 
 	null::render::draw_list->add_poly_line(
-		null::render::make_rect({ 410, y }, { 510, y + 100 }, rect_path_rounding),
+		null::render::make_rect({ 410, 0 }, { 510, 100 }, rect_path_rounding),
 		stroke,
 		brush,
 		pen
 	);
 
 	null::render::draw_list->add_convex_shape(
-		null::render::make_circle({ 580, y + 50 }, 50),
+		null::render::make_circle({ 580, 50 }, 50),
 		brush,
 		pen
 	);
 
 	null::render::draw_list->add_poly_line(
-		null::render::make_circle({ 700, y + 50 }, 50),
+		null::render::make_circle({ 700, 50 }, 50),
 		stroke,
 		brush,
 		pen
 	);
+
+	null::render::draw_list->add_command(null::render::c_update_translation_command::instance({ 0.f, 0 }));
 }
 
 void main_loop() {

@@ -4,12 +4,12 @@
 #include "geometry.h"
 
 namespace null::render {
-	c_geometry_command::c_geometry_command(backend::c_geometry_buffer* _geometry_buffer)
-		: geometry_buffer(_geometry_buffer), index_offset(geometry_buffer->index_buffer.size()), vertex_offset(geometry_buffer->vertex_buffer.size()) { }
-
-	void c_geometry_command::handle() {
+	void i_geometry_command::handle() {
 		backend::renderer->draw_geometry(topology, vertex_count, index_count, vertex_offset, index_offset);
 	}
+
+	c_geometry_command::c_geometry_command(backend::c_geometry_buffer* _geometry_buffer)
+		: geometry_buffer(_geometry_buffer), i_geometry_command(_geometry_buffer->index_buffer.size(), _geometry_buffer->vertex_buffer.size()) { }
 
 	void c_geometry_command::get_bounding_box(vec2_t<float>& min, vec2_t<float>& max) const {
 		min = std::numeric_limits<float>::max(); max = std::numeric_limits<float>::min();

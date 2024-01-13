@@ -1,5 +1,5 @@
 #pragma once
-#include "../../wrapper/shader.h"
+#include "../../../wrapper/shader.h"
 
 namespace null::render::opengl3 {
 	class c_passthrough_shader_object : public c_vertex_shader {
