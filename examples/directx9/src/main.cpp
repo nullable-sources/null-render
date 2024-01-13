@@ -73,7 +73,7 @@ void main_loop() {
 		std::shared_ptr<null::render::c_sdf_brush> text_brush = null::render::c_sdf_brush::instance();
 		text_brush->set_size(30.f);
 		text_brush->set_outline(1.f, { 100, 100, 255 }, { 100, 100, 255, 0 });
-		null::render::draw_list->add_text(std::format("[ directx11 ] fps: {:3.0f}", 1.f / std::chrono::duration<float>{ frame_counter.representation() }.count()), { }, text_brush);
+		null::render::draw_list->add_text(std::format("[ directx9 ] fps: {:3.0f}", 1.f / std::chrono::duration<float>{ frame_counter.representation() }.count()), { }, text_brush);
 
 		draw_example("brush", brush, 10, { });
 		draw_example("brush\ngradient pen", brush, 150, pen_gradient);

@@ -38,14 +38,6 @@ namespace null::render::directx9 {
 					}
 				}
 			}
-
-			//@note: many thanks to the person who was the ONLY ONE who wrote about the depth stencil surface,
-			//		 without him I would have tried to get rt for a very long time.
-			//		 I love you brother, you're the best - https://gamedev.stackexchange.com/a/23997
-			if(auto result = shared.device->CreateDepthStencilSurface(size.x, size.y, D3DFMT_D16, multisample_type, main_surface_desc.MultiSampleQuality, true, &depth_surface, nullptr); FAILED(result)) {
-				utils::logger(utils::e_log_type::error, "CreateRenderTarget failed, return code {}.", result);
-				return;
-			}
 		} else {
 			if(auto result = shared.device->GetRenderTarget(0, &surface); FAILED(result)) {
 				utils::logger(utils::e_log_type::error, "GetBuffer failed, return code {}.", result);
@@ -56,7 +48,6 @@ namespace null::render::directx9 {
 
 	void c_frame_buffer::destroy() {
 		if(surface) { surface->Release(); surface = nullptr; }
-		if(depth_surface) { depth_surface->Release(); depth_surface = nullptr; }
 		if(texture) { texture->Release(); texture = nullptr; }
 	}
 
@@ -74,7 +65,6 @@ namespace null::render::directx9 {
 
 	void c_frame_buffer::use() {
 		shared.device->SetRenderTarget(0, surface);
-		shared.device->SetDepthStencilSurface(depth_surface);
 	}
 
 	void c_frame_buffer::copy_from(const std::unique_ptr<i_frame_buffer>& another_frame_buffer) {
