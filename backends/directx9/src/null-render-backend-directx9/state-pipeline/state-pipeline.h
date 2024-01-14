@@ -15,7 +15,7 @@ namespace null::render::directx9 {
 		IDirect3DVertexDeclaration9* vertex_declaration{ };
 		IDirect3DVertexBuffer9* vertex_buffer{ };
 		IDirect3DIndexBuffer9* index_buffer{ };
-		size_t vertex_offset{ }, vertex_stride{ };
+		std::uint32_t vertex_offset{ }, vertex_stride{ };
 
 	public:
 		void setup_state() override;
