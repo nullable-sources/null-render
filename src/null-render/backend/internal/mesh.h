@@ -4,7 +4,7 @@
 #include "renderer-events.h"
 
 namespace null::render::backend {
-	class i_mesh : private i_renderer_event_listener, public i_usable_object {
+	class i_mesh : protected i_renderer_event_listener, public i_usable_object {
 	public:
 		i_mesh() {
 			renderer_event_dispatcher.attach_listener(e_renderer_event_type::create, this);
@@ -24,7 +24,7 @@ namespace null::render::backend {
 	public:
 		virtual void clear_geometry() = 0;
 
-	private:
+	protected:
 		void on_create() override { create(); }
 		void on_destroy() override { destroy(); }
 	};

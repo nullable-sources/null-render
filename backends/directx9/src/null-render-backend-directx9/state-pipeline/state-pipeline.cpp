@@ -33,7 +33,6 @@ namespace null::render::directx9 {
 		shared.device->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
 		shared.device->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
 
-
 		backend::renderer->set_clip({ { 0 }, shared::viewport });
 		backend::renderer->set_matrix(backend::renderer->get_projection_matrix());
 		backend::renderer_event_dispatcher.setup_state();

@@ -17,7 +17,7 @@ ps_input_t main(vs_input_t input) {
 	ps_input_t output;
 	output.uv = input.uv;
 	output.color = input.color / 255.f;
-    output.color.rgb *= output.color.a;
-    output.position = mul(projection_matrix, float4(input.position + translation, 0.0f, 1.0f));
+	output.color.rgb *= output.color.a;
+	output.position = mul(projection_matrix, float4(input.position + translation, 0.0f, 1.0f));
 	return output;
 }

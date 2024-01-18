@@ -4,12 +4,12 @@
 #include "../../graphic/commands/geometry/geometry.h"
 
 namespace null::render::backend {
-	class c_post_processing : private i_renderer_event_listener {
+	class c_post_processing : protected i_renderer_event_listener {
 	public:
 		std::array<std::unique_ptr<i_frame_buffer>, 4> frame_buffers{ };
 		std::unique_ptr<i_frame_buffer> transfer_buffer{ };
 
-	private:
+	protected:
 		std::unique_ptr<c_mesh> mesh{ };
 		std::shared_ptr<c_geometry_command> geometry_command{ };
 

@@ -16,7 +16,7 @@ namespace null::render::backend {
 	}; enum_create_bit_operators(e_frame_buffer_flags, true);
 	enum_create_cast_operator(e_frame_buffer_flags, -);
 
-	class i_frame_buffer : private i_renderer_event_listener, public i_usable_object {
+	class i_frame_buffer : protected i_renderer_event_listener, public i_usable_object {
 	public:
 		vec2_t<int> size{ };
 		e_frame_buffer_type type{ };
@@ -52,7 +52,7 @@ namespace null::render::backend {
 	public:
 		virtual bool empty() const = 0;
 
-	private:
+	protected:
 		virtual void resize_begin(const vec2_t<float>& new_size) {
 			size = new_size;
 			destroy();
@@ -62,7 +62,7 @@ namespace null::render::backend {
 			create();
 		}
 
-	private:
+	protected:
 		virtual void on_create() override { create(); }
 		virtual void on_destroy() override { destroy(); }
 		virtual void on_viewport_resize_begin() override { resize_begin(shared::viewport); }

@@ -1,8 +1,8 @@
 cbuffer constant_buffer : register(b0) {
 	int4 colors[16];
 	float4 stops[16];
-    float2 origin;
-    float2 radius;
+	float2 origin;
+	float2 radius;
 	int stops_count;
 };
 
@@ -13,14 +13,14 @@ struct ps_input_t {
 };
 
 float4 main(ps_input_t input) : SV_Target {
-    float t = length((1.f / radius) * (input.uv - origin));
+	float t = length((1.f / radius) * (input.uv - origin));
 
-    float4 color = colors[0] / 255.f;
-    color.rgb *= color.a;
-    for(int i = 1; i < stops_count; ++i) {
-        float4 premultiplied = colors[i] / 255.f;
-        premultiplied.rgb *= premultiplied.a;
-        color = lerp(color, premultiplied, smoothstep(stops[i - 1].x, stops[i].x, t));
-    }
-    return color * input.color;
+	float4 color = colors[0] / 255.f;
+	color.rgb *= color.a;
+	for(int i = 1; i < stops_count; ++i) {
+		float4 premultiplied = colors[i] / 255.f;
+		premultiplied.rgb *= premultiplied.a;
+		color = lerp(color, premultiplied, smoothstep(stops[i - 1].x, stops[i].x, t));
+	}
+	return color * input.color;
 }
