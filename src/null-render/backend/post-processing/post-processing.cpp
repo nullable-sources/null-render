@@ -7,6 +7,7 @@ namespace null::render::backend {
 			buffer = factory->instance_frame_buffer(shared::viewport, e_frame_buffer_type::postprocessing, backend::e_frame_buffer_flags::none);
 		}
 
+		mesh = factory->instance_mesh();
 		transfer_buffer = factory->instance_frame_buffer(shared::viewport, e_frame_buffer_type::postprocessing, e_frame_buffer_flags::none);
 	}
 
@@ -87,7 +88,7 @@ namespace null::render::backend {
 	}
 
 	void c_post_processing::on_create() {
-		if(!mesh) generate_viewport_geometry();
+		if(!geometry_command) generate_viewport_geometry();
 	}
 
 	void c_post_processing::on_viewport_resize_end() {

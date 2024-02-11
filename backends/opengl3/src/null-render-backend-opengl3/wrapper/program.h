@@ -8,7 +8,7 @@ namespace null::render::opengl3 {
 
 	public:
 		virtual void create() { program = opengl::create_program(); }
-		virtual void destroy() { opengl::delete_program(program); check(opengl::e_delete_status, "destroy"); }
+		virtual void destroy() { opengl::delete_program(program); }
 
 		virtual void attach_shader(i_compiled_shader* shader) { opengl::attach_shader(program, shader->shader); }
 		virtual void detach_shader(i_compiled_shader* shader) { opengl::detach_shader(program, shader->shader); }
