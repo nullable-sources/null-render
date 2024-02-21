@@ -82,6 +82,9 @@
     <Filter Include="src\state-pipeline">
       <UniqueIdentifier>{428d8328-f8c6-4bf3-83b7-a2c9a8b0bf2c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\internal\stencil-buffer">
+      <UniqueIdentifier>{0af228c6-23f2-48d3-89e8-8bb49d730684}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\null-render-backend-opengl3\internal\mesh\mesh.cpp">
@@ -113,6 +116,9 @@
     </ClCompile>
     <ClCompile Include="src\null-render-backend-opengl3\state-pipeline\state-pipeline.cpp">
       <Filter>src\state-pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="src\null-render-backend-opengl3\internal\stencil-buffer\stencil-buffer.cpp">
+      <Filter>src\internal\stencil-buffer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -190,6 +196,9 @@
     </ClInclude>
     <ClInclude Include="src\null-render-backend-opengl3\shaders\blur\compiled-object.h">
       <Filter>src\shaders\blur</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render-backend-opengl3\internal\stencil-buffer\stencil-buffer.h">
+      <Filter>src\internal\stencil-buffer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

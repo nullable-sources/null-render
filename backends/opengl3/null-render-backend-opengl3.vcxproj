@@ -22,6 +22,7 @@
     <ClCompile Include="src\null-render-backend-opengl3\internal\frame-buffer\frame-buffer.cpp" />
     <ClCompile Include="src\null-render-backend-opengl3\internal\mesh\mesh.cpp" />
     <ClCompile Include="src\null-render-backend-opengl3\internal\shader\shader.cpp" />
+    <ClCompile Include="src\null-render-backend-opengl3\internal\stencil-buffer\stencil-buffer.cpp" />
     <ClCompile Include="src\null-render-backend-opengl3\renderer\renderer.cpp" />
     <ClCompile Include="src\null-render-backend-opengl3\shaders\blur\blur.cpp" />
     <ClCompile Include="src\null-render-backend-opengl3\shaders\linear-gradient\linear-gradient.cpp" />
@@ -35,6 +36,7 @@
     <ClInclude Include="src\null-render-backend-opengl3\internal\mesh\mesh.h" />
     <ClInclude Include="src\null-render-backend-opengl3.h" />
     <ClInclude Include="src\null-render-backend-opengl3\internal\shader\shader.h" />
+    <ClInclude Include="src\null-render-backend-opengl3\internal\stencil-buffer\stencil-buffer.h" />
     <ClInclude Include="src\null-render-backend-opengl3\renderer\renderer.h" />
     <ClInclude Include="src\null-render-backend-opengl3\shaders\blur\compiled-object.h" />
     <ClInclude Include="src\null-render-backend-opengl3\shaders\blur\blur.h" />

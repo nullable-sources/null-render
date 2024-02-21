@@ -85,6 +85,9 @@
     <Filter Include="src\state-pipeline">
       <UniqueIdentifier>{7364c4d1-4427-4391-9e35-702110759587}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\internal\stencil-buffer">
+      <UniqueIdentifier>{367a19df-3e96-4ed3-91f1-c44f2a17da28}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\null-render-backend-directx9\wrapper\pixel\pixel.cpp">
@@ -119,6 +122,9 @@
     </ClCompile>
     <ClCompile Include="src\null-render-backend-directx9\state-pipeline\state-pipeline.cpp">
       <Filter>src\state-pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="src\null-render-backend-directx9\internal\stencil-buffer\stencil-buffer.cpp">
+      <Filter>src\internal\stencil-buffer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -193,6 +199,9 @@
     </ClInclude>
     <ClInclude Include="src\null-render-backend-directx9\state-pipeline\state-pipeline.h">
       <Filter>src\state-pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render-backend-directx9\internal\stencil-buffer\stencil-buffer.h">
+      <Filter>src\internal\stencil-buffer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

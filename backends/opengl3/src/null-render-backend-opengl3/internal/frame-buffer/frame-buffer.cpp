@@ -10,13 +10,8 @@ namespace null::render::opengl3 {
 			opengl::bind_framebuffer(opengl::e_framebuffer, fbo);
 
 			if(flags & backend::e_frame_buffer_flags::msaa) {
-				//@note: depth buffer
-				if(flags & backend::e_frame_buffer_flags::depth_buffer) {
-					opengl::gen_renderbuffers(1, &depth_buffer);
-					opengl::bind_renderbuffer(opengl::e_renderbuffer, depth_buffer);
-					opengl::renderbuffer_storage_multisample(opengl::e_renderbuffer, shared::msaa_quality, opengl::e_depth_component, size.x, size.y);
-					opengl::framebuffer_renderbuffer(opengl::e_framebuffer, opengl::e_depth_attachment, opengl::e_renderbuffer, depth_buffer);
-				}
+				//@note: stencil buffer
+				opengl::framebuffer_renderbuffer(opengl::e_framebuffer, opengl::e_depth_stencil_attachment, opengl::e_renderbuffer, (std::uint32_t)backend::stencil_buffer->get_buffer());
 
 				//@note: renderbuffer
 				opengl::gen_renderbuffers(1, &fbo_attachment);
@@ -24,20 +19,6 @@ namespace null::render::opengl3 {
 				opengl::renderbuffer_storage_multisample(opengl::e_renderbuffer, shared::msaa_quality, opengl::e_rgba, size.x, size.y);
 				opengl::framebuffer_renderbuffer(opengl::e_framebuffer, opengl::e_color_attachment0, opengl::e_renderbuffer, fbo_attachment);
 			} else {
-				//@note: depth buffer
-				if(flags & backend::e_frame_buffer_flags::depth_buffer) {
-					opengl::gen_textures(1, &depth_buffer);
-					opengl::bind_texture(opengl::e_texture_2d, depth_buffer);
-
-					opengl::tex_parameterf(opengl::e_texture_2d, opengl::e_texture_wrap_s, opengl::e_clamp_to_edge);
-					opengl::tex_parameterf(opengl::e_texture_2d, opengl::e_texture_wrap_t, opengl::e_clamp_to_edge);
-					opengl::tex_parameterf(opengl::e_texture_2d, opengl::e_texture_mag_filter, opengl::e_linear);
-					opengl::tex_parameterf(opengl::e_texture_2d, opengl::e_texture_min_filter, opengl::e_linear);
-					opengl::tex_image2d(opengl::e_texture_2d, 0, opengl::e_depth_component, size.x, size.y, 0, opengl::e_depth_component, opengl::e_unsigned_byte, nullptr);
-					
-					opengl::framebuffer_texture2d(opengl::e_framebuffer, opengl::e_depth_attachment, opengl::e_texture_2d, depth_buffer, 0);
-				}
-
 				//@note: texture
 				opengl::gen_textures(1, &fbo_attachment);
 				opengl::bind_texture(opengl::e_texture_2d, fbo_attachment);
@@ -60,10 +41,6 @@ namespace null::render::opengl3 {
 
 	void c_frame_buffer::destroy() {
 		if(type != backend::e_frame_buffer_type::postprocessing) return;
-		if(flags & backend::e_frame_buffer_flags::depth_buffer) {
-			opengl::delete_renderbuffers(1, &depth_buffer);
-			depth_buffer = 0;
-		}
 
 		if(flags & backend::e_frame_buffer_flags::msaa) opengl::delete_renderbuffers(1, &fbo_attachment);
 		else opengl::delete_textures(1, &fbo_attachment);

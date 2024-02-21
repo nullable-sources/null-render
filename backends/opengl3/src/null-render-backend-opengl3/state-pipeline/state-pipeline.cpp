@@ -6,14 +6,10 @@ namespace null::render::opengl3 {
 		opengl::enable(opengl::e_blend);
 		opengl::blend_equation(opengl::e_func_add);
 		opengl::blend_func(1, opengl::e_one_minus_src_alpha);
-		//opengl::blend_func_separate(opengl::e_src_alpha, opengl::e_one_minus_src_alpha, 1, opengl::e_one_minus_src_alpha);
 		opengl::disable(opengl::e_cull_face);
 		opengl::disable(opengl::e_depth_test);
-		opengl::disable(opengl::e_stencil_test);
 		opengl::enable(opengl::e_scissor_test);
 		opengl::disable(opengl::e_primitive_restart);
-
-		//opengl::viewport(0.f, shared::viewport.y, shared::viewport.x, -shared::viewport.y);
 
 		backend::renderer->set_clip({ { 0 }, shared::viewport });
 		backend::renderer->set_matrix(backend::renderer->get_projection_matrix());
@@ -44,9 +40,27 @@ namespace null::render::opengl3 {
 		saved_state.enable_blend = opengl::is_enabled(opengl::e_blend);
 		saved_state.enable_cull_face = opengl::is_enabled(opengl::e_cull_face);
 		saved_state.enable_depth_test = opengl::is_enabled(opengl::e_depth_test);
-		saved_state.enable_stencil_test = opengl::is_enabled(opengl::e_stencil_test);
 		saved_state.enable_scissor_test = opengl::is_enabled(opengl::e_scissor_test);
 		saved_state.enable_primitive_restart = opengl::is_enabled(opengl::e_primitive_restart);
+
+		saved_state.enable_stencil_test = opengl::is_enabled(opengl::e_stencil_test);
+		opengl::get_integerv(opengl::e_stencil_clear_value, &saved_state.stencil_clear_value);
+
+		opengl::get_integerv(opengl::e_stencil_func, &saved_state.stencil_front.func);
+		opengl::get_integerv(opengl::e_stencil_ref, &saved_state.stencil_front.ref);
+		opengl::get_integerv(opengl::e_stencil_value_mask, &saved_state.stencil_front.value_mask);
+		opengl::get_integerv(opengl::e_stencil_writemask, &saved_state.stencil_front.writemask);
+		opengl::get_integerv(opengl::e_stencil_fail, &saved_state.stencil_front.fail);
+		opengl::get_integerv(opengl::e_stencil_pass_depth_fail, &saved_state.stencil_front.pass_depth_fail);
+		opengl::get_integerv(opengl::e_stencil_pass_depth_pass, &saved_state.stencil_front.pass_depth_pass);
+
+		opengl::get_integerv(opengl::e_stencil_back_func, &saved_state.stencil_back.func);
+		opengl::get_integerv(opengl::e_stencil_back_ref, &saved_state.stencil_back.ref);
+		opengl::get_integerv(opengl::e_stencil_back_value_mask, &saved_state.stencil_back.value_mask);
+		opengl::get_integerv(opengl::e_stencil_back_writemask, &saved_state.stencil_back.writemask);
+		opengl::get_integerv(opengl::e_stencil_back_fail, &saved_state.stencil_back.fail);
+		opengl::get_integerv(opengl::e_stencil_back_pass_depth_fail, &saved_state.stencil_back.pass_depth_fail);
+		opengl::get_integerv(opengl::e_stencil_back_pass_depth_pass, &saved_state.stencil_back.pass_depth_pass);
 	}
 
 	void c_state_pipeline::restore_state() {
@@ -64,6 +78,15 @@ namespace null::render::opengl3 {
 		if(saved_state.enable_primitive_restart) opengl::enable(opengl::e_primitive_restart); else opengl::disable(opengl::e_primitive_restart);
 		opengl::viewport(saved_state.viewport[0], saved_state.viewport[1], saved_state.viewport[2], saved_state.viewport[3]);
 		opengl::scissor(saved_state.scissor_box[0], saved_state.scissor_box[1], saved_state.scissor_box[2], saved_state.scissor_box[3]);
+
+		opengl::clear_stencil(saved_state.stencil_clear_value);
+		opengl::stencil_func_separate(opengl::e_front, saved_state.stencil_front.func, saved_state.stencil_front.ref, saved_state.stencil_front.value_mask);
+		opengl::stencil_mask_separate(opengl::e_front, saved_state.stencil_front.writemask);
+		opengl::stencil_op_separate(opengl::e_front, saved_state.stencil_front.fail, saved_state.stencil_front.pass_depth_fail, saved_state.stencil_front.pass_depth_pass);
+
+		opengl::stencil_func_separate(opengl::e_back, saved_state.stencil_back.func, saved_state.stencil_back.ref, saved_state.stencil_back.value_mask);
+		opengl::stencil_mask_separate(opengl::e_back, saved_state.stencil_back.writemask);
+		opengl::stencil_op_separate(opengl::e_back, saved_state.stencil_back.fail, saved_state.stencil_back.pass_depth_fail, saved_state.stencil_back.pass_depth_pass);
 	}
 
 	void c_state_pipeline::restore_framebuffer() {

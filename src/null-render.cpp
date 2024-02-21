@@ -25,6 +25,7 @@ namespace null::render {
 		draw_list = c_draw_list::instance(backend::factory->instance_mesh());
 
 		//@note: main buffers
+		backend::stencil_buffer = backend::factory->instance_stencil_buffer();
 		backend::msaa_buffer = backend::factory->instance_frame_buffer(shared::viewport, backend::e_frame_buffer_type::postprocessing, backend::e_frame_buffer_flags::msaa);
 		backend::rendering_buffer = backend::factory->instance_frame_buffer(shared::viewport, backend::e_frame_buffer_type::backbuffer, backend::e_frame_buffer_flags::none);
 

@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\null-render\backend\backend.h" />
+    <ClInclude Include="src\null-render\backend\internal\stencil-buffer.h" />
     <ClInclude Include="src\null-render\backend\internal\renderer-events.h" />
     <ClInclude Include="src\null-render\backend\internal\frame-buffer.h" />
     <ClInclude Include="src\null-render\backend\internal\geometry-buffer.h" />

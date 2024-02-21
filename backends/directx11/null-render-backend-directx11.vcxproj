@@ -33,6 +33,7 @@
   <ItemGroup>
     <ClCompile Include="src\null-render-backend-directx11\internal\frame-buffer\frame-buffer.cpp" />
     <ClCompile Include="src\null-render-backend-directx11\internal\mesh\mesh.cpp" />
+    <ClCompile Include="src\null-render-backend-directx11\internal\stencil-buffer\stencil-buffer.cpp" />
     <ClCompile Include="src\null-render-backend-directx11\renderer\renderer.cpp" />
     <ClCompile Include="src\null-render-backend-directx11\shaders\blur\blur.cpp" />
     <ClCompile Include="src\null-render-backend-directx11\shaders\linear-gradient\linear-gradient.cpp" />
@@ -48,6 +49,7 @@
     <ClInclude Include="src\null-render-backend-directx11\internal\mesh\mesh.h" />
     <ClInclude Include="src\null-render-backend-directx11.h" />
     <ClInclude Include="src\null-render-backend-directx11\internal\shader.h" />
+    <ClInclude Include="src\null-render-backend-directx11\internal\stencil-buffer\stencil-buffer.h" />
     <ClInclude Include="src\null-render-backend-directx11\renderer\renderer.h" />
     <ClInclude Include="src\null-render-backend-directx11\shaders\blur\blur.h" />
     <ClInclude Include="src\null-render-backend-directx11\shaders\blur\compiled-object.h" />

@@ -1,6 +1,7 @@
 #pragma once
 #include "null-render-backend-directx9/state-pipeline/state-pipeline.h"
 #include "null-render-backend-directx9/internal/frame-buffer/frame-buffer.h"
+#include "null-render-backend-directx9/internal/stencil-buffer/stencil-buffer.h"
 #include "null-render-backend-directx9/internal/mesh/mesh.h"
 #include "null-render-backend-directx9/shaders/passthrough-color/passthrough-color.h"
 #include "null-render-backend-directx9/shaders/passthrough-texture/passthrough-texture.h"
@@ -19,6 +20,7 @@ namespace null::render::directx9 {
 		std::unique_ptr<backend::i_renderer> instance_renderer() override { return std::make_unique<c_renderer>(); }
 		std::unique_ptr<backend::c_mesh> instance_mesh() override { return std::make_unique<c_mesh>(); }
 		std::unique_ptr<backend::i_frame_buffer> instance_frame_buffer(const vec2_t<int>& size, backend::e_frame_buffer_type type, backend::e_frame_buffer_flags flags) override { return std::make_unique<c_frame_buffer>(size, type, flags); }
+		std::unique_ptr<backend::i_stencil_buffer> instance_stencil_buffer() override { return std::make_unique<c_stencil_buffer>(); }
 		std::unique_ptr<backend::i_state_pipeline> instance_state_pipeline() override { return std::make_unique<c_state_pipeline>(); }
 
 		std::unique_ptr<backend::i_passthrough_color_shader> instance_passthrough_color_shader() override { return std::make_unique<c_passthrough_color_shader>(); }

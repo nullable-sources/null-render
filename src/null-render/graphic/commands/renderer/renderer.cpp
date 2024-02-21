@@ -30,4 +30,16 @@ namespace null::render {
 	void c_update_translation_command::handle() {
 		backend::renderer->update_translation(translation);
 	}
+
+	void c_stencil_test_command::handle() {
+		backend::stencil_buffer->set_test(test);
+	}
+
+	void c_stencil_operation_command::handle() {
+		backend::stencil_buffer->set_operation(operation);
+	}
+
+	void c_stencil_clear_command::handle() {
+		backend::stencil_buffer->clear();
+	}
 }

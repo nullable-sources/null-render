@@ -42,6 +42,7 @@ namespace null::render::directx11 {
 		shared.context->RSSetViewports(saved_state.viewports_count, saved_state.viewports);
 		shared.context->OMSetBlendState(saved_state.blend_state, saved_state.blend_factor, saved_state.sample_mask); if(saved_state.blend_state) saved_state.blend_state->Release();
 		shared.context->OMSetDepthStencilState(saved_state.depth_stencil_state, saved_state.stencil_ref); if(saved_state.depth_stencil_state) saved_state.depth_stencil_state->Release();
+		shared.context->RSSetState(saved_state.rasterizer_state);
 
 		restore_framebuffer();
 		restore_mesh();
@@ -65,9 +66,8 @@ namespace null::render::directx11 {
 	}
 
 	void c_state_pipeline::restore_framebuffer() {
-		if(saved_state.render_target_view && saved_state.rasterizer_state) {
+		if(saved_state.render_target_view) {
 			shared.context->OMSetRenderTargets(1, &saved_state.render_target_view, saved_state.depth_stencil_view);
-			shared.context->RSSetState(saved_state.rasterizer_state);
 		} else {
 			backend::rendering_buffer->use();
 		}

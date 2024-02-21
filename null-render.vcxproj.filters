@@ -278,6 +278,9 @@
     <ClInclude Include="src\null-render\backend\post-processing\post-processing.h">
       <Filter>src\backend\post-processing</Filter>
     </ClInclude>
+    <ClInclude Include="src\null-render\backend\internal\stencil-buffer.h">
+      <Filter>src\backend\internal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\null-render\font\font.inl">

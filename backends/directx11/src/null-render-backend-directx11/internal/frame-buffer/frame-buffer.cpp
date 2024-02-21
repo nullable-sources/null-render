@@ -58,48 +58,37 @@ namespace null::render::directx11 {
 			return;
 		}
 
-		D3D11_RASTERIZER_DESC rasterizer_desc{
-				.FillMode{ D3D11_FILL_SOLID },
-				.CullMode{ D3D11_CULL_NONE },
-				.DepthClipEnable{ true },
-				.ScissorEnable{ true },
-				.MultisampleEnable{ render_target_texture_desc.SampleDesc.Count > 1 }
-		};
-		if(auto result = shared.device->CreateRasterizerState(&rasterizer_desc, &rasterizer_state); FAILED(result)) {
-			utils::logger(utils::e_log_type::error, "CreateRasterizerState failed, return code {}.", result);
-			return;
-		}
+		if(type == backend::e_frame_buffer_type::backbuffer || (type == backend::e_frame_buffer_type::postprocessing && !(flags & backend::e_frame_buffer_flags::msaa))) {
+			D3D11_TEXTURE2D_DESC depth_stencil_view_texture2d_desc{
+					.Width{ render_target_texture_desc.Width },
+					.Height{ render_target_texture_desc.Height },
+					.MipLevels{ 1 },
+					.ArraySize{ 1 },
+					.Format{ DXGI_FORMAT_D24_UNORM_S8_UINT },
+					.SampleDesc{ render_target_texture_desc.SampleDesc },
+					.Usage{ D3D11_USAGE_DEFAULT },
+					.BindFlags{ D3D11_BIND_DEPTH_STENCIL },
+					.CPUAccessFlags{ 0 }
+			};
 
-		D3D11_TEXTURE2D_DESC depth_stencil_view_texture2d_desc{
-				.Width{ render_target_texture_desc.Width },
-				.Height{ render_target_texture_desc.Height },
-				.MipLevels{ 1 },
-				.ArraySize{ 1 },
-				.Format{ DXGI_FORMAT_D32_FLOAT },
-				.SampleDesc{ render_target_texture_desc.SampleDesc },
-				.Usage{ D3D11_USAGE_DEFAULT },
-				.BindFlags{ D3D11_BIND_DEPTH_STENCIL },
-				.CPUAccessFlags{ 0 }
-		};
+			if(auto result = shared.device->CreateTexture2D(&depth_stencil_view_texture2d_desc, nullptr, &depth_stencil_view_texture); FAILED(result)) {
+				utils::logger(utils::e_log_type::error, "CreateTexture2D failed, return code {}.", result);
+				return;
+			}
 
-		if(auto result = shared.device->CreateTexture2D(&depth_stencil_view_texture2d_desc, nullptr, &depth_stencil_view_texture); FAILED(result)) {
-			utils::logger(utils::e_log_type::error, "CreateTexture2D failed, return code {}.", result);
-			return;
-		}
+			D3D11_DEPTH_STENCIL_VIEW_DESC depth_stencil_view_desc{
+				.Format{ DXGI_FORMAT_D24_UNORM_S8_UINT },
+				.ViewDimension{ render_target_texture_desc.SampleDesc.Count > 1 ? D3D11_DSV_DIMENSION_TEXTURE2DMS : D3D11_DSV_DIMENSION_TEXTURE2D },
+			};
 
-		D3D11_DEPTH_STENCIL_VIEW_DESC depth_stencil_view_desc{
-			.Format{ DXGI_FORMAT_D32_FLOAT },
-			.ViewDimension{ render_target_texture_desc.SampleDesc.Count > 1 ? D3D11_DSV_DIMENSION_TEXTURE2DMS : D3D11_DSV_DIMENSION_TEXTURE2D },
-		};
-
-		if(auto result = shared.device->CreateDepthStencilView(depth_stencil_view_texture, &depth_stencil_view_desc, &depth_stencil_view); FAILED(result)) {
-			utils::logger(utils::e_log_type::error, "CreateDepthStencilView failed, return code {}.", result);
-			return;
+			if(auto result = shared.device->CreateDepthStencilView(depth_stencil_view_texture, &depth_stencil_view_desc, &depth_stencil_view); FAILED(result)) {
+				utils::logger(utils::e_log_type::error, "CreateDepthStencilView failed, return code {}.", result);
+				return;
+			}
 		}
 	}
 
 	void c_frame_buffer::destroy() {
-		if(rasterizer_state) { rasterizer_state->Release(); rasterizer_state = nullptr; }
 		if(render_target_texture) { render_target_texture->Release(); render_target_texture = nullptr; }
 		if(depth_stencil_view_texture) { depth_stencil_view_texture->Release(); depth_stencil_view_texture = nullptr; }
 		if(shader_resource_view) { shader_resource_view->Release(); shader_resource_view = nullptr; }
@@ -108,13 +97,15 @@ namespace null::render::directx11 {
 	}
 
 	void c_frame_buffer::clear() {
-		shared.context->ClearRenderTargetView(render_target, color_t<float>{ 0.f, 0.f, 0.f, 0.f }.channels.data());
-		shared.context->ClearDepthStencilView(depth_stencil_view, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+		shared.context->ClearRenderTargetView(render_target, color_t<float>(0.f).channels.data());
+		if(depth_stencil_view)
+			shared.context->ClearDepthStencilView(depth_stencil_view, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+		else
+			shared.context->ClearDepthStencilView((ID3D11DepthStencilView*)backend::stencil_buffer->get_buffer(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	}
 
 	void c_frame_buffer::use() {
-		shared.context->OMSetRenderTargets(1, &render_target, depth_stencil_view);
-		shared.context->RSSetState(rasterizer_state);
+		shared.context->OMSetRenderTargets(1, &render_target, depth_stencil_view ? depth_stencil_view : (ID3D11DepthStencilView*)backend::stencil_buffer->get_buffer());
 	}
 
 	void c_frame_buffer::copy_from(const std::unique_ptr<i_frame_buffer>& another_frame_buffer) {

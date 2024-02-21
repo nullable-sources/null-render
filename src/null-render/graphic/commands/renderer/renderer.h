@@ -1,5 +1,6 @@
 #pragma once
 #include "../commands.h"
+#include "../../../backend/internal/stencil-buffer.h"
 
 namespace null::render {
 	class c_setup_state_command : public i_command {
@@ -101,6 +102,49 @@ namespace null::render {
 	public:
 		c_update_translation_command() { }
 		c_update_translation_command(const vec2_t<float>& _translation) : translation(_translation) { }
+
+	public:
+		void handle() override;
+	};
+
+	class c_stencil_test_command : public i_command {
+	public:
+		static std::shared_ptr<c_stencil_test_command> instance() { return std::make_shared<c_stencil_test_command>(); }
+		static std::shared_ptr<c_stencil_test_command> instance(bool test) { return std::make_shared<c_stencil_test_command>(test); }
+
+	public:
+		bool test{ };
+
+	public:
+		c_stencil_test_command() { }
+		c_stencil_test_command(bool _test) : test(_test) { }
+
+	public:
+		void handle() override;
+	};
+
+	class c_stencil_operation_command : public i_command {
+	public:
+		static std::shared_ptr<c_stencil_operation_command> instance() { return std::make_shared<c_stencil_operation_command>(); }
+		static std::shared_ptr<c_stencil_operation_command> instance(backend::e_stencil_operation operation) { return std::make_shared<c_stencil_operation_command>(operation); }
+
+	public:
+		backend::e_stencil_operation operation{ };
+
+	public:
+		c_stencil_operation_command() { }
+		c_stencil_operation_command(backend::e_stencil_operation _operation) : operation(_operation) { }
+
+	public:
+		void handle() override;
+	};
+
+	class c_stencil_clear_command : public i_command {
+	public:
+		static std::shared_ptr<c_stencil_clear_command> instance() { return std::make_shared<c_stencil_clear_command>(); }
+
+	public:
+		c_stencil_clear_command() { }
 
 	public:
 		void handle() override;
