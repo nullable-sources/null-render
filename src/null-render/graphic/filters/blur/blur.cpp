@@ -44,23 +44,11 @@ namespace null::render {
 	void c_blur_filter::make_geometry(backend::c_geometry_buffer* geometry_buffer) {
 		geometry_command = c_geometry_command::instance(geometry_buffer);
 
-		geometry_command->index_count += 6;
-		geometry_command->geometry_buffer
-			->add_index(0).add_index(1).add_index(2)
-			.add_index(0).add_index(2).add_index(3);
-
-		rect_t<float> uvs = geometry_region / shared::viewport;
-		if(backend::renderer->framebuffer_uvs_flipped()) {
-			uvs.min.y = 1.f - uvs.min.y;
-			uvs.max.y = 1.f - uvs.max.y;
-		}
-
-		geometry_command->vertex_count += 4;
-		geometry_command->geometry_buffer
-			->add_vertex({ geometry_region.min, uvs.min, { } })
-			.add_vertex({ { geometry_region.max.x, geometry_region.min.y }, { uvs.max.x, uvs.min.y }, { } })
-			.add_vertex({ geometry_region.max, uvs.max, { } })
-			.add_vertex({ { geometry_region.min.x, geometry_region.max.y }, { uvs.min.x, uvs.max.y }, { } });
+		backend::post_processing->generate_blit_geometry(
+			geometry_command.get(),
+			backend::post_processing->prepare_viewport_region(geometry_region),
+			geometry_region
+		);
 	}
 
 	void c_blur_filter::set_child_command(std::shared_ptr<c_geometry_command>& _child_command) {
@@ -81,17 +69,18 @@ namespace null::render {
 	}
 
 	void c_blur_filter::handle() {
-		size_t main_index = 0, second_index = 1;
+		backend::i_frame_buffer* main_buffer = backend::post_processing->at(0);
+		backend::i_frame_buffer* secondary_buffer = backend::post_processing->at(1);
 
 		if(sources & e_blur_filter_sources::backbuffer)
-			backend::post_processing->at(main_index)->copy_from(backend::rendering_buffer);
+			main_buffer->copy_from(backend::rendering_buffer.get());
 
 		if(sources & e_blur_filter_sources::msaa) {
 			if(sources & e_blur_filter_sources::backbuffer) {
-				backend::post_processing->at(main_index)->use();
-				backend::post_processing->blit_buffer(backend::msaa_buffer);
+				main_buffer->use();
+				backend::post_processing->blit_buffer(backend::msaa_buffer.get());
 			} else {
-				backend::post_processing->at(main_index)->copy_from(backend::msaa_buffer);
+				main_buffer->copy_from(backend::msaa_buffer.get());
 			}
 		}
 
@@ -106,12 +95,12 @@ namespace null::render {
 				if(i == downsample_count || break_downsample)
 					blit_region = geometry_region;
 
-				std::swap(main_index, second_index);
-				backend::post_processing->at(main_index)->use();
-				backend::post_processing->at(main_index)->clear();
+				std::swap(main_buffer, secondary_buffer);
+				main_buffer->use();
+				main_buffer->clear();
 
 				backend::post_processing->blit_buffer_region(
-					backend::post_processing->at(second_index),
+					secondary_buffer,
 					blit_region,
 					previous_blit
 				);
@@ -121,16 +110,14 @@ namespace null::render {
 			}
 		}
 
-		backend::post_processing->at(second_index)->clear();
+		secondary_buffer->clear();
 
-		std::unique_ptr<backend::i_frame_buffer>& main_buffer = backend::post_processing->at(main_index), &second_buffer = backend::post_processing->at(second_index);
 		vec2_t<float> direction(1.f, 0.f);
-
 		make_constants();
 		backend::blur_shader->set_constants(constants);
 		backend::blur_shader->use();
 		for(int i : std::views::iota(0, pass_count)) {
-			second_buffer->use();
+			secondary_buffer->use();
 			backend::renderer->set_texture(main_buffer->get_texture());
 			backend::blur_shader->set_direction(direction);
 			geometry_command->handle();
@@ -138,7 +125,7 @@ namespace null::render {
 			std::swap(direction.x, direction.y);
 
 			main_buffer->use();
-			backend::renderer->set_texture(second_buffer->get_texture());
+			backend::renderer->set_texture(secondary_buffer->get_texture());
 			backend::blur_shader->set_direction(direction);
 			geometry_command->handle();
 		}
@@ -149,7 +136,7 @@ namespace null::render {
 		backend::state_pipeline->textures.append_last();
 		backend::state_pipeline->shaders.append_last();
 
-		backend::state_pipeline->shaders.push(backend::passthrough_texture_shader);
+		backend::state_pipeline->shaders.push(backend::texture_shader);
 		backend::state_pipeline->textures.push(main_buffer->get_texture());
 		child_command->handle();
 		backend::state_pipeline->textures.pop();

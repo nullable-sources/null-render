@@ -31,17 +31,8 @@
     <Filter Include="src\internal\mesh">
       <UniqueIdentifier>{dd063624-3c36-4e97-a039-a673ce73d58b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\shaders\shared-object">
-      <UniqueIdentifier>{0dce0963-1ba6-4d3d-b8aa-8905536b0f2d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\shaders\linear-gradient">
       <UniqueIdentifier>{5ba72d3d-4b97-43c9-b0ef-406bf9aad78d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\shaders\passthrough-color">
-      <UniqueIdentifier>{96464f3c-03ba-4c34-ae12-6b41d1f03e42}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\shaders\passthrough-texture">
-      <UniqueIdentifier>{5cd2ae00-c6a2-4944-b479-c76735da1696}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\shaders\quad-gradient">
       <UniqueIdentifier>{29742bc6-6fcf-486b-9a3c-7b535f94618a}</UniqueIdentifier>
@@ -49,23 +40,11 @@
     <Filter Include="src\shaders\sdf">
       <UniqueIdentifier>{1029af82-eb9b-4703-89b6-365a6dcc1123}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\shaders\shared-object\passthrough">
-      <UniqueIdentifier>{3ae8ea01-b6fd-4e9a-8523-9bcfa52db95a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\shaders\shared-object\passthrough\hlsl">
-      <UniqueIdentifier>{bbd0775e-6dde-4b96-83b3-2a0155803d40}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\shaders\sdf\hlsl">
       <UniqueIdentifier>{49dff62c-8863-479e-8a03-4268329dd371}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\shaders\quad-gradient\hlsl">
       <UniqueIdentifier>{7d52907c-cc6b-415b-b8fa-ec5f18e1c1f3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\shaders\passthrough-texture\hlsl">
-      <UniqueIdentifier>{fae9b8d2-c1da-4f53-9ee2-240353d32105}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\shaders\passthrough-color\hlsl">
-      <UniqueIdentifier>{056de628-ca4b-4a51-881c-34b1cf0f7e82}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\shaders\linear-gradient\hlsl">
       <UniqueIdentifier>{fa64427b-04f5-433b-b6a9-64158cc604df}</UniqueIdentifier>
@@ -87,6 +66,24 @@
     </Filter>
     <Filter Include="src\internal\stencil-buffer">
       <UniqueIdentifier>{367a19df-3e96-4ed3-91f1-c44f2a17da28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\texture">
+      <UniqueIdentifier>{5cd2ae00-c6a2-4944-b479-c76735da1696}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\texture\hlsl">
+      <UniqueIdentifier>{fae9b8d2-c1da-4f53-9ee2-240353d32105}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\color">
+      <UniqueIdentifier>{96464f3c-03ba-4c34-ae12-6b41d1f03e42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\color\hlsl">
+      <UniqueIdentifier>{056de628-ca4b-4a51-881c-34b1cf0f7e82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\passthrough">
+      <UniqueIdentifier>{8f35cb7a-8659-4e8f-884f-b95626d44425}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\shaders\passthrough\hlsl">
+      <UniqueIdentifier>{670c08c0-dce7-45e7-99b5-a986244dfa99}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -149,32 +146,17 @@
     <ClInclude Include="src\null-render-backend-directx9\shaders\linear-gradient\linear-gradient.h">
       <Filter>src\shaders\linear-gradient</Filter>
     </ClInclude>
-    <ClInclude Include="src\null-render-backend-directx9\shaders\passthrough-color\passthrough-color.h">
-      <Filter>src\shaders\passthrough-color</Filter>
-    </ClInclude>
-    <ClInclude Include="src\null-render-backend-directx9\shaders\passthrough-texture\passthrough-texture.h">
-      <Filter>src\shaders\passthrough-texture</Filter>
-    </ClInclude>
     <ClInclude Include="src\null-render-backend-directx9\shaders\quad-gradient\quad-gradient.h">
       <Filter>src\shaders\quad-gradient</Filter>
     </ClInclude>
     <ClInclude Include="src\null-render-backend-directx9\shaders\sdf\sdf.h">
       <Filter>src\shaders\sdf</Filter>
     </ClInclude>
-    <ClInclude Include="src\null-render-backend-directx9\shaders\shared-objects\passthrough\compiled-object.h">
-      <Filter>src\shaders\shared-object\passthrough</Filter>
-    </ClInclude>
     <ClInclude Include="src\null-render-backend-directx9\shaders\sdf\compiled-object.h">
       <Filter>src\shaders\sdf</Filter>
     </ClInclude>
     <ClInclude Include="src\null-render-backend-directx9\shaders\quad-gradient\compiled-object.h">
       <Filter>src\shaders\quad-gradient</Filter>
-    </ClInclude>
-    <ClInclude Include="src\null-render-backend-directx9\shaders\passthrough-texture\compiled-object.h">
-      <Filter>src\shaders\passthrough-texture</Filter>
-    </ClInclude>
-    <ClInclude Include="src\null-render-backend-directx9\shaders\passthrough-color\compiled-object.h">
-      <Filter>src\shaders\passthrough-color</Filter>
     </ClInclude>
     <ClInclude Include="src\null-render-backend-directx9\shaders\linear-gradient\compiled-object.h">
       <Filter>src\shaders\linear-gradient</Filter>
@@ -203,22 +185,31 @@
     <ClInclude Include="src\null-render-backend-directx9\internal\stencil-buffer\stencil-buffer.h">
       <Filter>src\internal\stencil-buffer</Filter>
     </ClInclude>
+    <ClInclude Include="src\null-render-backend-directx9\shaders\color\compiled-object.h">
+      <Filter>src\shaders\color</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render-backend-directx9\shaders\color\color.h">
+      <Filter>src\shaders\color</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render-backend-directx9\shaders\passthrough\passthrough.h">
+      <Filter>src\shaders\passthrough</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render-backend-directx9\shaders\passthrough\compiled-object.h">
+      <Filter>src\shaders\passthrough</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render-backend-directx9\shaders\texture\compiled-object.h">
+      <Filter>src\shaders\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render-backend-directx9\shaders\texture\texture.h">
+      <Filter>src\shaders\texture</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="src\null-render-backend-directx9\shaders\shared-objects\passthrough\hlsl\passthrough.hlsl">
-      <Filter>src\shaders\shared-object\passthrough\hlsl</Filter>
-    </FxCompile>
     <FxCompile Include="src\null-render-backend-directx9\shaders\sdf\hlsl\sdf.hlsl">
       <Filter>src\shaders\sdf\hlsl</Filter>
     </FxCompile>
     <FxCompile Include="src\null-render-backend-directx9\shaders\quad-gradient\hlsl\quad-gradient.hlsl">
       <Filter>src\shaders\quad-gradient\hlsl</Filter>
-    </FxCompile>
-    <FxCompile Include="src\null-render-backend-directx9\shaders\passthrough-texture\hlsl\passthrough-texture.hlsl">
-      <Filter>src\shaders\passthrough-texture\hlsl</Filter>
-    </FxCompile>
-    <FxCompile Include="src\null-render-backend-directx9\shaders\passthrough-color\hlsl\passthrough-color.hlsl">
-      <Filter>src\shaders\passthrough-color\hlsl</Filter>
     </FxCompile>
     <FxCompile Include="src\null-render-backend-directx9\shaders\linear-gradient\hlsl\linear-gradient.hlsl">
       <Filter>src\shaders\linear-gradient\hlsl</Filter>
@@ -228,6 +219,21 @@
     </FxCompile>
     <FxCompile Include="src\null-render-backend-directx9\shaders\radial-gradient\hlsl\radial-gradient.hlsl">
       <Filter>src\shaders\radial-gradient\hlsl</Filter>
+    </FxCompile>
+    <FxCompile Include="src\null-render-backend-directx9\shaders\color\hlsl\color-ps.hlsl">
+      <Filter>src\shaders\color\hlsl</Filter>
+    </FxCompile>
+    <FxCompile Include="src\null-render-backend-directx9\shaders\color\hlsl\color-vs.hlsl">
+      <Filter>src\shaders\color\hlsl</Filter>
+    </FxCompile>
+    <FxCompile Include="src\null-render-backend-directx9\shaders\passthrough\hlsl\passthrough-ps.hlsl">
+      <Filter>src\shaders\passthrough\hlsl</Filter>
+    </FxCompile>
+    <FxCompile Include="src\null-render-backend-directx9\shaders\passthrough\hlsl\passthrough-vs.hlsl">
+      <Filter>src\shaders\passthrough\hlsl</Filter>
+    </FxCompile>
+    <FxCompile Include="src\null-render-backend-directx9\shaders\texture\hlsl\texture.hlsl">
+      <Filter>src\shaders\texture\hlsl</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

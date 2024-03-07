@@ -1,6 +1,5 @@
 #pragma once
 #include "../../internal/shader/shader.h"
-#include "../shared-objects/passthrough/compiled-object.h"
 #include "compiled-object.h"
 
 namespace null::render::opengl3 {
@@ -9,7 +8,7 @@ namespace null::render::opengl3 {
 		c_uniform<vec4_t<float>> top_left_color{ }, top_right_color{ }, bottom_right_color{ }, bottom_left_color{ };
 
 	public:
-		c_quad_gradient_shader() : c_default_shader(&quad_gradient_shader_object, &passthrough_shader_object) { }
+		c_quad_gradient_shader() : c_default_shader(&quad_gradient_shader_object, &color_vertex_shader_object) { }
 
 	public:
 		void create() override;

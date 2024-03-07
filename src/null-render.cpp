@@ -2,7 +2,7 @@
 #include "null-render.h"
 
 namespace null::render {
-	void initialize(const vec2_t<float>& viewport) {
+	void initialize(const vec2_t<int>& viewport) {
 		shared::viewport = viewport;
 		std::ranges::for_each(std::views::iota(0, (int)shared::circle_segments.size()), [=](const int& i) {
 			float radius = i + 1.f;
@@ -32,8 +32,9 @@ namespace null::render {
 		backend::post_processing = std::make_unique<backend::c_post_processing>();
 		backend::post_processing->initialize();
 
-		backend::passthrough_color_shader = backend::factory->instance_passthrough_color_shader();
-		backend::passthrough_texture_shader = backend::factory->instance_passthrough_texture_shader();
+		backend::passthrough_shader = backend::factory->instance_passthrough_shader();
+		backend::color_shader = backend::factory->instance_color_shader();
+		backend::texture_shader = backend::factory->instance_texture_shader();
 		backend::blur_shader = backend::factory->instance_blur_shader();
 		backend::quad_gradient_shader = backend::factory->instance_quad_gradient_shader();
 		backend::linear_gradient_shader = backend::factory->instance_linear_gradient_shader();

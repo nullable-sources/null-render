@@ -17,6 +17,7 @@ namespace null::render::directx11 {
 		backend::e_topology old_topology{ };
 
 		struct {
+			ID3D11RasterizerState* raster_state{ };
 			ID3D11SamplerState* sampler{ };
 			ID3D11BlendState* blend{ };
 			ID3D11DepthStencilState* depth_stencil{ };

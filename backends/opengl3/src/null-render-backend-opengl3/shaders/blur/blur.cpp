@@ -3,7 +3,7 @@
 namespace null::render::opengl3 {
 	void c_blur_shader::create() {
 		if(!empty()) return;
-		c_default_shader::create();
+		c_shader::create();
 
 		texel_size.get_location(program.get(), "texel_size");
 		direction.get_location(program.get(), "direction");
@@ -15,7 +15,7 @@ namespace null::render::opengl3 {
 
 	void c_blur_shader::use() {
 		if(empty()) return;
-		c_default_shader::use();
+		c_shader::use();
 
 		texel_size.set();
 		uv_limits.set();

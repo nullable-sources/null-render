@@ -1,5 +1,5 @@
 #pragma once
-#include "../../wrapper/shader.h"
+#include "../color/compiled-object.h"
 
 namespace null::render::opengl3 {
 	class c_quad_gradient_shader_object : public c_fragment_shader {

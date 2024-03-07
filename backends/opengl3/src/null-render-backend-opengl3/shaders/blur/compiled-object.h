@@ -1,5 +1,5 @@
 #pragma once
-#include "../../wrapper/shader.h"
+#include "../passthrough/compiled-object.h"
 
 namespace null::render::opengl3 {
 	class c_blur_fragment_shader_object : public c_fragment_shader {

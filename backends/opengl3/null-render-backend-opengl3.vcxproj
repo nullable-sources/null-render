@@ -40,19 +40,20 @@
     <ClInclude Include="src\null-render-backend-opengl3\renderer\renderer.h" />
     <ClInclude Include="src\null-render-backend-opengl3\shaders\blur\compiled-object.h" />
     <ClInclude Include="src\null-render-backend-opengl3\shaders\blur\blur.h" />
+    <ClInclude Include="src\null-render-backend-opengl3\shaders\color\color.h" />
+    <ClInclude Include="src\null-render-backend-opengl3\shaders\color\compiled-object.h" />
     <ClInclude Include="src\null-render-backend-opengl3\shaders\linear-gradient\compiled-object.h" />
     <ClInclude Include="src\null-render-backend-opengl3\shaders\linear-gradient\linear-gradient.h" />
-    <ClInclude Include="src\null-render-backend-opengl3\shaders\passthrough-color\compiled-object.h" />
-    <ClInclude Include="src\null-render-backend-opengl3\shaders\passthrough-color\passthrough-color.h" />
-    <ClInclude Include="src\null-render-backend-opengl3\shaders\passthrough-texture\compiled-object.h" />
-    <ClInclude Include="src\null-render-backend-opengl3\shaders\passthrough-texture\passthrough-texture.h" />
+    <ClInclude Include="src\null-render-backend-opengl3\shaders\passthrough\compiled-object.h" />
+    <ClInclude Include="src\null-render-backend-opengl3\shaders\passthrough\passthrough.h" />
     <ClInclude Include="src\null-render-backend-opengl3\shaders\quad-gradient\compiled-object.h" />
     <ClInclude Include="src\null-render-backend-opengl3\shaders\quad-gradient\quad-gradient.h" />
     <ClInclude Include="src\null-render-backend-opengl3\shaders\radial-gradient\compiled-object.h" />
     <ClInclude Include="src\null-render-backend-opengl3\shaders\radial-gradient\radial-gradient.h" />
     <ClInclude Include="src\null-render-backend-opengl3\shaders\sdf\compiled-object.h" />
     <ClInclude Include="src\null-render-backend-opengl3\shaders\sdf\sdf.h" />
-    <ClInclude Include="src\null-render-backend-opengl3\shaders\shared-objects\passthrough\compiled-object.h" />
+    <ClInclude Include="src\null-render-backend-opengl3\shaders\texture\compiled-object.h" />
+    <ClInclude Include="src\null-render-backend-opengl3\shaders\texture\texture.h" />
     <ClInclude Include="src\null-render-backend-opengl3\state-pipeline\state-pipeline.h" />
     <ClInclude Include="src\null-render-backend-opengl3\wrapper\fields.h" />
     <ClInclude Include="src\null-render-backend-opengl3\wrapper\opengl3.h" />
@@ -76,13 +77,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\null-render-backend-opengl3\shaders\blur\glsl\blur.frag" />
+    <None Include="src\null-render-backend-opengl3\shaders\color\glsl\color.frag" />
+    <None Include="src\null-render-backend-opengl3\shaders\color\glsl\color.vert" />
     <None Include="src\null-render-backend-opengl3\shaders\linear-gradient\glsl\linear-gradient.frag" />
-    <None Include="src\null-render-backend-opengl3\shaders\passthrough-color\glsl\passthrough-color.frag" />
-    <None Include="src\null-render-backend-opengl3\shaders\passthrough-texture\glsl\passthrough-texture.frag" />
+    <None Include="src\null-render-backend-opengl3\shaders\passthrough\glsl\passthrough.frag" />
+    <None Include="src\null-render-backend-opengl3\shaders\passthrough\glsl\passthrough.vert" />
     <None Include="src\null-render-backend-opengl3\shaders\quad-gradient\glsl\quad-gradient.frag" />
     <None Include="src\null-render-backend-opengl3\shaders\radial-gradient\glsl\radial-gradient.frag" />
     <None Include="src\null-render-backend-opengl3\shaders\sdf\glsl\sdf.frag" />
-    <None Include="src\null-render-backend-opengl3\shaders\shared-objects\passthrough\glsl\passthrough.vert" />
+    <None Include="src\null-render-backend-opengl3\shaders\texture\glsl\texture.frag" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

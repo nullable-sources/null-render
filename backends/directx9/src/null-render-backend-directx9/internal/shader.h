@@ -13,8 +13,13 @@ namespace null::render::directx9 {
 
 	public:
 		virtual void use() override {
+			if(empty()) return;
+
 			pixel_shader->set();
 			vertex_shader->set();
+
+			const vec2_t<float> texel_offset = vec2_t<float>(-1.f, 1.f) / shared::viewport;
+			vertex_shader->set_constant(0, texel_offset.coordinates.data(), 1);
 		}
 
 	public:
@@ -27,8 +32,8 @@ namespace null::render::directx9 {
 			if(empty()) return;
 			c_shader::use();
 
-			vertex_shader->set_constant(0, backend::renderer->get_matrix().linear_array.data(), 4);
-			vertex_shader->set_constant(4, backend::renderer->get_translation().coordinates.data());
+			vertex_shader->set_constant(1, backend::renderer->get_matrix().linear_array.data(), 4);
+			vertex_shader->set_constant(5, backend::renderer->get_translation().coordinates.data());
 		}
 	};
 }

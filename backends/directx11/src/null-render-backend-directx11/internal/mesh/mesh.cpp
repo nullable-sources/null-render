@@ -1,4 +1,4 @@
-#include "../../shaders/shared-objects/passthrough/compiled-object.h"
+#include "../../shaders/passthrough/compiled-object.h"
 #include "mesh.h"
 
 namespace null::render::directx11 {
@@ -10,7 +10,7 @@ namespace null::render::directx11 {
 			{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,		0, (UINT)offsetof(backend::vertex_t, uv),		D3D11_INPUT_PER_VERTEX_DATA, 0 },
 			{ "COLOR",		0, DXGI_FORMAT_R32G32B32A32_UINT,	0, (UINT)offsetof(backend::vertex_t, color),	D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		};
-		if(auto result = shared.device->CreateInputLayout(desc, 3, sources::passthrough().data(), sources::passthrough().size(), &input_layout); FAILED(result))
+		if(auto result = shared.device->CreateInputLayout(desc, 3, sources::passthrough_vs().data(), sources::passthrough_vs().size(), &input_layout); FAILED(result))
 			utils::logger(utils::e_log_type::error, "cant create vertex input layout, return code {}.", result);
 	}
 

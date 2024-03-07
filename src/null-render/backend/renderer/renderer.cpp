@@ -30,7 +30,7 @@ namespace null::render::backend {
 		destroy_internal_objects();
 	}
 
-	void i_renderer::begin_resize_viewport(const vec2_t<float>& new_viewport) {
+	void i_renderer::begin_resize_viewport(const vec2_t<int>& new_viewport) {
 		shared::viewport = new_viewport;
 		renderer_event_dispatcher.viewport_resize_begin();
 	}
@@ -42,6 +42,7 @@ namespace null::render::backend {
 	std::unique_ptr<std::uint8_t[]> i_renderer::premultiply_texture_alpha(const vec2_t<float>& size, std::uint8_t* data) {
 		const size_t data_size = size.x * size.y * 4;
 		std::unique_ptr<std::uint8_t[]> premultiplied(new std::uint8_t[data_size]);
+		if(!data) return std::move(premultiplied);
 
 		for(size_t i : std::views::iota(0u, data_size) | std::views::stride(4u)) {
 			const std::uint8_t alpha = data[i + 3];
@@ -74,7 +75,7 @@ namespace null::render::backend {
 		if(render::shared::msaa_quality != 0) {
 			state_pipeline->framebuffers.pop();
 
-			post_processing->blit_buffer(msaa_buffer);
+			post_processing->blit_buffer(msaa_buffer.get());
 		}
 
 		renderer_event_dispatcher.end_render();

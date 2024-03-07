@@ -100,15 +100,13 @@ namespace null::render::directx11 {
 		shared.context->ClearRenderTargetView(render_target, color_t<float>(0.f).channels.data());
 		if(depth_stencil_view)
 			shared.context->ClearDepthStencilView(depth_stencil_view, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-		else
-			shared.context->ClearDepthStencilView((ID3D11DepthStencilView*)backend::stencil_buffer->get_buffer(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	}
 
 	void c_frame_buffer::use() {
 		shared.context->OMSetRenderTargets(1, &render_target, depth_stencil_view ? depth_stencil_view : (ID3D11DepthStencilView*)backend::stencil_buffer->get_buffer());
 	}
 
-	void c_frame_buffer::copy_from(const std::unique_ptr<i_frame_buffer>& another_frame_buffer) {
+	void c_frame_buffer::copy_from(i_frame_buffer* another_frame_buffer) {
 		if(another_frame_buffer->flags & backend::e_frame_buffer_flags::msaa) {
 			D3D11_TEXTURE2D_DESC desc{ };
 			render_target_texture->GetDesc(&desc);
@@ -117,5 +115,21 @@ namespace null::render::directx11 {
 		} else {
 			shared.context->CopyResource(render_target_texture, (ID3D11Resource*)another_frame_buffer->get_surface());
 		}
+	}
+
+	void c_frame_buffer::blit_region_from(i_frame_buffer* another_frame_buffer, const vec2_t<int>& blit_offset, const rect_t<int>& region) {
+		D3D11_BOX region_box(region.min.x, region.min.y, region.max.x, region.max.y);
+		region_box.front = 1;
+		region_box.back = 0;
+		
+		shared.context->CopySubresourceRegion(render_target_texture, 0, blit_offset.x, blit_offset.y, 0, (ID3D11Resource*)another_frame_buffer->get_surface(), 0, &region_box);
+	}
+
+	void c_frame_buffer::copy_in_texture(void* texture, const rect_t<int>& region) {
+		D3D11_BOX region_box(region.min.x, region.min.y, region.max.x, region.max.y);
+		region_box.front = 1;
+		region_box.back = 0;
+
+		shared.context->CopySubresourceRegion((ID3D11Resource*)texture, 0, region.min.x, region.min.y, 0, render_target_texture, 0, &region_box);
 	}
 }

@@ -10,8 +10,9 @@
 #include "null-render-backend-opengl3/internal/frame-buffer/frame-buffer.h"
 #include "null-render-backend-opengl3/internal/stencil-buffer/stencil-buffer.h"
 #include "null-render-backend-opengl3/internal/mesh/mesh.h"
-#include "null-render-backend-opengl3/shaders/passthrough-color/passthrough-color.h"
-#include "null-render-backend-opengl3/shaders/passthrough-texture/passthrough-texture.h"
+#include "null-render-backend-opengl3/shaders/passthrough/passthrough.h"
+#include "null-render-backend-opengl3/shaders/color/color.h"
+#include "null-render-backend-opengl3/shaders/texture/texture.h"
 #include "null-render-backend-opengl3/shaders/blur/blur.h"
 #include "null-render-backend-opengl3/shaders/quad-gradient/quad-gradient.h"
 #include "null-render-backend-opengl3/shaders/linear-gradient/linear-gradient.h"
@@ -27,8 +28,9 @@ namespace null::render::opengl3 {
 		std::unique_ptr<backend::i_stencil_buffer> instance_stencil_buffer() override { return std::make_unique<c_stencil_buffer>(); }
 		std::unique_ptr<backend::i_state_pipeline> instance_state_pipeline() override { return std::make_unique<c_state_pipeline>(); }
 
-		std::unique_ptr<backend::i_passthrough_color_shader> instance_passthrough_color_shader() override { return std::make_unique<c_passthrough_color_shader>(); }
-		std::unique_ptr<backend::i_passthrough_texture_shader> instance_passthrough_texture_shader() override { return std::make_unique<c_passthrough_texture_shader>(); }
+		std::unique_ptr<backend::i_passthrough_shader> instance_passthrough_shader() override { return std::make_unique<c_passthrough_shader>(); }
+		std::unique_ptr<backend::i_color_shader> instance_color_shader() override { return std::make_unique<c_color_shader>(); }
+		std::unique_ptr<backend::i_texture_shader> instance_texture_shader() override { return std::make_unique<c_texture_shader>(); }
 		std::unique_ptr<backend::i_blur_shader> instance_blur_shader() override { return std::make_unique<c_blur_shader>(); }
 		std::unique_ptr<backend::i_quad_gradient_shader> instance_quad_gradient_shader() override { return std::make_unique<c_quad_gradient_shader>(); }
 		std::unique_ptr<backend::i_linear_gradient_shader> instance_linear_gradient_shader() override { return std::make_unique<c_linear_gradient_shader>(); }

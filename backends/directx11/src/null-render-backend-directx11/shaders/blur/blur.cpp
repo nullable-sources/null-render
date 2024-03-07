@@ -1,13 +1,6 @@
 #include "blur.h"
 
 namespace null::render::directx11 {
-	void c_blur_shader::use() {
-		if(empty()) return;
-		c_shader::use();
-
-		passthrough_shader_object.set_constant({ backend::renderer->get_matrix(), backend::renderer->get_translation() });
-	}
-
 	void c_blur_shader::set_direction(const vec2_t<float>& direction) {
 		blur_shader_object.edit_direction(direction);
 	}

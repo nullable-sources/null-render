@@ -10,6 +10,7 @@ namespace null::render::backend {
 		std::unique_ptr<i_frame_buffer> transfer_buffer{ };
 
 	protected:
+		matrix4x4_t viewport_matrix{ };
 		std::unique_ptr<c_mesh> mesh{ };
 		std::shared_ptr<c_geometry_command> geometry_command{ };
 
@@ -29,15 +30,18 @@ namespace null::render::backend {
 	public:
 		void initialize();
 
+		rect_t<float> prepare_viewport_region(const rect_t<float>& screen_region);
+		void generate_blit_geometry(c_geometry_command* command, const rect_t<float>& geometry_region, const rect_t<float>& uvs_region);
+
 		//@note: the best solution would be to implement the correct blit using the backend and the framebuffers themselves,
 		//		 but since it needs to be unified under 3 very different backends, it will be easier to do just that.
-		void blit_buffer_region(const std::unique_ptr<i_frame_buffer>& buffer, const rect_t<float>& geometry_region, const rect_t<float>& uvs_region);
-		void blit_buffer(const std::unique_ptr<i_frame_buffer>& buffer);
+		void blit_buffer_region(i_frame_buffer* buffer, const rect_t<float>& geometry_region, const rect_t<float>& uvs_region);
+		void blit_buffer(i_frame_buffer* buffer);
 
-		std::unique_ptr<i_frame_buffer>& at(size_t i) { return frame_buffers[i]; }
+		i_frame_buffer* at(size_t i) { return frame_buffers[i].get(); }
 
 	private:
-		void* prepare_buffer_texture(const std::unique_ptr<i_frame_buffer>& buffer);
+		void* prepare_buffer_texture(i_frame_buffer* buffer);
 
 		void generate_geometry(const rect_t<float>& geometry_region, const rect_t<float>& uvs_region);
 		void draw_geometry();

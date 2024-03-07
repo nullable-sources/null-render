@@ -58,12 +58,31 @@ namespace null::render::opengl3 {
 		opengl::bind_framebuffer(opengl::e_framebuffer, fbo);
 	}
 
-	void c_frame_buffer::copy_from(const std::unique_ptr<i_frame_buffer>& another_frame_buffer) {
+	void c_frame_buffer::copy_from(i_frame_buffer* another_frame_buffer) {
 		opengl::blit_named_framebuffer(
 			(std::uint32_t)another_frame_buffer->get_surface(), fbo,
 			0, 0, another_frame_buffer->size.x, another_frame_buffer->size.y,
 			0, 0, size.x, size.y,
 			opengl::e_color_buffer_bit | opengl::e_depth_buffer_bit, opengl::e_nearest
 		);
+	}
+
+	void c_frame_buffer::blit_region_from(i_frame_buffer* another_frame_buffer, const vec2_t<int>& blit_offset, const rect_t<int>& region) {
+		//@note: abs() necessary for the ability to flip the framebuffer, many thanks to opengl for the additional troubles
+		const vec2_t<int> region_size = math::abs(region.size());
+		opengl::blit_named_framebuffer(
+			(std::uint32_t)another_frame_buffer->get_surface(), fbo,
+			region.min.x, region.min.y, region.max.x, region.max.y,
+			blit_offset.x, blit_offset.y, blit_offset.x + region_size.x, blit_offset.y + region_size.y,
+			opengl::e_color_buffer_bit, opengl::e_nearest
+		);
+	}
+
+	void c_frame_buffer::copy_in_texture(void* texture, const rect_t<int>& region) {
+		backend::state_pipeline->textures.push(texture);
+		opengl::bind_framebuffer(opengl::e_read_framebuffer, fbo);
+		const vec2_t<int> box_size = region.size();
+		opengl::copy_tex_sub_image2d(opengl::e_texture_2d, 0, 0, 0, region.min.x, region.min.y, box_size.x, box_size.y);
+		backend::state_pipeline->textures.pop();
 	}
 }

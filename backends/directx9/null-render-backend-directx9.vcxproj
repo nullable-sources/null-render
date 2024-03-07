@@ -53,19 +53,20 @@
     <ClInclude Include="src\null-render-backend-directx9\renderer\renderer.h" />
     <ClInclude Include="src\null-render-backend-directx9\shaders\blur\blur.h" />
     <ClInclude Include="src\null-render-backend-directx9\shaders\blur\compiled-object.h" />
+    <ClInclude Include="src\null-render-backend-directx9\shaders\color\color.h" />
+    <ClInclude Include="src\null-render-backend-directx9\shaders\color\compiled-object.h" />
     <ClInclude Include="src\null-render-backend-directx9\shaders\linear-gradient\compiled-object.h" />
     <ClInclude Include="src\null-render-backend-directx9\shaders\linear-gradient\linear-gradient.h" />
-    <ClInclude Include="src\null-render-backend-directx9\shaders\passthrough-color\compiled-object.h" />
-    <ClInclude Include="src\null-render-backend-directx9\shaders\passthrough-color\passthrough-color.h" />
-    <ClInclude Include="src\null-render-backend-directx9\shaders\passthrough-texture\compiled-object.h" />
-    <ClInclude Include="src\null-render-backend-directx9\shaders\passthrough-texture\passthrough-texture.h" />
+    <ClInclude Include="src\null-render-backend-directx9\shaders\passthrough\compiled-object.h" />
+    <ClInclude Include="src\null-render-backend-directx9\shaders\passthrough\passthrough.h" />
     <ClInclude Include="src\null-render-backend-directx9\shaders\quad-gradient\compiled-object.h" />
     <ClInclude Include="src\null-render-backend-directx9\shaders\quad-gradient\quad-gradient.h" />
     <ClInclude Include="src\null-render-backend-directx9\shaders\radial-gradient\compiled-object.h" />
     <ClInclude Include="src\null-render-backend-directx9\shaders\radial-gradient\radial-gradient.h" />
     <ClInclude Include="src\null-render-backend-directx9\shaders\sdf\compiled-object.h" />
     <ClInclude Include="src\null-render-backend-directx9\shaders\sdf\sdf.h" />
-    <ClInclude Include="src\null-render-backend-directx9\shaders\shared-objects\passthrough\compiled-object.h" />
+    <ClInclude Include="src\null-render-backend-directx9\shaders\texture\compiled-object.h" />
+    <ClInclude Include="src\null-render-backend-directx9\shaders\texture\texture.h" />
     <ClInclude Include="src\null-render-backend-directx9\state-pipeline\state-pipeline.h" />
     <ClInclude Include="src\null-render-backend-directx9\wrapper\pixel\pixel.h" />
     <ClInclude Include="src\null-render-backend-directx9\wrapper\compiled-shader.h" />
@@ -98,6 +99,58 @@
       <VariableName Condition="'$(Configuration)|$(Platform)'=='release|x64'">shader_data</VariableName>
       <VariableName Condition="'$(Configuration)|$(Platform)'=='debug|x64'">shader_data</VariableName>
     </FxCompile>
+    <FxCompile Include="src\null-render-backend-directx9\shaders\color\hlsl\color-ps.hlsl">
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='release|Win32'">shader_data</VariableName>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
+      </ObjectFileOutput>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">shader_data</VariableName>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
+      </ObjectFileOutput>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='release|x64'">shader_data</VariableName>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='release|x64'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='release|x64'">
+      </ObjectFileOutput>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='debug|x64'">shader_data</VariableName>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|x64'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
+      </ObjectFileOutput>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|Win32'">3.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">3.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|x64'">3.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='debug|x64'">3.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="src\null-render-backend-directx9\shaders\color\hlsl\color-vs.hlsl">
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='release|Win32'">shader_data</VariableName>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
+      </ObjectFileOutput>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">shader_data</VariableName>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
+      </ObjectFileOutput>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='release|x64'">shader_data</VariableName>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='release|x64'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='release|x64'">
+      </ObjectFileOutput>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='debug|x64'">shader_data</VariableName>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|x64'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
+      </ObjectFileOutput>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|Win32'">3.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">3.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|x64'">3.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='debug|x64'">3.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="src\null-render-backend-directx9\shaders\linear-gradient\hlsl\linear-gradient.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|Win32'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|Win32'">3.0</ShaderModel>
@@ -124,15 +177,7 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
       </ObjectFileOutput>
     </FxCompile>
-    <FxCompile Include="src\null-render-backend-directx9\shaders\passthrough-color\hlsl\passthrough-color.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|Win32'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|Win32'">3.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">3.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|x64'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|x64'">3.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='debug|x64'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='debug|x64'">3.0</ShaderModel>
+    <FxCompile Include="src\null-render-backend-directx9\shaders\passthrough\hlsl\passthrough-ps.hlsl">
       <VariableName Condition="'$(Configuration)|$(Platform)'=='release|Win32'">shader_data</VariableName>
       <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
@@ -149,16 +194,16 @@
       <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|x64'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
       </ObjectFileOutput>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|Win32'">3.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">3.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|x64'">3.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='debug|x64'">3.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="src\null-render-backend-directx9\shaders\passthrough-texture\hlsl\passthrough-texture.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|Win32'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|Win32'">3.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">3.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|x64'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|x64'">3.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='debug|x64'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='debug|x64'">3.0</ShaderModel>
+    <FxCompile Include="src\null-render-backend-directx9\shaders\passthrough\hlsl\passthrough-vs.hlsl">
       <VariableName Condition="'$(Configuration)|$(Platform)'=='release|Win32'">shader_data</VariableName>
       <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
@@ -175,6 +220,14 @@
       <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|x64'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
       </ObjectFileOutput>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|Win32'">3.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">3.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|x64'">3.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='debug|x64'">3.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="src\null-render-backend-directx9\shaders\quad-gradient\hlsl\quad-gradient.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|Win32'">Pixel</ShaderType>
@@ -254,15 +307,7 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
       </ObjectFileOutput>
     </FxCompile>
-    <FxCompile Include="src\null-render-backend-directx9\shaders\shared-objects\passthrough\hlsl\passthrough.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|Win32'">Vertex</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|Win32'">3.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">Vertex</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">3.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|x64'">Vertex</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|x64'">3.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='debug|x64'">Vertex</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='debug|x64'">3.0</ShaderModel>
+    <FxCompile Include="src\null-render-backend-directx9\shaders\texture\hlsl\texture.hlsl">
       <VariableName Condition="'$(Configuration)|$(Platform)'=='release|Win32'">shader_data</VariableName>
       <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
@@ -279,6 +324,14 @@
       <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|x64'">%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
       </ObjectFileOutput>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|Win32'">3.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">3.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='release|x64'">3.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='debug|x64'">3.0</ShaderModel>
     </FxCompile>
   </ItemGroup>
   <PropertyGroup Label="Globals">

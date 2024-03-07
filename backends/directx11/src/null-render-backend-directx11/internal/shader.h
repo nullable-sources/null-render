@@ -13,6 +13,7 @@ namespace null::render::directx11 {
 
 	public:
 		virtual void use() override {
+			if(empty()) return;
 			pixel_shader->set();
 			vertex_shader->set();
 		}

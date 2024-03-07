@@ -1,5 +1,5 @@
 #pragma once
-#include "../../wrapper/shaders/pixel.h"
+#include "../passthrough/compiled-object.h"
 
 namespace null::render::directx11 {
 	namespace sources {

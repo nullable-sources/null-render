@@ -1,12 +1,11 @@
 #pragma once
 #include "../../internal/shader.h"
-#include "../shared-objects/passthrough/compiled-object.h"
 #include "compiled-object.h"
 
 namespace null::render::directx9 {
-	class c_blur_shader : public backend::i_blur_shader, public c_default_shader {
+	class c_blur_shader : public backend::i_blur_shader, public c_shader {
 	public:
-		c_blur_shader() : c_default_shader(&blur_shader_object, &passthrough_shader_object) { }
+		c_blur_shader() : c_shader(&blur_shader_object, &passthrough_vertex_shader_object) { }
 
 	public:
 		void set_constants(const constants_t& constants) override;

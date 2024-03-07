@@ -21,7 +21,9 @@ namespace null::render::directx11 {
 		void clear() override;
 		void use() override;
 
-		void copy_from(const std::unique_ptr<i_frame_buffer>& another_frame_buffer) override;
+		void copy_from(i_frame_buffer* another_frame_buffer) override;
+		void blit_region_from(i_frame_buffer* another_frame_buffer, const vec2_t<int>& blit_offset, const rect_t<int>& region) override;
+		void copy_in_texture(void* texture, const rect_t<int>& region) override;
 
 	public:
 		bool empty() const override { return !render_target; }

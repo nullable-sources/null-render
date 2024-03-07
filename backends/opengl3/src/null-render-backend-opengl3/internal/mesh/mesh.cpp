@@ -1,4 +1,4 @@
-#include "../../shaders/shared-objects/passthrough/compiled-object.h"
+#include "../../shaders/passthrough/compiled-object.h"
 #include "mesh.h"
 
 namespace null::render::opengl3 {
@@ -13,9 +13,9 @@ namespace null::render::opengl3 {
 		c_program program{ };
 		program.create();
 
-		program.attach_shader(&passthrough_shader_object);
+		program.attach_shader(&passthrough_vertex_shader_object);
 		program.link();
-		program.detach_shader(&passthrough_shader_object);
+		program.detach_shader(&passthrough_vertex_shader_object);
 
 		position.get_location(&program, "position");
 		uv.get_location(&program, "uv");

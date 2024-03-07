@@ -3,7 +3,7 @@
 
 namespace null::render {
 	namespace shared {
-		inline vec2_t<float> viewport{ };
+		inline vec2_t<int> viewport{ };
 		inline std::uint32_t msaa_quality{ 8 };
 	}
 
@@ -56,7 +56,7 @@ namespace null::render {
 			void create_objects();
 			void destroy_objects();
 
-			void begin_resize_viewport(const vec2_t<float>& new_viewport);
+			void begin_resize_viewport(const vec2_t<int>& new_viewport);
 			void end_resize_viewport();
 
 		public:

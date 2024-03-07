@@ -9,7 +9,7 @@
 namespace null::render {
 	void c_draw_list::handle() {
 		backend::state_pipeline->meshes.push(mesh);
-		backend::state_pipeline->shaders.push(backend::passthrough_color_shader);
+		backend::state_pipeline->shaders.push(backend::color_shader);
 		c_command_buffer::handle();
 		backend::state_pipeline->meshes.pop();
 		backend::state_pipeline->shaders.pop();

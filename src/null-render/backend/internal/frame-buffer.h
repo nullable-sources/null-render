@@ -47,13 +47,15 @@ namespace null::render::backend {
 
 		virtual void clear() = 0;
 
-		virtual void copy_from(const std::unique_ptr<i_frame_buffer>& another_frame_buffer) = 0;
+		virtual void copy_from(i_frame_buffer* another_frame_buffer) = 0;
+		virtual void blit_region_from(i_frame_buffer* another_frame_buffer, const vec2_t<int>& blit_offset, const rect_t<int>& region) = 0;
+		virtual void copy_in_texture(void* texture, const rect_t<int>& region) = 0;
 
 	public:
 		virtual bool empty() const = 0;
 
 	protected:
-		virtual void resize_begin(const vec2_t<float>& new_size) {
+		virtual void resize_begin(const vec2_t<int>& new_size) {
 			size = new_size;
 			destroy();
 		}

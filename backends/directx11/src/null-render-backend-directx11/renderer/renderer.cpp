@@ -135,15 +135,28 @@ namespace null::render::directx11 {
 			if(auto result = shared.device->CreateSamplerState(&sampler_desc, &internal_objects.sampler); FAILED(result))
 				utils::logger(utils::e_log_type::error, "cant create sampler state, return code {}.", result);
 		}
+
+		if(!internal_objects.raster_state) {
+			D3D11_RASTERIZER_DESC raster_desc{
+				.FillMode{ D3D11_FILL_SOLID },
+				.CullMode{ D3D11_CULL_NONE },
+				.DepthClipEnable{ true },
+				.ScissorEnable{ true }
+			};
+			if(auto result = shared.device->CreateRasterizerState(&raster_desc, &internal_objects.raster_state); FAILED(result))
+				utils::logger(utils::e_log_type::error, "cant create sampler state, return code {}.", result);
+		}
 	}
 
 	void c_renderer::destroy_internal_objects() {
+		if(internal_objects.raster_state) { internal_objects.raster_state->Release(); internal_objects.raster_state = nullptr; }
 		if(internal_objects.sampler) { internal_objects.sampler->Release(); internal_objects.sampler = nullptr; }
 		if(internal_objects.blend) { internal_objects.blend->Release(); internal_objects.blend = nullptr; }
 		if(internal_objects.depth_stencil) { internal_objects.depth_stencil->Release(); internal_objects.depth_stencil = nullptr; }
 	}
 
 	void c_renderer::on_setup_state() {
+		shared.context->RSSetState(internal_objects.raster_state);
 		shared.context->PSSetSamplers(0, 1, &internal_objects.sampler);
 
 		constexpr float blend_factor[4]{ 0.f, 0.f, 0.f, 0.f };

@@ -1,6 +1,5 @@
 #pragma once
 #include "../../internal/shader/shader.h"
-#include "../shared-objects/passthrough/compiled-object.h"
 #include "compiled-object.h"
 
 namespace null::render::opengl3 {
@@ -13,7 +12,7 @@ namespace null::render::opengl3 {
 		c_uniform<std::array<float, 16>> stops{ };
 
 	public:
-		c_linear_gradient_shader() : c_default_shader(&linear_gradient_shader_object, &passthrough_shader_object) { }
+		c_linear_gradient_shader() : c_default_shader(&linear_gradient_shader_object, &color_vertex_shader_object) { }
 
 	public:
 		void create() override;

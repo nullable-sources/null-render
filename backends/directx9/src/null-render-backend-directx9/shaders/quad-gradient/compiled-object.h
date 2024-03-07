@@ -1,5 +1,5 @@
 #pragma once
-#include "../../wrapper/pixel/pixel.h"
+#include "../color/compiled-object.h"
 
 namespace null::render::directx9 {
 	namespace sources {

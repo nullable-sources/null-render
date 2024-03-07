@@ -67,7 +67,22 @@ namespace null::render::directx9 {
 		shared.device->SetRenderTarget(0, surface);
 	}
 
-	void c_frame_buffer::copy_from(const std::unique_ptr<i_frame_buffer>& another_frame_buffer) {
+	void c_frame_buffer::copy_from(i_frame_buffer* another_frame_buffer) {
 		shared.device->StretchRect((IDirect3DSurface9*)another_frame_buffer->get_surface(), nullptr, surface, nullptr, D3DTEXF_LINEAR);
+	}
+
+	void c_frame_buffer::blit_region_from(i_frame_buffer* another_frame_buffer, const vec2_t<int>& blit_offset, const rect_t<int>& region) {
+		const vec2_t<int> region_size = region.size();
+		const RECT src_rect(region.min.x, region.min.y, region.max.x, region.max.y);
+		const RECT dst_rect(blit_offset.x, blit_offset.y, blit_offset.x + region_size.x, blit_offset.y + region_size.y);
+		shared.device->StretchRect((IDirect3DSurface9*)another_frame_buffer->get_surface(), &src_rect, surface, &dst_rect, D3DTEXF_LINEAR);
+	}
+
+	void c_frame_buffer::copy_in_texture(void* texture, const rect_t<int>& region) {
+		IDirect3DSurface9* texture_surface{ };
+		((IDirect3DTexture9*)texture)->GetSurfaceLevel(0, &texture_surface);
+
+		const RECT rect(region.min.x, region.min.y, region.max.x, region.max.y);
+		shared.device->StretchRect(surface, &rect, texture_surface, &rect, D3DTEXF_LINEAR);
 	}
 }
