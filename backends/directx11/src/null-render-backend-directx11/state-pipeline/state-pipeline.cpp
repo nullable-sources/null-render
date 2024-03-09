@@ -9,9 +9,7 @@ namespace null::render::directx11 {
 		};
 		shared.context->RSSetViewports(1, &viewport);
 
-		backend::renderer->set_clip({ { 0 }, render::shared::viewport });
-		backend::renderer->set_matrix(backend::renderer->get_projection_matrix());
-		backend::renderer_event_dispatcher.setup_state();
+		i_state_pipeline::setup_state();
 	}
 
 	void c_state_pipeline::save_state() {

@@ -11,9 +11,7 @@ namespace null::render::opengl3 {
 		opengl::enable(opengl::e_scissor_test);
 		opengl::disable(opengl::e_primitive_restart);
 
-		backend::renderer->set_clip({ { 0 }, shared::viewport });
-		backend::renderer->set_matrix(backend::renderer->get_projection_matrix());
-		backend::renderer_event_dispatcher.setup_state();
+		i_state_pipeline::setup_state();
 	}
 
 	void c_state_pipeline::save_state() {

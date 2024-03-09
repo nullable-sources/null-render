@@ -69,7 +69,7 @@ namespace null::render::backend {
 		} textures{ };
 
 	public:
-		virtual void setup_state() = 0;
+		virtual void setup_state();
 		virtual void save_state() = 0;
 		virtual void restore_state() = 0;
 

@@ -11,7 +11,8 @@ namespace null::render::directx9 {
 
 		shared.device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 		shared.device->SetRenderState(D3DRS_LIGHTING, false);
-		shared.device->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
+		shared.device->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
+		shared.device->SetRenderState(D3DRS_ZWRITEENABLE, false);
 		shared.device->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
 		shared.device->SetRenderState(D3DRS_ALPHATESTENABLE, false);
 		shared.device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
@@ -33,9 +34,7 @@ namespace null::render::directx9 {
 		shared.device->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
 		shared.device->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
 
-		backend::renderer->set_clip({ { 0 }, shared::viewport });
-		backend::renderer->set_matrix(backend::renderer->get_projection_matrix());
-		backend::renderer_event_dispatcher.setup_state();
+		i_state_pipeline::setup_state();
 	}
 
 	void c_state_pipeline::save_state() {
@@ -65,6 +64,7 @@ namespace null::render::directx9 {
 		restore_shader();
 		restore_texture();
 
+		shared.device->SetDepthStencilSurface(depth);
 		if(framebuffer) { framebuffer->Release(); framebuffer = nullptr; }
 		if(depth) { depth->Release(); depth = nullptr; }
 		if(texture) { texture->Release(); texture = nullptr; }
@@ -77,7 +77,6 @@ namespace null::render::directx9 {
 
 	void c_state_pipeline::restore_framebuffer() {
 		shared.device->SetRenderTarget(0, framebuffer);
-		shared.device->SetDepthStencilSurface(depth);
 	}
 
 	void c_state_pipeline::restore_mesh() {
