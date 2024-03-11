@@ -5,6 +5,10 @@
 
 namespace null::render::backend {
 	class c_post_processing : protected i_renderer_event_listener {
+	private:
+		static constexpr rect_t<float> normalized_viewport = rect_t<float>(vec2_t<float>(-1.f, 1.f), vec2_t<float>(1.f, -1.f));
+		static constexpr rect_t<float> normalized_uvs = rect_t<float>(0.f, 1.f);
+
 	public:
 		std::array<std::unique_ptr<i_frame_buffer>, 4> frame_buffers{ };
 		std::unique_ptr<i_frame_buffer> transfer_buffer{ };
@@ -31,20 +35,26 @@ namespace null::render::backend {
 		void initialize();
 
 		rect_t<float> prepare_viewport_region(const rect_t<float>& screen_region);
-		void generate_blit_geometry(c_geometry_command* command, const rect_t<float>& geometry_region, const rect_t<float>& uvs_region);
+		void generate_draw_geometry(c_geometry_command* command, const rect_t<float>& geometry_region, rect_t<float> uvs);
 
-		//@note: the best solution would be to implement the correct blit using the backend and the framebuffers themselves,
-		//		 but since it needs to be unified under 3 very different backends, it will be easier to do just that.
+		//@note: blit methods use a passthrough shader, if you need to use your own shader,
+		//		 then use generate_geometry+draw_buffer_texture or draw_buffer/draw_buffer_region
+		void blit_buffer_region(i_frame_buffer* buffer, const vec2_t<float>& uv_scaling);
 		void blit_buffer_region(i_frame_buffer* buffer, const rect_t<float>& geometry_region, const rect_t<float>& uvs_region);
 		void blit_buffer(i_frame_buffer* buffer);
 
+		void draw_buffer_region(i_frame_buffer* buffer, const vec2_t<float>& uv_scaling);
+		void draw_buffer_region(i_frame_buffer* buffer, const rect_t<float>& geometry_region, const rect_t<float>& uvs_region);
+		void draw_buffer(i_frame_buffer* buffer);
+
 		i_frame_buffer* at(size_t i) { return frame_buffers[i].get(); }
+
+		void generate_geometry(const vec2_t<float>& uv_scaling);
+		void generate_geometry(const rect_t<float>& geometry_region, const rect_t<float>& uvs_region);
+		void draw_buffer_texture(i_frame_buffer* buffer);
 
 	private:
 		void* prepare_buffer_texture(i_frame_buffer* buffer);
-
-		void generate_geometry(const rect_t<float>& geometry_region, const rect_t<float>& uvs_region);
-		void draw_geometry();
 
 		void generate_viewport_geometry();
 

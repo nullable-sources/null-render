@@ -1,4 +1,3 @@
-
 #include "../backend.h"
 
 namespace null::render::backend {
@@ -18,13 +17,12 @@ namespace null::render::backend {
 		);
 	}
 
-	void c_post_processing::generate_blit_geometry(c_geometry_command* command, const rect_t<float>& geometry_region, const rect_t<float>& uvs_region) {
+	void c_post_processing::generate_draw_geometry(c_geometry_command* command, const rect_t<float>& geometry_region, rect_t<float> uvs) {
 		command->index_count += 6;
 		command->geometry_buffer
 			->add_index(0).add_index(1).add_index(2)
 			.add_index(0).add_index(2).add_index(3);
 
-		rect_t<float> uvs = uvs_region / shared::viewport;
 		if(renderer->framebuffer_uvs_flipped()) {
 			uvs.min.y = 1.f - uvs.min.y;
 			uvs.max.y = 1.f - uvs.max.y;
@@ -39,29 +37,61 @@ namespace null::render::backend {
 			.add_vertex({ { geometry_region.min.x, geometry_region.max.y }, { uvs.min.x, uvs.max.y }, color });
 	}
 
-	void c_post_processing::blit_buffer(i_frame_buffer* buffer) {
-		void* texture = prepare_buffer_texture(buffer);
-
-		if(geometry_dirty)
-			generate_viewport_geometry();
-
-		state_pipeline->textures.push(texture);
+	void c_post_processing::blit_buffer_region(i_frame_buffer* buffer, const vec2_t<float>& uvs) {
 		state_pipeline->shaders.push(passthrough_shader);
-		draw_geometry();
+		draw_buffer_region(buffer, uvs);
 		state_pipeline->shaders.pop();
-		state_pipeline->textures.pop();
 	}
 
 	void c_post_processing::blit_buffer_region(i_frame_buffer* buffer, const rect_t<float>& geometry_region, const rect_t<float>& uvs_region) {
-		void* texture = prepare_buffer_texture(buffer);
+		state_pipeline->shaders.push(passthrough_shader);
+		draw_buffer_region(buffer, geometry_region, uvs_region);
+		state_pipeline->shaders.pop();
+	}
+
+	void c_post_processing::blit_buffer(i_frame_buffer* buffer) {
+		state_pipeline->shaders.push(passthrough_shader);
+		draw_buffer(buffer);
+		state_pipeline->shaders.pop();
+	}
+
+	void c_post_processing::draw_buffer_region(i_frame_buffer* buffer, const vec2_t<float>& uvs) {
+		generate_geometry(uvs);
+		draw_buffer_texture(buffer);
+	}
+
+	void c_post_processing::draw_buffer_region(i_frame_buffer* buffer, const rect_t<float>& geometry_region, const rect_t<float>& uvs_region) {
+		generate_geometry(prepare_viewport_region(geometry_region), uvs_region / shared::viewport);
+		draw_buffer_texture(buffer);
+	}
+
+	void c_post_processing::draw_buffer(i_frame_buffer* buffer) {
+		if(geometry_dirty) generate_viewport_geometry();
+		draw_buffer_texture(buffer);
+	}
+
+	void c_post_processing::generate_geometry(const vec2_t<float>& uv_scaling) {
+		generate_geometry(normalized_viewport, normalized_uvs * uv_scaling);
+	}
+
+	void c_post_processing::generate_geometry(const rect_t<float>& geometry_region, const rect_t<float>& uvs_region) {
+		if(!mesh) mesh = factory->instance_mesh();
+		if(!geometry_command) geometry_command = c_geometry_command::instance(&mesh->geometry_buffer);
+
+		geometry_command->clear_geometry();
+		generate_draw_geometry(geometry_command.get(), geometry_region, uvs_region);
+		mesh->compile();
 
 		geometry_dirty = true;
-		generate_geometry(prepare_viewport_region(geometry_region), uvs_region);
+	}
 
-		state_pipeline->textures.push(texture);
-		state_pipeline->shaders.push(passthrough_shader);
-		draw_geometry();
-		state_pipeline->shaders.pop();
+	void c_post_processing::draw_buffer_texture(i_frame_buffer* buffer) {
+		if(!mesh || !geometry_command) return;
+
+		state_pipeline->textures.push(prepare_buffer_texture(buffer));
+		state_pipeline->meshes.push(mesh);
+		geometry_command->handle();
+		state_pipeline->meshes.pop();
 		state_pipeline->textures.pop();
 	}
 
@@ -76,29 +106,12 @@ namespace null::render::backend {
 		return texture;
 	}
 
-	void c_post_processing::generate_geometry(const rect_t<float>& geometry_region, const rect_t<float>& uvs_region) {
-		if(!mesh) mesh = factory->instance_mesh();
-		if(!geometry_command) geometry_command = c_geometry_command::instance(&mesh->geometry_buffer);
-
-		geometry_command->clear_geometry();
-		generate_blit_geometry(geometry_command.get(), geometry_region, uvs_region);
-		mesh->compile();
-	}
-
-	void c_post_processing::draw_geometry() {
-		if(!mesh || !geometry_command) return;
-
-		state_pipeline->meshes.push(mesh);
-		geometry_command->handle();
-		state_pipeline->meshes.pop();
-	}
-
 	void c_post_processing::generate_viewport_geometry() {
 		viewport_matrix = renderer->get_projection_matrix();
 
-		const rect_t<float> viewport2(vec2_t<float>(0), shared::viewport);
-		rect_t<float> viewport(vec2_t<float>(-1.f, 1.f), vec2_t<float>(1.f, -1.f));
-		generate_geometry(viewport, viewport2);
+		generate_geometry(normalized_viewport, normalized_uvs);
+
+		geometry_dirty = false;
 	}
 
 	void c_post_processing::on_create() {

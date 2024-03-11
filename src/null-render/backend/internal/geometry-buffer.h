@@ -25,7 +25,7 @@ namespace null::render::backend {
 	public:
 		template <typename self_t> auto&& add_index(this self_t&& self, index_t index) { self.index_buffer.push_back(index); return self; }
 		template <typename self_t> auto&& add_vertex(this self_t&& self, const vertex_t& vertex) { self.vertex_buffer.push_back(vertex); return self; }
-		template <typename self_t> auto&& add_vertex(this self_t&& self, const vec2_t<float>& pos, const vec2_t<float> uv, const color_t<int>& color) { self.vertex_buffer.push_back(vertex_t(pos, uv, color)); return self; }
+		template <typename self_t> auto&& add_vertex(this self_t&& self, const vec2_t<float>& pos, const vec2_t<float>& uv, const color_t<int>& color) { self.vertex_buffer.push_back(vertex_t(pos, uv, color)); return self; }
 
 	public:
 		void clear() { vertex_buffer.clear(); index_buffer.clear(); }

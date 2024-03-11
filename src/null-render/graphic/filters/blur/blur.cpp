@@ -44,10 +44,10 @@ namespace null::render {
 	void c_blur_filter::make_geometry(backend::c_geometry_buffer* geometry_buffer) {
 		geometry_command = c_geometry_command::instance(geometry_buffer);
 
-		backend::post_processing->generate_blit_geometry(
+		backend::post_processing->generate_draw_geometry(
 			geometry_command.get(),
 			backend::post_processing->prepare_viewport_region(geometry_region),
-			geometry_region
+			geometry_region / shared::viewport
 		);
 	}
 
