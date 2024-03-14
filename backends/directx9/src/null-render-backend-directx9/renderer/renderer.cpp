@@ -26,7 +26,6 @@ namespace null::render::directx9 {
 		}
 
 		if(data) {
-			std::unique_ptr<std::uint8_t[]> premultiplied = premultiply_texture_alpha(size, (std::uint8_t*)data);
 			D3DLOCKED_RECT locked_rect{ };
 			if(auto result = texture->LockRect(0, &locked_rect, nullptr, 0); FAILED(result)) {
 				utils::logger(utils::e_log_type::error, "LockRect failed, return code {}.", result);
@@ -34,7 +33,7 @@ namespace null::render::directx9 {
 			}
 
 			for(float x = size.x * 4; int y : std::views::iota(0, size.y)) {
-				std::memcpy((std::uint8_t*)locked_rect.pBits + locked_rect.Pitch * y, premultiplied.get() + (int)x * y, x);
+				std::memcpy((std::uint8_t*)locked_rect.pBits + locked_rect.Pitch * y, (std::uint8_t*)data + (int)x * y, x);
 			}
 
 			texture->UnlockRect(0);

@@ -27,8 +27,7 @@ namespace null::render::opengl3 {
 		opengl::tex_parameteri(opengl::e_texture_2d, opengl::e_texture_min_filter, opengl::e_linear);
 		opengl::tex_parameteri(opengl::e_texture_2d, opengl::e_texture_mag_filter, opengl::e_linear);
 
-		std::unique_ptr<std::uint8_t[]> premultiplied = premultiply_texture_alpha(size, (std::uint8_t*)data);
-		opengl::tex_image2d(opengl::e_texture_2d, 0, opengl::e_rgba, size.x, size.y, 0, opengl::e_rgba, opengl::e_unsigned_byte, premultiplied.get());
+		opengl::tex_image2d(opengl::e_texture_2d, 0, opengl::e_rgba, size.x, size.y, 0, opengl::e_rgba, opengl::e_unsigned_byte, data);
 		opengl::bind_texture(opengl::e_texture_2d, 0);
 
 		if(!texture) {

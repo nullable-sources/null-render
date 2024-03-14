@@ -39,7 +39,7 @@ namespace null::render::backend {
 		renderer_event_dispatcher.viewport_resize_end();
 	}
 
-	std::unique_ptr<std::uint8_t[]> i_renderer::premultiply_texture_alpha(const vec2_t<float>& size, std::uint8_t* data) {
+	std::unique_ptr<std::uint8_t[]> i_renderer::premultiply_texture_color(const vec2_t<float>& size, std::uint8_t* data) {
 		const size_t data_size = size.x * size.y * 4;
 		std::unique_ptr<std::uint8_t[]> premultiplied(new std::uint8_t[data_size]);
 		if(!data) return std::move(premultiplied);

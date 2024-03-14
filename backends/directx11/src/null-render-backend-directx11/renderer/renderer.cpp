@@ -37,11 +37,9 @@ namespace null::render::directx11 {
 				.CPUAccessFlags{ 0 }
 		};
 
-		std::unique_ptr<std::uint8_t[]> premultiplied = premultiply_texture_alpha(size, (std::uint8_t*)data);
-
 		ID3D11Texture2D* texture{ };
 		D3D11_SUBRESOURCE_DATA subresource{
-			.pSysMem{ (void*)premultiplied.get() },
+			.pSysMem{ (void*)data },
 			.SysMemPitch{ texture_desc.Width * 4 },
 			.SysMemSlicePitch{ 0 }
 		};

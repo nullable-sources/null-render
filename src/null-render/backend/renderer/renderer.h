@@ -43,11 +43,11 @@ namespace null::render {
 			virtual void* create_texture(const vec2_t<float>& size, void* data) = 0;
 			virtual void destroy_texture(void* texture) = 0;
 
+			virtual std::unique_ptr<std::uint8_t[]> premultiply_texture_color(const vec2_t<float>& size, std::uint8_t* data);
+
 		protected:
 			virtual void create_internal_objects() { }
 			virtual void destroy_internal_objects() { }
-
-			virtual std::unique_ptr<std::uint8_t[]> premultiply_texture_alpha(const vec2_t<float>& size, std::uint8_t* data);
 
 		public:
 			void begin_render();
