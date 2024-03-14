@@ -5,7 +5,7 @@
 
 namespace null::render::backend {
 	class c_post_processing : protected i_renderer_event_listener {
-	private:
+	public:
 		static constexpr rect_t<float> normalized_viewport = rect_t<float>(vec2_t<float>(-1.f, 1.f), vec2_t<float>(1.f, -1.f));
 		static constexpr rect_t<float> normalized_uvs = rect_t<float>(0.f, 1.f);
 
