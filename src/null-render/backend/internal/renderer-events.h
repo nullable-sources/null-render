@@ -16,7 +16,7 @@ namespace null::render::backend {
 
 	class i_renderer_event_listener : public utils::i_event_listener<e_renderer_event_type> {
 	private:
-		void process_event(e_renderer_event_type id, const std::unordered_map<std::string, std::any>& parameters) override {
+		void process_event(e_renderer_event_type id, const utils::event_parameters_t& parameters) override {
 			switch(id) {
 				case e_renderer_event_type::create: { on_create(); } break;
 				case e_renderer_event_type::destroy: { on_destroy(); } break;
