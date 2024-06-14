@@ -15,8 +15,6 @@ namespace null::render::backend {
 	void i_renderer::create_objects() {
 		if(empty()) return;
 
-		renderer_event_dispatcher.create();
-
 		create_atlases();
 		create_internal_objects();
 	}
@@ -55,9 +53,11 @@ namespace null::render::backend {
 	}
 
 	void i_renderer::begin_render() {
+		renderer_event_dispatcher.begin_render();
+
 		state_pipeline->save_state();
 
-		renderer_event_dispatcher.begin_render();
+        renderer_event_dispatcher.create();
 
 		state_pipeline->setup_state();
 
