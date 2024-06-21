@@ -12,15 +12,15 @@ uniform float stops[16];
 out vec4 out_color;
 
 void main() {
-	float t = length((1.f / radius) * (frag_uv - origin));
+    float t = length((1.f / radius) * (frag_uv - origin));
 
-	out_color = colors[0] / 255.f;
-	out_color.rgb *= out_color.a;
-	for(int i = 1; i < stops_count; ++i) {
-		vec4 premultiplied = colors[i] / 255.f;
-		premultiplied.rgb *= premultiplied.a;
-		out_color = mix(out_color, premultiplied, smoothstep(stops[i - 1], stops[i], t));
-	}
+    out_color = colors[0] / 255.f;
+    out_color.rgb *= out_color.a;
+    for(int i = 1; i < stops_count; ++i) {
+        vec4 premultiplied = colors[i] / 255.f;
+        premultiplied.rgb *= premultiplied.a;
+        out_color = mix(out_color, premultiplied, smoothstep(stops[i - 1], stops[i], t));
+    }
 
-	out_color *= frag_color;
+    out_color *= frag_color;
 }

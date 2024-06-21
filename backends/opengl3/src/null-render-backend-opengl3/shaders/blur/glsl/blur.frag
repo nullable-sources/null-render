@@ -18,12 +18,12 @@ vec2 clamp_uv(vec2 uv) {
 }
 
 void main() {
-	out_color = texture(sampler, clamp_uv(frag_uv));
-	out_color *= weights[0];
-	
-	for (int i = 1; i < iterations; ++i) {
+    out_color = texture(sampler, clamp_uv(frag_uv));
+    out_color *= weights[0];
+
+    for (int i = 1; i < iterations; ++i) {
         vec2 offset = texel_size * offsets[i] * direction;
-		out_color += texture(sampler, clamp_uv(frag_uv - offset)) * weights[i];
-		out_color += texture(sampler, clamp_uv(frag_uv + offset)) * weights[i];
-	}
+        out_color += texture(sampler, clamp_uv(frag_uv - offset)) * weights[i];
+        out_color += texture(sampler, clamp_uv(frag_uv + offset)) * weights[i];
+    }
 }

@@ -16,8 +16,8 @@
 #include "null-render/backend/backend.h"
 
 namespace null::render {
-	void initialize(const vec2_t<int>& viewport);
+    void initialize(const vec2_t<int>& viewport);
 
-	void begin_frame();
-	void end_frame();
+    void begin_frame();
+    void end_frame();
 }
