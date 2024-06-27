@@ -2,24 +2,22 @@
 
 namespace null::render {
     template <typename char_t>
-    void c_draw_list::add_text(std::basic_string_view<char_t> text, vec2_t<float> pos, const std::shared_ptr<i_text_brush>& text_brush) {
-        if(text_brush->color.a <= 0) return;
+    vec2_t<float> c_draw_list::add_text(std::basic_string_view<char_t> text, vec2_t<float> pos, const std::shared_ptr<i_text_brush>& text_brush) {
+        if(text_brush->color.a <= 0) return { };
         std::shared_ptr<c_geometry_command> command = c_geometry_command::instance(&mesh->geometry_buffer);
 
-        float new_line_pos = pos.x;
         if(text_brush->align != e_text_align::none) {
             vec2_t text_size = text_brush->font->calc_text_size<char_t>(text, text_brush->size);
-            if(text_size <= 0.f) return;
+            if(text_size <= 0.f) return { };
 
             if(text_brush->align & e_text_align::right) pos.x -= text_size.x;
             if(text_brush->align & e_text_align::bottom) pos.y -= text_size.y;
             if(text_brush->align & e_text_align::center_x) pos.x -= text_size.x / 2.f;
             if(text_brush->align & e_text_align::center_y) pos.y -= text_size.y / 2.f;
-
-            new_line_pos = pos.x;
         }
 
-        pos = math::floor(pos);
+        float new_line_pos = pos.x;
+        const vec2_t<float> src_pos = pos = math::floor(pos);
         for(auto iterator = text.begin(); iterator != text.end();) {
             std::uint32_t symbol = (std::uint32_t)*iterator;
             iterator += impl::char_converters::converter<char_t>::convert(symbol, iterator, text.end());
@@ -55,5 +53,6 @@ namespace null::render {
         }
 
         add_command(text_brush->prepare_command(std::move(command)));
+        return pos - src_pos;
     }
 }

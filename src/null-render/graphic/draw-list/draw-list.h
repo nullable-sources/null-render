@@ -27,8 +27,8 @@ namespace null::render {
         void add_poly_line(const std::vector<vec2_t<float>>& points, const stroke_t& stroke, const std::shared_ptr<c_brush>& brush, const pen_t& pen = { });
         void add_convex_shape(const std::vector<vec2_t<float>>& points, const std::shared_ptr<c_brush>& brush, const pen_t& pen = { });
 
-        template <typename string_t> void add_text(const string_t& text, vec2_t<float> pos, const std::shared_ptr<i_text_brush>& text_brush) { add_text(std::basic_string_view(text), pos, text_brush); }
-        template <typename char_t> void add_text(std::basic_string_view<char_t> text, vec2_t<float> pos, const std::shared_ptr<i_text_brush>& text_brush);
+        template <typename string_t> vec2_t<float> add_text(const string_t& text, vec2_t<float> pos, const std::shared_ptr<i_text_brush>& text_brush) { return add_text(std::basic_string_view(text), pos, text_brush); }
+        template <typename char_t> vec2_t<float> add_text(std::basic_string_view<char_t> text, vec2_t<float> pos, const std::shared_ptr<i_text_brush>& text_brush);
 
         virtual void compile();
         virtual void clear() override;

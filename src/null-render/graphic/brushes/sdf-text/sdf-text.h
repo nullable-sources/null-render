@@ -8,7 +8,7 @@ namespace null::render {
         static std::shared_ptr<c_sdf_brush> instance() { return std::make_shared<c_sdf_brush>(); }
 
     private:
-        float outline_thickness{ };
+        float aa{ -1.f }, outline_thickness{ };
         color_t<int> outline_start{ }, outline_end{ };
 
     public:
@@ -17,6 +17,7 @@ namespace null::render {
 
     public:
         void set_outline(float thickness, const color_t<int>& start, const color_t<int>& end) { outline_thickness = thickness; outline_start = start; outline_end = end; }
+        void set_aa(float _aa) { aa = _aa; }
 
     public:
         virtual std::shared_ptr<i_command> prepare_command(std::shared_ptr<c_geometry_command>&& command) const override;

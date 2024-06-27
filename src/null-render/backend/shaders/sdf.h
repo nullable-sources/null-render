@@ -7,7 +7,8 @@ namespace null::render::backend {
         struct constants_t {
         public:
             color_t<int> outline_start{ }, outline_end{ };
-            float aa{ }, outline_thickness{ };
+            //@note: aa - smoothing
+            float aa{ -1.f }, outline_thickness{ };
         };
 
     public:

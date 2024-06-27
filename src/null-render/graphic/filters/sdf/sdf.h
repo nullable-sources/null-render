@@ -19,7 +19,8 @@ namespace null::render {
 
     public:
         void set_outline(float thickness, const color_t<int>& start, const color_t<int>& end) { constants.outline_thickness = thickness; constants.outline_start = start; constants.outline_end = end; }
-        void set_font_size(float font_size) { constants.aa = font_size; }
+        void set_aa(float aa) { constants.aa = aa; }
+        void set_default_aa(float dst_aa);
 
     public:
         virtual void handle() override;

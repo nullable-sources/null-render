@@ -68,7 +68,7 @@ namespace null::render {
 
             switch(config.render_mode_type) {
                 case e_render_mode_type::monochrome: { src.freetype.render_mode = FT_RENDER_MODE_MONO; } break;
-                case e_render_mode_type::sdf: { utils::logger(utils::e_log_type::warning, "freetype font loader does not support sdf fonts yet."); }
+                case e_render_mode_type::sdf: { src.freetype.render_mode = FT_RENDER_MODE_SDF; }
                 default: { src.freetype.render_mode = FT_RENDER_MODE_NORMAL; } break;
             }
 
