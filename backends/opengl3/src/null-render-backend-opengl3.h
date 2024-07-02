@@ -36,6 +36,8 @@ namespace null::render::opengl3 {
         std::unique_ptr<backend::i_linear_gradient_shader> instance_linear_gradient_shader() override { return std::make_unique<c_linear_gradient_shader>(); }
         std::unique_ptr<backend::i_radial_gradient_shader> instance_radial_gradient_shader() override { return std::make_unique<c_radial_gradient_shader>(); }
         std::unique_ptr<backend::i_sdf_shader> instance_sdf_shader() override { return std::make_unique<c_sdf_shader>(); }
+        std::unique_ptr<backend::i_msdf_shader> instance_msdf_shader() override { return std::make_unique<c_msdf_shader>(); }
+        std::unique_ptr<backend::i_mtsdf_shader> instance_mtsdf_shader() override { return std::make_unique<c_mtsdf_shader>(); }
     };
 
 #ifdef null_renderer_use_glfw

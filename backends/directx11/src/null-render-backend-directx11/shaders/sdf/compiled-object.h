@@ -8,14 +8,33 @@ namespace null::render::directx11 {
             static const std::vector<byte> source(shader_data, shader_data + sizeof(shader_data));
             return source;
         }
+
+        static const std::vector<byte>& msdf() {
+#include "compiled/msdf.h"
+            static const std::vector<byte> source(shader_data, shader_data + sizeof(shader_data));
+            return source;
+        }
+
+        static const std::vector<byte>& mtsdf() {
+#include "compiled/mtsdf.h"
+            static const std::vector<byte> source(shader_data, shader_data + sizeof(shader_data));
+            return source;
+        }
     }
 
-    class c_sdf_shader_object : public c_pixel_shader {
-    public:
-        c_constant_buffer<backend::i_sdf_shader::constants_t> constant_buffer{ };
+    template <typename sdf_shader_t>
+    class i_sdf_shader_object : public c_pixel_shader {
+    private:
+        const std::vector<byte>* sdf_data{ };
 
     public:
-        void set_constant(const backend::i_sdf_shader::constants_t& constant, int slot = 0) {
+        i_sdf_shader_object(const std::vector<byte>& _sdf_data) : sdf_data(&_sdf_data) { }
+
+    public:
+        c_constant_buffer<typename sdf_shader_t::constants_t> constant_buffer{ };
+
+    public:
+        void set_constant(const sdf_shader_t::constants_t& constant, int slot = 0) {
             constant_buffer.edit_constant(constant);
             set_constant_buffer(constant_buffer.buffer, slot);
         }
@@ -23,10 +42,14 @@ namespace null::render::directx11 {
     public:
         void create() override {
             if(!empty()) return;
-            compile(sources::sdf());
+            compile(*sdf_data);
             constant_buffer.create();
         }
 
         void destroy() override { c_pixel_shader::destroy(); constant_buffer.destroy(); }
-    } inline sdf_shader_object{ };
+    };
+
+    inline i_sdf_shader_object<backend::i_sdf_shader> sdf_shader_object{ sources::sdf() };
+    inline i_sdf_shader_object<backend::i_msdf_shader> msdf_shader_object{ sources::msdf() };
+    inline i_sdf_shader_object<backend::i_mtsdf_shader> mtsdf_shader_object{ sources::mtsdf() };
 }

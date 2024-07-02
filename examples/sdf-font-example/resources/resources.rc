@@ -1,0 +1,4 @@
+#include <null-render-backend-opengl3-resources.rc>
+
+roboto.ttf fonts "roboto.ttf"
+roboto-mtsdf.arfont fonts "roboto-mtsdf.arfont"

@@ -108,9 +108,6 @@
     <ClCompile Include="src\null-render-backend-directx9\shaders\quad-gradient\quad-gradient.cpp">
       <Filter>src\shaders\quad-gradient</Filter>
     </ClCompile>
-    <ClCompile Include="src\null-render-backend-directx9\shaders\sdf\sdf.cpp">
-      <Filter>src\shaders\sdf</Filter>
-    </ClCompile>
     <ClCompile Include="src\null-render-backend-directx9\shaders\blur\blur.cpp">
       <Filter>src\shaders\blur</Filter>
     </ClCompile>
@@ -235,5 +232,16 @@
     <FxCompile Include="src\null-render-backend-directx9\shaders\texture\hlsl\texture.hlsl">
       <Filter>src\shaders\texture\hlsl</Filter>
     </FxCompile>
+    <FxCompile Include="src\null-render-backend-directx9\shaders\sdf\hlsl\mtsdf.hlsl">
+      <Filter>src\shaders\sdf\hlsl</Filter>
+    </FxCompile>
+    <FxCompile Include="src\null-render-backend-directx9\shaders\sdf\hlsl\msdf.hlsl">
+      <Filter>src\shaders\sdf\hlsl</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\null-render-backend-directx9\shaders\sdf\hlsl\sdf.hlsli">
+      <Filter>src\shaders\sdf\hlsl</Filter>
+    </None>
   </ItemGroup>
 </Project>

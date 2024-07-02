@@ -2,22 +2,23 @@
 
 namespace null::render {
     template <typename char_t>
-    vec2_t<float> c_draw_list::add_text(std::basic_string_view<char_t> text, vec2_t<float> pos, const std::shared_ptr<i_text_brush>& text_brush) {
-        if(text_brush->color.a <= 0) return { };
+    std::shared_ptr<i_command> c_draw_list::make_text_command(std::basic_string_view<char_t> text, vec2_t<float> pos, const std::shared_ptr<i_text_brush>& text_brush, vec2_t<float>* out_size) {
+        const color_t<int>& brush_color = text_brush->color;
+        if(brush_color.a <= 0) return nullptr;
         std::shared_ptr<c_geometry_command> command = c_geometry_command::instance(&mesh->geometry_buffer);
 
-        if(text_brush->align != e_text_align::none) {
-            vec2_t text_size = text_brush->font->calc_text_size<char_t>(text, text_brush->size);
-            if(text_size <= 0.f) return { };
+        c_font* font = text_brush->font ? text_brush->font : get_default_font();
+        const float scale = text_brush->size == -1.f ? 1.f : text_brush->size / font->metrics.size;
+        const float line_spacing = text_brush->line_spacing * scale;
+        const float letter_spacing = text_brush->letter_spacing * scale;
+        const float line_height = font->metrics.line_height * scale + line_spacing;
 
-            if(text_brush->align & e_text_align::right) pos.x -= text_size.x;
-            if(text_brush->align & e_text_align::bottom) pos.y -= text_size.y;
-            if(text_brush->align & e_text_align::center_x) pos.x -= text_size.x / 2.f;
-            if(text_brush->align & e_text_align::center_y) pos.y -= text_size.y / 2.f;
-        }
+        pos = math::floor(pos);
+        float max_line_width{ };
 
-        float new_line_pos = pos.x;
-        const vec2_t<float> src_pos = pos = math::floor(pos);
+        if(out_size) *out_size = pos;
+        const float carriage_return = pos.x;
+        std::uint32_t previous_symbol{ };
         for(auto iterator = text.begin(); iterator != text.end();) {
             std::uint32_t symbol = (std::uint32_t)*iterator;
             iterator += impl::char_converters::converter<char_t>::convert(symbol, iterator, text.end());
@@ -25,17 +26,21 @@ namespace null::render {
 
             if(symbol == '\r') continue;
             if(symbol == '\n') {
-                pos.x = new_line_pos;
-                pos.y += text_brush->size;
+                if(out_size) max_line_width = std::max(max_line_width, pos.x);
+                pos.x = carriage_return;
+                pos.y += line_height;
                 continue;
             }
 
-            const c_font::glyph_t* glyph = text_brush->font->find_glyph((std::uint16_t)symbol);
+            const glyph_t* glyph = font->find_glyph(symbol);
             if(!glyph) continue;
 
+            pos.x += font->lookup_kerning(previous_symbol, symbol) * scale;
+
             if(glyph->visible) {
-                rect_t corners = rect_t(pos) + glyph->corners * (text_brush->size / text_brush->font->size);
-                rect_t uvs = glyph->texture_coordinates;
+                const rect_t<float> corners = glyph->rectangle * scale + pos;
+                const rect_t<float>& upper_uvs = glyph->upper_texture_uvs;
+                const rect_t<float>& lower_uvs = glyph->lower_texture_uvs;
 
                 command->index_count += 6;
                 mesh->geometry_buffer
@@ -44,15 +49,41 @@ namespace null::render {
 
                 command->vertex_count += 4;
                 mesh->geometry_buffer
-                    .add_vertex(corners.min, uvs.min, text_brush->color)
-                    .add_vertex(vec2_t(corners.max.x, corners.min.y), vec2_t(uvs.max.x, uvs.min.y), text_brush->color)
-                    .add_vertex(corners.max, uvs.max, text_brush->color)
-                    .add_vertex(vec2_t(corners.min.x, corners.max.y), vec2_t(uvs.min.x, uvs.max.y), text_brush->color);
+                    .add_vertex(corners.min, upper_uvs.min, brush_color)
+                    .add_vertex(vec2_t<float>(corners.max.x, corners.min.y), upper_uvs.max, brush_color)
+                    .add_vertex(corners.max, lower_uvs.max, brush_color)
+                    .add_vertex(vec2_t<float>(corners.min.x, corners.max.y), lower_uvs.min, brush_color);
             }
-            pos.x += glyph->advance_x * (text_brush->size / text_brush->font->size);
+            pos.x += glyph->advance * scale + letter_spacing;
+
+            previous_symbol = symbol;
+        }
+        pos.y += line_height;
+
+        if(out_size) *out_size = vec2_t<float>(std::max(max_line_width, pos.x), pos.y) - *out_size;
+        return text_brush->prepare_command(std::move(command));
+    }
+
+    template <typename char_t>
+    vec2_t<float> c_draw_list::add_text(std::basic_string_view<char_t> text, vec2_t<float> pos, const std::shared_ptr<i_text_brush>& text_brush) {
+        vec2_t<float> str_size{ };
+        std::shared_ptr<i_command> command = make_text_command(text, pos, text_brush, &str_size);
+        if(!command) return { };
+
+        if(text_brush->align != e_text_align::none) {
+            vec2_t<float> translate{ };
+
+            if(text_brush->align & e_text_align::right) translate.x = str_size.x;
+            if(text_brush->align & e_text_align::bottom) translate.y = str_size.y;
+            if(text_brush->align & e_text_align::center_x) translate.x = str_size.x / 2.f;
+            if(text_brush->align & e_text_align::center_y) translate.y = str_size.y / 2.f;
+            add_command(c_update_translation_command::instance(-translate));
         }
 
-        add_command(text_brush->prepare_command(std::move(command)));
-        return pos - src_pos;
+        add_command(std::move(command));
+        if(text_brush->align != e_text_align::none)
+            add_command(c_update_translation_command::instance(0.f));
+
+        return str_size;
     }
 }

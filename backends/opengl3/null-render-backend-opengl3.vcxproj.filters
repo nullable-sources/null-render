@@ -93,9 +93,6 @@
     <ClCompile Include="src\null-render-backend-opengl3\renderer\renderer.cpp">
       <Filter>src\renderer</Filter>
     </ClCompile>
-    <ClCompile Include="src\null-render-backend-opengl3\shaders\sdf\sdf.cpp">
-      <Filter>src\shaders\sdf</Filter>
-    </ClCompile>
     <ClCompile Include="src\null-render-backend-opengl3\shaders\quad-gradient\quad-gradient.cpp">
       <Filter>src\shaders\quad-gradient</Filter>
     </ClCompile>
@@ -236,6 +233,12 @@
     </None>
     <None Include="src\null-render-backend-opengl3\shaders\color\glsl\color.frag">
       <Filter>src\shaders\color\glsl</Filter>
+    </None>
+    <None Include="src\null-render-backend-opengl3\shaders\sdf\glsl\msdf.frag">
+      <Filter>src\shaders\sdf\glsl</Filter>
+    </None>
+    <None Include="src\null-render-backend-opengl3\shaders\sdf\glsl\mtsdf.frag">
+      <Filter>src\shaders\sdf\glsl</Filter>
     </None>
   </ItemGroup>
 </Project>

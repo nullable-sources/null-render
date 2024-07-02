@@ -22,8 +22,14 @@
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\backends\directx11\null-render-backend-directx11.vcxproj">
+      <Project>{d51ad3ae-de95-488a-b202-a4192f685a59}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\backends\directx9\null-render-backend-directx9.vcxproj">
       <Project>{95843de7-57a5-4b57-b7f2-7a60b0115992}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\backends\opengl3\null-render-backend-opengl3.vcxproj">
+      <Project>{97a6b7ae-9878-4584-a0b8-15287db604ac}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\null-render.vcxproj">
       <Project>{4abcf635-9767-40f9-989e-f0cdf5fb68ae}</Project>
@@ -31,6 +37,9 @@
     <ProjectReference Include="..\..\third-party\null-sdk\null-sdk.vcxproj">
       <Project>{f7a10a5c-0fae-424b-8f2b-6cc4e4d898d1}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resources\resources.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -140,11 +149,17 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalIncludeDirectories>..\opengl\glfw</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>../opengl/glfw/libs/</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3-$(PlatformShortName).lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)backends\opengl3\resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='release|x64'">
     <ClCompile>

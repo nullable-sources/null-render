@@ -28,7 +28,6 @@
     <ClCompile Include="src\null-render-backend-opengl3\shaders\linear-gradient\linear-gradient.cpp" />
     <ClCompile Include="src\null-render-backend-opengl3\shaders\quad-gradient\quad-gradient.cpp" />
     <ClCompile Include="src\null-render-backend-opengl3\shaders\radial-gradient\radial-gradient.cpp" />
-    <ClCompile Include="src\null-render-backend-opengl3\shaders\sdf\sdf.cpp" />
     <ClCompile Include="src\null-render-backend-opengl3\state-pipeline\state-pipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -84,6 +83,8 @@
     <None Include="src\null-render-backend-opengl3\shaders\passthrough\glsl\passthrough.vert" />
     <None Include="src\null-render-backend-opengl3\shaders\quad-gradient\glsl\quad-gradient.frag" />
     <None Include="src\null-render-backend-opengl3\shaders\radial-gradient\glsl\radial-gradient.frag" />
+    <None Include="src\null-render-backend-opengl3\shaders\sdf\glsl\msdf.frag" />
+    <None Include="src\null-render-backend-opengl3\shaders\sdf\glsl\mtsdf.frag" />
     <None Include="src\null-render-backend-opengl3\shaders\sdf\glsl\sdf.frag" />
     <None Include="src\null-render-backend-opengl3\shaders\texture\glsl\texture.frag" />
   </ItemGroup>

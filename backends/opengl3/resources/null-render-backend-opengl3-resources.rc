@@ -5,6 +5,8 @@ null-render:opengl:shaders:color.frag       null-render:opengl:resources    "../
 null-render:opengl:shaders:color.vert       null-render:opengl:resources    "../src/null-render-backend-opengl3/shaders/color/glsl/color.vert"
 null-render:opengl:shaders:texture.frag     null-render:opengl:resources    "../src/null-render-backend-opengl3/shaders/texture/glsl/texture.frag"
 
+null-render:opengl:shaders:mtsdf.frag           null-render:opengl:resources    "../src/null-render-backend-opengl3/shaders/sdf/glsl/mtsdf.frag"
+null-render:opengl:shaders:msdf.frag            null-render:opengl:resources    "../src/null-render-backend-opengl3/shaders/sdf/glsl/msdf.frag"
 null-render:opengl:shaders:sdf.frag             null-render:opengl:resources    "../src/null-render-backend-opengl3/shaders/sdf/glsl/sdf.frag"
 null-render:opengl:shaders:quad-gradient.frag   null-render:opengl:resources    "../src/null-render-backend-opengl3/shaders/quad-gradient/glsl/quad-gradient.frag"
 null-render:opengl:shaders:linear-gradient.frag null-render:opengl:resources    "../src/null-render-backend-opengl3/shaders/linear-gradient/glsl/linear-gradient.frag"

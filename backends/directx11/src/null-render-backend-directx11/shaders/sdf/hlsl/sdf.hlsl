@@ -1,6 +1,10 @@
+#include "sdf.hlsli"
+
 cbuffer constant_buffer : register(b0) {
-    int4 outline_start, outline_end;
-    float aa, outline_thickness;
+    int4 outline_color;
+    float outline_blur, outline_width_relative, outline_width_absolute;
+    float threshold, out_bias;
+    float px_range;
 };
 
 struct ps_input_t {
@@ -12,29 +16,9 @@ struct ps_input_t {
 sampler texture_sampler;
 Texture2D texture_source;
 
-float stretch(float low, float high, float x) { return clamp((x - low) / (high - low), 0.0, 1.0); }
-
 float4 main(ps_input_t input) : SV_Target {
-    float distance = texture_source.Sample(texture_sampler, input.uv).a;
-    if(distance >= 0.5f + aa)
-        return input.color;
-
-    if(distance <= outline_thickness - aa)
-        discard;
-
-    float4 premultiplied_os = outline_start / 255.f;
-    premultiplied_os.rgb *= premultiplied_os.a;
-
-    float4 premultiplied_oe = outline_end / 255.f;
-    premultiplied_oe.rgb *= premultiplied_oe.a;
-
-    float4 outer = float4(0.f, 0.f, 0.f, 0.f);
-    if(outline_thickness != 0.5f) outer = lerp(premultiplied_oe, premultiplied_os, stretch(outline_thickness, 0.5f, distance));
-    outer.a *= stretch(outline_thickness - aa, outline_thickness + aa, distance);
-
-    float m = stretch(0.5f - aa, min(1.f, 0.5f + aa), distance);
-    float ia = m * input.color.a;
-    float oa = (1 - m) * outer.a;
-    float a = ia + oa;
-    return float4((input.color.rgb * ia + outer.rgb * oa) / a * a, a);
+    float sdf = texture_source.Sample(texture_sampler, input.uv).a;
+    return make_sdf(sdf, sdf, sdf, input.color,
+                    outline_width_relative, outline_width_absolute, outline_blur, outline_color,
+                    out_bias, threshold, px_range);
 }

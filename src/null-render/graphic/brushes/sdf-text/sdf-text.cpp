@@ -1,13 +1,11 @@
 #include "sdf-text.h"
 
 namespace null::render {
-    std::shared_ptr<i_command> c_sdf_brush::prepare_command(std::shared_ptr<c_geometry_command>&& command) const {
-        std::shared_ptr<c_sdf_filter> filter = c_sdf_filter::instance();
-        filter->set_texture(font->container_atlas->texture.data);
-        filter->set_outline(outline_thickness, outline_start, outline_end);
-        if(aa == -1) filter->set_default_aa(font->size);
-        else filter->set_aa(aa);
-        filter->set_child_command(command);
-        return filter;
-    };
+    std::shared_ptr<c_sdf_filter> c_sdf_brush::instance_sdf_filter() const { return c_sdf_filter::instance(); }
+    std::shared_ptr<c_msdf_filter> c_msdf_brush::instance_sdf_filter() const { return c_msdf_filter::instance(); }
+    std::shared_ptr<c_mtsdf_filter> c_mtsdf_brush::instance_sdf_filter() const {
+        std::shared_ptr<c_mtsdf_filter> filter = c_mtsdf_filter::instance();
+        filter->set_rounds(glyph_rounding, outline_rounding);
+        return std::move(filter);
+    }
 }

@@ -13,9 +13,6 @@
     <Filter Include="src\font\loaders\freetype">
       <UniqueIdentifier>{3cff3577-97b6-4785-ab28-a033dc3a7e6e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\font\loaders\truetype">
-      <UniqueIdentifier>{a8d128a9-8fe4-450b-a6d1-ec711f25ba14}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\graphic">
       <UniqueIdentifier>{92a02369-d887-4fa6-a907-37fad8aec3fb}</UniqueIdentifier>
     </Filter>
@@ -93,9 +90,6 @@
     <ClCompile Include="src\null-render\font\font.cpp">
       <Filter>src\font</Filter>
     </ClCompile>
-    <ClCompile Include="src\null-render\font\loaders\truetype\truetype.cpp">
-      <Filter>src\font\loaders\truetype</Filter>
-    </ClCompile>
     <ClCompile Include="src\null-render\font\loaders\freetype\freetype.cpp">
       <Filter>src\font\loaders\freetype</Filter>
     </ClCompile>
@@ -159,6 +153,9 @@
     <ClCompile Include="src\null-render\backend\post-processing\post-processing.cpp">
       <Filter>src\backend\post-processing</Filter>
     </ClCompile>
+    <ClCompile Include="src\null-render\font\loaders\loader.cpp">
+      <Filter>src\font\loaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\null-render.h">
@@ -166,9 +163,6 @@
     </ClInclude>
     <ClInclude Include="src\null-render\font\font.h">
       <Filter>src\font</Filter>
-    </ClInclude>
-    <ClInclude Include="src\null-render\font\loaders\truetype\truetype.h">
-      <Filter>src\font\loaders\truetype</Filter>
     </ClInclude>
     <ClInclude Include="src\null-render\font\loaders\freetype\freetype.h">
       <Filter>src\font\loaders\freetype</Filter>
@@ -280,6 +274,9 @@
     </ClInclude>
     <ClInclude Include="src\null-render\backend\internal\stencil-buffer.h">
       <Filter>src\backend\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render\font\glyph.h">
+      <Filter>src\font</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

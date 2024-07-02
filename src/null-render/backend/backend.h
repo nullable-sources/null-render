@@ -28,5 +28,7 @@ namespace null::render::backend {
         virtual std::unique_ptr<i_linear_gradient_shader> instance_linear_gradient_shader() = 0;
         virtual std::unique_ptr<i_radial_gradient_shader> instance_radial_gradient_shader() = 0;
         virtual std::unique_ptr<i_sdf_shader> instance_sdf_shader() = 0;
+        virtual std::unique_ptr<i_msdf_shader> instance_msdf_shader() = 0;
+        virtual std::unique_ptr<i_mtsdf_shader> instance_mtsdf_shader() = 0;
     }; inline std::unique_ptr<i_factory> factory{ };
 }

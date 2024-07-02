@@ -70,7 +70,9 @@ void main_loop() {
     null::render::begin_frame(); {
         std::shared_ptr<null::render::c_sdf_brush> text_brush = null::render::c_sdf_brush::instance();
         text_brush->set_size(30.f);
-        text_brush->set_outline(1.f, { 100, 100, 255 }, { 100, 100, 255, 0 });
+        text_brush->set_outline_blur(1.f);
+        text_brush->set_outline_color(color_t<int>(100, 100, 255));
+        text_brush->set_outline_width(2.f);
         null::render::draw_list->add_text(std::format("[ opengl3 ] fps: {:3.0f}", 1.f / std::chrono::duration<float>{ frame_counter.representation() }.count()), { }, text_brush);
 
         draw_example("brush", brush, 10, { });
@@ -88,15 +90,16 @@ int main() {
     window.callbacks.at<utils::win::e_window_callbacks::on_main_loop>().add([&] { frame_counter.update(); });
     window.clear_color = color_t<float>(0.f, 0.f, 0.f, 0.f);
     window.callbacks.at<utils::win::e_window_callbacks::on_main_loop>().add(main_loop);
-    //main_loop();
-    try {
-        null::render::c_font::config_t config{
-            .glyph_config{ .ranges{ null::render::c_font::glyph_t::ranges_cyrillic() } },
-            .render_mode_type = null::render::e_render_mode_type::sdf
-        };
 
-        null::render::atlas.font_loader = std::make_unique<null::render::c_truetype_loader>();
-        null::render::atlas.add_font_default(&config);
+    try {
+        null::render::font_config_t config{ };
+        config.load_font_default()
+              .set_render_mode(null::render::e_font_render_mode::sdf)
+              .set_pixel_range(2.f)
+              .set_size(14.f);
+
+        null::render::atlas.font_loader = std::make_unique<null::render::c_freetype_loader>();
+        null::render::atlas.add_font(config);
 
         window.create();
         window.main_loop();

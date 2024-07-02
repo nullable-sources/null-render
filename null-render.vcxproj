@@ -24,7 +24,7 @@
     <ClCompile Include="src\null-render\backend\state-pipeline\state-pipeline.cpp" />
     <ClCompile Include="src\null-render\font\font.cpp" />
     <ClCompile Include="src\null-render\font\loaders\freetype\freetype.cpp" />
-    <ClCompile Include="src\null-render\font\loaders\truetype\truetype.cpp" />
+    <ClCompile Include="src\null-render\font\loaders\loader.cpp" />
     <ClCompile Include="src\null-render\graphic\brushes\brush.cpp" />
     <ClCompile Include="src\null-render\graphic\brushes\filter-brush.cpp" />
     <ClCompile Include="src\null-render\graphic\brushes\sdf-text\sdf-text.cpp" />
@@ -71,9 +71,9 @@
     <ClInclude Include="src\null-render\backend\shaders\sdf.h" />
     <ClInclude Include="src\null-render\backend\state-pipeline\state-pipeline.h" />
     <ClInclude Include="src\null-render\font\font.h" />
+    <ClInclude Include="src\null-render\font\glyph.h" />
     <ClInclude Include="src\null-render\font\loaders\freetype\freetype.h" />
     <ClInclude Include="src\null-render\font\loaders\loader.h" />
-    <ClInclude Include="src\null-render\font\loaders\truetype\truetype.h" />
     <ClInclude Include="src\null-render\graphic\brushes\brush.h" />
     <ClInclude Include="src\null-render\graphic\brushes\filter-brush.h" />
     <ClInclude Include="src\null-render\graphic\brushes\sdf-text\sdf-text.h" />
@@ -248,7 +248,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnableModules>false</EnableModules>
-      <AdditionalIncludeDirectories>$(ProjectDir)src\;$(ProjectDir)third-party\micro-tess\;$(ProjectDir)third-party\stb\;$(ProjectDir)third-party\freetype\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src\;$(ProjectDir)third-party\msdf-atlas-gen\include\msdfgen\;$(ProjectDir)third-party\msdf-atlas-gen\include\;$(ProjectDir)third-party\micro-tess\;$(ProjectDir)third-party\stb\;$(ProjectDir)third-party\freetype\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
@@ -258,8 +258,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>$(ProjectDir)third-party\freetype\libs\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>freetype-x64.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)third-party\msdf-atlas-gen\libs\;$(ProjectDir)third-party\freetype\libs\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freetype-x64.lib;msdf-atlas-gen-$(ConfigurationName)-$(LibrariesArchitecture).lib;msdfgen-core-$(ConfigurationName)-$(LibrariesArchitecture).lib;msdfgen-ext-$(ConfigurationName)-$(LibrariesArchitecture).lib</AdditionalDependencies>
       <AdditionalOptions>/ignore:4221,4006 %(AdditionalOptions)</AdditionalOptions>
     </Lib>
   </ItemDefinitionGroup>

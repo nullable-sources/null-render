@@ -53,6 +53,8 @@ namespace null::render::backend {
     }
 
     void i_renderer::begin_render() {
+        update_translation(0.f);
+
         renderer_event_dispatcher.begin_render();
 
         state_pipeline->save_state();
@@ -90,12 +92,20 @@ namespace null::render::backend {
             c_atlas::texture_t& texture = atlas->texture;
             if(texture.data) destroy_texture(texture.data);
 
-            if(texture.pixels_alpha8.empty()) {
-                if(atlas->configs.empty()) atlas->add_font_default();
+            if(!texture.is_built()) {
+                if(atlas->configs.empty()) {
+                    font_config_t default_config{ };
+                    default_config.load_font_default();
+                    atlas->add_font(default_config);
+                }
                 atlas->build();
             }
 
-            texture.get_data_as_rgba32();
+            if(!texture.is_built()) {
+                utils::logger(utils::e_log_type::warning, "the font atlas texture could not be created because the pixel array is empty.");
+                continue;
+            }
+
             texture.data = create_texture(texture.size, texture.pixels_rgba32.data());
         }
 

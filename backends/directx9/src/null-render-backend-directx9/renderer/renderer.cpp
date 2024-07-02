@@ -32,9 +32,7 @@ namespace null::render::directx9 {
                 return texture;
             }
 
-            for(float x = size.x * 4; int y : std::views::iota(0, size.y)) {
-                std::memcpy((std::uint8_t*)locked_rect.pBits + locked_rect.Pitch * y, (std::uint8_t*)data + (int)x * y, x);
-            }
+            memcpy((std::uint8_t*)locked_rect.pBits, (std::uint8_t*)data, size.x * size.y * 4);
 
             texture->UnlockRect(0);
         }

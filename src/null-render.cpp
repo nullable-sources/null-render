@@ -40,6 +40,8 @@ namespace null::render {
         backend::linear_gradient_shader = backend::factory->instance_linear_gradient_shader();
         backend::radial_gradient_shader = backend::factory->instance_radial_gradient_shader();
         backend::sdf_shader = backend::factory->instance_sdf_shader();
+        backend::msdf_shader = backend::factory->instance_msdf_shader();
+        backend::mtsdf_shader = backend::factory->instance_mtsdf_shader();
     }
 
     void begin_frame() {

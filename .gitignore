@@ -3,6 +3,11 @@ build/
 *.user
 *.static-linking.log
 
+third-party/msdf-atlas-gen/build
+third-party/msdf-atlas-gen/libs/*.pdb
+third-party/msdf-atlas-gen/libs/*.idb
+third-party/stb
+
 backends/directx9/src/null-render-backend-directx9/shaders/passthrough/compiled
 backends/directx9/src/null-render-backend-directx9/shaders/color/compiled
 backends/directx9/src/null-render-backend-directx9/shaders/texture/compiled

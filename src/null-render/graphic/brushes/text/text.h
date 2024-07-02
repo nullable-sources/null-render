@@ -17,14 +17,18 @@ namespace null::render {
 
     class i_text_brush : public c_brush {
     public:
-        c_font* font{ get_default_font() };
-        float size{ font->size };
+        c_font* font{ nullptr };
+        float size{ -1.f };
         e_text_align align{ };
+
+        float letter_spacing{ 0.f }, line_spacing{ 0.f };
 
     public:
         void set_font(c_font* _font) { font = _font; }
         void set_size(float _size) { size = _size; }
         void set_align(e_text_align _align) { align = _align; }
+        void set_letter_spacing(float _letter_spacing) { letter_spacing = _letter_spacing; }
+        void set_line_spacing(float _line_spacing) { line_spacing = _line_spacing; }
     };
 
     class c_text_brush : public i_text_brush {
