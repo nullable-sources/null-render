@@ -260,7 +260,9 @@ namespace null::render {
 
     void c_freetype_loader::rasterize_fonts(std::vector<font_data_t>& fonts, c_atlas::texture_t& atlas_texture) {
         for(font_data_t& font : fonts) {
-            msdf_atlas::Workload([&font, &atlas_texture](int i, int) -> bool {
+            rect_t<float> glyphs_padding = font.config->glyph_padding + rect_t<float>(0.5f);
+
+            msdf_atlas::Workload([&font, &glyphs_padding, &atlas_texture](int i, int) -> bool {
                 const msdf_atlas::GlyphGeometry& glyph = font.glyphs[i];
                 if(glyph.isWhitespace()) return true;
 
@@ -272,11 +274,11 @@ namespace null::render {
                 if(!font.config->artery_data.empty()) {
                     vec2_t<int> artery_offset{ }, artery_size = std::numeric_limits<float>::min();
                     if(artery_font::Glyph<float>* artery_glyph = font.artery_data.find_glyph(glyph.getCodepoint())) {
-                        artery_offset.x = artery_glyph->imageBounds.l - 0.5f;
-                        artery_offset.y = artery_glyph->imageBounds.b - 0.5f;
+                        artery_offset.x = artery_glyph->imageBounds.l - glyphs_padding.min.x;
+                        artery_offset.y = artery_glyph->imageBounds.b - glyphs_padding.min.y;
 
-                        artery_size.x = (artery_glyph->imageBounds.r + 0.5f) - artery_offset.x;
-                        artery_size.y = (artery_glyph->imageBounds.t + 0.5f) - artery_offset.y;
+                        artery_size.x = (artery_glyph->imageBounds.r + glyphs_padding.max.x) - artery_offset.x;
+                        artery_size.y = (artery_glyph->imageBounds.t + glyphs_padding.max.y) - artery_offset.y;
                     }
 
                     if(artery_size != std::numeric_limits<float>::min() && (artery_size.x != w || artery_size.y != h)) {
