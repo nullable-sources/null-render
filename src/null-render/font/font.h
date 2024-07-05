@@ -111,8 +111,8 @@ namespace null::render {
         void set_fallback_codepoint(std::uint32_t codepoint) { fallback_codepoint = codepoint; build_lookups(); }
         void set_glyph_visible(std::uint32_t codepoint, bool visible) { if(glyph_t* glyph = find_glyph(codepoint)) glyph->visible = visible; }
 
-        template <typename string_t> vec2_t<float> calc_text_size(const string_t& text, float custom_size = -1.f,float letter_spacing = 1.f, float line_spacing = 1.f) { return calc_text_size(std::basic_string_view(text), custom_size, letter_spacing, line_spacing); }
-        template <typename char_t> vec2_t<float> calc_text_size(std::basic_string_view<char_t> text, float custom_size = -1.f, float letter_spacing = 1.f, float line_spacing = 1.f);
+        template <typename string_t> vec2_t<float> calc_text_size(const string_t& text, float custom_size = -1.f,float letter_spacing = 0.f, float line_spacing = 0.f) { return calc_text_size(std::basic_string_view(text), custom_size, letter_spacing, line_spacing); }
+        template <typename char_t> vec2_t<float> calc_text_size(std::basic_string_view<char_t> text, float custom_size = -1.f, float letter_spacing = 0.f, float line_spacing = 0.f);
     };
 
     class c_atlas {
