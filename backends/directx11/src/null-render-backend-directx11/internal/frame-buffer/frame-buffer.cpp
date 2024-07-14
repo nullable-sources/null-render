@@ -118,18 +118,31 @@ namespace null::render::directx11 {
     }
 
     void c_frame_buffer::blit_region_from(i_frame_buffer* another_frame_buffer, const vec2_t<int>& blit_offset, const rect_t<int>& region) {
-        D3D11_BOX region_box(region.min.x, region.min.y, region.max.x, region.max.y);
-        region_box.front = 1;
-        region_box.back = 0;
+        D3D11_BOX region_box{ };
+        region_box.left = region.min.x;
+        region_box.top = region.min.y;
+        region_box.right = region.max.x;
+        region_box.bottom = region.max.y;
+
+        region_box.front = 0;
+        region_box.back = 1;
 
         shared.context->CopySubresourceRegion(render_target_texture, 0, blit_offset.x, blit_offset.y, 0, (ID3D11Resource*)another_frame_buffer->get_surface(), 0, &region_box);
     }
 
     void c_frame_buffer::copy_in_texture(void* texture, const rect_t<int>& region) {
-        D3D11_BOX region_box(region.min.x, region.min.y, region.max.x, region.max.y);
-        region_box.front = 1;
-        region_box.back = 0;
+        D3D11_BOX region_box{ };
+        region_box.left = region.min.x;
+        region_box.top = region.min.y;
+        region_box.right = region.max.x;
+        region_box.bottom = region.max.y;
 
-        shared.context->CopySubresourceRegion((ID3D11Resource*)texture, 0, region.min.x, region.min.y, 0, render_target_texture, 0, &region_box);
+        region_box.front = 0;
+        region_box.back = 1;
+
+        ID3D11Resource* texture_resoruce{ };
+        ((ID3D11View*)texture)->GetResource(&texture_resoruce);
+
+        shared.context->CopySubresourceRegion(texture_resoruce, 0, region.min.x, region.min.y, 0, render_target_texture, 0, &region_box);
     }
 }

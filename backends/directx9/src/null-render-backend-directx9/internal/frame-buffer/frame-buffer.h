@@ -7,6 +7,7 @@ namespace null::render::directx9 {
     public:
         IDirect3DTexture9* texture{ };
         IDirect3DSurface9* surface{ };
+        IDirect3DSurface9* stencil{ }, *offscreen_transfer{ };
 
     public:
         void* get_surface() override { return surface; }

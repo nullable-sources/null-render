@@ -64,7 +64,6 @@ namespace null::render::directx9 {
         restore_shader();
         restore_texture();
 
-        shared.device->SetDepthStencilSurface(depth);
         if(framebuffer) { framebuffer->Release(); framebuffer = nullptr; }
         if(depth) { depth->Release(); depth = nullptr; }
         if(texture) { texture->Release(); texture = nullptr; }
@@ -77,6 +76,7 @@ namespace null::render::directx9 {
 
     void c_state_pipeline::restore_framebuffer() {
         shared.device->SetRenderTarget(0, framebuffer);
+        shared.device->SetDepthStencilSurface(depth);
     }
 
     void c_state_pipeline::restore_mesh() {

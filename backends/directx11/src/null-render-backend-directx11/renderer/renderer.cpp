@@ -43,7 +43,7 @@ namespace null::render::directx11 {
             .SysMemPitch{ texture_desc.Width * 4 },
             .SysMemSlicePitch{ 0 }
         };
-        if(auto result = shared.device->CreateTexture2D(&texture_desc, &subresource, &texture); FAILED(result))
+        if(auto result = shared.device->CreateTexture2D(&texture_desc, data ? &subresource : nullptr, &texture); FAILED(result))
             utils::logger(utils::e_log_type::error, "cant create texture2d, return code {}.", result);
 
         ID3D11ShaderResourceView* texture_view{ };

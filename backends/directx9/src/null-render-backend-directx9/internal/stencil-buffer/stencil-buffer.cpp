@@ -12,19 +12,17 @@ namespace null::render::directx9 {
     }
 
     void c_stencil_buffer::clear() {
-        IDirect3DSurface9* old_stencil{ };
-        shared.device->GetDepthStencilSurface(&old_stencil);
+        IDirect3DSurface9* old_dss{ };
+        shared.device->GetDepthStencilSurface(&old_dss);
 
         shared.device->SetDepthStencilSurface(buffer);
         shared.device->Clear(0, nullptr, D3DCLEAR_STENCIL, D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
 
-        shared.device->SetDepthStencilSurface(old_stencil);
-        old_stencil->Release();
-        old_stencil = nullptr;
+        shared.device->SetDepthStencilSurface(old_dss);
+        if(old_dss) { old_dss->Release(); old_dss = nullptr; }
     }
 
     void c_stencil_buffer::set_test(bool test) {
-        shared.device->SetDepthStencilSurface(buffer);
         shared.device->SetRenderState(D3DRS_STENCILENABLE, test);
     }
 

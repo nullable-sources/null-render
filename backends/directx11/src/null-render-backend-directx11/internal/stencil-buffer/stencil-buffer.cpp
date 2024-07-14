@@ -69,18 +69,21 @@ namespace null::render::directx11 {
         D3D11_DEPTH_STENCIL_DESC set_write_state_desc = CD3D11_DEPTH_STENCIL_DESC(D3D11_DEFAULT);
         set_write_state_desc.DepthEnable = false;
         set_write_state_desc.StencilEnable = true;
+        set_write_state_desc.BackFace.StencilPassOp = D3D11_STENCIL_OP_REPLACE;
         set_write_state_desc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_REPLACE;
         shared.device->CreateDepthStencilState(&set_write_state_desc, &set_write_state);
 
         D3D11_DEPTH_STENCIL_DESC intersect_write_state_desc = CD3D11_DEPTH_STENCIL_DESC(D3D11_DEFAULT);
         intersect_write_state_desc.DepthEnable = false;
         intersect_write_state_desc.StencilEnable = true;
+        intersect_write_state_desc.BackFace.StencilPassOp = D3D11_STENCIL_OP_INCR_SAT;
         intersect_write_state_desc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_INCR_SAT;
         shared.device->CreateDepthStencilState(&intersect_write_state_desc, &intersect_write_state);
 
         D3D11_DEPTH_STENCIL_DESC end_write_state_desc = CD3D11_DEPTH_STENCIL_DESC(D3D11_DEFAULT);
         end_write_state_desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
         end_write_state_desc.StencilEnable = true;
+        end_write_state_desc.BackFace.StencilFunc = D3D11_COMPARISON_EQUAL;
         end_write_state_desc.FrontFace.StencilFunc = D3D11_COMPARISON_EQUAL;
         shared.device->CreateDepthStencilState(&end_write_state_desc, &end_write_state);
     }
