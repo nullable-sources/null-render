@@ -6,6 +6,7 @@
 #endif
 
 #include "null-render-backend-opengl3/state-pipeline/state-pipeline.h"
+#include "null-render-backend-opengl3/state-pipeline/rasterizer-state/rasterizer-state.h"
 #include "null-render-backend-opengl3/renderer/renderer.h"
 #include "null-render-backend-opengl3/internal/frame-buffer/frame-buffer.h"
 #include "null-render-backend-opengl3/internal/stencil-buffer/stencil-buffer.h"
@@ -26,7 +27,9 @@ namespace null::render::opengl3 {
         std::unique_ptr<backend::c_mesh> instance_mesh() override { return std::make_unique<c_mesh>(); }
         std::unique_ptr<backend::i_frame_buffer> instance_frame_buffer(const vec2_t<int>& size, backend::e_frame_buffer_type type, backend::e_frame_buffer_flags flags) override { return std::make_unique<c_frame_buffer>(size, type, flags); }
         std::unique_ptr<backend::i_stencil_buffer> instance_stencil_buffer() override { return std::make_unique<c_stencil_buffer>(); }
+       
         std::unique_ptr<backend::i_state_pipeline> instance_state_pipeline() override { return std::make_unique<c_state_pipeline>(); }
+        std::unique_ptr<backend::i_rasterizer_state> instance_rasterizer_state() override { return std::make_unique<c_rasterizer_state>(); }
 
         std::unique_ptr<backend::i_passthrough_shader> instance_passthrough_shader() override { return std::make_unique<c_passthrough_shader>(); }
         std::unique_ptr<backend::i_color_shader> instance_color_shader() override { return std::make_unique<c_color_shader>(); }

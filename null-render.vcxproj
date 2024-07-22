@@ -31,6 +31,7 @@
     <ClCompile Include="src\null-render\graphic\brushes\text\text.cpp" />
     <ClCompile Include="src\null-render\graphic\commands\geometry\geometry.cpp" />
     <ClCompile Include="src\null-render\graphic\commands\renderer\renderer.cpp" />
+    <ClCompile Include="src\null-render\graphic\commands\state-pipeline\state-pipeline.cpp" />
     <ClCompile Include="src\null-render\graphic\draw-list\draw-list.cpp" />
     <ClCompile Include="src\null-render\graphic\filters\blur\blur.cpp" />
     <ClCompile Include="src\null-render\graphic\filters\linear-gradient\linear-gradient.cpp" />
@@ -69,6 +70,8 @@
     <ClInclude Include="src\null-render\backend\shaders\quad-gradient.h" />
     <ClInclude Include="src\null-render\backend\shaders\radial-gradient.h" />
     <ClInclude Include="src\null-render\backend\shaders\sdf.h" />
+    <ClInclude Include="src\null-render\backend\state-pipeline\rasterizer-state.h" />
+    <ClInclude Include="src\null-render\backend\state-pipeline\state-field.h" />
     <ClInclude Include="src\null-render\backend\state-pipeline\state-pipeline.h" />
     <ClInclude Include="src\null-render\font\font.h" />
     <ClInclude Include="src\null-render\font\glyph.h" />
@@ -81,6 +84,7 @@
     <ClInclude Include="src\null-render\graphic\commands\commands.h" />
     <ClInclude Include="src\null-render\graphic\commands\geometry\geometry.h" />
     <ClInclude Include="src\null-render\graphic\commands\renderer\renderer.h" />
+    <ClInclude Include="src\null-render\graphic\commands\state-pipeline\state-pipeline.h" />
     <ClInclude Include="src\null-render\graphic\draw-list\draw-list.h" />
     <ClInclude Include="src\null-render\graphic\filters\blur\blur.h" />
     <ClInclude Include="src\null-render\graphic\filters\filter.h" />

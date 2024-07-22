@@ -1,9 +1,34 @@
-﻿#define null_renderer_use_glfw
+﻿#define dx9
+
+#ifdef dx9
+#include <null-render-backend-directx9.h>
+#elif defined dx11
+#include <null-render-backend-directx11.h>
+#elif defined gl
+#define null_renderer_use_glfw
 #include <null-render-backend-opengl3.h>
+#endif
+
 #include <null-render.h>
 
+#ifdef dx9
+null::render::directx9::c_window window{ };
+#elif defined dx11
+null::render::directx11::c_window window{ };
+#elif defined gl
 null::render::opengl3::c_window window{ };
+#endif
+
+#ifdef dx9
+static constexpr std::string_view backend_name = "directx9";
+#elif defined dx11
+static constexpr std::string_view backend_name = "directx11";
+#elif defined gl
+static constexpr std::string_view backend_name = "opengl3";
+#endif
+
 utils::c_cumulative_time_measurement frame_counter{ 60 };
+std::unique_ptr<null::render::backend::i_rasterizer_state> rasterizer_state{ };
 
 void draw_example(const std::string_view& name, const std::shared_ptr<null::render::c_brush>& brush, const float& y, const null::render::pen_t& pen) {
     static const null::render::e_text_align text_align{ null::render::e_text_align::right | null::render::e_text_align::center_y };
@@ -72,35 +97,55 @@ void main_loop() {
         text_brush->set_outline_blur(1.f);
         text_brush->set_outline_color(color_t<int>(100, 100, 255));
         text_brush->set_outline_width(2.f);
-        null::render::draw_list->add_text(std::format("[ opengl3 ] fps: {:3.0f}", 1.f / std::chrono::duration<float>{ frame_counter.representation() }.count()), { }, text_brush);
+        null::render::draw_list->add_text(std::format("[ {} ] fps: {:3.0f}", backend_name, 1.f / std::chrono::duration<float>{ frame_counter.representation() }.count()), { }, text_brush);
 
+        null::render::draw_list->add_command(null::render::c_clip_command::instance(rect_t<float>(vec2_t<float>(0), vec2_t<float>(10))));
         draw_example("brush", brush, 10, { });
+        null::render::draw_list->add_command(null::render::c_rasterizer_push_command::instance(rasterizer_state));
         draw_example("brush\ngradient pen", brush, 150, pen_gradient);
         draw_example("gradient brush", quad_gradient_brush, 290, { });
+        null::render::draw_list->add_command(null::render::c_rasterizer_pop_command::instance());
         draw_example("gradient brush\npen", quad_gradient_brush, 430, pen_brush);
+        null::render::draw_list->add_command(null::render::c_clip_command::instance(rect_t<float>(vec2_t<float>(0), null::render::shared::viewport)));
     } null::render::end_frame();
 
     null::render::backend::renderer->begin_render();
     null::render::backend::renderer->end_render();
 }
 
-int main() {
+int main(HINSTANCE instance) {
+#ifdef dx9
+    window = null::render::directx9::c_window{ instance };
+#elif defined dx11
+    window = null::render::directx11::c_window{ instance };
+#elif defined gl
+    window = null::render::opengl3::c_window{ instance };
+#endif
+    window.clear_color = color_t<int>{ 40, 40, 40 };
+
     window.callbacks.at<utils::win::e_window_callbacks::on_create>().add([&] { frame_counter.begin(); });
     window.callbacks.at<utils::win::e_window_callbacks::on_main_loop>().add([&] { frame_counter.update(); });
-    window.clear_color = color_t<float>(0.f, 0.f, 0.f, 0.f);
+
     window.callbacks.at<utils::win::e_window_callbacks::on_main_loop>().add(main_loop);
 
     try {
         null::render::font_config_t config{ };
         config.load_font_default()
-              .set_render_mode(null::render::e_font_render_mode::sdf)
-              .set_pixel_range(2.f)
-              .set_size(14.f);
+            .set_render_mode(null::render::e_font_render_mode::sdf)
+            .set_pixel_range(2.f)
+            .set_size(14.f);
 
         null::render::atlas.font_loader = std::make_unique<null::render::c_freetype_loader>();
         null::render::atlas.add_font(config);
 
         window.create();
+
+        rasterizer_state = null::render::backend::factory->instance_rasterizer_state();
+        rasterizer_state->unlock();
+        rasterizer_state->msaa_disable.set(true);
+        rasterizer_state->scissor_disable.set(true);
+        rasterizer_state->lock();
+
         window.main_loop();
         window.destroy();
     } catch(const std::exception& exception) {

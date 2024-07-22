@@ -82,6 +82,9 @@
     <Filter Include="src\shaders\passthrough\glsl">
       <UniqueIdentifier>{00f65832-f61d-42f7-9f3c-c5c3742d38df}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\state-pipeline\rasterizer-state">
+      <UniqueIdentifier>{91b5c9f5-7f9e-4afd-a370-2d0a74d0fe73}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\null-render-backend-opengl3\internal\mesh\mesh.cpp">
@@ -113,6 +116,9 @@
     </ClCompile>
     <ClCompile Include="src\null-render-backend-opengl3\internal\stencil-buffer\stencil-buffer.cpp">
       <Filter>src\internal\stencil-buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\null-render-backend-opengl3\state-pipeline\rasterizer-state\rasterizer-state.cpp">
+      <Filter>src\state-pipeline\rasterizer-state</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -196,6 +202,9 @@
     </ClInclude>
     <ClInclude Include="src\null-render-backend-opengl3\shaders\color\color.h">
       <Filter>src\shaders\color</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render-backend-opengl3\state-pipeline\rasterizer-state\rasterizer-state.h">
+      <Filter>src\state-pipeline\rasterizer-state</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

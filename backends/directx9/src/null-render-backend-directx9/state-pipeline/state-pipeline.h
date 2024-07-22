@@ -27,6 +27,7 @@ namespace null::render::directx9 {
         void restore_shader() override;
         void restore_mesh() override;
         void restore_texture() override;
+        void restore_rasterizer() override;
 
     private:
         void on_create() override;

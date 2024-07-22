@@ -21,6 +21,12 @@ namespace null::render {
         }
 
         backend::state_pipeline = backend::factory->instance_state_pipeline();
+        backend::default_rasterizer_state = backend::factory->instance_rasterizer_state();
+        backend::default_rasterizer_state->unlock();
+        backend::default_rasterizer_state->msaa_disable.set(false);
+        backend::default_rasterizer_state->scissor_disable.set(false);
+        backend::default_rasterizer_state->lock();
+
         backend::renderer = backend::factory->instance_renderer();
         draw_list = c_draw_list::instance(backend::factory->instance_mesh());
 

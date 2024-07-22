@@ -8,8 +8,8 @@
 
 #include "internal/stencil-buffer.h"
 #include "post-processing/post-processing.h"
-#include "state-pipeline/state-pipeline.h"
 #include "renderer/renderer.h"
+#include "state-pipeline/state-pipeline.h"
 
 namespace null::render::backend {
     class i_factory {
@@ -18,7 +18,9 @@ namespace null::render::backend {
         virtual std::unique_ptr<c_mesh> instance_mesh() = 0;
         virtual std::unique_ptr<i_frame_buffer> instance_frame_buffer(const vec2_t<int>& size, e_frame_buffer_type type, e_frame_buffer_flags flags) = 0;
         virtual std::unique_ptr<i_stencil_buffer> instance_stencil_buffer() = 0;
+
         virtual std::unique_ptr<i_state_pipeline> instance_state_pipeline() = 0;
+        virtual std::unique_ptr<i_rasterizer_state> instance_rasterizer_state() = 0;
 
         virtual std::unique_ptr<i_passthrough_shader> instance_passthrough_shader() = 0;
         virtual std::unique_ptr<i_color_shader> instance_color_shader() = 0;

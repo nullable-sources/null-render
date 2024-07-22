@@ -6,7 +6,6 @@
 #include <null-render-backend-directx11.h>
 #elif defined gl
 #define null_renderer_use_glfw
-#define null_renderer_save_state
 #include <null-render-backend-opengl3.h>
 #endif
 #include <null-render.h>

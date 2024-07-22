@@ -3,7 +3,7 @@
 #include "../renderer/renderer.h"
 
 namespace null::render::directx11 {
-    class c_state_pipeline : public backend::i_state_pipeline, public backend::i_renderer_event_listener {
+    class c_state_pipeline : public backend::i_state_pipeline {
     public:
         struct {
             ID3D11RenderTargetView* render_target_view{ };
@@ -41,5 +41,6 @@ namespace null::render::directx11 {
         void restore_shader() override;
         void restore_mesh() override;
         void restore_texture() override;
+        void restore_rasterizer() override;
     };
 }

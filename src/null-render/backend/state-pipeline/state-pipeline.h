@@ -3,6 +3,8 @@
 #include "../internal/frame-buffer.h"
 #include "../internal/shader.h"
 
+#include "rasterizer-state.h"
+
 namespace null::render::backend {
     class i_state_pipeline {
     public:
@@ -41,6 +43,10 @@ namespace null::render::backend {
             }
 
         public:
+            object_t* current() { return empty() ? nullptr : stack.back(); }
+            object_t* previous() { return stack.size() < 2 ? nullptr : *std::prev(stack.end(), 2); }
+
+        public:
             bool empty() const { return stack.empty(); }
         };
 
@@ -68,15 +74,22 @@ namespace null::render::backend {
             void set_default() override;
         } textures{ };
 
+        class c_rasterizers_pipeline : public i_pipeline<i_rasterizer_state> {
+        public:
+            void append() override;
+            void set_default() override;
+        } rasterizers{ };
+
     public:
         virtual void setup_state();
         virtual void save_state() = 0;
-        virtual void restore_state() = 0;
+        virtual void restore_state();
 
     public:
         virtual void restore_framebuffer() = 0;
         virtual void restore_shader() = 0;
         virtual void restore_mesh() = 0;
         virtual void restore_texture() = 0;
+        virtual void restore_rasterizer() = 0;
     }; inline std::unique_ptr<i_state_pipeline> state_pipeline{ };
 }

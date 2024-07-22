@@ -82,6 +82,15 @@
     <Filter Include="src\shaders\texture\hlsl">
       <UniqueIdentifier>{81fb4f8d-2b54-4ab0-8eaa-00fe1659d116}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\state-pipeline\rasterizer-state">
+      <UniqueIdentifier>{890678c1-bbc9-432e-8cf5-a085d6480a3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\wrapper\state-machine">
+      <UniqueIdentifier>{2909998f-60aa-442e-8c02-a288a3ea8813}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\wrapper\state-machine\rasterizer-state-instances-stack">
+      <UniqueIdentifier>{6f7ba7bb-a0d1-41c0-ad57-4b329ddc4c86}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\null-render-backend-directx11\internal\frame-buffer\frame-buffer.cpp">
@@ -116,6 +125,12 @@
     </ClCompile>
     <ClCompile Include="src\null-render-backend-directx11\shaders\texture\texture.cpp">
       <Filter>src\shaders\texture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\null-render-backend-directx11\state-pipeline\rasterizer-state\rasterizer-state.cpp">
+      <Filter>src\state-pipeline\rasterizer-state</Filter>
+    </ClCompile>
+    <ClCompile Include="src\null-render-backend-directx11\wrapper\state-machine\rasterizer-state-instances-stack\rasterizer-state-instances-stack.cpp">
+      <Filter>src\wrapper\state-machine\rasterizer-state-instances-stack</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -199,6 +214,15 @@
     </ClInclude>
     <ClInclude Include="src\null-render-backend-directx11\shaders\texture\compiled-object.h">
       <Filter>src\shaders\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render-backend-directx11\state-pipeline\rasterizer-state\rasterizer-state.h">
+      <Filter>src\state-pipeline\rasterizer-state</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render-backend-directx11\wrapper\state-machine\state-machine.h">
+      <Filter>src\wrapper\state-machine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render-backend-directx11\wrapper\state-machine\rasterizer-state-instances-stack\rasterizer-state-instances-stack.h">
+      <Filter>src\wrapper\state-machine\rasterizer-state-instances-stack</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

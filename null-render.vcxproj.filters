@@ -85,6 +85,9 @@
     <Filter Include="src\backend\post-processing">
       <UniqueIdentifier>{af6b07bd-fb1c-4377-abfe-716a3451d9f9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\graphic\commands\state-pipeline">
+      <UniqueIdentifier>{c7d3e594-a9b3-4389-ae3e-f7d39f781fd0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\null-render\font\font.cpp">
@@ -155,6 +158,9 @@
     </ClCompile>
     <ClCompile Include="src\null-render\font\loaders\loader.cpp">
       <Filter>src\font\loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\null-render\graphic\commands\state-pipeline\state-pipeline.cpp">
+      <Filter>src\graphic\commands\state-pipeline</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -277,6 +283,15 @@
     </ClInclude>
     <ClInclude Include="src\null-render\font\glyph.h">
       <Filter>src\font</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render\backend\state-pipeline\rasterizer-state.h">
+      <Filter>src\backend\state-pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render\backend\state-pipeline\state-field.h">
+      <Filter>src\backend\state-pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render\graphic\commands\state-pipeline\state-pipeline.h">
+      <Filter>src\graphic\commands\state-pipeline</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -85,6 +85,9 @@
     <Filter Include="src\shaders\passthrough\hlsl">
       <UniqueIdentifier>{670c08c0-dce7-45e7-99b5-a986244dfa99}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\state-pipeline\rasterizer-state">
+      <UniqueIdentifier>{1e934003-de4d-4f52-93da-7bb47254fee4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\null-render-backend-directx9\wrapper\pixel\pixel.cpp">
@@ -119,6 +122,9 @@
     </ClCompile>
     <ClCompile Include="src\null-render-backend-directx9\internal\stencil-buffer\stencil-buffer.cpp">
       <Filter>src\internal\stencil-buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\null-render-backend-directx9\state-pipeline\rasterizer-state\rasterizer-state.cpp">
+      <Filter>src\state-pipeline\rasterizer-state</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -199,6 +205,9 @@
     </ClInclude>
     <ClInclude Include="src\null-render-backend-directx9\shaders\texture\texture.h">
       <Filter>src\shaders\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render-backend-directx9\state-pipeline\rasterizer-state\rasterizer-state.h">
+      <Filter>src\state-pipeline\rasterizer-state</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

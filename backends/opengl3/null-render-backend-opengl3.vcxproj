@@ -28,6 +28,7 @@
     <ClCompile Include="src\null-render-backend-opengl3\shaders\linear-gradient\linear-gradient.cpp" />
     <ClCompile Include="src\null-render-backend-opengl3\shaders\quad-gradient\quad-gradient.cpp" />
     <ClCompile Include="src\null-render-backend-opengl3\shaders\radial-gradient\radial-gradient.cpp" />
+    <ClCompile Include="src\null-render-backend-opengl3\state-pipeline\rasterizer-state\rasterizer-state.cpp" />
     <ClCompile Include="src\null-render-backend-opengl3\state-pipeline\state-pipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -53,6 +54,7 @@
     <ClInclude Include="src\null-render-backend-opengl3\shaders\sdf\sdf.h" />
     <ClInclude Include="src\null-render-backend-opengl3\shaders\texture\compiled-object.h" />
     <ClInclude Include="src\null-render-backend-opengl3\shaders\texture\texture.h" />
+    <ClInclude Include="src\null-render-backend-opengl3\state-pipeline\rasterizer-state\rasterizer-state.h" />
     <ClInclude Include="src\null-render-backend-opengl3\state-pipeline\state-pipeline.h" />
     <ClInclude Include="src\null-render-backend-opengl3\wrapper\fields.h" />
     <ClInclude Include="src\null-render-backend-opengl3\wrapper\opengl3.h" />

@@ -1,8 +1,11 @@
 #pragma once
+
+
 #include "null-render-backend-directx11/internal/frame-buffer/frame-buffer.h"
 #include "null-render-backend-directx11/internal/stencil-buffer/stencil-buffer.h"
 #include "null-render-backend-directx11/internal/mesh/mesh.h"
 #include "null-render-backend-directx11/state-pipeline/state-pipeline.h"
+#include "null-render-backend-directx11/state-pipeline/rasterizer-state/rasterizer-state.h"
 #include "null-render-backend-directx11/shaders/passthrough/passthrough.h"
 #include "null-render-backend-directx11/shaders/color/color.h"
 #include "null-render-backend-directx11/shaders/texture/texture.h"
@@ -15,7 +18,7 @@
 namespace null::render::directx11 {
     class c_factory : public backend::i_factory {
     public:
-        c_factory(ID3D11Device* device, ID3D11DeviceContext* context, IDXGISwapChain* swap_chain) {
+        c_factory(dx_device_t* device, dx_device_context_t* context, IDXGISwapChain* swap_chain) {
             shared.device = device; shared.context = context, shared.swap_chain = swap_chain;
         }
 
@@ -24,7 +27,9 @@ namespace null::render::directx11 {
         std::unique_ptr<backend::c_mesh> instance_mesh() override { return std::make_unique<c_mesh>(); }
         std::unique_ptr<backend::i_frame_buffer> instance_frame_buffer(const vec2_t<int>& size, backend::e_frame_buffer_type type, backend::e_frame_buffer_flags flags) override { return std::make_unique<c_frame_buffer>(size, type, flags); }
         std::unique_ptr<backend::i_stencil_buffer> instance_stencil_buffer() override { return std::make_unique<c_stencil_buffer>(); }
+        
         std::unique_ptr<backend::i_state_pipeline> instance_state_pipeline() override { return std::make_unique<c_state_pipeline>(); }
+        std::unique_ptr<backend::i_rasterizer_state> instance_rasterizer_state() override { return std::make_unique<c_rasterizer_state>(); }
 
         std::unique_ptr<backend::i_passthrough_shader> instance_passthrough_shader() override { return std::make_unique<c_passthrough_shader>(); }
         std::unique_ptr<backend::i_color_shader> instance_color_shader() override { return std::make_unique<c_color_shader>(); }
@@ -43,8 +48,10 @@ namespace null::render::directx11 {
     public:
         color_t<float> clear_color{ 0.07f, 0.07f, 0.07f };
 
-        ID3D11Device* device{ };
-        ID3D11DeviceContext* context{ };
+        dx_device_t* device{ };
+        dx_device_context_t* context{ };
+
+
         IDXGISwapChain* swap_chain{ };
         DXGI_SWAP_CHAIN_DESC swap_chain_desc{
             .BufferDesc{
@@ -75,11 +82,31 @@ namespace null::render::directx11 {
         void on_create() override {
             swap_chain_desc.OutputWindow = wnd_handle;
 
+            static const std::vector<D3D_FEATURE_LEVEL> creating_feature_level{
+#ifdef NULL_RENDER_DX11_ALLOW_FEATURE_11_1
+                D3D_FEATURE_LEVEL_11_1,
+#endif
+                D3D_FEATURE_LEVEL_11_0,
+                D3D_FEATURE_LEVEL_10_0
+            };
+
+            ID3D11Device* creation_device{ };
+            ID3D11DeviceContext* creation_context{ };
+
             D3D_FEATURE_LEVEL feature_level;
-            if(auto result = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, std::vector<D3D_FEATURE_LEVEL>{ D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_0 }.data(), 2,
-                D3D11_SDK_VERSION, & swap_chain_desc, & swap_chain, & device, & feature_level, & context); FAILED(result)) {
+            if(auto result = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, creating_feature_level.data(), 2, D3D11_SDK_VERSION, &swap_chain_desc, &swap_chain, &creation_device, &feature_level, &creation_context); FAILED(result)) {
                 utils::logger(utils::e_log_type::error, "D3D11CreateDeviceAndSwapChain failed, return code {}.", result);
             }
+
+#ifdef NULL_RENDER_DX11_ALLOW_FEATURE_11_1
+            creation_device->QueryInterface(__uuidof (dx_device_t), (void**)&device);
+            creation_context->QueryInterface(__uuidof (dx_device_context_t), (void**)&context);
+            creation_device->Release();
+            creation_context->Release();
+#else
+            device = creation_device;
+            context = creation_context;
+#endif
 
             backend::factory = std::make_unique<c_factory>(device, context, swap_chain);
             render::initialize(size);

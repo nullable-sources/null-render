@@ -54,6 +54,7 @@ namespace null::render::directx9 {
     }
 
     void c_state_pipeline::restore_state() {
+        i_state_pipeline::restore_state();
         if(state_block) {
             if(auto result = state_block->Apply(); FAILED(result))
                 utils::logger(utils::e_log_type::error, "cant apply state, error code {}.", result);
@@ -92,6 +93,11 @@ namespace null::render::directx9 {
 
     void c_state_pipeline::restore_texture() {
         shared.device->SetTexture(0, texture);
+    }
+
+    void c_state_pipeline::restore_rasterizer() {
+        shared.device->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, true);
+        shared.device->SetRenderState(D3DRS_SCISSORTESTENABLE, true);
     }
 
     void c_state_pipeline::on_create() {

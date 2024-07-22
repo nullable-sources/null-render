@@ -8,7 +8,6 @@ namespace null::render::opengl3 {
         opengl::blend_func(1, opengl::e_one_minus_src_alpha);
         opengl::disable(opengl::e_cull_face);
         opengl::disable(opengl::e_depth_test);
-        opengl::enable(opengl::e_scissor_test);
         opengl::disable(opengl::e_primitive_restart);
 
         i_state_pipeline::setup_state();
@@ -38,10 +37,11 @@ namespace null::render::opengl3 {
         saved_state.enable_blend = opengl::is_enabled(opengl::e_blend);
         saved_state.enable_cull_face = opengl::is_enabled(opengl::e_cull_face);
         saved_state.enable_depth_test = opengl::is_enabled(opengl::e_depth_test);
-        saved_state.enable_scissor_test = opengl::is_enabled(opengl::e_scissor_test);
         saved_state.enable_primitive_restart = opengl::is_enabled(opengl::e_primitive_restart);
-
         saved_state.enable_stencil_test = opengl::is_enabled(opengl::e_stencil_test);
+
+        saved_state.enable_scissor_test = opengl::is_enabled(opengl::e_scissor_test);
+        saved_state.enable_multisample = opengl::is_enabled(opengl::e_multisample);
         opengl::get_integerv(opengl::e_stencil_clear_value, &saved_state.stencil_clear_value);
 
         opengl::get_integerv(opengl::e_stencil_func, &saved_state.stencil_front.func);
@@ -62,17 +62,20 @@ namespace null::render::opengl3 {
     }
 
     void c_state_pipeline::restore_state() {
+        i_state_pipeline::restore_state();
+
         restore_framebuffer();
         restore_shader();
         restore_mesh();
         restore_texture();
+        restore_rasterizer();
+
         opengl::blend_equation_separate(saved_state.blend_equation_rgb, saved_state.blend_equation_alpha);
         opengl::blend_func_separate(saved_state.blend_src_rgb, saved_state.blend_dst_rgb, saved_state.blend_src_alpha, saved_state.blend_dst_alpha);
         if(saved_state.enable_blend) opengl::enable(opengl::e_blend); else opengl::disable(opengl::e_blend);
         if(saved_state.enable_cull_face) opengl::enable(opengl::e_cull_face); else opengl::disable(opengl::e_cull_face);
         if(saved_state.enable_depth_test) opengl::enable(opengl::e_depth_test); else opengl::disable(opengl::e_depth_test);
         if(saved_state.enable_stencil_test) opengl::enable(opengl::e_stencil_test); else opengl::disable(opengl::e_stencil_test);
-        if(saved_state.enable_scissor_test) opengl::enable(opengl::e_scissor_test); else opengl::disable(opengl::e_scissor_test);
         if(saved_state.enable_primitive_restart) opengl::enable(opengl::e_primitive_restart); else opengl::disable(opengl::e_primitive_restart);
         opengl::viewport(saved_state.viewport[0], saved_state.viewport[1], saved_state.viewport[2], saved_state.viewport[3]);
         opengl::scissor(saved_state.scissor_box[0], saved_state.scissor_box[1], saved_state.scissor_box[2], saved_state.scissor_box[3]);
@@ -107,5 +110,10 @@ namespace null::render::opengl3 {
         opengl::bind_texture(opengl::e_texture_2d, saved_state.texture);
         opengl::bind_sampler(0, saved_state.sampler);
         opengl::active_texture(saved_state.active_texture);
+    }
+
+    void c_state_pipeline::restore_rasterizer() {
+        if(saved_state.enable_scissor_test) opengl::enable(opengl::e_scissor_test); else opengl::disable(opengl::e_scissor_test);
+        if(saved_state.enable_multisample) opengl::enable(opengl::e_multisample); else opengl::disable(opengl::e_multisample);
     }
 }

@@ -2,13 +2,31 @@
 #pragma comment (lib, "d3d11.lib")
 #include <d3d11.h>
 
+#ifdef NULL_RENDER_DX11_ALLOW_FEATURE_11_1
+#include <d3d11_1.h>
+#endif
+
+namespace null::render::directx11 {
+#ifdef NULL_RENDER_DX11_ALLOW_FEATURE_11_1
+    using dx_device_t = ID3D11Device1;
+    using dx_device_context_t = ID3D11DeviceContext1;
+    using dx_rasterizer_state_t = ID3D11RasterizerState1;
+    using dx_rasterizer_state_desc_t = D3D11_RASTERIZER_DESC1;
+#else
+    using dx_device_t = ID3D11Device;
+    using dx_device_context_t = ID3D11DeviceContext;
+    using dx_rasterizer_state_t = ID3D11RasterizerState;
+    using dx_rasterizer_state_desc_t = D3D11_RASTERIZER_DESC;
+#endif
+}
+
 #include <null-render.h>
 
 namespace null::render::directx11 {
     struct shared_t {
     public:
-        ID3D11Device* device{ };
-        ID3D11DeviceContext* context{ };
+        dx_device_t* device{ };
+        dx_device_context_t* context{ };
         IDXGISwapChain* swap_chain{ };
     } inline shared{ };
 
@@ -17,7 +35,6 @@ namespace null::render::directx11 {
         backend::e_topology old_topology{ };
 
         struct {
-            ID3D11RasterizerState* raster_state{ };
             ID3D11SamplerState* sampler{ };
             ID3D11BlendState* blend{ };
             ID3D11DepthStencilState* depth_stencil{ };

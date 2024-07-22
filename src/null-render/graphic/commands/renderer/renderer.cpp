@@ -3,10 +3,6 @@
 #include "renderer.h"
 
 namespace null::render {
-    void c_setup_state_command::handle() {
-        backend::state_pipeline->setup_state();
-    }
-
     void c_texture_command::handle() {
         backend::renderer->set_texture(texture);
     }

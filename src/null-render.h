@@ -9,6 +9,7 @@
 #include "null-render/graphic/filters/sdf/sdf.h"
 
 #include "null-render/font/loaders/freetype/freetype.h"
+#include "null-render/graphic/commands/state-pipeline/state-pipeline.h"
 #include "null-render/graphic/commands/renderer/renderer.h"
 #include "null-render/graphic/draw-list/draw-list.h"
 #include "null-render/graphic/path/path.h"

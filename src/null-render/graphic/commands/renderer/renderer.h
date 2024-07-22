@@ -3,14 +3,6 @@
 #include "../../../backend/internal/stencil-buffer.h"
 
 namespace null::render {
-    class c_setup_state_command : public i_command {
-    public:
-        static std::shared_ptr<c_setup_state_command> instance() { return std::make_shared<c_setup_state_command>(); }
-
-    public:
-        void handle() override;
-    };
-
     class c_texture_command : public i_command {
     public:
         static std::shared_ptr<c_texture_command> instance() { return std::make_shared<c_texture_command>(); }

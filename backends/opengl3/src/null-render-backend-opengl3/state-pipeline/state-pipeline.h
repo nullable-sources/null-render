@@ -14,6 +14,7 @@ namespace null::render::opengl3 {
             std::uint32_t active_texture{ }, program{ }, texture{ }, sampler{ }, array_buffer{ }, element_array_buffer{ }, vertex_array_object{ };
             std::uint32_t blend_src_rgb{ }, blend_dst_rgb{ }, blend_src_alpha{ }, blend_dst_alpha{ }, blend_equation_rgb{ }, blend_equation_alpha{ };
             bool enable_blend{ }, enable_cull_face{ }, enable_depth_test{ }, enable_stencil_test{ }, enable_scissor_test{ }, enable_primitive_restart{ };
+            bool enable_multisample{ };
             int stencil_clear_value{ };
             int viewport[4]{ }, scissor_box[4]{ };
         } saved_state{ };
@@ -28,5 +29,6 @@ namespace null::render::opengl3 {
         void restore_shader() override;
         void restore_mesh() override;
         void restore_texture() override;
+        void restore_rasterizer() override;
     };
 }
