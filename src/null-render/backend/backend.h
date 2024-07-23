@@ -21,6 +21,7 @@ namespace null::render::backend {
 
         virtual std::unique_ptr<i_state_pipeline> instance_state_pipeline() = 0;
         virtual std::unique_ptr<i_rasterizer_state> instance_rasterizer_state() = 0;
+        virtual std::unique_ptr<i_blend_state> instance_blend_state() = 0;
 
         virtual std::unique_ptr<i_passthrough_shader> instance_passthrough_shader() = 0;
         virtual std::unique_ptr<i_color_shader> instance_color_shader() = 0;

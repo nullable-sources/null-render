@@ -293,6 +293,9 @@
     <ClInclude Include="src\null-render\graphic\commands\state-pipeline\state-pipeline.h">
       <Filter>src\graphic\commands\state-pipeline</Filter>
     </ClInclude>
+    <ClInclude Include="src\null-render\backend\state-pipeline\blend-state.h">
+      <Filter>src\backend\state-pipeline</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\null-render\font\font.inl">

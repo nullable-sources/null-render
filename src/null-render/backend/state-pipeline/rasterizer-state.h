@@ -22,9 +22,13 @@ namespace null::render::backend {
             msaa_disable.to_hash(overridden_hash);
             scissor_disable.to_hash(overridden_hash);
         }
+
         virtual void unlock() {
             locked = false;
             overridden_hash = 0;
         }
+
+    public:
+        virtual std::unique_ptr<i_rasterizer_state> clone() const = 0;
     }; inline std::unique_ptr<i_rasterizer_state> default_rasterizer_state{ };
 }

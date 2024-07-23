@@ -6,6 +6,7 @@
 #include "null-render-backend-directx11/internal/mesh/mesh.h"
 #include "null-render-backend-directx11/state-pipeline/state-pipeline.h"
 #include "null-render-backend-directx11/state-pipeline/rasterizer-state/rasterizer-state.h"
+#include "null-render-backend-directx11/state-pipeline/blend-state/blend-state.h"
 #include "null-render-backend-directx11/shaders/passthrough/passthrough.h"
 #include "null-render-backend-directx11/shaders/color/color.h"
 #include "null-render-backend-directx11/shaders/texture/texture.h"
@@ -30,6 +31,7 @@ namespace null::render::directx11 {
         
         std::unique_ptr<backend::i_state_pipeline> instance_state_pipeline() override { return std::make_unique<c_state_pipeline>(); }
         std::unique_ptr<backend::i_rasterizer_state> instance_rasterizer_state() override { return std::make_unique<c_rasterizer_state>(); }
+        std::unique_ptr<backend::i_blend_state> instance_blend_state() override { return std::make_unique<c_blend_state>(); }
 
         std::unique_ptr<backend::i_passthrough_shader> instance_passthrough_shader() override { return std::make_unique<c_passthrough_shader>(); }
         std::unique_ptr<backend::i_color_shader> instance_color_shader() override { return std::make_unique<c_color_shader>(); }

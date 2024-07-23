@@ -41,8 +41,10 @@
     <ClCompile Include="src\null-render-backend-directx11\shaders\quad-gradient\quad-gradient.cpp" />
     <ClCompile Include="src\null-render-backend-directx11\shaders\radial-gradient\radial-gradient.cpp" />
     <ClCompile Include="src\null-render-backend-directx11\shaders\texture\texture.cpp" />
+    <ClCompile Include="src\null-render-backend-directx11\state-pipeline\blend-state\blend-state.cpp" />
     <ClCompile Include="src\null-render-backend-directx11\state-pipeline\rasterizer-state\rasterizer-state.cpp" />
     <ClCompile Include="src\null-render-backend-directx11\state-pipeline\state-pipeline.cpp" />
+    <ClCompile Include="src\null-render-backend-directx11\wrapper\state-machine\blend-state-instances-stack\blend-state-instances-stack.cpp" />
     <ClCompile Include="src\null-render-backend-directx11\wrapper\state-machine\rasterizer-state-instances-stack\rasterizer-state-instances-stack.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -68,12 +70,14 @@
     <ClInclude Include="src\null-render-backend-directx11\shaders\sdf\sdf.h" />
     <ClInclude Include="src\null-render-backend-directx11\shaders\texture\compiled-object.h" />
     <ClInclude Include="src\null-render-backend-directx11\shaders\texture\texture.h" />
+    <ClInclude Include="src\null-render-backend-directx11\state-pipeline\blend-state\blend-state.h" />
     <ClInclude Include="src\null-render-backend-directx11\state-pipeline\rasterizer-state\rasterizer-state.h" />
     <ClInclude Include="src\null-render-backend-directx11\state-pipeline\state-pipeline.h" />
     <ClInclude Include="src\null-render-backend-directx11\wrapper\constant-buffer\constant-buffer.h" />
     <ClInclude Include="src\null-render-backend-directx11\wrapper\shaders\pixel.h" />
     <ClInclude Include="src\null-render-backend-directx11\wrapper\shaders\shader.h" />
     <ClInclude Include="src\null-render-backend-directx11\wrapper\shaders\vertex.h" />
+    <ClInclude Include="src\null-render-backend-directx11\wrapper\state-machine\blend-state-instances-stack\blend-state-instances-stack.h" />
     <ClInclude Include="src\null-render-backend-directx11\wrapper\state-machine\rasterizer-state-instances-stack\rasterizer-state-instances-stack.h" />
     <ClInclude Include="src\null-render-backend-directx11\wrapper\state-machine\state-machine.h" />
   </ItemGroup>

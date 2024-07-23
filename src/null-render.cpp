@@ -26,6 +26,15 @@ namespace null::render {
         backend::default_rasterizer_state->msaa_disable.set(false);
         backend::default_rasterizer_state->scissor_disable.set(false);
         backend::default_rasterizer_state->lock();
+        backend::default_blend_state = backend::factory->instance_blend_state();
+        backend::default_blend_state->unlock();
+        backend::default_blend_state->blend_enable.set(true);
+        backend::default_blend_state->src_blend.set(backend::e_blend::one);
+        backend::default_blend_state->dst_blend.set(backend::e_blend::inv_src_alpha);
+        backend::default_blend_state->src_alpha_blend.set(backend::e_blend::one);
+        backend::default_blend_state->dst_alpha_blend.set(backend::e_blend::inv_src_alpha);
+        backend::default_blend_state->disable_color_write.set(false);
+        backend::default_blend_state->lock();
 
         backend::renderer = backend::factory->instance_renderer();
         draw_list = c_draw_list::instance(backend::factory->instance_mesh());

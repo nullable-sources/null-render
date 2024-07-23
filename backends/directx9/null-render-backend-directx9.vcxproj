@@ -27,6 +27,7 @@
     <ClCompile Include="src\null-render-backend-directx9\shaders\linear-gradient\linear-gradient.cpp" />
     <ClCompile Include="src\null-render-backend-directx9\shaders\quad-gradient\quad-gradient.cpp" />
     <ClCompile Include="src\null-render-backend-directx9\shaders\radial-gradient\radial-gradient.cpp" />
+    <ClCompile Include="src\null-render-backend-directx9\state-pipeline\blend-state\blend-state.cpp" />
     <ClCompile Include="src\null-render-backend-directx9\state-pipeline\rasterizer-state\rasterizer-state.cpp" />
     <ClCompile Include="src\null-render-backend-directx9\state-pipeline\state-pipeline.cpp" />
     <ClCompile Include="src\null-render-backend-directx9\wrapper\pixel\pixel.cpp" />
@@ -67,6 +68,7 @@
     <ClInclude Include="src\null-render-backend-directx9\shaders\sdf\sdf.h" />
     <ClInclude Include="src\null-render-backend-directx9\shaders\texture\compiled-object.h" />
     <ClInclude Include="src\null-render-backend-directx9\shaders\texture\texture.h" />
+    <ClInclude Include="src\null-render-backend-directx9\state-pipeline\blend-state\blend-state.h" />
     <ClInclude Include="src\null-render-backend-directx9\state-pipeline\rasterizer-state\rasterizer-state.h" />
     <ClInclude Include="src\null-render-backend-directx9\state-pipeline\state-pipeline.h" />
     <ClInclude Include="src\null-render-backend-directx9\wrapper\pixel\pixel.h" />

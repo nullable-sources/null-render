@@ -70,6 +70,7 @@
     <ClInclude Include="src\null-render\backend\shaders\quad-gradient.h" />
     <ClInclude Include="src\null-render\backend\shaders\radial-gradient.h" />
     <ClInclude Include="src\null-render\backend\shaders\sdf.h" />
+    <ClInclude Include="src\null-render\backend\state-pipeline\blend-state.h" />
     <ClInclude Include="src\null-render\backend\state-pipeline\rasterizer-state.h" />
     <ClInclude Include="src\null-render\backend\state-pipeline\state-field.h" />
     <ClInclude Include="src\null-render\backend\state-pipeline\state-pipeline.h" />

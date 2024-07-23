@@ -12,4 +12,12 @@ namespace null::render {
     void c_rasterizer_pop_command::handle() {
         backend::state_pipeline->rasterizers.pop();
     }
+
+    void c_blend_push_command::handle() {
+        backend::state_pipeline->blends.push(blend_state);
+    }
+
+    void c_blend_pop_command::handle() {
+        backend::state_pipeline->blends.pop();
+    }
 }

@@ -39,4 +39,33 @@ namespace null::render {
     public:
         void handle() override;
     };
+
+    class c_blend_push_command : public i_command {
+    public:
+        static std::shared_ptr<c_blend_push_command> instance() { return std::make_shared<c_blend_push_command>(); }
+        static std::shared_ptr<c_blend_push_command> instance(backend::i_blend_state* blend_state) { return std::make_shared<c_blend_push_command>(blend_state); }
+        static std::shared_ptr<c_blend_push_command> instance(std::unique_ptr<backend::i_blend_state>& blend_state) { return std::make_shared<c_blend_push_command>(blend_state.get()); }
+
+    protected:
+        backend::i_blend_state* blend_state{ };
+
+    public:
+        c_blend_push_command() { }
+        c_blend_push_command(backend::i_blend_state* _blend_state) : blend_state(_blend_state) { }
+
+    public:
+        void handle() override;
+
+    public:
+        void set_blend_state(backend::i_blend_state* _blend_state) { blend_state = _blend_state; }
+        void set_blend_state(std::unique_ptr<backend::i_blend_state>& _blend_state) { blend_state = _blend_state.get(); }
+    };
+
+    class c_blend_pop_command : public i_command {
+    public:
+        static std::shared_ptr<c_blend_pop_command> instance() { return std::make_shared<c_blend_pop_command>(); }
+
+    public:
+        void handle() override;
+    };
 }

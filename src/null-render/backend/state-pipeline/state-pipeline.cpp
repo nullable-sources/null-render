@@ -17,8 +17,12 @@ namespace null::render::backend {
     void i_state_pipeline::c_rasterizers_pipeline::append() { stack.back()->use(); }
     void i_state_pipeline::c_rasterizers_pipeline::set_default() { state_pipeline->restore_rasterizer(); }
 
+    void i_state_pipeline::c_blends_pipeline::append() { stack.back()->use(); }
+    void i_state_pipeline::c_blends_pipeline::set_default() { state_pipeline->restore_blend(); }
+
     void i_state_pipeline::setup_state() {
         rasterizers.push(default_rasterizer_state);
+        blends.push(default_blend_state);
         backend::renderer->set_clip({ { 0 }, shared::viewport });
         backend::renderer->set_matrix(backend::renderer->get_projection_matrix());
         backend::renderer->set_translation(0.f);
@@ -26,6 +30,7 @@ namespace null::render::backend {
     }
 
     void i_state_pipeline::restore_state() {
+        blends.pop();
         rasterizers.pop();
     }
 }

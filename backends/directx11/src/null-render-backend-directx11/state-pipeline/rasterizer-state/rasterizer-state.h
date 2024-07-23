@@ -31,5 +31,10 @@ namespace null::render::directx11 {
 
         virtual void set_state_object(dx_rasterizer_state_t* object) override { shared.context->RSSetState(object); }
         virtual void append_state_to_desc(dx_rasterizer_state_desc_t& desc) override;
+
+    public:
+        virtual std::unique_ptr<backend::i_rasterizer_state> clone() const override {
+            return std::unique_ptr<c_rasterizer_state>(new c_rasterizer_state(*this));
+        }
     };
 }

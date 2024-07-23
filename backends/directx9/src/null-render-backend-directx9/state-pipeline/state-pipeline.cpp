@@ -13,14 +13,8 @@ namespace null::render::directx9 {
         shared.device->SetRenderState(D3DRS_LIGHTING, false);
         shared.device->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
         shared.device->SetRenderState(D3DRS_ZWRITEENABLE, false);
-        shared.device->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
         shared.device->SetRenderState(D3DRS_ALPHATESTENABLE, false);
         shared.device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
-        /*shared.device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-        shared.device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);*/
-        shared.device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
-        shared.device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-        shared.device->SetRenderState(D3DRS_SCISSORTESTENABLE, false);
         shared.device->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
         shared.device->SetRenderState(D3DRS_FOGENABLE, false);
         shared.device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
@@ -43,6 +37,16 @@ namespace null::render::directx9 {
                 utils::logger(utils::e_log_type::error, "cant capture state, error code {}.", result);
         }
 
+        shared.device->GetRenderState(D3DRS_MULTISAMPLEANTIALIAS, (DWORD*)&saved_rasterizer.multisample);
+        shared.device->GetRenderState(D3DRS_SCISSORTESTENABLE, (DWORD*)&saved_rasterizer.scissor);
+
+        shared.device->GetRenderState(D3DRS_ALPHABLENDENABLE, (DWORD*)&saved_blend.alpha_blend);
+        shared.device->GetRenderState(D3DRS_SRCBLEND, (DWORD*)&saved_blend.src_blend);
+        shared.device->GetRenderState(D3DRS_DESTBLEND, (DWORD*)&saved_blend.dst_blend);
+        shared.device->GetRenderState(D3DRS_SRCBLENDALPHA, (DWORD*)&saved_blend.src_blend_alpha);
+        shared.device->GetRenderState(D3DRS_DESTBLENDALPHA, (DWORD*)&saved_blend.dst_blend_alpha);
+        shared.device->GetRenderState(D3DRS_COLORWRITEENABLE, (DWORD*)&saved_blend.color_write);
+
         shared.device->GetRenderTarget(0, &framebuffer);
         shared.device->GetDepthStencilSurface(&depth);
         shared.device->GetTexture(0, &texture);
@@ -64,6 +68,8 @@ namespace null::render::directx9 {
         restore_mesh();
         restore_shader();
         restore_texture();
+        restore_rasterizer();
+        restore_blend();
 
         if(framebuffer) { framebuffer->Release(); framebuffer = nullptr; }
         if(depth) { depth->Release(); depth = nullptr; }
@@ -96,8 +102,17 @@ namespace null::render::directx9 {
     }
 
     void c_state_pipeline::restore_rasterizer() {
-        shared.device->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, true);
-        shared.device->SetRenderState(D3DRS_SCISSORTESTENABLE, true);
+        shared.device->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, saved_rasterizer.multisample);
+        shared.device->SetRenderState(D3DRS_SCISSORTESTENABLE, saved_rasterizer.scissor);
+    }
+
+    void c_state_pipeline::restore_blend() {
+        shared.device->SetRenderState(D3DRS_ALPHABLENDENABLE, saved_blend.alpha_blend);
+        shared.device->SetRenderState(D3DRS_SRCBLEND, saved_blend.src_blend);
+        shared.device->SetRenderState(D3DRS_DESTBLEND, saved_blend.dst_blend);
+        shared.device->SetRenderState(D3DRS_SRCBLENDALPHA, saved_blend.src_blend_alpha);
+        shared.device->SetRenderState(D3DRS_DESTBLENDALPHA, saved_blend.dst_blend_alpha);
+        shared.device->SetRenderState(D3DRS_COLORWRITEENABLE, saved_blend.color_write);
     }
 
     void c_state_pipeline::on_create() {

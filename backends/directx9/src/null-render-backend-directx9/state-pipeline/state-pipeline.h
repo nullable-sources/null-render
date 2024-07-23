@@ -17,6 +17,19 @@ namespace null::render::directx9 {
         IDirect3DIndexBuffer9* index_buffer{ };
         std::uint32_t vertex_offset{ }, vertex_stride{ };
 
+        struct saved_rasterizer_t {
+        public:
+            std::uint32_t multisample{ }, scissor{ };
+        } saved_rasterizer{ };
+
+        struct saved_blend_t {
+        public:
+            std::uint32_t alpha_blend{ };
+            std::uint32_t src_blend{ }, src_blend_alpha{ };
+            std::uint32_t dst_blend{ }, dst_blend_alpha{ };
+            std::uint32_t color_write{ };
+        } saved_blend{ };
+
     public:
         void setup_state() override;
         void save_state() override;
@@ -28,6 +41,7 @@ namespace null::render::directx9 {
         void restore_mesh() override;
         void restore_texture() override;
         void restore_rasterizer() override;
+        void restore_blend() override;
 
     private:
         void on_create() override;

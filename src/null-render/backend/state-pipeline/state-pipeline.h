@@ -4,6 +4,7 @@
 #include "../internal/shader.h"
 
 #include "rasterizer-state.h"
+#include "blend-state.h"
 
 namespace null::render::backend {
     class i_state_pipeline {
@@ -80,6 +81,12 @@ namespace null::render::backend {
             void set_default() override;
         } rasterizers{ };
 
+        class c_blends_pipeline : public i_pipeline<i_blend_state> {
+        public:
+            void append() override;
+            void set_default() override;
+        } blends{ };
+
     public:
         virtual void setup_state();
         virtual void save_state() = 0;
@@ -91,5 +98,6 @@ namespace null::render::backend {
         virtual void restore_mesh() = 0;
         virtual void restore_texture() = 0;
         virtual void restore_rasterizer() = 0;
+        virtual void restore_blend() = 0;
     }; inline std::unique_ptr<i_state_pipeline> state_pipeline{ };
 }

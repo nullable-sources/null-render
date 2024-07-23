@@ -42,5 +42,6 @@ namespace null::render::directx11 {
         void restore_mesh() override;
         void restore_texture() override;
         void restore_rasterizer() override;
+        void restore_blend() override;
     };
 }
