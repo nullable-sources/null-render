@@ -45,7 +45,7 @@ namespace null::render::directx11 {
         virtual state_instances_stack_t& get_stack() const = 0;
         virtual i_state_machine* get_previous_state() const = 0;
 
-        virtual void set_state_object(object_t* object) = 0;
+        virtual void set_state_object(object_t* object, const object_desc_t& desc) = 0;
         virtual void append_state_to_desc(object_desc_t& desc) = 0;
 
     public:
@@ -54,17 +54,18 @@ namespace null::render::directx11 {
             bool recreate_object = unhandled_changes || object == nullptr;
 
             if(i_state_machine* previous_state = get_previous_state()) {
-                if(previous_state->desc_hash == desc_hash) return;
+                if(previous_state->desc_hash != desc_hash) {
+                    unlock();
+                    object_desc = previous_state->object_desc;
+                    lock();
 
-                unlock();
-                previous_state->object_desc = object_desc;
-                lock();
-
-                recreate_object = true;
+                    recreate_object = true;
+                } else if(previous_state->overridden_hash == interface_t::overridden_hash)
+                    return;
             }
 
             if(recreate_object) object = get_stack().instance(desc_hash, object_desc);
-            set_state_object(object);
+            set_state_object(object, object_desc);
         }
 
     public:

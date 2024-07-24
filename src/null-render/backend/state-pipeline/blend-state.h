@@ -5,6 +5,7 @@
 namespace null::render::backend {
     enum class e_blend {
         zero, one,
+        constant_factor, inv_constant_factor,
         src_color, inv_src_color, src_alpha, inv_src_alpha,
         dst_color, inv_dst_color, dst_alpha, inv_dst_alpha
     };
@@ -18,6 +19,7 @@ namespace null::render::backend {
         state_field_t<bool> blend_enable{ };
         state_field_t<e_blend> src_blend{ }, dst_blend{ };
         state_field_t<e_blend> src_alpha_blend{ }, dst_alpha_blend{ };
+        state_field_t<float> factor{ };
         state_field_t<bool> disable_color_write{ };
 
     public:
@@ -32,6 +34,7 @@ namespace null::render::backend {
             dst_blend.to_hash(overridden_hash);
             src_alpha_blend.to_hash(overridden_hash);
             dst_alpha_blend.to_hash(overridden_hash);
+            factor.to_hash(overridden_hash);
             disable_color_write.to_hash(overridden_hash);
         }
 

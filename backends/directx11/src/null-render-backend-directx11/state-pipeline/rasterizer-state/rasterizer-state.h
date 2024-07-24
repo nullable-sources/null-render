@@ -17,19 +17,14 @@ namespace null::render::directx11 {
         c_rasterizer_state() : i_state_machine(dx_rasterizer_state_desc_t{
             .FillMode{ D3D11_FILL_SOLID },
             .CullMode{ D3D11_CULL_NONE },
-            .DepthClipEnable{ true },
-            .ScissorEnable{ true },
-            .MultisampleEnable{ true },
-#ifdef NULL_RENDER_DX11_ALLOW_FEATURE_11_1
-            .ForcedSampleCount{ 0 }
-#endif
+            .DepthClipEnable{ true }
             }) { }
 
     protected:
         virtual state_instances_stack_t& get_stack() const override { return instances_stack; }
         virtual state_machine_t* get_previous_state() const override;
 
-        virtual void set_state_object(dx_rasterizer_state_t* object) override { shared.context->RSSetState(object); }
+        virtual void set_state_object(dx_rasterizer_state_t* object, const dx_rasterizer_state_desc_t& desc) override { shared.context->RSSetState(object); }
         virtual void append_state_to_desc(dx_rasterizer_state_desc_t& desc) override;
 
     public:

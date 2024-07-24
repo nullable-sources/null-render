@@ -18,6 +18,15 @@ namespace null::render::directx11 {
     using dx_rasterizer_state_t = ID3D11RasterizerState;
     using dx_rasterizer_state_desc_t = D3D11_RASTERIZER_DESC;
 #endif
+
+    struct dx_blend_factor_desc : public D3D11_BLEND_DESC {
+    public:
+        float blend_factor{ };
+
+    public:
+        dx_blend_factor_desc() { }
+        dx_blend_factor_desc(const D3D11_BLEND_DESC& desc) : D3D11_BLEND_DESC(desc) { }
+    };
 }
 
 #include <null-render.h>
@@ -36,7 +45,6 @@ namespace null::render::directx11 {
 
         struct {
             ID3D11SamplerState* sampler{ };
-            ID3D11BlendState* blend{ };
             ID3D11DepthStencilState* depth_stencil{ };
         } internal_objects{ };
 

@@ -32,7 +32,18 @@ namespace null::render::directx9 {
                 return texture;
             }
 
-            memcpy((std::uint8_t*)locked_rect.pBits, (std::uint8_t*)data, size.x * size.y * 4);
+            std::size_t pitch = locked_rect.Pitch / 4;
+            for(int y : std::views::iota(0, size.y)) {
+                for(int x : std::views::iota(0, size.x)) {
+                    std::uint32_t rgba = ((std::uint32_t*)data)[(int)size.x * y + x];
+
+                    std::uint8_t r = rgba >> 0;
+                    std::uint8_t g = rgba >> 8;
+                    std::uint8_t b = rgba >> 16;
+                    std::uint8_t a = rgba >> 24;
+                    ((std::uint32_t*)locked_rect.pBits)[pitch * y + x] = std::uint32_t(b << 0 | g << 8 | r << 16 | a << 24);
+                }
+            }
 
             texture->UnlockRect(0);
         }

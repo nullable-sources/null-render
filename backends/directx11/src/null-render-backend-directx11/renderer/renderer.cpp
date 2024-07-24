@@ -76,26 +76,6 @@ namespace null::render::directx11 {
     }
 
     void c_renderer::create_internal_objects() {
-        if(!internal_objects.blend) {
-            D3D11_BLEND_DESC blend_desc{
-                .AlphaToCoverageEnable{ false },
-                .RenderTarget{
-                    {
-                        .BlendEnable{ true },
-                        .SrcBlend{ D3D11_BLEND_ONE },
-                        .DestBlend{ D3D11_BLEND_INV_SRC_ALPHA },
-                        .BlendOp{ D3D11_BLEND_OP_ADD },
-                        .SrcBlendAlpha{ D3D11_BLEND_ONE },
-                        .DestBlendAlpha{ D3D11_BLEND_INV_SRC_ALPHA },
-                        .BlendOpAlpha{ D3D11_BLEND_OP_ADD },
-                        .RenderTargetWriteMask{ D3D11_COLOR_WRITE_ENABLE_ALL }
-                    }
-                }
-            };
-            if(auto result = shared.device->CreateBlendState(&blend_desc, &internal_objects.blend); FAILED(result))
-                utils::logger(utils::e_log_type::error, "cant create blend state, return code {}.", result);
-        }
-
         if(!internal_objects.depth_stencil) {
             D3D11_DEPTH_STENCIL_DESC depth_stencil_desc{
                 .DepthEnable{ false },
@@ -137,15 +117,12 @@ namespace null::render::directx11 {
 
     void c_renderer::destroy_internal_objects() {
         if(internal_objects.sampler) { internal_objects.sampler->Release(); internal_objects.sampler = nullptr; }
-        if(internal_objects.blend) { internal_objects.blend->Release(); internal_objects.blend = nullptr; }
         if(internal_objects.depth_stencil) { internal_objects.depth_stencil->Release(); internal_objects.depth_stencil = nullptr; }
     }
 
     void c_renderer::on_setup_state() {
         shared.context->PSSetSamplers(0, 1, &internal_objects.sampler);
 
-        constexpr float blend_factor[4]{ 0.f, 0.f, 0.f, 0.f };
-        shared.context->OMSetBlendState(internal_objects.blend, blend_factor, 0xffffffff);
         shared.context->OMSetDepthStencilState(internal_objects.depth_stencil, 0);
     }
 }

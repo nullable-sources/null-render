@@ -1,4 +1,4 @@
-﻿#define gl
+﻿#define dx11
 
 #ifdef dx9
 #include <null-render-backend-directx9.h>
@@ -27,8 +27,9 @@ static constexpr std::string_view backend_name = "directx11";
 static constexpr std::string_view backend_name = "opengl3";
 #endif
 
+utils::c_immediate_time_measurement time_counter{ };
 utils::c_cumulative_time_measurement frame_counter{ 60 };
-std::unique_ptr<null::render::backend::i_blend_state> blend_state{ };
+std::unique_ptr<null::render::backend::i_blend_state> blend_state{ }, blend_state_second{ };
 std::unique_ptr<null::render::backend::i_rasterizer_state> rasterizer_state{ };
 
 void draw_example(const std::string_view& name, const std::shared_ptr<null::render::c_brush>& brush, const float& y, const null::render::pen_t& pen) {
@@ -73,13 +74,13 @@ void draw_example(const std::string_view& name, const std::shared_ptr<null::rend
 
 void main_loop() {
     std::shared_ptr<null::render::c_quad_gradient_filter> quad_gradient_filter = null::render::c_quad_gradient_filter::instance();
-    quad_gradient_filter->set_top_left_color({ 255, 255, 255, 100 });
-    quad_gradient_filter->set_top_right_color({ 255, 100, 0, 100 });
-    quad_gradient_filter->set_bottom_left_color({ 255, 0, 100, 100 });
-    quad_gradient_filter->set_bottom_right_color({ 100, 100, 255, 100 });
+    quad_gradient_filter->set_top_left_color({ 255, 255, 255 });
+    quad_gradient_filter->set_top_right_color({ 255, 100, 0 });
+    quad_gradient_filter->set_bottom_left_color({ 255, 0, 100 });
+    quad_gradient_filter->set_bottom_right_color({ 100, 100, 255 });
 
     std::shared_ptr<null::render::c_brush> brush = null::render::c_brush::instance();
-    brush->set_color({ 100, 100, 255, 100 });
+    brush->set_color({ 100, 100, 255 });
 
     std::shared_ptr<null::render::c_filter_brush> quad_gradient_brush = null::render::c_filter_brush::instance();
     quad_gradient_brush->set_filter(quad_gradient_filter);
@@ -100,12 +101,23 @@ void main_loop() {
         text_brush->set_outline_width(2.f);
         null::render::draw_list->add_text(std::format("[ {} ] fps: {:3.0f}", backend_name, 1.f / std::chrono::duration<float>{ frame_counter.representation() }.count()), { }, text_brush);
 
+        float time = std::chrono::duration_cast<std::chrono::duration<float>>(time_counter.representation()).count();
+        blend_state->unlock();
+        blend_state->factor.set(std::abs(std::sin(time * 0.6f)));
+        blend_state->lock();
+
+        blend_state_second->unlock();
+        blend_state_second->factor.set(std::abs(std::sin(time * 0.8f)));
+        blend_state_second->lock();
+
         null::render::draw_list->add_command(null::render::c_clip_command::instance(rect_t<float>(vec2_t<float>(0), vec2_t<float>(10))));
         draw_example("brush", brush, 10, { });
         null::render::draw_list->add_command(null::render::c_rasterizer_push_command::instance(rasterizer_state));
         null::render::draw_list->add_command(null::render::c_blend_push_command::instance(blend_state));
         draw_example("brush\ngradient pen", brush, 150, pen_gradient);
+        null::render::draw_list->add_command(null::render::c_blend_push_command::instance(blend_state_second));
         draw_example("gradient brush", quad_gradient_brush, 290, { });
+        null::render::draw_list->add_command(null::render::c_blend_pop_command::instance());
         null::render::draw_list->add_command(null::render::c_blend_pop_command::instance());
         null::render::draw_list->add_command(null::render::c_rasterizer_pop_command::instance());
         draw_example("gradient brush\npen", quad_gradient_brush, 430, pen_brush);
@@ -126,7 +138,7 @@ int main(HINSTANCE instance) {
 #endif
     window.clear_color = color_t<int>{ 40, 40, 40 };
 
-    window.callbacks.at<utils::win::e_window_callbacks::on_create>().add([&] { frame_counter.begin(); });
+    window.callbacks.at<utils::win::e_window_callbacks::on_create>().add([&] { frame_counter.begin(); time_counter.begin(); });
     window.callbacks.at<utils::win::e_window_callbacks::on_main_loop>().add([&] { frame_counter.update(); });
 
     window.callbacks.at<utils::win::e_window_callbacks::on_main_loop>().add(main_loop);
@@ -143,16 +155,20 @@ int main(HINSTANCE instance) {
 
         window.create();
 
-        rasterizer_state = null::render::backend::default_rasterizer_state->clone();
+        rasterizer_state = null::render::backend::factory->instance_rasterizer_state();
         rasterizer_state->unlock();
         rasterizer_state->msaa_disable.set(true);
         rasterizer_state->scissor_disable.set(true);
         rasterizer_state->lock();
 
-        blend_state = null::render::backend::default_blend_state->clone();
+        blend_state = null::render::backend::factory->instance_blend_state();
         blend_state->unlock();
-        blend_state->blend_enable.set(false);
+        blend_state->src_blend.set(null::render::backend::e_blend::constant_factor);
+        blend_state->dst_blend.set(null::render::backend::e_blend::zero);
         blend_state->lock();
+
+        blend_state_second = blend_state->clone();
+
 
         window.main_loop();
         window.destroy();

@@ -7,6 +7,9 @@ namespace null::render::directx9 {
             case backend::e_blend::zero: return D3DBLEND_ZERO;
             case backend::e_blend::one: return D3DBLEND_ONE;
 
+            case backend::e_blend::constant_factor: return D3DBLEND_BLENDFACTOR;
+            case backend::e_blend::inv_constant_factor: return D3DBLEND_INVBLENDFACTOR;
+
             case backend::e_blend::src_color: return D3DBLEND_SRCCOLOR;
             case backend::e_blend::inv_src_color: return D3DBLEND_INVSRCCOLOR;
             case backend::e_blend::src_alpha: return D3DBLEND_SRCALPHA;
@@ -26,6 +29,8 @@ namespace null::render::directx9 {
         if(!dst_blend.has_inherit()) shared.device->SetRenderState(D3DRS_DESTBLEND, to_backend_blend(dst_blend.get()));
         if(!src_alpha_blend.has_inherit()) shared.device->SetRenderState(D3DRS_SRCBLENDALPHA, to_backend_blend(src_alpha_blend.get()));
         if(!dst_alpha_blend.has_inherit()) shared.device->SetRenderState(D3DRS_DESTBLENDALPHA, to_backend_blend(dst_alpha_blend.get()));
+        if(!dst_alpha_blend.has_inherit()) shared.device->SetRenderState(D3DRS_DESTBLENDALPHA, to_backend_blend(dst_alpha_blend.get()));
+        if(!factor.has_inherit()) shared.device->SetRenderState(D3DRS_BLENDFACTOR, D3DCOLOR_COLORVALUE(factor.get(), factor.get(), factor.get(), factor.get()));
         if(!disable_color_write.has_inherit()) shared.device->SetRenderState(D3DRS_COLORWRITEENABLE, disable_color_write.get() ? 0 : 0xf);
     }
 }

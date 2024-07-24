@@ -4,8 +4,8 @@
 #include <boost/container_hash/hash.hpp>
 
 template<>
-struct std::hash<D3D11_BLEND_DESC> {
-    std::size_t operator()(const D3D11_BLEND_DESC& desc) const noexcept {
+struct std::hash<null::render::directx11::dx_blend_factor_desc> {
+    std::size_t operator()(const null::render::directx11::dx_blend_factor_desc& desc) const noexcept {
         std::size_t hash{ };
         boost::hash_combine(hash, desc.RenderTarget[0].BlendEnable);
         boost::hash_combine(hash, desc.RenderTarget[0].SrcBlend);
@@ -18,8 +18,8 @@ struct std::hash<D3D11_BLEND_DESC> {
 };
 
 namespace null::render::directx11 {
-    class c_blend_state_instances_stack : public i_state_instances_stack<ID3D11BlendState, D3D11_BLEND_DESC> {
+    class c_blend_state_instances_stack : public i_state_instances_stack<ID3D11BlendState, dx_blend_factor_desc> {
     protected:
-        virtual ID3D11BlendState* instance_object(std::size_t desc_hash, const D3D11_BLEND_DESC& desc) override;
+        virtual ID3D11BlendState* instance_object(std::size_t desc_hash, const dx_blend_factor_desc& desc) override;
     };
 }
