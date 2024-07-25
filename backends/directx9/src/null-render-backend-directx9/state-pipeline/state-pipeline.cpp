@@ -46,6 +46,7 @@ namespace null::render::directx9 {
         shared.device->GetRenderState(D3DRS_SRCBLENDALPHA, (DWORD*)&saved_blend.src_blend_alpha);
         shared.device->GetRenderState(D3DRS_DESTBLENDALPHA, (DWORD*)&saved_blend.dst_blend_alpha);
         shared.device->GetRenderState(D3DRS_COLORWRITEENABLE, (DWORD*)&saved_blend.color_write);
+        shared.device->GetRenderState(D3DRS_BLENDFACTOR, (DWORD*)&saved_blend.blend_factor);
 
         shared.device->GetRenderTarget(0, &framebuffer);
         shared.device->GetDepthStencilSurface(&depth);
@@ -113,6 +114,7 @@ namespace null::render::directx9 {
         shared.device->SetRenderState(D3DRS_SRCBLENDALPHA, saved_blend.src_blend_alpha);
         shared.device->SetRenderState(D3DRS_DESTBLENDALPHA, saved_blend.dst_blend_alpha);
         shared.device->SetRenderState(D3DRS_COLORWRITEENABLE, saved_blend.color_write);
+        shared.device->SetRenderState(D3DRS_BLENDFACTOR, saved_blend.blend_factor);
     }
 
     void c_state_pipeline::on_create() {

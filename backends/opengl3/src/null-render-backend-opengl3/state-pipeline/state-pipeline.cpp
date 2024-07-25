@@ -58,6 +58,7 @@ namespace null::render::opengl3 {
         opengl::get_integerv(opengl::e_blend_equation_rgb, (int*)&saved_blend.blend_equation_rgb);
         opengl::get_integerv(opengl::e_blend_equation_alpha, (int*)&saved_blend.blend_equation_alpha);
         opengl::get_integerv(opengl::e_color_writemask, saved_blend.color_write);
+        opengl::get_floatv(opengl::e_blend_color, saved_blend.blend_color);
 
         //@note: rasterizer save
         saved_rasterizer.enable_scissor_test = opengl::is_enabled(opengl::e_scissor_test);
@@ -126,5 +127,6 @@ namespace null::render::opengl3 {
             saved_blend.blend_src_alpha, saved_blend.blend_dst_alpha
         );
         opengl::color_mask(saved_blend.color_write[0], saved_blend.color_write[1], saved_blend.color_write[2], saved_blend.color_write[3]);
+        opengl::blend_color(saved_blend.blend_color[0], saved_blend.blend_color[1], saved_blend.blend_color[2], saved_blend.blend_color[3]);
     }
 }

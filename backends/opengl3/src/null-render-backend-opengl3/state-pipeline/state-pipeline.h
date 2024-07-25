@@ -25,6 +25,7 @@ namespace null::render::opengl3 {
                 blend_equation_rgb{ }, blend_equation_alpha{ };
 
             int color_write[4]{ };
+            float blend_color[4]{ };
         } saved_blend{ };
 
         struct saved_rasterizer_t {

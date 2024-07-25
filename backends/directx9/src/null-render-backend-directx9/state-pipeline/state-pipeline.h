@@ -28,7 +28,19 @@ namespace null::render::directx9 {
             std::uint32_t src_blend{ }, src_blend_alpha{ };
             std::uint32_t dst_blend{ }, dst_blend_alpha{ };
             std::uint32_t color_write{ };
+            std::uint32_t blend_factor{ };
         } saved_blend{ };
+        
+    public:
+        c_state_pipeline() {
+            backend::renderer_event_dispatcher.attach_listener(backend::e_renderer_event_type::create, this);
+            backend::renderer_event_dispatcher.attach_listener(backend::e_renderer_event_type::destroy, this);
+        }
+
+        ~c_state_pipeline() {
+            backend::renderer_event_dispatcher.detach_listener(backend::e_renderer_event_type::create, this);
+            backend::renderer_event_dispatcher.detach_listener(backend::e_renderer_event_type::destroy, this);
+        }
 
     public:
         void setup_state() override;
