@@ -52,7 +52,7 @@ namespace null::render::backend {
         return std::move(premultiplied);
     }
 
-    void i_renderer::begin_render() {
+    void i_renderer::begin_render(bool force_ignore_msaa) {
         update_translation(0.f);
 
         renderer_event_dispatcher.begin_render();
@@ -63,18 +63,16 @@ namespace null::render::backend {
 
         state_pipeline->setup_state();
 
-        if(render::shared::msaa_quality != 0) {
+        if(!force_ignore_msaa && render::shared::msaa_quality != 0) {
             state_pipeline->framebuffers.push(msaa_buffer);
             msaa_buffer->clear();
         }
 
-        draw_list->compile();
-        draw_list->handle();
-        draw_list->clear();
+        draw_list->flush();
     }
 
-    void i_renderer::end_render() {
-        if(render::shared::msaa_quality != 0) {
+    void i_renderer::end_render(bool force_ignore_msaa) {
+        if(!force_ignore_msaa && render::shared::msaa_quality != 0) {
             state_pipeline->framebuffers.pop();
 
             post_processing->blit_buffer(msaa_buffer.get());

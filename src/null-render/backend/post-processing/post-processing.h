@@ -37,6 +37,8 @@ namespace null::render::backend {
         rect_t<float> prepare_viewport_region(const rect_t<float>& screen_region);
         void generate_draw_geometry(c_geometry_command* command, const rect_t<float>& geometry_region, rect_t<float> uvs);
 
+        //@note: each blit_buffer/draw_buffer method can take nullptr as a buffer argument,
+        //       in this case the transfer buffer will be drawn
         //@note: blit methods use a passthrough shader, if you need to use your own shader,
         //       then use generate_geometry+draw_buffer_texture or draw_buffer/draw_buffer_region
         void blit_buffer_region(i_frame_buffer* buffer, const vec2_t<float>& uv_scaling);
@@ -52,6 +54,8 @@ namespace null::render::backend {
         void generate_geometry(const vec2_t<float>& uv_scaling);
         void generate_geometry(const rect_t<float>& geometry_region, const rect_t<float>& uvs_region);
         void draw_buffer_texture(i_frame_buffer* buffer);
+
+        void to_transfer(i_frame_buffer* buffer);
 
     private:
         void* prepare_buffer_texture(i_frame_buffer* buffer);

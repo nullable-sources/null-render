@@ -22,6 +22,12 @@ namespace null::render {
         virtual void handle() override;
 
     public:
+        void flush() {
+            compile();
+            handle();
+            clear();
+        }
+
         void stroke_path(const path_t& path, const std::shared_ptr<c_brush>& brush);
         void fill_path(const path_t& path, const std::shared_ptr<c_brush>& brush);
 

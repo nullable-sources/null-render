@@ -95,11 +95,17 @@ namespace null::render::backend {
         state_pipeline->textures.pop();
     }
 
+    void c_post_processing::to_transfer(i_frame_buffer* buffer) {
+        transfer_buffer->clear();
+        transfer_buffer->copy_from(buffer);
+    }
+
     void* c_post_processing::prepare_buffer_texture(i_frame_buffer* buffer) {
+        if(!buffer) return transfer_buffer->get_texture();
+
         void* texture = buffer->get_texture();
         if(buffer->flags & e_frame_buffer_flags::msaa) {
-            transfer_buffer->clear();
-            transfer_buffer->copy_from(buffer);
+            to_transfer(buffer);
             texture = transfer_buffer->get_texture();
         }
 
