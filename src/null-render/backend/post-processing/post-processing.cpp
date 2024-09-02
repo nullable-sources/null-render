@@ -1,8 +1,8 @@
 #include "../backend.h"
 
-namespace null::render::backend {
+namespace ntl::render::backend {
     void c_post_processing::initialize() {
-        for(auto& buffer : post_processing->frame_buffers) {
+        for(auto& buffer : frame_buffers) {
             buffer = factory->instance_frame_buffer(shared::viewport, e_frame_buffer_type::postprocessing, backend::e_frame_buffer_flags::none);
         }
 

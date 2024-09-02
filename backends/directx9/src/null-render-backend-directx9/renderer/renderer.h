@@ -4,7 +4,7 @@
 
 #include <null-render.h>
 
-namespace null::render::directx9 {
+namespace ntl::render::directx9 {
     struct shared_t {
     public:
         IDirect3DDevice9* device{ };

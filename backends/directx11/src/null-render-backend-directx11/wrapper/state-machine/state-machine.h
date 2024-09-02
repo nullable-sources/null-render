@@ -1,7 +1,7 @@
 #pragma once
 #include <unordered_map>
 
-namespace null::render::directx11 {
+namespace ntl::render::directx11 {
     template <typename object_t, typename object_desc_t>
     class i_state_instances_stack {
     protected:

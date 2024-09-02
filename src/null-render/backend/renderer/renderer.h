@@ -1,7 +1,7 @@
 #pragma once
 #include "../internal/geometry-buffer.h"
 
-namespace null::render {
+namespace ntl::render {
     namespace shared {
         inline vec2_t<int> viewport{ };
         inline std::uint32_t msaa_quality{ 8 };

@@ -6,7 +6,7 @@
 #include "rasterizer-state.h"
 #include "blend-state.h"
 
-namespace null::render::backend {
+namespace ntl::render::backend {
     class i_state_pipeline {
     public:
         template <typename object_t>

@@ -1,7 +1,7 @@
 #pragma once
 #include <boost/container_hash/hash.hpp>
 
-namespace null::render::backend {
+namespace ntl::render::backend {
     template <typename field_t>
     struct state_field_t {
     private:

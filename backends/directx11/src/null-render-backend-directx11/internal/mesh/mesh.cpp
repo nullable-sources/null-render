@@ -1,7 +1,7 @@
 #include "../../shaders/passthrough/compiled-object.h"
 #include "mesh.h"
 
-namespace null::render::directx11 {
+namespace ntl::render::directx11 {
     void c_mesh::create() {
         if(input_layout) return;
 

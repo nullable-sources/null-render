@@ -1,6 +1,6 @@
 #include "pixel.h"
 
-namespace null::render::directx9 {
+namespace ntl::render::directx9 {
     void c_pixel_shader::destroy() {
         if(empty()) return;
         if(auto result = shader->Release(); FAILED(result)) {

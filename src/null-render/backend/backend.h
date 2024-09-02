@@ -11,7 +11,7 @@
 #include "renderer/renderer.h"
 #include "state-pipeline/state-pipeline.h"
 
-namespace null::render::backend {
+namespace ntl::render::backend {
     class i_factory {
     public:
         virtual std::unique_ptr<i_renderer> instance_renderer() = 0;

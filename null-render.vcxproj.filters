@@ -1,93 +1,35 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="src">
-      <UniqueIdentifier>{d11addc5-089b-4237-a3dd-c21f8f81dcf1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\font">
-      <UniqueIdentifier>{eda5cc7f-ea04-4b39-84c1-023faa3fb642}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\font\loaders">
-      <UniqueIdentifier>{42a92ae8-850b-44b8-9983-878d9cc79f39}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\font\loaders\freetype">
-      <UniqueIdentifier>{3cff3577-97b6-4785-ab28-a033dc3a7e6e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic">
-      <UniqueIdentifier>{92a02369-d887-4fa6-a907-37fad8aec3fb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\draw-list">
-      <UniqueIdentifier>{627a08f7-8422-47a4-8f22-d81a6c06d0ba}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\commands">
-      <UniqueIdentifier>{565c00bd-8a95-4559-9881-7983374698f8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\commands\geometry">
-      <UniqueIdentifier>{9f208b51-7095-4022-a67c-1be385c31ddf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\backend">
-      <UniqueIdentifier>{a8cb3f04-36e6-4fa7-bc91-69471392379b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\backend\internal">
-      <UniqueIdentifier>{7f76bb54-744c-407a-aeec-9a47a7eab72c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\backend\renderer">
-      <UniqueIdentifier>{6cf1ef11-a737-4d58-85ac-88da8436f861}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\backend\shaders">
-      <UniqueIdentifier>{a5befbf0-2cb0-4895-bf43-e2158b07b51a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\path">
-      <UniqueIdentifier>{d0a8f224-405a-4f20-a296-c59ca99bf979}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\commands\renderer">
-      <UniqueIdentifier>{94cfcd2a-1754-4aa0-bc12-0a06417e3a06}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\brushes">
-      <UniqueIdentifier>{a9c293d8-6603-4867-a4ff-88a856c3fefd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\pen">
-      <UniqueIdentifier>{8e54cc70-5070-4be8-b574-0f08deb923fb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\stroke">
-      <UniqueIdentifier>{9020bf32-bf20-4579-b12c-cd24f7b2719d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\filters">
-      <UniqueIdentifier>{416fa4d1-bea1-49db-bba3-185df33c8d83}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\filters\linear-gradient">
-      <UniqueIdentifier>{a5210fde-3f21-4776-92fe-f09444f2cda1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\filters\sdf">
-      <UniqueIdentifier>{ce07c3ad-f5cc-4cd4-9579-21400d1a7a37}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\filters\texture">
-      <UniqueIdentifier>{8cb4e611-5cb0-4b7a-ab35-7eea16854bae}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\filters\quad-gradient">
-      <UniqueIdentifier>{e78a6bfa-cec5-43b5-b972-866fcff1b0b3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\filters\radial-gradient">
-      <UniqueIdentifier>{b8b5af27-4677-4656-b474-a1d934d6ebb6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\brushes\text">
-      <UniqueIdentifier>{6ead9510-b75f-41e0-9585-c430bea82d6e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\brushes\sdf-text">
-      <UniqueIdentifier>{53450214-496f-4b79-a253-7af735633c71}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\filters\blur">
-      <UniqueIdentifier>{71783dab-2784-4ac1-9dac-9be90597160b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\backend\state-pipeline">
-      <UniqueIdentifier>{508874cf-58d8-49e6-a0f7-8d55a634fa5a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\backend\post-processing">
-      <UniqueIdentifier>{af6b07bd-fb1c-4377-abfe-716a3451d9f9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\graphic\commands\state-pipeline">
-      <UniqueIdentifier>{c7d3e594-a9b3-4389-ae3e-f7d39f781fd0}</UniqueIdentifier>
-    </Filter>
+    <Filter Include="src" />
+    <Filter Include="src\font" />
+    <Filter Include="src\font\loaders" />
+    <Filter Include="src\font\loaders\freetype" />
+    <Filter Include="src\graphic" />
+    <Filter Include="src\graphic\draw-list" />
+    <Filter Include="src\graphic\commands" />
+    <Filter Include="src\graphic\commands\geometry" />
+    <Filter Include="src\backend" />
+    <Filter Include="src\backend\internal" />
+    <Filter Include="src\backend\renderer" />
+    <Filter Include="src\backend\shaders" />
+    <Filter Include="src\graphic\path" />
+    <Filter Include="src\graphic\commands\renderer" />
+    <Filter Include="src\graphic\brushes" />
+    <Filter Include="src\graphic\pen" />
+    <Filter Include="src\graphic\stroke" />
+    <Filter Include="src\graphic\filters" />
+    <Filter Include="src\graphic\filters\linear-gradient" />
+    <Filter Include="src\graphic\filters\sdf" />
+    <Filter Include="src\graphic\filters\texture" />
+    <Filter Include="src\graphic\filters\quad-gradient" />
+    <Filter Include="src\graphic\filters\radial-gradient" />
+    <Filter Include="src\graphic\brushes\text" />
+    <Filter Include="src\graphic\brushes\sdf-text" />
+    <Filter Include="src\graphic\filters\blur" />
+    <Filter Include="src\backend\state-pipeline" />
+    <Filter Include="src\backend\post-processing" />
+    <Filter Include="src\graphic\commands\state-pipeline" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\null-render\font\font.cpp">

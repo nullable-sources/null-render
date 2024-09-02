@@ -1,7 +1,7 @@
 #pragma once
 #include <null-render.h>
 
-namespace null::render::opengl3 {
+namespace ntl::render::opengl3 {
     class c_renderer : public backend::i_renderer {
     public:
         constexpr bool framebuffer_uvs_flipped() override { return true; }

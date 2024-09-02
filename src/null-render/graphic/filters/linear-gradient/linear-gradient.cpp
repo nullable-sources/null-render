@@ -1,8 +1,7 @@
 #include "../../../backend/state-pipeline/state-pipeline.h"
-
 #include "linear-gradient.h"
 
-namespace null::render {
+namespace ntl::render {
     void c_linear_gradient_filter::handle() {
         backend::linear_gradient_shader->set_constants(constants);
         backend::state_pipeline->shaders.push(backend::linear_gradient_shader);

@@ -6,7 +6,7 @@
 #include "../pen/pen.h"
 #include "../path/path.h"
 
-namespace null::render {
+namespace ntl::render {
     class c_draw_list : public c_command_buffer {
     public:
         static std::shared_ptr<c_draw_list> instance(std::unique_ptr<backend::c_mesh>&& mesh) { return std::make_shared<c_draw_list>(std::move(mesh)); }

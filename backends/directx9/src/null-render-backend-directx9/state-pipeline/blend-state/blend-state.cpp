@@ -1,7 +1,7 @@
 #include "../../renderer/renderer.h"
 #include "blend-state.h"
 
-namespace null::render::directx9 {
+namespace ntl::render::directx9 {
     D3DBLEND c_blend_state::to_backend_blend(const backend::e_blend& blend) {
         switch(blend) {
             case backend::e_blend::zero: return D3DBLEND_ZERO;

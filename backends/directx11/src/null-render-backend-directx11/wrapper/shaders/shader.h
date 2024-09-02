@@ -1,7 +1,7 @@
 #pragma once
 #include "../constant-buffer/constant-buffer.h"
 
-namespace null::render::directx11 {
+namespace ntl::render::directx11 {
     class i_compiled_shader : public backend::i_compiled_shader_object {
     public:
         virtual void compile(const std::vector<std::uint8_t>& source) = 0;

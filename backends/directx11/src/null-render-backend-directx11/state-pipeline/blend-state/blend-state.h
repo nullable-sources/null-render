@@ -2,7 +2,7 @@
 #include <null-render/backend/state-pipeline/blend-state.h>
 #include "../../wrapper/state-machine/blend-state-instances-stack/blend-state-instances-stack.h"
 
-namespace null::render::directx11 {
+namespace ntl::render::directx11 {
     class c_blend_state : public i_state_machine<backend::i_blend_state, ID3D11BlendState, dx_blend_factor_desc> {
     private:
         static inline c_blend_state_instances_stack instances_stack{ };

@@ -2,7 +2,7 @@
 #include <null-render/backend/state-pipeline/rasterizer-state.h>
 #include "../../wrapper/state-machine/rasterizer-state-instances-stack/rasterizer-state-instances-stack.h"
 
-namespace null::render::directx11 {
+namespace ntl::render::directx11 {
     //@note: The forced shutdown of MSAA only works for the first feature level.
     //       To use it in your projects, connect null-render-backend-directx11-feature1.
     //       Or define the NULL_RENDER_DX11_ALLOW_FEATURE_11_1 macro in the null-render-backend-directx11 project settings

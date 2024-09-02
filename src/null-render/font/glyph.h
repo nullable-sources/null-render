@@ -1,7 +1,7 @@
 #pragma once
 #include <null-sdk.h>
 
-namespace null::render{
+namespace ntl::render {
     struct glyph_t {
     public:
         bool visible{ true };

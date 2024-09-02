@@ -1,7 +1,7 @@
 #pragma once
 #include <null-sdk.h>
 
-namespace null::render::backend {
+namespace ntl::render::backend {
     enum class e_topology { triangle_list, triangle_strip };
 
     using index_t = std::uint32_t;

@@ -2,7 +2,7 @@
 #include "../../../backend/shaders/sdf.h"
 #include "../texture/texture.h"
 
-namespace null::render {
+namespace ntl::render {
     template <typename shader_constants_t = backend::i_sdf_shader::constants_t>
     class i_sdf_filter : public c_texture_filter {
     public:

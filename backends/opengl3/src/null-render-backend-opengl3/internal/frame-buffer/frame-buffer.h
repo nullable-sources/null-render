@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <null-render.h>
 
-namespace null::render::opengl3 {
+namespace ntl::render::opengl3 {
     class c_frame_buffer : public backend::i_frame_buffer {
     public: using i_frame_buffer::i_frame_buffer;
     public:

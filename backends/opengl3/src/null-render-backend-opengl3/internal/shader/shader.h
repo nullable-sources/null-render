@@ -1,7 +1,7 @@
 #pragma once
 #include "../../wrapper/fields.h"
 
-namespace null::render::opengl3 {
+namespace ntl::render::opengl3 {
     class c_shader : private virtual backend::i_shader {
     public:
         std::unique_ptr<c_program> program{ };

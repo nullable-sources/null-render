@@ -2,7 +2,7 @@
 #include "../wrapper/vertex/vertex.h"
 #include "../wrapper/pixel/pixel.h"
 
-namespace null::render::directx9 {
+namespace ntl::render::directx9 {
     class c_shader : public virtual backend::i_shader {
     public:
         c_pixel_shader* pixel_shader{ };

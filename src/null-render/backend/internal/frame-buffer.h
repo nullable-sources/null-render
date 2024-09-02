@@ -1,9 +1,9 @@
 #pragma once
+#include "../renderer/renderer.h"
 #include "object.h"
 #include "renderer-events.h"
-#include "../renderer/renderer.h"
 
-namespace null::render::backend {
+namespace ntl::render::backend {
     enum class e_frame_buffer_type {
         backbuffer,
         postprocessing
@@ -13,8 +13,8 @@ namespace null::render::backend {
         none = 0,
         msaa = 1 << 0,
         depth_buffer = 1 << 1
-    }; enum_create_bit_operators(e_frame_buffer_flags, true);
-    enum_create_cast_operator(e_frame_buffer_flags, -);
+    }; ENUM_CREATE_BIT_OPERATORS(e_frame_buffer_flags, true);
+    ENUM_CREATE_CAST_OPERATOR(e_frame_buffer_flags, -);
 
     class i_frame_buffer : protected i_renderer_event_listener, public i_usable_object {
     public:

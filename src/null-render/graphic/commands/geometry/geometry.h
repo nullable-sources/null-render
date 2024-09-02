@@ -2,7 +2,7 @@
 #include "../../../backend/internal/geometry-buffer.h"
 #include "../commands.h"
 
-namespace null::render {
+namespace ntl::render {
     class i_geometry_command : public i_command {
     public:
         backend::e_topology topology{ };

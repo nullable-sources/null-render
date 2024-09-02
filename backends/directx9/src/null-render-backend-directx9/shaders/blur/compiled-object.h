@@ -1,7 +1,7 @@
 #pragma once
 #include "../passthrough/compiled-object.h"
 
-namespace null::render::directx9 {
+namespace ntl::render::directx9 {
     namespace sources {
         static const std::vector<byte>& blur() {
 #include "compiled/blur.h"

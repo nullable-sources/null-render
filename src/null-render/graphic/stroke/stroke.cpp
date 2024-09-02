@@ -2,7 +2,7 @@
 
 #include "stroke.h"
 
-namespace null::render {
+namespace ntl::render {
     void stroke_t::segment_t::i_edge::from_points(const vec2_t<float>& previous_point, const vec2_t<float>& current_point, const vec2_t<float>& next_point, math::e_rotation normal_rotation) {
         to_next_direction = current_point.direction(next_point);
         from_previous_direction = previous_point.direction(current_point);
@@ -13,7 +13,7 @@ namespace null::render {
         miter_angle = angle_t<radians_t>(math::angle_between(
             invert_vector_axis(to_next_direction, math::e_rotation::cw),
             invert_vector_axis(from_previous_direction, math::e_rotation::cw)
-        )).normalized() / 2.;
+        )).normalized<std::numbers::pi>() / 2.; //@note: we use pi (180 deg) as the boundaries
         max_miter_dist = std::abs(std::max(vec2_t<float>(current_point - next_point).length(), vec2_t<float>(current_point - previous_point).length()) / miter_angle.sin());
     }
 

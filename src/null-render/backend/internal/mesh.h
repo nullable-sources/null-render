@@ -3,7 +3,7 @@
 #include "object.h"
 #include "renderer-events.h"
 
-namespace null::render::backend {
+namespace ntl::render::backend {
     class i_mesh : protected i_renderer_event_listener, public i_usable_object {
     public:
         i_mesh() {

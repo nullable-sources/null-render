@@ -1,7 +1,7 @@
 #pragma once
 #include <null-render/backend/state-pipeline/state-pipeline.h>
 
-namespace null::render::opengl3 {
+namespace ntl::render::opengl3 {
     class c_state_pipeline : public backend::i_state_pipeline {
     public:
         struct {

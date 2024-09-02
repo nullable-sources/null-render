@@ -1,6 +1,6 @@
 #include "font.h"
 
-namespace null::render {
+namespace ntl::render {
     template <typename char_t>
     vec2_t<float> c_font::calc_text_size(std::basic_string_view<char_t> text, float custom_size, float letter_spacing, float line_spacing) {
         float scale = 1.f;

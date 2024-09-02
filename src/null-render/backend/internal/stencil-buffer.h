@@ -3,7 +3,7 @@
 #include "renderer-events.h"
 #include "../renderer/renderer.h"
 
-namespace null::render::backend {
+namespace ntl::render::backend {
     enum class e_stencil_operation {
         set,
         set_inverse,

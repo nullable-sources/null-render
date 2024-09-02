@@ -2,7 +2,7 @@
 #include "../../../backend/shaders/quad-gradient.h"
 #include "../filter.h"
 
-namespace null::render {
+namespace ntl::render {
     class c_quad_gradient_filter : public i_filter {
     public:
         static std::shared_ptr<c_quad_gradient_filter> instance() { return std::make_shared<c_quad_gradient_filter>(); }

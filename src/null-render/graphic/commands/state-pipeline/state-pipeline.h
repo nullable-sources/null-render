@@ -1,8 +1,8 @@
 #pragma once
-#include "../commands.h"
 #include "../../../backend/state-pipeline/state-pipeline.h"
+#include "../commands.h"
 
-namespace null::render {
+namespace ntl::render {
     class c_setup_state_command : public i_command {
     public:
         static std::shared_ptr<c_setup_state_command> instance() { return std::make_shared<c_setup_state_command>(); }

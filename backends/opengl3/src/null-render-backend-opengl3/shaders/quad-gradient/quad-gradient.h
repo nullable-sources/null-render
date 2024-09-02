@@ -2,7 +2,7 @@
 #include "../../internal/shader/shader.h"
 #include "compiled-object.h"
 
-namespace null::render::opengl3 {
+namespace ntl::render::opengl3 {
     class c_quad_gradient_shader : public backend::i_quad_gradient_shader, public c_default_shader {
     public:
         c_uniform<vec4_t<float>> top_left_color{ }, top_right_color{ }, bottom_right_color{ }, bottom_left_color{ };

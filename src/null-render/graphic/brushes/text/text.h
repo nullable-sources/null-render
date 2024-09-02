@@ -3,7 +3,7 @@
 #include "../../filters/texture/texture.h"
 #include "../filter-brush.h"
 
-namespace null::render {
+namespace ntl::render {
     enum class e_text_align {
         none,
         right = 1 << 0, //@note: will be draw at pos - text_size.x
@@ -12,8 +12,8 @@ namespace null::render {
         center_x = 1 << 2,
         center_y = 1 << 3,
         center = center_x | center_y,
-    }; enum_create_bit_operators(e_text_align, true);
-    enum_create_cast_operator(e_text_align, -);
+    }; ENUM_CREATE_BIT_OPERATORS(e_text_align, true);
+    ENUM_CREATE_CAST_OPERATOR(e_text_align, -);
 
     class i_text_brush : public c_brush {
     public:

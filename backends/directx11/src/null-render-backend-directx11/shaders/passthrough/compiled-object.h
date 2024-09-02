@@ -2,7 +2,7 @@
 #include "../../wrapper/shaders/pixel.h"
 #include "../../wrapper/shaders/vertex.h"
 
-namespace null::render::directx11 {
+namespace ntl::render::directx11 {
     namespace sources {
         static const std::vector<byte>& passthrough_ps() {
 #include "compiled/passthrough-ps.h"

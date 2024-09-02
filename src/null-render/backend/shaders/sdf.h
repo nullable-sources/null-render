@@ -1,7 +1,7 @@
 #pragma once
 #include "../internal/shader.h"
 
-namespace null::render::backend {
+namespace ntl::render::backend {
     //@note: https://github.com/Chlumsky/msdfgen
     //       https://github.com/Chlumsky/msdf-atlas-gen
     //       https://www.redblobgames.com/x/2404-distance-field-effects/

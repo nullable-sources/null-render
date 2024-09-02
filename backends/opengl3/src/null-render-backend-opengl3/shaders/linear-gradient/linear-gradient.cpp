@@ -1,6 +1,6 @@
 #include "linear-gradient.h"
 
-namespace null::render::opengl3 {
+namespace ntl::render::opengl3 {
     void c_linear_gradient_shader::create() {
         if(!empty()) return;
         c_default_shader::create();

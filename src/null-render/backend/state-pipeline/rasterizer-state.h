@@ -2,7 +2,7 @@
 #include "../internal/object.h"
 #include "state-field.h"
 
-namespace null::render::backend {
+namespace ntl::render::backend {
     class i_rasterizer_state : public i_usable_object {
     protected:
         std::size_t overridden_hash{ };

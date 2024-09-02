@@ -1,7 +1,7 @@
 #pragma once
 #include <null-sdk.h>
 
-namespace null::render {
+namespace ntl::render {
     enum class e_line_join {
         miter,
         bevel,

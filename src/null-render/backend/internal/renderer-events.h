@@ -1,9 +1,9 @@
 #pragma once
 #include <null-sdk.h>
 
-namespace null::render::backend {
+namespace ntl::render::backend {
     enum class e_renderer_event_type { create, destroy, begin_render, end_render, setup_state, viewport_resize_begin, viewport_resize_end };
-    class c_renderer_event_dispatcher : public utils::c_event_dispatcher<e_renderer_event_type> {
+    class c_renderer_event_dispatcher : public c_event_dispatcher<e_renderer_event_type> {
     public:
         void create() { dispatch_event(e_renderer_event_type::create, { }); }
         void destroy() { dispatch_event(e_renderer_event_type::destroy, { }); }
@@ -14,9 +14,9 @@ namespace null::render::backend {
         void viewport_resize_end() { dispatch_event(e_renderer_event_type::viewport_resize_end, { }); }
     } inline renderer_event_dispatcher{ };
 
-    class i_renderer_event_listener : public utils::i_event_listener<e_renderer_event_type> {
+    class i_renderer_event_listener : public i_event_listener<e_renderer_event_type> {
     private:
-        void process_event(e_renderer_event_type id, const utils::event_parameters_t& parameters) override {
+        void process_event(e_renderer_event_type id, const event_parameters_t& parameters) override {
             switch(id) {
                 case e_renderer_event_type::create: { on_create(); } break;
                 case e_renderer_event_type::destroy: { on_destroy(); } break;

@@ -2,7 +2,7 @@
 #include "../../../backend/state-pipeline/state-pipeline.h"
 #include "renderer.h"
 
-namespace null::render {
+namespace ntl::render {
     void c_texture_command::handle() {
         backend::renderer->set_texture(texture);
     }

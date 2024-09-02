@@ -1,6 +1,6 @@
 #include "radial-gradient.h"
 
-namespace null::render::directx9 {
+namespace ntl::render::directx9 {
     void c_radial_gradient_shader::set_constants(const constants_t& constants) {
         std::array<color_t<float>, 16> colors{ };
         std::array<vec4_t<float>, 16> stops{ };

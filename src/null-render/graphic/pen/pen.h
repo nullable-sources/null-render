@@ -1,8 +1,8 @@
 #pragma once
 #include "../../backend/internal/geometry-buffer.h"
-#include "../brushes/brush.h"
+#include "../../graphic/brushes/brush.h"
 
-namespace null::render {
+namespace ntl::render {
     enum class e_pen_layer {
         foreground, //@note: drawing over original geometry
         background //@note: drawing under original geometry

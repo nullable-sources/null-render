@@ -9,7 +9,7 @@
     <ItemDefinitionGroup>
         <ClCompile>
             <AdditionalIncludeDirectories>$(NullRenderBackendDirectx11Root)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-            <PreprocessorDefinitions>%(PreprocessorDefinitions);NULL_RENDER_DX11_ALLOW_FEATURE_11_1;</PreprocessorDefinitions>
+            <PreprocessorDefinitions>NULL_RENDER_DX11_ALLOW_FEATURE_11_1;%(PreprocessorDefinitions);</PreprocessorDefinitions>
         </ClCompile>
         <Lib>
             <AdditionalLibraryDirectories>$(NullRenderBackendDirectx11Root)build;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

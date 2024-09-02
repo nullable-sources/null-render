@@ -1,7 +1,7 @@
 #include "../wrapper/opengl3.h"
 #include "state-pipeline.h"
 
-namespace null::render::opengl3 {
+namespace ntl::render::opengl3 {
     void c_state_pipeline::setup_state() {
         opengl::blend_equation(opengl::e_func_add);
         opengl::disable(opengl::e_cull_face);

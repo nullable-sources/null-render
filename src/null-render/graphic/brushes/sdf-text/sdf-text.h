@@ -2,7 +2,7 @@
 #include "../../filters/sdf/sdf.h"
 #include "../text/text.h"
 
-namespace null::render {
+namespace ntl::render {
     template <typename sdf_filter_t>
     class i_sdf_brush : public i_text_brush {
     private:

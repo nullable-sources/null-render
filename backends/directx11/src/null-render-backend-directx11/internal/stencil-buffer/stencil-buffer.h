@@ -1,7 +1,7 @@
 #pragma once
 #include "../../renderer/renderer.h"
 
-namespace null::render::directx11 {
+namespace ntl::render::directx11 {
     class c_stencil_buffer : public backend::i_stencil_buffer {
     public: using i_stencil_buffer::i_stencil_buffer;
     public:

@@ -1,7 +1,7 @@
 #pragma once
 #include "../../wrapper/fields.h"
 
-namespace null::render::opengl3 {
+namespace ntl::render::opengl3 {
     class c_mesh : public backend::c_mesh {
     public:
         c_vertex_element<backend::vertex_t, 2, opengl::e_float, false, offsetof(backend::vertex_t, pos)> position{ };

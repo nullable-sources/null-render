@@ -1,7 +1,7 @@
 #include <null-render/backend/state-pipeline/state-pipeline.h>
 #include "blend-state.h"
 
-namespace null::render::directx11 {
+namespace ntl::render::directx11 {
     D3D11_BLEND c_blend_state::to_backend_blend(const backend::e_blend& blend) {
         switch(blend) {
             case backend::e_blend::zero: return D3D11_BLEND_ZERO;

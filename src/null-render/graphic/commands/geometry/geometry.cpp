@@ -3,7 +3,7 @@
 
 #include "geometry.h"
 
-namespace null::render {
+namespace ntl::render {
     void i_geometry_command::handle() {
         backend::renderer->draw_geometry(topology, vertex_count, index_count, vertex_offset, index_offset);
     }

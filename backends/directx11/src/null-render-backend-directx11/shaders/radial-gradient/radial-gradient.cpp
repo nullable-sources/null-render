@@ -1,6 +1,6 @@
 #include "radial-gradient.h"
 
-namespace null::render::directx11 {
+namespace ntl::render::directx11 {
     void c_radial_gradient_shader::use() {
         if(empty()) return;
         c_shader::use();

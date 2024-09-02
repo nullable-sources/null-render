@@ -1,8 +1,8 @@
 #pragma once
-#include "null-render-backend-directx9/renderer/renderer.h"
+#include "../../renderer/renderer.h"
 #include "../compiled-shader.h"
 
-namespace null::render::directx9 {
+namespace ntl::render::directx9 {
     class c_pixel_shader : public i_compiled_shader {
     public:
         IDirect3DPixelShader9* shader{ };

@@ -2,7 +2,7 @@
 #include "../internal/object.h"
 #include "state-field.h"
 
-namespace null::render::backend {
+namespace ntl::render::backend {
     enum class e_blend {
         zero, one,
         constant_factor, inv_constant_factor,

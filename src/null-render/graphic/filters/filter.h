@@ -1,7 +1,7 @@
 #pragma once
 #include "../commands/geometry/geometry.h"
 
-namespace null::render {
+namespace ntl::render {
     class i_filter : public i_command {
     public:
         std::shared_ptr<i_command> child_command{ };

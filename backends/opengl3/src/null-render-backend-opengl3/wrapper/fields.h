@@ -1,7 +1,7 @@
 #pragma once
 #include "program.h"
 
-namespace null::render::opengl3 {
+namespace ntl::render::opengl3 {
     class i_field {
     public:
         int location{ };

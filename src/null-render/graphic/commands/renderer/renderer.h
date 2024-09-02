@@ -1,8 +1,8 @@
 #pragma once
-#include "../commands.h"
 #include "../../../backend/internal/stencil-buffer.h"
+#include "../commands.h"
 
-namespace null::render {
+namespace ntl::render {
     class c_texture_command : public i_command {
     public:
         static std::shared_ptr<c_texture_command> instance() { return std::make_shared<c_texture_command>(); }

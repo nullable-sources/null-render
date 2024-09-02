@@ -1,10 +1,8 @@
 #include "../../../font/font.h"
-
 #include "../../../backend/state-pipeline/state-pipeline.h"
-
 #include "sdf.h"
 
-namespace null::render {
+namespace ntl::render {
     void c_sdf_filter::handle() {
         backend::sdf_shader->set_constants(constants);
         backend::state_pipeline->shaders.push(backend::sdf_shader);

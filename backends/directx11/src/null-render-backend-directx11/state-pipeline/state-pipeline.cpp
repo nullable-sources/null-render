@@ -1,6 +1,6 @@
 #include "state-pipeline.h"
 
-namespace null::render::directx11 {
+namespace ntl::render::directx11 {
     void c_state_pipeline::setup_state() {
         D3D11_VIEWPORT viewport{ 0, 0,
             render::shared::viewport.x,

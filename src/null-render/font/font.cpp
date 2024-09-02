@@ -3,7 +3,7 @@
 #include "loaders/freetype/freetype.h"
 #include "font.h"
 
-namespace null::render {
+namespace ntl::render {
     static inline c_font* default_font{ };
 
     glyph_t* c_font::find_glyph(std::uint32_t codepoint) {

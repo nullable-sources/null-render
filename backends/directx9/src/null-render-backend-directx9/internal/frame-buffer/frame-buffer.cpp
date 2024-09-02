@@ -1,6 +1,6 @@
 #include "frame-buffer.h"
 
-namespace null::render::directx9 {
+namespace ntl::render::directx9 {
     void c_frame_buffer::create() {
         if(!empty()) return;
 

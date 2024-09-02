@@ -2,7 +2,7 @@
 #include "../../internal/shader.h"
 #include "compiled-object.h"
 
-namespace null::render::directx9 {
+namespace ntl::render::directx9 {
     template <typename implement_sdf_type_t>
     class i_sdf_shader : public implement_sdf_type_t, public c_default_shader {
     public:

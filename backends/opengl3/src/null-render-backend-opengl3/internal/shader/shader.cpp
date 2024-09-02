@@ -1,6 +1,6 @@
 #include "shader.h"
 
-namespace null::render::opengl3 {
+namespace ntl::render::opengl3 {
     void c_shader::create() {
         if(!empty()) return;
         program = std::make_unique<c_program>();

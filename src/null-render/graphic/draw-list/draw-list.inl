@@ -1,6 +1,6 @@
 #include "draw-list.h"
 
-namespace null::render {
+namespace ntl::render {
     template <typename char_t>
     std::shared_ptr<i_command> c_draw_list::make_text_command(std::basic_string_view<char_t> text, vec2_t<float> pos, const std::shared_ptr<i_text_brush>& text_brush, vec2_t<float>* out_size) {
         const color_t<int>& brush_color = text_brush->color;

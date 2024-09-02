@@ -1,103 +1,40 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="src">
-      <UniqueIdentifier>{d11addc5-089b-4237-a3dd-c21f8f81dcf1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\shaders">
-      <UniqueIdentifier>{2c8b535c-f26b-449a-a026-0d9dec481687}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\wrapper">
-      <UniqueIdentifier>{84603a9a-7da5-46ee-91de-cb5f324746eb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\wrapper\shaders">
-      <UniqueIdentifier>{737f040b-a628-4c80-b515-7425d35e42ae}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\wrapper\constant-buffer">
-      <UniqueIdentifier>{0631fab0-6e2c-439b-8982-391e2883f19e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\internal">
-      <UniqueIdentifier>{af9b015d-5f8d-44fc-9709-42416923b833}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\internal\frame-buffer">
-      <UniqueIdentifier>{8b6bd0d9-564a-4fb5-9531-9bc4591c7181}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\internal\mesh">
-      <UniqueIdentifier>{fc18e55a-e7b0-4dcc-b637-f815e842aa09}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\renderer">
-      <UniqueIdentifier>{a9d4b66d-3e6b-42b4-bdb4-5c5b97589428}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\shaders\sdf">
-      <UniqueIdentifier>{41687e7f-5c9e-42de-bf2f-bdc24e400a9d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\shaders\quad-gradient">
-      <UniqueIdentifier>{1a48af89-e860-4be8-b832-9cb93583d937}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\shaders\linear-gradient">
-      <UniqueIdentifier>{d563d6f0-1320-44fe-ba78-71c3c0ecd6ff}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\shaders\sdf\hlsl">
-      <UniqueIdentifier>{6c30eeb5-e102-4d2b-a6c8-4ee9884ad89e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\shaders\quad-gradient\hlsl">
-      <UniqueIdentifier>{dbb2e552-947b-4739-bfcc-9552f56b90a1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\shaders\linear-gradient\hlsl">
-      <UniqueIdentifier>{ff6bdf84-77d6-4af5-9a94-f4c1cf7d123c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\shaders\radial-gradient">
-      <UniqueIdentifier>{64423046-1d23-416a-828b-51067786360a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\shaders\radial-gradient\hlsl">
-      <UniqueIdentifier>{22613903-cdd9-4e1c-a6c6-30b46975e047}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\shaders\blur">
-      <UniqueIdentifier>{3e78a32e-68bf-4e18-bd9d-5536491ddb04}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\shaders\blur\hlsl">
-      <UniqueIdentifier>{b7a29695-6613-4b05-8347-d6fac6467764}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\state-pipeline">
-      <UniqueIdentifier>{cb7f967c-abce-4390-ba9d-169287b9df6c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\internal\stencil-buffer">
-      <UniqueIdentifier>{e9786f58-ffb0-46fb-af6a-c9b60b3771f5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\shaders\color">
-      <UniqueIdentifier>{214efaaf-bd30-43fb-8c98-130354f2a816}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\shaders\passthrough">
-      <UniqueIdentifier>{14f6f2e4-447d-4f20-94c5-93093e74ae49}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\shaders\texture">
-      <UniqueIdentifier>{196b7918-0dac-4be9-bf0e-ca82674c2c71}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\shaders\color\hlsl">
-      <UniqueIdentifier>{8f7c4490-d3d6-4ea0-a804-719ed4a24553}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\shaders\passthrough\hlsl">
-      <UniqueIdentifier>{ebb76678-cfae-40ca-b0b2-ee6af862f3f6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\shaders\texture\hlsl">
-      <UniqueIdentifier>{81fb4f8d-2b54-4ab0-8eaa-00fe1659d116}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\state-pipeline\rasterizer-state">
-      <UniqueIdentifier>{890678c1-bbc9-432e-8cf5-a085d6480a3a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\wrapper\state-machine">
-      <UniqueIdentifier>{2909998f-60aa-442e-8c02-a288a3ea8813}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\wrapper\state-machine\rasterizer-state-instances-stack">
-      <UniqueIdentifier>{6f7ba7bb-a0d1-41c0-ad57-4b329ddc4c86}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\wrapper\state-machine\blend-state-instances-stack">
-      <UniqueIdentifier>{0199517f-e131-4c94-a338-01ec6bf61348}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\state-pipeline\blend-state">
-      <UniqueIdentifier>{f2c9a161-4b1a-49f6-b259-8647bd982af4}</UniqueIdentifier>
-    </Filter>
+    <Filter Include="src"/>
+    <Filter Include="src\shaders"/>
+    <Filter Include="src\wrapper"/>
+    <Filter Include="src\wrapper\shaders"/>
+    <Filter Include="src\wrapper\constant-buffer"/>
+    <Filter Include="src\internal"/>
+    <Filter Include="src\internal\frame-buffer"/>
+    <Filter Include="src\internal\mesh"/>
+    <Filter Include="src\renderer"/>
+    <Filter Include="src\shaders\sdf"/>
+    <Filter Include="src\shaders\quad-gradient"/>
+    <Filter Include="src\shaders\linear-gradient"/>
+    <Filter Include="src\shaders\sdf\hlsl"/>
+    <Filter Include="src\shaders\quad-gradient\hlsl"/>
+    <Filter Include="src\shaders\linear-gradient\hlsl"/>
+    <Filter Include="src\shaders\radial-gradient"/>
+    <Filter Include="src\shaders\radial-gradient\hlsl"/>
+    <Filter Include="src\shaders\blur"/>
+    <Filter Include="src\shaders\blur\hlsl"/>
+    <Filter Include="src\state-pipeline"/>
+    <Filter Include="src\internal\stencil-buffer"/>
+    <Filter Include="src\shaders\color"/>
+    <Filter Include="src\shaders\passthrough"/>
+    <Filter Include="src\shaders\texture"/>
+    <Filter Include="src\shaders\color\hlsl"/>
+    <Filter Include="src\shaders\passthrough\hlsl"/>
+    <Filter Include="src\shaders\texture\hlsl"/>
+    <Filter Include="src\state-pipeline\rasterizer-state"/>
+    <Filter Include="src\wrapper\state-machine"/>
+    <Filter Include="src\wrapper\state-machine\rasterizer-state-instances-stack"/>
+    <Filter Include="src\wrapper\state-machine\blend-state-instances-stack"/>
+    <Filter Include="src\state-pipeline\blend-state"/>
   </ItemGroup>
+
   <ItemGroup>
     <ClCompile Include="src\null-render-backend-directx11\internal\frame-buffer\frame-buffer.cpp">
       <Filter>src\internal\frame-buffer</Filter>
@@ -243,6 +180,7 @@
       <Filter>src\state-pipeline\blend-state</Filter>
     </ClInclude>
   </ItemGroup>
+
   <ItemGroup>
     <FxCompile Include="src\null-render-backend-directx11\shaders\sdf\hlsl\sdf.hlsl">
       <Filter>src\shaders\sdf\hlsl</Filter>
@@ -281,6 +219,7 @@
       <Filter>src\shaders\sdf\hlsl</Filter>
     </FxCompile>
   </ItemGroup>
+  
   <ItemGroup>
     <None Include="src\null-render-backend-directx11\shaders\sdf\hlsl\sdf.hlsli">
       <Filter>src\shaders\sdf\hlsl</Filter>

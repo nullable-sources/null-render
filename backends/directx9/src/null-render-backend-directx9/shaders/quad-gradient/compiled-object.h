@@ -1,7 +1,7 @@
 #pragma once
 #include "../color/compiled-object.h"
 
-namespace null::render::directx9 {
+namespace ntl::render::directx9 {
     namespace sources {
         static const std::vector<byte>& quad_gradient() {
 #include "compiled/quad-gradient.h"

@@ -1,7 +1,7 @@
 #pragma once
 #include "../internal/shader.h"
 
-namespace null::render::backend {
+namespace ntl::render::backend {
     class i_radial_gradient_shader : public virtual i_shader {
     public:
         struct constants_t {

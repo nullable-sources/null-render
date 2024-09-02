@@ -1,7 +1,7 @@
 #pragma once
 #include "../../renderer/renderer.h"
 
-namespace null::render::directx11 {
+namespace ntl::render::directx11 {
     template <typename struct_t>
     class c_constant_buffer {
     public:

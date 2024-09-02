@@ -1,7 +1,7 @@
 #pragma once
 #include "shader.h"
 
-namespace null::render::directx11 {
+namespace ntl::render::directx11 {
     class c_pixel_shader : public i_compiled_shader {
     public:
         ID3D11PixelShader* shader{ };

@@ -1,7 +1,7 @@
 #pragma once
 #include "../color/compiled-object.h"
 
-namespace null::render::directx11 {
+namespace ntl::render::directx11 {
     namespace sources {
         static const std::vector<byte>& texture() {
 #include "compiled/texture.h"

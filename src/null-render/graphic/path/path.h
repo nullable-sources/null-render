@@ -4,9 +4,9 @@
 #include <micro-tess/chunker.h>
 #include <micro-tess/std_rebind_allocator.h>
 
-#include "../stroke/stroke.h"
+#include "../../graphic/stroke/stroke.h"
 
-namespace null::render {
+namespace ntl::render {
     namespace shared {
         inline int arc_fast_tessellation_multiplier{ 1 };
         inline float circle_segment_max_error{ 1.6f };
@@ -158,7 +158,7 @@ namespace null::render {
         top_right,
         bottom_left,
         bottom_right
-    }; enum_create_cast_operator(e_corner_sides, -);
+    }; ENUM_CREATE_CAST_OPERATOR(e_corner_sides, -);
 
     enum class e_corner_flags {
         top_left = 1 << 0,
@@ -175,8 +175,8 @@ namespace null::render {
         right_diagonal = top_right | bottom_left,
 
         all = top_left | top_right | bottom_left | bottom_right
-    }; enum_create_bit_operators(e_corner_flags, true);
-    enum_create_cast_operator(e_corner_flags, -);
+    }; ENUM_CREATE_BIT_OPERATORS(e_corner_flags, true);
+    ENUM_CREATE_CAST_OPERATOR(e_corner_flags, -);
 
     struct rounding_t {
     public:

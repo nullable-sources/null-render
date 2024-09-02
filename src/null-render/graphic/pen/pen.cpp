@@ -1,8 +1,8 @@
 #include "../../backend/internal/mesh.h"
-#include "../stroke/stroke.h"
+#include "../../graphic/stroke/stroke.h"
 #include "pen.h"
 
-namespace null::render {
+namespace ntl::render {
     std::shared_ptr<i_command> pen_t::around_convex_shape(const std::shared_ptr<c_geometry_command>& command) const {
         std::shared_ptr<c_geometry_command> pen_command = c_geometry_command::instance(command->geometry_buffer);
 

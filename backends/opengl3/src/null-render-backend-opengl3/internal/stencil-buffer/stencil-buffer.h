@@ -1,7 +1,7 @@
 #pragma once
 #include <null-render.h>
 
-namespace null::render::opengl3 {
+namespace ntl::render::opengl3 {
     class c_stencil_buffer : public backend::i_stencil_buffer {
     public: using i_stencil_buffer::i_stencil_buffer;
     public:

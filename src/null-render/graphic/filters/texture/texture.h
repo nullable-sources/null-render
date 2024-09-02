@@ -1,7 +1,7 @@
 #pragma once
 #include "../filter.h"
 
-namespace null::render {
+namespace ntl::render {
     class c_texture_filter : public i_filter {
     public:
         static std::shared_ptr<c_texture_filter> instance() { return std::make_shared<c_texture_filter>(); }

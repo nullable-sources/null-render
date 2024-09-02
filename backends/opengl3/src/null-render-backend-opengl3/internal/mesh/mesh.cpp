@@ -1,7 +1,7 @@
-#include "../../shaders/passthrough/compiled-object.h"
+#include "null-render-backend-opengl3/shaders/passthrough/compiled-object.h"
 #include "mesh.h"
 
-namespace null::render::opengl3 {
+namespace ntl::render::opengl3 {
     void c_mesh::create() {
         if(vao != 0) return;
 

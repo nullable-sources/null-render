@@ -5,9 +5,10 @@
   </PropertyGroup>
 
   <Import Project="null-render-backend-directx11.vcxproj" />
+  
   <ItemDefinitionGroup>
     <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);NULL_RENDER_DX11_ALLOW_FEATURE_11_1;</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NULL_RENDER_DX11_ALLOW_FEATURE_11_1;%(PreprocessorDefinitions);</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
 </Project>

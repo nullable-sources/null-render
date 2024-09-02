@@ -1,7 +1,7 @@
 #include "../../wrapper/opengl3.h"
 #include "blend-state.h"
 
-namespace null::render::opengl3 {
+namespace ntl::render::opengl3 {
     std::uint32_t c_blend_state::to_backend_blend(const backend::e_blend& blend) {
         switch(blend) {
             case backend::e_blend::zero: return 0;

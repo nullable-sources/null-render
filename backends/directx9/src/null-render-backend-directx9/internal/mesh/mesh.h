@@ -1,7 +1,7 @@
 #pragma once
 #include "../../renderer/renderer.h"
 
-namespace null::render::directx9 {
+namespace ntl::render::directx9 {
     class c_mesh : public backend::c_mesh {
     public:
         struct directx_vertex_t {

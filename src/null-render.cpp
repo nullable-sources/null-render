@@ -1,7 +1,7 @@
 #include "null-render/backend/backend.h"
 #include "null-render.h"
 
-namespace null::render {
+namespace ntl::render {
     void initialize(const vec2_t<int>& viewport) {
         shared::viewport = viewport;
         std::ranges::for_each(std::views::iota(0, (int)shared::circle_segments.size()), [=](const int& i) {

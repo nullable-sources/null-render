@@ -198,6 +198,9 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
+  <Import Project="..\..\third-party\null-sdk\null-sdk.props" />
+  <Import Project="..\..\null-render.props" />
+  <Import Project="..\..\backends\opengl3\null-render-backend-opengl3.props" />
+  <Import Project="..\..\backends\directx9\null-render-backend-directx9.props" />
+  <Import Project="..\..\backends\directx11\null-render-backend-directx11.props" />
 </Project>

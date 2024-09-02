@@ -1,9 +1,9 @@
 #pragma once
-#include "../internal/mesh.h"
-#include "../internal/frame-buffer.h"
+#include "null-render/backend/internal/mesh.h"
+#include "null-render/backend/internal/frame-buffer.h"
 #include "../../graphic/commands/geometry/geometry.h"
 
-namespace null::render::backend {
+namespace ntl::render::backend {
     class c_post_processing : protected i_renderer_event_listener {
     public:
         static constexpr rect_t<float> normalized_viewport = rect_t<float>(vec2_t<float>(-1.f, 1.f), vec2_t<float>(1.f, -1.f));

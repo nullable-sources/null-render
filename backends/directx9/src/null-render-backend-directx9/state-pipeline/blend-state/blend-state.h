@@ -1,7 +1,7 @@
 #pragma once
 #include <null-render/backend/state-pipeline/blend-state.h>
 
-namespace null::render::directx9 {
+namespace ntl::render::directx9 {
     class c_blend_state : public backend::i_blend_state {
     public:
         static inline D3DBLEND to_backend_blend(const backend::e_blend& blend);

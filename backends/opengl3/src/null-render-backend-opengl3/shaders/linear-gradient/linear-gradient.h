@@ -2,7 +2,7 @@
 #include "../../internal/shader/shader.h"
 #include "compiled-object.h"
 
-namespace null::render::opengl3 {
+namespace ntl::render::opengl3 {
     class c_linear_gradient_shader : public backend::i_linear_gradient_shader, public c_default_shader {
     public:
         c_uniform<float> angle{ };

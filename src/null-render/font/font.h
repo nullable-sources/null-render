@@ -2,7 +2,7 @@
 #include "loaders/loader.h"
 #include "glyph.h"
 
-namespace null::render {
+namespace ntl::render {
     namespace impl {
         static int get_char_from_utf8(std::uint32_t* out_char, std::string_view::const_iterator iterator, std::string_view::const_iterator end) {
             static constexpr std::array<char, 32> lengths{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 3, 3, 4, 0 };

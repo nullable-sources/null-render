@@ -1,7 +1,7 @@
 #include "../renderer/renderer.h"
 #include "state-pipeline.h"
 
-namespace null::render::backend {
+namespace ntl::render::backend {
     void i_state_pipeline::c_framebuffers_pipeline::append() { stack.back()->use(); }
     void i_state_pipeline::c_framebuffers_pipeline::set_default() { state_pipeline->restore_framebuffer(); }
 

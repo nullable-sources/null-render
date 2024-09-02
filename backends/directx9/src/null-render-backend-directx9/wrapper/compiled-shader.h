@@ -1,7 +1,7 @@
 #pragma once
 #include <null-render.h>
 
-namespace null::render::directx9 {
+namespace ntl::render::directx9 {
     class i_compiled_shader : public backend::i_compiled_shader_object {
     public:
         virtual void create() override {

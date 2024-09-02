@@ -2,13 +2,13 @@
 #include "../../../backend/shaders/blur.h"
 #include "../filter.h"
 
-namespace null::render {
+namespace ntl::render {
     enum class e_blur_filter_sources {
         none = 0,
         backbuffer = 1 << 0, //@note: this flag is only needed if the msaa buffer is not the primary one.
         msaa = 1 << 1,
-    }; enum_create_bit_operators(e_blur_filter_sources, true);
-    enum_create_cast_operator(e_blur_filter_sources, -);
+    }; ENUM_CREATE_BIT_OPERATORS(e_blur_filter_sources, true);
+    ENUM_CREATE_CAST_OPERATOR(e_blur_filter_sources, -);
 
     class c_blur_filter : public i_filter {
     public:

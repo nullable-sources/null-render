@@ -1,6 +1,6 @@
 #include "blur.h"
 
-namespace null::render::directx11 {
+namespace ntl::render::directx11 {
     void c_blur_shader::set_direction(const vec2_t<float>& direction) {
         blur_shader_object.edit_direction(direction);
     }

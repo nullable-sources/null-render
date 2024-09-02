@@ -2,7 +2,7 @@
 #include "../../internal/shader.h"
 #include "compiled-object.h"
 
-namespace null::render::directx11 {
+namespace ntl::render::directx11 {
     template <typename sdf_shader_t>
     class i_sdf_shader : public sdf_shader_t, public c_shader {
     private:

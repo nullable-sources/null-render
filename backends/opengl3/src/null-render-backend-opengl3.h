@@ -21,7 +21,7 @@
 #include "null-render-backend-opengl3/shaders/radial-gradient/radial-gradient.h"
 #include "null-render-backend-opengl3/shaders/sdf/sdf.h"
 
-namespace null::render::opengl3 {
+namespace ntl::render::opengl3 {
     class c_factory : public backend::i_factory {
     public:
         std::unique_ptr<backend::i_renderer> instance_renderer() override { return std::make_unique<c_renderer>(); }
@@ -46,8 +46,8 @@ namespace null::render::opengl3 {
     };
 
 #ifdef null_renderer_use_glfw
-    class c_window : public utils::win::c_window {
-    public: using utils::win::c_window::c_window;
+    class c_window : public win::c_window {
+    public: using win::c_window::c_window;
     public:
         color_t<float> clear_color{ 0.07f, 0.07f, 0.07f };
         GLFWwindow* glfw_window{ };

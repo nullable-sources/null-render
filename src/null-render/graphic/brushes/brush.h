@@ -1,7 +1,7 @@
 #pragma once
 #include "../commands/geometry/geometry.h"
 
-namespace null::render {
+namespace ntl::render {
     class c_brush {
     public:
         static std::shared_ptr<c_brush> instance() { return std::make_shared<c_brush>(); }

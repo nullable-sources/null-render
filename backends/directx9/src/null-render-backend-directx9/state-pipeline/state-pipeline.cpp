@@ -1,6 +1,6 @@
 #include "state-pipeline.h"
 
-namespace null::render::directx9 {
+namespace ntl::render::directx9 {
     void c_state_pipeline::setup_state() {
         D3DVIEWPORT9 _viewport{ 0, 0,
             (DWORD)shared::viewport.x,

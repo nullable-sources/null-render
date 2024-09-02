@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup Label="NullProperties">
+        <NullRenderRoot>$(MSBuildThisFileDirectory)</NullRenderRoot>
+        <NullRenderConfiguration Condition="'$(UseDebugLibraries)' == 'true'">debug</NullRenderConfiguration>
+        <NullRenderConfiguration Condition="'$(UseDebugLibraries)' == 'false'">release</NullRenderConfiguration>
+        <NullRenderLibPostfix>$(NullRenderConfiguration)-$(LibrariesArchitecture)</NullRenderLibPostfix>
+    </PropertyGroup>
+
+    <ItemDefinitionGroup>
+        <ClCompile>
+            <AdditionalIncludeDirectories>$(NullRenderRoot)src;$(NullRenderRoot)third-party\stb;$(NullRenderRoot)third-party\freetype\include;$(NullRenderRoot)third-party\micro-tess;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+        </ClCompile>
+        <Lib>
+            <AdditionalLibraryDirectories>$(NullRenderRoot)build;$(NullRenderRoot)third-party\freetype\libs;$(NullRenderRoot)third-party\msdf-atlas-gen\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+            <AdditionalDependencies>null-render-$(NullRenderLibPostfix).lib;freetype-$(LibrariesArchitecture).lib;msdf-atlas-gen-$(NullRenderLibPostfix).lib;msdfgen-core-$(NullRenderLibPostfix).lib;msdfgen-ext-$(NullRenderLibPostfix).lib;%(AdditionalDependencies)</AdditionalDependencies>
+        </Lib>
+        <Link>
+            <AdditionalLibraryDirectories>$(NullRenderRoot)build;$(NullRenderRoot)third-party\freetype\libs;$(NullRenderRoot)third-party\msdf-atlas-gen\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+            <AdditionalDependencies>null-render-$(NullRenderLibPostfix).lib;freetype-$(LibrariesArchitecture).lib;msdf-atlas-gen-$(NullRenderLibPostfix).lib;msdfgen-core-$(NullRenderLibPostfix).lib;msdfgen-ext-$(NullRenderLibPostfix).lib;%(AdditionalDependencies)</AdditionalDependencies>
+        </Link>
+    </ItemDefinitionGroup>
+</Project>

@@ -2,7 +2,7 @@
 #include <null-render/backend/state-pipeline/state-pipeline.h>
 #include "../renderer/renderer.h"
 
-namespace null::render::directx11 {
+namespace ntl::render::directx11 {
     class c_state_pipeline : public backend::i_state_pipeline {
     public:
         struct {

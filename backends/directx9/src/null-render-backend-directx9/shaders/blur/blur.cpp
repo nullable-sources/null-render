@@ -1,6 +1,6 @@
 #include "blur.h"
 
-namespace null::render::directx9 {
+namespace ntl::render::directx9 {
     void c_blur_shader::set_direction(const vec2_t<float>& _direction) {
         pixel_shader->set_constant(1, (float*)&_direction);
     }

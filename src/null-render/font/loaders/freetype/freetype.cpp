@@ -17,7 +17,7 @@
 #include "../../font.h"
 #include "freetype.h"
 
-namespace null::render {
+namespace ntl::render {
     struct c_freetype_loader::font_data_t {
     private:
         template <typename T>

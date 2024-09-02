@@ -2,7 +2,7 @@
 #include "renderer-events.h"
 #include "object.h"
 
-namespace null::render::backend {
+namespace ntl::render::backend {
     class i_shader : public i_usable_object, protected i_renderer_event_listener {
     public:
         i_shader() {

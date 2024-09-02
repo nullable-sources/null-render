@@ -1,7 +1,7 @@
 #pragma once
 #include <null-render/backend/state-pipeline/blend-state.h>
 
-namespace null::render::opengl3 {
+namespace ntl::render::opengl3 {
     class c_blend_state : public backend::i_blend_state {
     public:
         static inline std::uint32_t to_backend_blend(const backend::e_blend& blend);

@@ -1,6 +1,6 @@
 #pragma once
 
-namespace null::render::backend {
+namespace ntl::render::backend {
     class i_usable_object {
     public:
         i_usable_object() { }

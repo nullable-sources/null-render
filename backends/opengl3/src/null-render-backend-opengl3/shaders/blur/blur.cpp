@@ -1,6 +1,6 @@
 #include "blur.h"
 
-namespace null::render::opengl3 {
+namespace ntl::render::opengl3 {
     void c_blur_shader::create() {
         if(!empty()) return;
         c_shader::create();

@@ -1,6 +1,6 @@
 #include "state-pipeline.h"
 
-namespace null::render {
+namespace ntl::render {
     void c_setup_state_command::handle() {
         backend::state_pipeline->setup_state();
     }

@@ -14,7 +14,7 @@
 #include "null-render-backend-directx9/shaders/radial-gradient/radial-gradient.h"
 #include "null-render-backend-directx9/shaders/sdf/sdf.h"
 
-namespace null::render::directx9 {
+namespace ntl::render::directx9 {
     class c_factory : public backend::i_factory {
     public:
         c_factory(IDirect3DDevice9* device) { shared.device = device; }
@@ -41,8 +41,8 @@ namespace null::render::directx9 {
         std::unique_ptr<backend::i_mtsdf_shader> instance_mtsdf_shader() override { return std::make_unique<c_mtsdf_shader>(); }
     };
 
-    class c_window : public utils::win::c_window {
-    public: using utils::win::c_window::c_window;
+    class c_window : public win::c_window {
+    public: using win::c_window::c_window;
     public:
         color_t<int> clear_color{ 18, 18, 18 };
         IDirect3DDevice9* device{ };
@@ -65,11 +65,11 @@ namespace null::render::directx9 {
 
             backend::factory = std::make_unique<c_factory>(device);
             render::initialize(size);
-            utils::win::c_window::on_create();
+            win::c_window::on_create();
         }
 
         void on_destroy() override {
-            utils::win::c_window::on_destroy();
+            win::c_window::on_destroy();
 
             if(direct3d) { direct3d->Release(); direct3d = nullptr; }
         }
@@ -78,7 +78,7 @@ namespace null::render::directx9 {
             device->Clear(0, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_RGBA(clear_color.r, clear_color.g, clear_color.b, clear_color.a), 1.0f, 0);
             if(device->BeginScene() >= 0) {
                 //device->Clear(0, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_RGBA(clear_color.r, clear_color.g, clear_color.b, clear_color.a), 1.0f, 0);
-                utils::win::c_window::on_main_loop();
+                win::c_window::on_main_loop();
                 device->EndScene();
             }
 
@@ -87,7 +87,7 @@ namespace null::render::directx9 {
         }
 
         std::vector<int> on_wnd_proc(HWND _wnd_handle, UINT msg, WPARAM w_param, LPARAM l_param) override {
-            std::vector<int> callback_results = utils::win::c_window::on_wnd_proc(_wnd_handle, msg, w_param, l_param);
+            std::vector<int> callback_results = win::c_window::on_wnd_proc(_wnd_handle, msg, w_param, l_param);
             switch(msg) {
                 case WM_SIZE: {
                     if(device && w_param != SIZE_MINIMIZED) {

@@ -2,7 +2,7 @@
 #include "../../../backend/shaders/linear-gradient.h"
 #include "../filter.h"
 
-namespace null::render {
+namespace ntl::render {
     class c_linear_gradient_filter : public i_filter {
     public:
         static std::shared_ptr<c_linear_gradient_filter> instance() { return std::make_shared<c_linear_gradient_filter>(); }

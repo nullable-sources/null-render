@@ -1,7 +1,7 @@
 #include <null-render/backend/state-pipeline/state-pipeline.h>
 #include "rasterizer-state.h"
 
-namespace null::render::directx11 {
+namespace ntl::render::directx11 {
     c_rasterizer_state::state_machine_t* c_rasterizer_state::get_previous_state() const {
         return (c_rasterizer_state::state_machine_t*)backend::state_pipeline->rasterizers.previous();
     }

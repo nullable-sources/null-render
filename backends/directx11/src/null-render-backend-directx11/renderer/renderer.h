@@ -6,7 +6,7 @@
 #include <d3d11_1.h>
 #endif
 
-namespace null::render::directx11 {
+namespace ntl::render::directx11 {
 #ifdef NULL_RENDER_DX11_ALLOW_FEATURE_11_1
     using dx_device_t = ID3D11Device1;
     using dx_device_context_t = ID3D11DeviceContext1;
@@ -31,7 +31,7 @@ namespace null::render::directx11 {
 
 #include <null-render.h>
 
-namespace null::render::directx11 {
+namespace ntl::render::directx11 {
     struct shared_t {
     public:
         dx_device_t* device{ };

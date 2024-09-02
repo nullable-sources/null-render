@@ -2,7 +2,7 @@
 #include <null-render/backend/state-pipeline/state-pipeline.h>
 #include "../renderer/renderer.h"
 
-namespace null::render::directx9 {
+namespace ntl::render::directx9 {
     class c_state_pipeline : public backend::i_state_pipeline, public backend::i_renderer_event_listener {
     public:
         IDirect3DStateBlock9* state_block{ };

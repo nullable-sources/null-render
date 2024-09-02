@@ -16,7 +16,7 @@
 #include "null-render-backend-directx11/shaders/radial-gradient/radial-gradient.h"
 #include "null-render-backend-directx11/shaders/sdf/sdf.h"
 
-namespace null::render::directx11 {
+namespace ntl::render::directx11 {
     class c_factory : public backend::i_factory {
     public:
         c_factory(dx_device_t* device, dx_device_context_t* context, IDXGISwapChain* swap_chain) {
@@ -45,8 +45,8 @@ namespace null::render::directx11 {
         std::unique_ptr<backend::i_mtsdf_shader> instance_mtsdf_shader() override { return std::make_unique<c_mtsdf_shader>(); }
     };
 
-    class c_window : public utils::win::c_window {
-    public: using utils::win::c_window::c_window;
+    class c_window : public win::c_window {
+    public: using win::c_window::c_window;
     public:
         color_t<float> clear_color{ 0.07f, 0.07f, 0.07f };
 
@@ -113,25 +113,25 @@ namespace null::render::directx11 {
             backend::factory = std::make_unique<c_factory>(device, context, swap_chain);
             render::initialize(size);
 
-            utils::win::c_window::on_create();
+            win::c_window::on_create();
         }
 
         void on_destroy() override {
-            utils::win::c_window::on_destroy();
+            win::c_window::on_destroy();
 
             if(swap_chain) { swap_chain->Release(); swap_chain = nullptr; }
         }
 
         void on_main_loop() override {
             backend::rendering_buffer->clear();
-            utils::win::c_window::on_main_loop();
+            win::c_window::on_main_loop();
 
             if(auto result = swap_chain->Present(1, 0); FAILED(result))
                 utils::logger(utils::e_log_type::error, "Present failed, return code {}.", result);
         }
 
         std::vector<int> on_wnd_proc(HWND _wnd_handle, UINT msg, WPARAM w_param, LPARAM l_param) override {
-            std::vector<int> callback_results = utils::win::c_window::on_wnd_proc(_wnd_handle, msg, w_param, l_param);
+            std::vector<int> callback_results = win::c_window::on_wnd_proc(_wnd_handle, msg, w_param, l_param);
             switch(msg) {
                 case WM_SIZE: {
                     if(device && w_param != SIZE_MINIMIZED) {

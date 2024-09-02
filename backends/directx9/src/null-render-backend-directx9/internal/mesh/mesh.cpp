@@ -1,6 +1,6 @@
 #include "mesh.h"
 
-namespace null::render::directx9 {
+namespace ntl::render::directx9 {
     void c_mesh::create() {
         if(vertex_declaration) return;
 

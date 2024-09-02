@@ -2,7 +2,7 @@
 #include "../filters/filter.h"
 #include "brush.h"
 
-namespace null::render {
+namespace ntl::render {
     class c_filter_brush : public c_brush {
     public:
         static std::shared_ptr<c_filter_brush> instance() { return std::make_shared<c_filter_brush>(); }

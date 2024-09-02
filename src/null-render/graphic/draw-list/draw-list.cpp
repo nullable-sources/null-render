@@ -6,7 +6,7 @@
 
 #include "draw-list.h"
 
-namespace null::render {
+namespace ntl::render {
     void c_draw_list::handle() {
         backend::state_pipeline->meshes.push(mesh);
         backend::state_pipeline->shaders.push(backend::color_shader);

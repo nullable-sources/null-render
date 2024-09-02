@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <vector>
 
-namespace null::render {
+namespace ntl::render {
     class i_command {
     public:
         i_command() { }

@@ -2,7 +2,7 @@
 #include "../../internal/shader/shader.h"
 #include "compiled-object.h"
 
-namespace null::render::opengl3 {
+namespace ntl::render::opengl3 {
     class c_blur_shader : public backend::i_blur_shader, public c_shader {
     public:
         c_uniform<vec2_t<float>> texel_size{ };

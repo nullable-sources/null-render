@@ -6,7 +6,7 @@
 
 #include "renderer.h"
 
-namespace null::render::backend {
+namespace ntl::render::backend {
     void i_renderer::update_uniforms() {
         if(state_pipeline->shaders.empty()) return;
         state_pipeline->shaders.append_last();

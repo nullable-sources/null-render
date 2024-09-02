@@ -15,7 +15,7 @@
 #include "null-render/graphic/path/path.h"
 #include "null-render/backend/backend.h"
 
-namespace null::render {
+namespace ntl::render {
     void initialize(const vec2_t<int>& viewport);
 
     void begin_frame();

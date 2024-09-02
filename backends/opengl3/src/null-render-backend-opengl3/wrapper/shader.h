@@ -2,7 +2,7 @@
 #include <null-render.h>
 #include "opengl3.h"
 
-namespace null::render::opengl3 {
+namespace ntl::render::opengl3 {
     class i_compiled_shader : public backend::i_compiled_shader_object {
     public:
         std::uint32_t shader{ };
@@ -14,8 +14,8 @@ namespace null::render::opengl3 {
             }
         }
 
-        virtual memory::resource_t get_source() = 0;
-        virtual void compile(const memory::resource_t& resource) { compile((const char*)resource.locked_data, resource.locked_data_size); }
+        virtual ntl::mem::resource_t get_source() = 0;
+        virtual void compile(const ntl::mem::resource_t& resource) { compile((const char*)resource.locked_data, resource.locked_data_size); }
         virtual void compile(const char* source, int length) {
             opengl::shader_source(shader, 1, (const char* const*)&source, &length);
             opengl::compile_shader(shader);

@@ -1,7 +1,7 @@
 #pragma once
 #include "../../wrapper/pixel/pixel.h"
 
-namespace null::render::directx9 {
+namespace ntl::render::directx9 {
     namespace sources {
         static const std::vector<byte>& passthrough_ps() {
 #include "compiled/passthrough-ps.h"

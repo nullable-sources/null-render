@@ -6,7 +6,7 @@
 
 #include "blur.h"
 
-namespace null::render {
+namespace ntl::render {
     void c_blur_filter::make_constants() {
         //@credits: https://github.com/T0b1-iOS/draw_manager/blob/b6f0de06567598aa899237f23bff3fbdc6851723/impl/d3d11_manager.cpp#L304C6-L304C6
         static const auto gauss = [](float sigma, float x) {

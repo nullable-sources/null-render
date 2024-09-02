@@ -2,7 +2,7 @@
 #include "../../font.h"
 #include "../loader.h"
 
-namespace null::render {
+namespace ntl::render {
     class c_freetype_loader : public i_font_loader {
     private:
         struct font_data_t;
