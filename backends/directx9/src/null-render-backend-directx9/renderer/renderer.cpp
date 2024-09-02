@@ -21,14 +21,14 @@ namespace ntl::render::directx9 {
     void* c_renderer::create_texture(const vec2_t<float>& size, void* data) {
         IDirect3DTexture9* texture{ };
         if(auto result = shared.device->CreateTexture(size.x, size.y, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &texture, nullptr); result != D3D_OK) {
-            utils::logger(utils::e_log_type::warning, "failed to create texture, return code {}.", result);
+            sdk::logger(sdk::e_log_type::warning, "failed to create texture, return code {}.", result);
             return nullptr;
         }
 
         if(data) {
             D3DLOCKED_RECT locked_rect{ };
             if(auto result = texture->LockRect(0, &locked_rect, nullptr, 0); FAILED(result)) {
-                utils::logger(utils::e_log_type::error, "LockRect failed, return code {}.", result);
+                sdk::logger(sdk::e_log_type::error, "LockRect failed, return code {}.", result);
                 return texture;
             }
 
@@ -53,11 +53,11 @@ namespace ntl::render::directx9 {
 
     void c_renderer::destroy_texture(void* texture) {
         if(!texture) {
-            utils::logger(utils::e_log_type::warning, "it is impossible to destroy the texture because it is empty.");
+            sdk::logger(sdk::e_log_type::warning, "it is impossible to destroy the texture because it is empty.");
             return;
         }
 
         if(auto result = ((IDirect3DTexture9*)texture)->Release(); FAILED(result))
-            utils::logger(utils::e_log_type::warning, "cant release texture, return code {}.", result);
+            sdk::logger(sdk::e_log_type::warning, "cant release texture, return code {}.", result);
     }
 }

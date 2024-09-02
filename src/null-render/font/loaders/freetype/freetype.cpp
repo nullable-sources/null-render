@@ -76,7 +76,7 @@ namespace ntl::render {
                 artery_font::decode<artery_read>(ar_font, &reader);
 
                 if(ar_font.images.empty() || ar_font.variants.empty()) {
-                    utils::logger(utils::e_log_type::error, "artery_font images or variants empty, font loading canceled.");
+                    sdk::logger(sdk::e_log_type::error, "artery_font images or variants empty, font loading canceled.");
                     return false;
                 }
 
@@ -84,12 +84,12 @@ namespace ntl::render {
                 variant = ar_font.variants[0];
 
                 if(image.pixelFormat != artery_font::PIXEL_FLOAT32) {
-                    utils::logger(utils::e_log_type::error, "unsupported artery font pixel format.");
+                    sdk::logger(sdk::e_log_type::error, "unsupported artery font pixel format.");
                     return false;
                 }
 
                 if(image.rawBinaryFormat.orientation != artery_font::ORIENTATION_BOTTOM_UP) {
-                    utils::logger(utils::e_log_type::error, "unsupported artery font orientation.");
+                    sdk::logger(sdk::e_log_type::error, "unsupported artery font orientation.");
                     return false;
                 }
                 
@@ -119,8 +119,8 @@ namespace ntl::render {
     };
 
     void c_freetype_loader::build(c_atlas* atlas) {
-        if(atlas->locked) { utils::logger(utils::e_log_type::error, "cannot modify a locked atlas between begin_render() and end_render/render()."); return; }
-        if(atlas->configs.empty()) { utils::logger(utils::e_log_type::warning, "configs array is empty."); return; }
+        if(atlas->locked) { sdk::logger(sdk::e_log_type::error, "cannot modify a locked atlas between begin_render() and end_render/render()."); return; }
+        if(atlas->configs.empty()) { sdk::logger(sdk::e_log_type::warning, "configs array is empty."); return; }
 
         std::vector<font_data_t> fonts{ };
         for(font_config_t& config : atlas->configs)
@@ -145,14 +145,14 @@ namespace ntl::render {
     void c_freetype_loader::initialize_fonts(std::vector<font_data_t>& fonts) {
         msdfgen::FreetypeHandle* ft = msdfgen::initializeFreetype();
         if(!ft) {
-            utils::logger(utils::e_log_type::error, "msdfgen failed to initialize freetype.");
+            sdk::logger(sdk::e_log_type::error, "msdfgen failed to initialize freetype.");
             return;
         }
 
         for(font_data_t& font : fonts) {
             msdfgen::FontHandle* ft_font = msdfgen::loadFontData(ft, font.config->font_data.data(), font.config->font_data.size());
             if(!ft_font) {
-                utils::logger(utils::e_log_type::error, "msdfgen failed to load font data.");
+                sdk::logger(sdk::e_log_type::error, "msdfgen failed to load font data.");
                 continue;
             }
 
@@ -282,7 +282,7 @@ namespace ntl::render {
                     }
 
                     if(artery_size != std::numeric_limits<float>::min() && (artery_size.x != w || artery_size.y != h)) {
-                        utils::logger(utils::e_log_type::warning, "\"{}\" ({}) glyph found in artery_font, but its dimensions do not match the packed glyph, perhaps the settings with which artery_font was generated differ from those specified in the config.", (char)glyph.getCodepoint(), glyph.getCodepoint());
+                        sdk::logger(sdk::e_log_type::warning, "\"{}\" ({}) glyph found in artery_font, but its dimensions do not match the packed glyph, perhaps the settings with which artery_font was generated differ from those specified in the config.", (char)glyph.getCodepoint(), glyph.getCodepoint());
                     } else {
                         for(auto [x, y] : std::views::cartesian_product(std::views::iota(0, w), std::views::iota(0, h))) {
                             float* channels = font.artery_data.image_read(artery_offset.x + x, artery_offset.y + y);

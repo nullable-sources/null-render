@@ -2496,7 +2496,7 @@ namespace opengl {
         e_framebuffer_incomplete_view_targets_ovr = 0x9633
     };
 
-    class c_opengl_dll : public ntl::mem::c_dll {
+    class c_opengl_dll : public ntl::c_dll {
     public: using c_dll::c_dll;
     public:
         c_dll::i_export* find_stored_export(std::string_view _name) override {
@@ -2504,8 +2504,8 @@ namespace opengl {
             return finded_export && finded_export->address ? finded_export : nullptr;
         }
 
-        ntl::mem::address_t load_export(std::string_view _name) override {
-            if(ntl::mem::address_t address = c_dll::load_export(_name); address) return address;
+        ntl::address_t load_export(std::string_view _name) override {
+            if(ntl::address_t address = c_dll::load_export(_name); address) return address;
             return wglGetProcAddress(_name.data());
         }
     } inline opengl32{ "opengl32.dll" };
@@ -2514,7 +2514,7 @@ namespace opengl {
     class c_opengl_export;
 
     template <typename return_t, typename ...args_t>
-    class c_opengl_export<return_t(args_t...)> : public ntl::mem::c_dll::i_export {
+    class c_opengl_export<return_t(args_t...)> : public ntl::c_dll::i_export {
     public:
         friend i_export;
         typedef return_t(__stdcall* prototype_t)(args_t...);
@@ -2529,7 +2529,7 @@ namespace opengl {
     public:
         return_t operator()(args_t... args) {
             if(!address) { address = opengl32.load_export(name); }
-            if(!address) { ntl::utils::logger(ntl::utils::e_log_type::error, "'{}' export address == nullptr.", name.empty() ? "unknown" : name); return return_t{ }; }
+            if(!address) { ntl::sdk::logger(ntl::sdk::e_log_type::error, "'{}' export address == nullptr.", name.empty() ? "unknown" : name); return return_t{ }; }
             return ((prototype_t)address)(args...);
         }
     };

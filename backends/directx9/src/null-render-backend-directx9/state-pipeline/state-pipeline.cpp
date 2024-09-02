@@ -34,7 +34,7 @@ namespace ntl::render::directx9 {
     void c_state_pipeline::save_state() {
         if(state_block) {
             if(auto result = state_block->Capture(); FAILED(result))
-                utils::logger(utils::e_log_type::error, "cant capture state, error code {}.", result);
+                sdk::logger(sdk::e_log_type::error, "cant capture state, error code {}.", result);
         }
 
         shared.device->GetRenderState(D3DRS_MULTISAMPLEANTIALIAS, (DWORD*)&saved_rasterizer.multisample);
@@ -62,7 +62,7 @@ namespace ntl::render::directx9 {
         i_state_pipeline::restore_state();
         if(state_block) {
             if(auto result = state_block->Apply(); FAILED(result))
-                utils::logger(utils::e_log_type::error, "cant apply state, error code {}.", result);
+                sdk::logger(sdk::e_log_type::error, "cant apply state, error code {}.", result);
         }
 
         restore_framebuffer();
@@ -120,7 +120,7 @@ namespace ntl::render::directx9 {
     void c_state_pipeline::on_create() {
         if(state_block) return;
         if(auto result = shared.device->CreateStateBlock(D3DSBT_ALL, &state_block); FAILED(result))
-            utils::logger(utils::e_log_type::warning, "cant create state block, return code {}.", result);
+            sdk::logger(sdk::e_log_type::warning, "cant create state block, return code {}.", result);
     }
 
     void c_state_pipeline::on_destroy() {

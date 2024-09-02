@@ -14,7 +14,7 @@ namespace ntl::render::opengl3 {
     public:
         virtual void get_location(c_program* program, std::string_view name) override {
             if(int result{ opengl::get_attrib_location(program->program, name.data()) }; result != -1) location = result;
-            else utils::logger(utils::e_log_type::warning, "cant get '{}' attribute location.", name);
+            else sdk::logger(sdk::e_log_type::warning, "cant get '{}' attribute location.", name);
         }
     };
 
@@ -25,7 +25,7 @@ namespace ntl::render::opengl3 {
 
     private:
         template <typename value_t>
-        static void set_impl(int _location, const value_t& value) { utils::logger(utils::e_log_type::error, "c_uniform::set is not implemented for this type."); }
+        static void set_impl(int _location, const value_t& value) { sdk::logger(sdk::e_log_type::error, "c_uniform::set is not implemented for this type."); }
 
         static void set_impl(int _location, const matrix4x4_t& value) { opengl::uniform_matrix4fv(_location, 1, false, value.linear_array.data()); }
 
@@ -69,7 +69,7 @@ namespace ntl::render::opengl3 {
     public:
         virtual void get_location(c_program* program, std::string_view name) override {
             if(int result = opengl::get_uniform_location(program->program, name.data()); result != -1) location = result;
-            else utils::logger(utils::e_log_type::warning, "cant get '{}' uniforn location.", name);
+            else sdk::logger(sdk::e_log_type::warning, "cant get '{}' uniforn location.", name);
         }
     };
 

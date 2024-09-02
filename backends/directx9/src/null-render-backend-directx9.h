@@ -59,9 +59,9 @@ namespace ntl::render::directx9 {
     public:
         void on_create() override {
             if(!(direct3d = Direct3DCreate9(D3D_SDK_VERSION)))
-                utils::logger(utils::e_log_type::error, "Direct3DCreate9 return nullptr.");
+                sdk::logger(sdk::e_log_type::error, "Direct3DCreate9 return nullptr.");
             if(auto result = direct3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, wnd_handle, D3DCREATE_HARDWARE_VERTEXPROCESSING, &present_parameters, &device); FAILED(result))
-                utils::logger(utils::e_log_type::error, "CreateDevice failed, return code {}.", result);
+                sdk::logger(sdk::e_log_type::error, "CreateDevice failed, return code {}.", result);
 
             backend::factory = std::make_unique<c_factory>(device);
             render::initialize(size);
@@ -106,7 +106,7 @@ namespace ntl::render::directx9 {
         void reset_device() {
             backend::renderer->destroy_objects();
             if(auto result = device->Reset(&present_parameters); FAILED(result))
-                utils::logger(utils::e_log_type::error, "device reset failed, return code {}.", result);
+                sdk::logger(sdk::e_log_type::error, "device reset failed, return code {}.", result);
             backend::renderer->create_objects();
         }
     };

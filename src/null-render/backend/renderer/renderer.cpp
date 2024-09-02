@@ -100,7 +100,7 @@ namespace ntl::render::backend {
             }
 
             if(!texture.is_built()) {
-                utils::logger(utils::e_log_type::warning, "the font atlas texture could not be created because the pixel array is empty.");
+                sdk::logger(sdk::e_log_type::warning, "the font atlas texture could not be created because the pixel array is empty.");
                 continue;
             }
 

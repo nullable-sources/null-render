@@ -1,7 +1,5 @@
 //@credits: imgui version - 1.80 WIP (https://github.com/ocornut/imgui/tree/v1.80)
 #pragma once
-#include <null-sdk.h>
-
 #include "null-render/graphic/filters/linear-gradient/linear-gradient.h"
 #include "null-render/graphic/filters/radial-gradient/radial-gradient.h"
 #include "null-render/graphic/filters/blur/blur.h"

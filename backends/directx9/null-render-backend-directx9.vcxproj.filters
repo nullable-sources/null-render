@@ -1,36 +1,36 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="src"/>
-    <Filter Include="src\wrapper"/>
-    <Filter Include="src\shaders"/>
-    <Filter Include="src\wrapper\shader"/>
-    <Filter Include="src\wrapper\shader\pixel"/>
-    <Filter Include="src\wrapper\shader\vertex"/>
-    <Filter Include="src\renderer"/>
-    <Filter Include="src\internal"/>
-    <Filter Include="src\internal\frame-buffer"/>
-    <Filter Include="src\internal\mesh"/>
-    <Filter Include="src\shaders\linear-gradient"/>
-    <Filter Include="src\shaders\quad-gradient"/>
-    <Filter Include="src\shaders\sdf"/>
-    <Filter Include="src\shaders\sdf\hlsl"/>
-    <Filter Include="src\shaders\quad-gradient\hlsl"/>
-    <Filter Include="src\shaders\linear-gradient\hlsl"/>
-    <Filter Include="src\shaders\blur"/>
-    <Filter Include="src\shaders\radial-gradient"/>
-    <Filter Include="src\shaders\blur\hlsl"/>
-    <Filter Include="src\shaders\radial-gradient\hlsl"/>
-    <Filter Include="src\state-pipeline"/>
-    <Filter Include="src\internal\stencil-buffer"/>
-    <Filter Include="src\shaders\texture"/>
-    <Filter Include="src\shaders\texture\hlsl"/>
-    <Filter Include="src\shaders\color"/>
-    <Filter Include="src\shaders\color\hlsl"/>
-    <Filter Include="src\shaders\passthrough"/>
-    <Filter Include="src\shaders\passthrough\hlsl"/>
-    <Filter Include="src\state-pipeline\rasterizer-state"/>
-    <Filter Include="src\state-pipeline\blend-state"/>
+    <Filter Include="src" />
+    <Filter Include="src\wrapper" />
+    <Filter Include="src\shaders" />
+    <Filter Include="src\wrapper\shader" />
+    <Filter Include="src\wrapper\shader\pixel" />
+    <Filter Include="src\wrapper\shader\vertex" />
+    <Filter Include="src\renderer" />
+    <Filter Include="src\internal" />
+    <Filter Include="src\internal\frame-buffer" />
+    <Filter Include="src\internal\mesh" />
+    <Filter Include="src\shaders\linear-gradient" />
+    <Filter Include="src\shaders\quad-gradient" />
+    <Filter Include="src\shaders\sdf" />
+    <Filter Include="src\shaders\sdf\hlsl" />
+    <Filter Include="src\shaders\quad-gradient\hlsl" />
+    <Filter Include="src\shaders\linear-gradient\hlsl" />
+    <Filter Include="src\shaders\blur" />
+    <Filter Include="src\shaders\radial-gradient" />
+    <Filter Include="src\shaders\blur\hlsl" />
+    <Filter Include="src\shaders\radial-gradient\hlsl" />
+    <Filter Include="src\state-pipeline" />
+    <Filter Include="src\internal\stencil-buffer" />
+    <Filter Include="src\shaders\texture" />
+    <Filter Include="src\shaders\texture\hlsl" />
+    <Filter Include="src\shaders\color" />
+    <Filter Include="src\shaders\color\hlsl" />
+    <Filter Include="src\shaders\passthrough" />
+    <Filter Include="src\shaders\passthrough\hlsl" />
+    <Filter Include="src\state-pipeline\rasterizer-state" />
+    <Filter Include="src\state-pipeline\blend-state" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\null-render-backend-directx9\wrapper\pixel\pixel.cpp">
@@ -160,9 +160,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="src\null-render-backend-directx9\shaders\sdf\hlsl\sdf.hlsl">
-      <Filter>src\shaders\sdf\hlsl</Filter>
-    </FxCompile>
     <FxCompile Include="src\null-render-backend-directx9\shaders\quad-gradient\hlsl\quad-gradient.hlsl">
       <Filter>src\shaders\quad-gradient\hlsl</Filter>
     </FxCompile>

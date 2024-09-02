@@ -31,7 +31,7 @@ namespace ntl::render {
         }
 
         if(path.line_cap == e_line_cap::joint)
-            utils::logger(utils::e_log_type::warning, "e_line_cap::joint using only for add_poly_line method");
+            sdk::logger(sdk::e_log_type::warning, "e_line_cap::joint using only for add_poly_line method");
 
         using triangulation = microtess::stroke_tessellation<float, decltype(vertecies), decltype(indices), microtess::dynamic_array<microtess::triangles::boundary_info>>;
 

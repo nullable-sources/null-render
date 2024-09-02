@@ -16,7 +16,7 @@ namespace ntl::render {
         });
 
         if(!backend::factory) {
-            utils::logger(utils::e_log_type::error, "backend factory is empty.");
+            sdk::logger(sdk::e_log_type::error, "backend factory is empty.");
             return;
         }
 

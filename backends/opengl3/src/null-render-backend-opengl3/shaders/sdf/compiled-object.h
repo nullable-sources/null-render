@@ -10,8 +10,8 @@ namespace ntl::render::opengl3 {
         c_sdf_shader_object(std::string_view _src_resource_name) : src_resource_name(_src_resource_name) { }
 
     public:
-        ntl::mem::resource_t get_source() override {
-            return ntl::mem::resource_t(src_resource_name, "null-render:opengl:resources");
+        resource_t get_source() override {
+            return resource_t(src_resource_name, "null-render:opengl:resources");
         }
     } inline sdf_shader_object{ "null-render:opengl:shaders:sdf.frag" },
         msdf_shader_object{ "null-render:opengl:shaders:msdf.frag" },

@@ -60,12 +60,12 @@ namespace ntl::render::opengl3 {
 
     public:
         bool create() override {
-            if(!glfwInit()) { utils::logger(utils::e_log_type::error, "cant init glfw."); return false; }
+            if(!glfwInit()) { sdk::logger(sdk::e_log_type::error, "cant init glfw."); return false; }
 
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
-            if(!(glfw_window = glfwCreateWindow(size.x, size.y, name.c_str(), NULL, NULL))) { utils::logger(utils::e_log_type::error, "cant create glfw window."); return false; }
+            if(!(glfw_window = glfwCreateWindow(size.x, size.y, name.c_str(), NULL, NULL))) { sdk::logger(sdk::e_log_type::error, "cant create glfw window."); return false; }
             glfwSetWindowPos(glfw_window, pos.x, pos.y);
             glfwMakeContextCurrent(glfw_window);
             glfwSwapInterval(1);
@@ -89,7 +89,7 @@ namespace ntl::render::opengl3 {
         }
 
         void main_loop() override {
-            if(!wnd_handle) { utils::logger(utils::e_log_type::error, "window handle is nullptr."); return; };
+            if(!wnd_handle) { sdk::logger(sdk::e_log_type::error, "window handle is nullptr."); return; };
 
             while(!glfwWindowShouldClose(glfw_window)) {
                 glfwPollEvents();

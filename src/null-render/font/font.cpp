@@ -14,7 +14,7 @@ namespace ntl::render {
 
     void c_font::build_lookups() {
         if(glyphs.size() >= std::numeric_limits<std::uint16_t>::max()) {
-            utils::logger(utils::e_log_type::error, "glyphs.size() >= 0xFFFF.");
+            sdk::logger(sdk::e_log_type::error, "glyphs.size() >= 0xFFFF.");
             return;
         }
         lookup_table.clear();
@@ -43,7 +43,7 @@ namespace ntl::render {
 
     void c_atlas::build_finish() {
         if(texture.pixels_rgba32.empty()) {
-            utils::logger(utils::e_log_type::error, "atlas texture pixels_rgba32 is empty.");
+            sdk::logger(sdk::e_log_type::error, "atlas texture pixels_rgba32 is empty.");
             return;
         }
     }
@@ -54,7 +54,7 @@ namespace ntl::render {
     }
 
     c_font* c_atlas::add_font(const font_config_t& config) {
-        if(locked) { utils::logger(utils::e_log_type::error, "cannot modify a locked atlas between begin_render() and end_render/render()."); return nullptr; }
+        if(locked) { sdk::logger(sdk::e_log_type::error, "cannot modify a locked atlas between begin_render() and end_render/render()."); return nullptr; }
         c_font* new_font = fonts.emplace_back(std::make_unique<c_font>()).get();
         new_font->parent_atlas = this;
 
@@ -65,7 +65,7 @@ namespace ntl::render {
     }
 
     void c_atlas::clear_input_data() {
-        if(locked) { utils::logger(utils::e_log_type::error, "cannot modify a locked atlas between begin_render() and end_render/render()."); return; }
+        if(locked) { sdk::logger(sdk::e_log_type::error, "cannot modify a locked atlas between begin_render() and end_render/render()."); return; }
 
         configs.clear();
     }
@@ -76,7 +76,7 @@ namespace ntl::render {
 
     void set_default_font(c_font* font) {
         if(!font || !font->is_loaded()) {
-            utils::logger(utils::e_log_type::warning, "The default font cannot be set, it is empty or not loaded.");
+            sdk::logger(sdk::e_log_type::warning, "The default font cannot be set, it is empty or not loaded.");
             return;
         }
 

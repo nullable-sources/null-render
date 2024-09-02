@@ -16,7 +16,7 @@ namespace ntl::render::directx11 {
                 .CPUAccessFlags{ D3D11_CPU_ACCESS_WRITE }
             };
             if(auto result = shared.device->CreateBuffer(&desc, NULL, &buffer); FAILED(result))
-                utils::logger(utils::e_log_type::warning, "cant create constant buffer, return code {}.", result);
+                sdk::logger(sdk::e_log_type::warning, "cant create constant buffer, return code {}.", result);
         }
 
         virtual void destroy() { if(buffer) { buffer->Release(); buffer = nullptr; } }
@@ -31,7 +31,7 @@ namespace ntl::render::directx11 {
         virtual struct_t* map_buffer() {
             D3D11_MAPPED_SUBRESOURCE subresource{ };
             if(auto result = shared.context->Map(buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &subresource); FAILED(result)) {
-                utils::logger(utils::e_log_type::warning, "cant map constant buffer, return code {}.", result);
+                sdk::logger(sdk::e_log_type::warning, "cant map constant buffer, return code {}.", result);
                 return nullptr;
             }
             return (struct_t*)subresource.pData;

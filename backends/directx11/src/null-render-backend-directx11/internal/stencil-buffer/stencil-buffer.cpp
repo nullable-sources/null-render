@@ -20,7 +20,7 @@ namespace ntl::render::directx11 {
         };
 
         if(auto result = shared.device->CreateTexture2D(&texture2d_desc, nullptr, &texture); FAILED(result)) {
-            utils::logger(utils::e_log_type::error, "CreateTexture2D failed, return code {}.", result);
+            sdk::logger(sdk::e_log_type::error, "CreateTexture2D failed, return code {}.", result);
             return;
         }
 
@@ -30,7 +30,7 @@ namespace ntl::render::directx11 {
         };
 
         if(auto result = shared.device->CreateDepthStencilView(texture, nullptr, &buffer); FAILED(result)) {
-            utils::logger(utils::e_log_type::error, "CreateDepthStencilView failed, return code {}.", result);
+            sdk::logger(sdk::e_log_type::error, "CreateDepthStencilView failed, return code {}.", result);
             return;
         }
 
@@ -50,11 +50,11 @@ namespace ntl::render::directx11 {
         }
         };
         if(auto result = shared.device->CreateBlendState(&blend_desc, &enabled); FAILED(result))
-            utils::logger(utils::e_log_type::error, "cant create enabled blend state for stencil buffer, return code {}.", result);
+            sdk::logger(sdk::e_log_type::error, "cant create enabled blend state for stencil buffer, return code {}.", result);
 
         blend_desc.RenderTarget->RenderTargetWriteMask = 0;
         if(auto result = shared.device->CreateBlendState(&blend_desc, &disabled_rt_write); FAILED(result))
-            utils::logger(utils::e_log_type::error, "cant create disabled blend state for stencil buffer, return code {}.", result);
+            sdk::logger(sdk::e_log_type::error, "cant create disabled blend state for stencil buffer, return code {}.", result);
 
         D3D11_DEPTH_STENCIL_DESC enabled_state_desc = CD3D11_DEPTH_STENCIL_DESC(D3D11_DEFAULT);
         enabled_state_desc.DepthEnable = false;

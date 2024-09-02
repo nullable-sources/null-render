@@ -97,7 +97,7 @@ namespace ntl::render::directx11 {
 
             D3D_FEATURE_LEVEL feature_level;
             if(auto result = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, creating_feature_level.data(), 2, D3D11_SDK_VERSION, &swap_chain_desc, &swap_chain, &creation_device, &feature_level, &creation_context); FAILED(result)) {
-                utils::logger(utils::e_log_type::error, "D3D11CreateDeviceAndSwapChain failed, return code {}.", result);
+                sdk::logger(sdk::e_log_type::error, "D3D11CreateDeviceAndSwapChain failed, return code {}.", result);
             }
 
 #ifdef NULL_RENDER_DX11_ALLOW_FEATURE_11_1
@@ -127,7 +127,7 @@ namespace ntl::render::directx11 {
             win::c_window::on_main_loop();
 
             if(auto result = swap_chain->Present(1, 0); FAILED(result))
-                utils::logger(utils::e_log_type::error, "Present failed, return code {}.", result);
+                sdk::logger(sdk::e_log_type::error, "Present failed, return code {}.", result);
         }
 
         std::vector<int> on_wnd_proc(HWND _wnd_handle, UINT msg, WPARAM w_param, LPARAM l_param) override {

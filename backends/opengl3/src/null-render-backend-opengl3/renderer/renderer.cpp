@@ -31,7 +31,7 @@ namespace ntl::render::opengl3 {
         opengl::bind_texture(opengl::e_texture_2d, 0);
 
         if(!texture) {
-            utils::logger(utils::e_log_type::warning, "Failed to create texture.");
+            sdk::logger(sdk::e_log_type::warning, "Failed to create texture.");
             return nullptr;
         }
 
@@ -40,7 +40,7 @@ namespace ntl::render::opengl3 {
 
     void c_renderer::destroy_texture(void* texture) {
         if(!texture) {
-            utils::logger(utils::e_log_type::warning, "It is impossible to destroy the texture because it is empty.");
+            sdk::logger(sdk::e_log_type::warning, "It is impossible to destroy the texture because it is empty.");
             return;
         }
 

@@ -44,7 +44,7 @@ namespace ntl::render::directx11 {
             .SysMemSlicePitch{ 0 }
         };
         if(auto result = shared.device->CreateTexture2D(&texture_desc, data ? &subresource : nullptr, &texture); FAILED(result))
-            utils::logger(utils::e_log_type::error, "cant create texture2d, return code {}.", result);
+            sdk::logger(sdk::e_log_type::error, "cant create texture2d, return code {}.", result);
 
         ID3D11ShaderResourceView* texture_view{ };
         D3D11_SHADER_RESOURCE_VIEW_DESC shader_resource_view_desc{
@@ -56,22 +56,22 @@ namespace ntl::render::directx11 {
             }
         };
         if(auto result = shared.device->CreateShaderResourceView(texture, &shader_resource_view_desc, &texture_view); FAILED(result))
-            utils::logger(utils::e_log_type::error, "cant create shader resource view, return code {}.", result);
+            sdk::logger(sdk::e_log_type::error, "cant create shader resource view, return code {}.", result);
 
         if(auto result = texture->Release(); FAILED(result))
-            utils::logger(utils::e_log_type::warning, "cant release texture, return code {}.", result);
+            sdk::logger(sdk::e_log_type::warning, "cant release texture, return code {}.", result);
 
         return texture_view;
     }
 
     void c_renderer::destroy_texture(void* texture) {
         if(!texture) {
-            utils::logger(utils::e_log_type::warning, "it is impossible to destroy the texture because it is empty.");
+            sdk::logger(sdk::e_log_type::warning, "it is impossible to destroy the texture because it is empty.");
             return;
         }
 
         if(auto result = ((ID3D11ShaderResourceView*)texture)->Release(); FAILED(result))
-            utils::logger(utils::e_log_type::warning, "cant release texture, return code {}.", result);
+            sdk::logger(sdk::e_log_type::warning, "cant release texture, return code {}.", result);
         texture = nullptr;
     }
 
@@ -96,7 +96,7 @@ namespace ntl::render::directx11 {
                 }
             };
             if(auto result = shared.device->CreateDepthStencilState(&depth_stencil_desc, &internal_objects.depth_stencil); FAILED(result))
-                utils::logger(utils::e_log_type::error, "cant create depth stencil state, return code {}.", result);
+                sdk::logger(sdk::e_log_type::error, "cant create depth stencil state, return code {}.", result);
         }
 
         if(!internal_objects.sampler) {
@@ -111,7 +111,7 @@ namespace ntl::render::directx11 {
                 .MaxLOD{ 0.f }
             };
             if(auto result = shared.device->CreateSamplerState(&sampler_desc, &internal_objects.sampler); FAILED(result))
-                utils::logger(utils::e_log_type::error, "cant create sampler state, return code {}.", result);
+                sdk::logger(sdk::e_log_type::error, "cant create sampler state, return code {}.", result);
         }
     }
 

@@ -16,7 +16,7 @@ namespace ntl::render::directx9 {
             } else main_surface_desc.MultiSampleQuality = 0;
 
             if(auto result = shared.device->CreateTexture(size.x, size.y, 1, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &texture, nullptr); FAILED(result)) {
-                utils::logger(utils::e_log_type::error, "CreateTexture2D failed, return code {}.", result);
+                sdk::logger(sdk::e_log_type::error, "CreateTexture2D failed, return code {}.", result);
                 return;
             }
 
@@ -27,7 +27,7 @@ namespace ntl::render::directx9 {
                 }
 
                 if(auto result = shared.device->CreateRenderTarget(size.x, size.y, D3DFMT_A8R8G8B8, multisample_type, main_surface_desc.MultiSampleQuality, false, &surface, nullptr); FAILED(result)) {
-                    utils::logger(utils::e_log_type::error, "CreateRenderTarget failed, return code {}.", result);
+                    sdk::logger(sdk::e_log_type::error, "CreateRenderTarget failed, return code {}.", result);
                     return;
                 }
             } else {
@@ -35,14 +35,14 @@ namespace ntl::render::directx9 {
 
                 if(texture) {
                     if(auto result = texture->GetSurfaceLevel(0, &surface); FAILED(result)) {
-                        utils::logger(utils::e_log_type::error, "GetSurfaceLevel failed, return code {}.", result);
+                        sdk::logger(sdk::e_log_type::error, "GetSurfaceLevel failed, return code {}.", result);
                         return;
                     }
                 }
             }
         } else {
             if(auto result = shared.device->GetRenderTarget(0, &surface); FAILED(result)) {
-                utils::logger(utils::e_log_type::error, "GetBuffer failed, return code {}.", result);
+                sdk::logger(sdk::e_log_type::error, "GetBuffer failed, return code {}.", result);
                 return;
             }
         }
@@ -88,7 +88,7 @@ namespace ntl::render::directx9 {
 
     void c_frame_buffer::copy_from(i_frame_buffer* another_frame_buffer) {
         if(auto result = shared.device->StretchRect((IDirect3DSurface9*)another_frame_buffer->get_surface(), nullptr, surface, nullptr, D3DTEXF_LINEAR); FAILED(result))
-            utils::logger(utils::e_log_type::error, "StretchRect failed in copy_from, return code: {}.", result);
+            sdk::logger(sdk::e_log_type::error, "StretchRect failed in copy_from, return code: {}.", result);
     }
 
     void c_frame_buffer::blit_region_from(i_frame_buffer* another_frame_buffer, const vec2_t<int>& blit_offset, const rect_t<int>& region) {
@@ -96,7 +96,7 @@ namespace ntl::render::directx9 {
         const RECT src_rect(region.min.x, region.min.y, region.max.x, region.max.y);
         const RECT dst_rect(blit_offset.x, blit_offset.y, blit_offset.x + region_size.x, blit_offset.y + region_size.y);
         if(auto result = shared.device->StretchRect((IDirect3DSurface9*)another_frame_buffer->get_surface(), &src_rect, surface, &dst_rect, D3DTEXF_LINEAR); FAILED(result))
-            utils::logger(utils::e_log_type::error, "StretchRect failed in blit_region_from, return code: {}.", result);
+            sdk::logger(sdk::e_log_type::error, "StretchRect failed in blit_region_from, return code: {}.", result);
     }
 
     void c_frame_buffer::copy_in_texture(void* texture, const rect_t<int>& region) {
@@ -104,20 +104,20 @@ namespace ntl::render::directx9 {
         ((IDirect3DTexture9*)texture)->GetSurfaceLevel(0, &texture_surface);
         if(!offscreen_transfer) {
             if(auto result = shared.device->CreateOffscreenPlainSurface(size.x, size.y, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &offscreen_transfer, nullptr); FAILED(result)) {
-                utils::logger(utils::e_log_type::error, "failed to create pain offscreen surface, return code: {}.", result);
+                sdk::logger(sdk::e_log_type::error, "failed to create pain offscreen surface, return code: {}.", result);
                 return;
             }
         }
 
         if(auto result = shared.device->GetRenderTargetData(surface, offscreen_transfer); FAILED(result)) {
-            utils::logger(utils::e_log_type::error, "failed to get data from rendertarget, return code: {}.", result);
+            sdk::logger(sdk::e_log_type::error, "failed to get data from rendertarget, return code: {}.", result);
             return;
         }
 
         const RECT rect(region.min.x, region.min.y, region.max.x, region.max.y);
         const POINT point(region.min.x, region.min.y);
         if(auto result = shared.device->UpdateSurface(offscreen_transfer, &rect, texture_surface, &point); FAILED(result))
-            utils::logger(utils::e_log_type::error, "failed to update texture surface, return code: {}.", result);
+            sdk::logger(sdk::e_log_type::error, "failed to update texture surface, return code: {}.", result);
 
         if(texture_surface) { texture_surface->Release(); texture_surface = nullptr; }
     }

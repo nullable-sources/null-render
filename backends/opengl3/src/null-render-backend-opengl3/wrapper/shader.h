@@ -14,8 +14,8 @@ namespace ntl::render::opengl3 {
             }
         }
 
-        virtual ntl::mem::resource_t get_source() = 0;
-        virtual void compile(const ntl::mem::resource_t& resource) { compile((const char*)resource.locked_data, resource.locked_data_size); }
+        virtual resource_t get_source() = 0;
+        virtual void compile(const resource_t& resource) { compile((const char*)resource.locked_data, resource.locked_data_size); }
         virtual void compile(const char* source, int length) {
             opengl::shader_source(shader, 1, (const char* const*)&source, &length);
             opengl::compile_shader(shader);
@@ -37,7 +37,7 @@ namespace ntl::render::opengl3 {
                 opengl::get_shader_info_log(shader, log_length, nullptr, log.data());
             }
 
-            if(!result_status) utils::logger(utils::e_log_type::warning, "cant '{}' shader, log \"{}\".", desc, log);
+            if(!result_status) sdk::logger(sdk::e_log_type::warning, "cant '{}' shader, log \"{}\".", desc, log);
         }
 
     public:
