@@ -25,8 +25,9 @@ namespace ntl::render::directx11 {
         shared.context->PSGetSamplers(0, 1, &saved_state.sampler);
         saved_state.pixel_shader_instances_count = saved_state.vertex_shader_instances_count = saved_state.geometry_shader_instances_count = 256;
         shared.context->PSGetShader(&saved_state.pixel_shader, saved_state.pixel_shader_instances, &saved_state.pixel_shader_instances_count);
+        shared.context->PSGetConstantBuffers(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT, saved_state.pixel_shader_constant_buffer);
         shared.context->VSGetShader(&saved_state.vertex_shader, saved_state.vertex_shader_instances, &saved_state.vertex_shader_instances_count);
-        shared.context->VSGetConstantBuffers(0, 1, &saved_state.vertex_shader_constant_buffer);
+        shared.context->VSGetConstantBuffers(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT, saved_state.vertex_shader_constant_buffer);
         shared.context->GSGetShader(&saved_state.geometry_shader, saved_state.geometry_shader_instances, &saved_state.geometry_shader_instances_count);
 
         shared.context->IAGetPrimitiveTopology(&saved_state.primitive_topology);
@@ -40,7 +41,8 @@ namespace ntl::render::directx11 {
 
         shared.context->RSSetScissorRects(saved_state.scissor_rects_count, saved_state.scissor_rects);
         shared.context->RSSetViewports(saved_state.viewports_count, saved_state.viewports);
-        shared.context->OMSetDepthStencilState(saved_state.depth_stencil_state, saved_state.stencil_ref); if(saved_state.depth_stencil_state) saved_state.depth_stencil_state->Release();
+        shared.context->OMSetDepthStencilState(saved_state.depth_stencil_state, saved_state.stencil_ref);
+        if(saved_state.depth_stencil_state) saved_state.depth_stencil_state->Release();
 
         restore_framebuffer();
         restore_mesh();
@@ -49,6 +51,7 @@ namespace ntl::render::directx11 {
         restore_rasterizer();
         restore_blend();
 
+        if(saved_state.blend_state) saved_state.blend_state->Release();
         if(saved_state.render_target_view) saved_state.render_target_view->Release();
         if(saved_state.depth_stencil_view) saved_state.depth_stencil_view->Release();
         if(saved_state.rasterizer_state) saved_state.rasterizer_state->Release();
@@ -59,7 +62,8 @@ namespace ntl::render::directx11 {
         if(saved_state.pixel_shader) saved_state.pixel_shader->Release();
         for(std::uint32_t i : std::views::iota(0u, saved_state.pixel_shader_instances_count)) if(saved_state.pixel_shader_instances[i]) saved_state.pixel_shader_instances[i]->Release();
         if(saved_state.vertex_shader) saved_state.vertex_shader->Release();
-        if(saved_state.vertex_shader_constant_buffer) saved_state.vertex_shader_constant_buffer->Release();
+        for(std::uint32_t i : std::views::iota(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT)) if(saved_state.pixel_shader_constant_buffer[i]) saved_state.pixel_shader_constant_buffer[i]->Release();
+        for(std::uint32_t i : std::views::iota(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT)) if(saved_state.vertex_shader_constant_buffer[i]) saved_state.vertex_shader_constant_buffer[i]->Release();
         if(saved_state.geometry_shader) saved_state.geometry_shader->Release();
         for(std::uint32_t i : std::views::iota(0u, saved_state.vertex_shader_instances_count)) if(saved_state.vertex_shader_instances[i]) saved_state.vertex_shader_instances[i]->Release();
         if(saved_state.shader_resource) saved_state.shader_resource->Release();
@@ -83,8 +87,9 @@ namespace ntl::render::directx11 {
     void c_state_pipeline::restore_shader() {
         shared.context->PSSetSamplers(0, 1, &saved_state.sampler);
         shared.context->PSSetShader(saved_state.pixel_shader, saved_state.pixel_shader_instances, saved_state.pixel_shader_instances_count);
+        shared.context->PSSetConstantBuffers(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT, saved_state.pixel_shader_constant_buffer);
         shared.context->VSSetShader(saved_state.vertex_shader, saved_state.vertex_shader_instances, saved_state.vertex_shader_instances_count);
-        shared.context->VSSetConstantBuffers(0, 1, &saved_state.vertex_shader_constant_buffer);
+        shared.context->VSSetConstantBuffers(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT, saved_state.vertex_shader_constant_buffer);
         shared.context->GSSetShader(saved_state.geometry_shader, saved_state.geometry_shader_instances, saved_state.geometry_shader_instances_count);
     }
 
@@ -97,6 +102,6 @@ namespace ntl::render::directx11 {
     }
     
     void c_state_pipeline::restore_blend() {
-        shared.context->OMSetBlendState(saved_state.blend_state, saved_state.blend_factor, saved_state.sample_mask); if(saved_state.blend_state) saved_state.blend_state->Release();
+        shared.context->OMSetBlendState(saved_state.blend_state, saved_state.blend_factor, saved_state.sample_mask);
     }
 }

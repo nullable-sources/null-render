@@ -23,9 +23,9 @@ namespace ntl::render::directx11 {
             ID3D11VertexShader* vertex_shader{ };
             ID3D11GeometryShader* geometry_shader{ };
             UINT pixel_shader_instances_count{ }, vertex_shader_instances_count{ }, geometry_shader_instances_count{ };
-            ID3D11ClassInstance* pixel_shader_instances[256]{ }, *vertex_shader_instances[256]{ }, *geometry_shader_instances[256]{ };
+            ID3D11ClassInstance* pixel_shader_instances[256]{ }, * vertex_shader_instances[256]{ }, * geometry_shader_instances[256]{ };
             D3D11_PRIMITIVE_TOPOLOGY primitive_topology{ };
-            ID3D11Buffer* index_buffer{ }, *vertex_buffer{ }, *vertex_shader_constant_buffer{ };
+            ID3D11Buffer* index_buffer{ }, * vertex_buffer{ }, * vertex_shader_constant_buffer[D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT]{ }, * pixel_shader_constant_buffer[D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT]{ };
             UINT index_buffer_offset{ }, vertex_buffer_stride{ }, vertex_buffer_offset{ };
             DXGI_FORMAT index_buffer_format{ };
             ID3D11InputLayout* input_layout{ };
