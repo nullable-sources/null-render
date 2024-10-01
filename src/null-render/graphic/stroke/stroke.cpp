@@ -13,7 +13,7 @@ namespace ntl::render {
         miter_angle = angle_t<radians_t>(math::angle_between(
             invert_vector_axis(to_next_direction, math::e_rotation::cw),
             invert_vector_axis(from_previous_direction, math::e_rotation::cw)
-        )).normalized<std::numbers::pi>() / 2.; //@note: we use pi (180 deg) as the boundaries
+        )).normalized<-std::numbers::pi, std::numbers::pi>() / 2.; //@note: we use pi (180 deg) as the boundaries
         max_miter_dist = std::abs(std::max(vec2_t<float>(current_point - next_point).length(), vec2_t<float>(current_point - previous_point).length()) / miter_angle.sin());
     }
 
