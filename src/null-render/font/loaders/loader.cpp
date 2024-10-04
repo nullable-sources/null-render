@@ -1,4 +1,4 @@
-#include <null-sdk/utils/memory/resource/resource.h>
+#include <null-sdk/memory/resource/resource.h>
 
 #include "loader.h"
 
