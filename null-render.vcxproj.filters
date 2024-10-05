@@ -30,6 +30,9 @@
     <Filter Include="src\backend\state-pipeline" />
     <Filter Include="src\backend\post-processing" />
     <Filter Include="src\graphic\commands\state-pipeline" />
+    <Filter Include="src\backend\renderer-pipeline">
+      <UniqueIdentifier>{eeb6801c-5ff4-4a0e-a075-63f9449d42e9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\null-render\font\font.cpp">
@@ -103,6 +106,9 @@
     </ClCompile>
     <ClCompile Include="src\null-render\graphic\commands\state-pipeline\state-pipeline.cpp">
       <Filter>src\graphic\commands\state-pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="src\null-render\backend\renderer-pipeline\renderer-pipeline.cpp">
+      <Filter>src\backend\renderer-pipeline</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -237,6 +243,9 @@
     </ClInclude>
     <ClInclude Include="src\null-render\backend\state-pipeline\blend-state.h">
       <Filter>src\backend\state-pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render\backend\renderer-pipeline\renderer-pipeline.h">
+      <Filter>src\backend\renderer-pipeline</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

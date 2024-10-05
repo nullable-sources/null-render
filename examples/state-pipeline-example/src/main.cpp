@@ -124,8 +124,7 @@ void main_loop() {
         ntl::render::draw_list->add_command(ntl::render::c_clip_command::instance(rect_t<float>(vec2_t<float>(0), ntl::render::shared::viewport)));
     } ntl::render::end_frame();
 
-    ntl::render::backend::renderer->begin_render();
-    ntl::render::backend::renderer->end_render();
+    ntl::render::backend::renderer_pipeline->process();
 }
 
 int main(HINSTANCE instance) {

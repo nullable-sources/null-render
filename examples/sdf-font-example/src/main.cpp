@@ -47,8 +47,7 @@ void main_loop() {
         draw_fonts("mtsdf", vec2_t<float>(10, 50));
     } ntl::render::end_frame();
 
-    ntl::render::backend::renderer->begin_render();
-    ntl::render::backend::renderer->end_render();
+    ntl::render::backend::renderer_pipeline->process();
 }
 
 int main(HINSTANCE instance) {

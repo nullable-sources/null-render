@@ -50,9 +50,6 @@ namespace ntl::render {
             virtual void destroy_internal_objects() { }
 
         public:
-            void begin_render(bool force_ignore_msaa = false);
-            void end_render(bool force_ignore_msaa = false);
-
             void create_objects();
             void destroy_objects();
 

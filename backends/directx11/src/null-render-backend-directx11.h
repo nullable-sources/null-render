@@ -131,15 +131,36 @@ namespace ntl::render::directx11 {
         }
 
         std::vector<int> on_wnd_proc(HWND _wnd_handle, UINT msg, WPARAM w_param, LPARAM l_param) override {
+            static bool resize_start = false, resize_buffers = false, enter_sizemove = false;
             std::vector<int> callback_results = win::c_window::on_wnd_proc(_wnd_handle, msg, w_param, l_param);
+            if(!device) return callback_results;
+
             switch(msg) {
+                case WM_ENTERSIZEMOVE: enter_sizemove = true; return { 0 };
                 case WM_SIZE: {
-                    if(device && w_param != SIZE_MINIMIZED) {
-                        backend::renderer->begin_resize_viewport(vec2_t<std::uint32_t>(LOWORD(l_param), HIWORD(l_param)));
-                        swap_chain->ResizeBuffers(0, render::shared::viewport.x, render::shared::viewport.y, DXGI_FORMAT_UNKNOWN, 0);
-                        backend::renderer->end_resize_viewport();
+                    if(w_param == SIZE_MINIMIZED) return { 0 };
+                    backend::renderer->begin_resize_viewport(vec2_t(LOWORD(l_param), HIWORD(l_param)));
+
+                    if(w_param == SIZE_MAXIMIZED || (w_param == SIZE_RESTORED && !enter_sizemove)) resize_buffers = true;
+                    else resize_start = true;
+                } return { 0 };
+                case WM_EXITSIZEMOVE: {
+                    enter_sizemove = false;
+                    if(resize_start) {
+                        resize_buffers = true;
+                        resize_start = false;
                     }
                 } return { 0 };
+            }
+
+            if(resize_buffers) {
+                backend::renderer->destroy_objects();
+                context->ClearState();
+                backend::renderer->create_objects();
+
+                auto res = swap_chain->ResizeBuffers(0, render::shared::viewport.x, render::shared::viewport.y, DXGI_FORMAT_UNKNOWN, 0);
+                backend::renderer->end_resize_viewport();
+                resize_buffers = false;
             }
 
             return callback_results;

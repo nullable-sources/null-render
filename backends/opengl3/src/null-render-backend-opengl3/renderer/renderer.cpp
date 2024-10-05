@@ -39,10 +39,7 @@ namespace ntl::render::opengl3 {
     }
 
     void c_renderer::destroy_texture(void* texture) {
-        if(!texture) {
-            sdk::logger(sdk::e_log_type::warning, "It is impossible to destroy the texture because it is empty.");
-            return;
-        }
+        if(!texture) return;
 
         opengl::delete_textures(1, (std::uint32_t*)&texture);
         texture = nullptr;

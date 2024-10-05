@@ -52,37 +52,6 @@ namespace ntl::render::backend {
         return std::move(premultiplied);
     }
 
-    void i_renderer::begin_render(bool force_ignore_msaa) {
-        update_translation(0.f);
-
-        renderer_event_dispatcher.begin_render();
-
-        state_pipeline->save_state();
-
-        renderer_event_dispatcher.create();
-
-        state_pipeline->setup_state();
-
-        if(!force_ignore_msaa && render::shared::msaa_quality != 0) {
-            state_pipeline->framebuffers.push(msaa_buffer);
-            msaa_buffer->clear();
-        }
-
-        draw_list->flush();
-    }
-
-    void i_renderer::end_render(bool force_ignore_msaa) {
-        if(!force_ignore_msaa && render::shared::msaa_quality != 0) {
-            state_pipeline->framebuffers.pop();
-
-            post_processing->blit_buffer(msaa_buffer.get());
-        }
-
-        renderer_event_dispatcher.end_render();
-
-        state_pipeline->restore_state();
-    }
-
     void i_renderer::create_atlases() {
         if(!atlases_handler.changed) return;
 

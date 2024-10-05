@@ -8,7 +8,7 @@
 
 #include "internal/stencil-buffer.h"
 #include "post-processing/post-processing.h"
-#include "renderer/renderer.h"
+#include "renderer-pipeline/renderer-pipeline.h"
 #include "state-pipeline/state-pipeline.h"
 
 namespace ntl::render::backend {
@@ -33,5 +33,7 @@ namespace ntl::render::backend {
         virtual std::unique_ptr<i_sdf_shader> instance_sdf_shader() = 0;
         virtual std::unique_ptr<i_msdf_shader> instance_msdf_shader() = 0;
         virtual std::unique_ptr<i_mtsdf_shader> instance_mtsdf_shader() = 0;
+
+        virtual std::unique_ptr<c_renderer_pipeline> instance_renderer_pipeline() { return std::make_unique<c_renderer_pipeline>(); }
     }; inline std::unique_ptr<i_factory> factory{ };
 }

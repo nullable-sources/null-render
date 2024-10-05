@@ -52,10 +52,7 @@ namespace ntl::render::directx9 {
     }
 
     void c_renderer::destroy_texture(void* texture) {
-        if(!texture) {
-            sdk::logger(sdk::e_log_type::warning, "it is impossible to destroy the texture because it is empty.");
-            return;
-        }
+        if(!texture) return;
 
         if(auto result = ((IDirect3DTexture9*)texture)->Release(); FAILED(result))
             sdk::logger(sdk::e_log_type::warning, "cant release texture, return code {}.", result);

@@ -18,9 +18,9 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-
   <ItemGroup>
     <ClCompile Include="src\null-render\backend\post-processing\post-processing.cpp" />
+    <ClCompile Include="src\null-render\backend\renderer-pipeline\renderer-pipeline.cpp" />
     <ClCompile Include="src\null-render\backend\renderer\renderer.cpp" />
     <ClCompile Include="src\null-render\backend\state-pipeline\state-pipeline.cpp" />
     <ClCompile Include="src\null-render\font\font.cpp" />
@@ -44,7 +44,6 @@
     <ClCompile Include="src\null-render.cpp" />
     <ClCompile Include="src\null-render\graphic\pen\pen.cpp" />
     <ClCompile Include="src\null-render\graphic\stroke\stroke.cpp" />
-
     <ClInclude Include="src\null-render\backend\backend.h" />
     <ClInclude Include="src\null-render\backend\internal\stencil-buffer.h" />
     <ClInclude Include="src\null-render\backend\internal\renderer-events.h" />
@@ -54,6 +53,7 @@
     <ClInclude Include="src\null-render\backend\internal\object.h" />
     <ClInclude Include="src\null-render\backend\internal\shader.h" />
     <ClInclude Include="src\null-render\backend\post-processing\post-processing.h" />
+    <ClInclude Include="src\null-render\backend\renderer-pipeline\renderer-pipeline.h" />
     <ClInclude Include="src\null-render\backend\renderer\renderer.h" />
     <ClInclude Include="src\null-render\backend\shaders\blur.h" />
     <ClInclude Include="src\null-render\backend\shaders\linear-gradient.h" />
@@ -89,11 +89,9 @@
     <ClInclude Include="src\null-render.h" />
     <ClInclude Include="src\null-render\graphic\pen\pen.h" />
     <ClInclude Include="src\null-render\graphic\stroke\stroke.h" />
-
     <None Include="src\null-render\font\font.inl" />
     <None Include="src\null-render\graphic\draw-list\draw-list.inl" />
   </ItemGroup>
-
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -101,12 +99,10 @@
     <RootNamespace>null_render</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
-  
   <PropertyGroup Label="NullVCXProperties">
     <NullRenderDependenciesPath Condition="Exists('$(SolutionDir)third-party\null-sdk\null-sdk.sln')">$(SolutionDir)third-party\</NullRenderDependenciesPath>
     <NullRenderDependenciesPath Condition="!Exists('$(SolutionDir)third-party\null-sdk\null-sdk.sln')">..\</NullRenderDependenciesPath>
   </PropertyGroup>
-  
   <PropertyGroup Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
@@ -115,11 +111,9 @@
     <UseDebugLibraries Condition="'$(Configuration)'=='release'">false</UseDebugLibraries>
     <WholeProgramOptimization Condition="'$(Configuration)'=='release'">true</WholeProgramOptimization>
   </PropertyGroup>
-
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  
   <PropertyGroup>
     <OutDir>$(ProjectDir)build\</OutDir>
     <IntDir>$(SolutionDir)build\$(Configuration)-$(PlatformShortName)\obj-$(ProjectName)\</IntDir>
@@ -128,7 +122,6 @@
     <LinkIncremental Condition="'$(Configuration)'=='debug'">true</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)'=='release'">false</LinkIncremental>
   </PropertyGroup>
-
   <ItemDefinitionGroup>
     <ClCompile>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
@@ -157,7 +150,6 @@
       <AdditionalOptions>/ignore:4221,4006 %(AdditionalOptions)</AdditionalOptions>
     </Lib>
   </ItemDefinitionGroup>
-
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="$(NullRenderDependenciesPath)null-sdk\null-sdk.props" />
 </Project>

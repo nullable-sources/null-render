@@ -25,6 +25,7 @@ namespace ntl::render::backend {
         blends.push(default_blend_state);
         backend::renderer->set_clip({ { 0 }, shared::viewport });
         backend::renderer->set_matrix(backend::renderer->get_projection_matrix());
+        backend::renderer->update_translation(0.f);
         backend::renderer->set_translation(0.f);
         backend::renderer_event_dispatcher.setup_state();
     }

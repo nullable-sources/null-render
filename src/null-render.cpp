@@ -58,6 +58,9 @@ namespace ntl::render {
         backend::sdf_shader = backend::factory->instance_sdf_shader();
         backend::msdf_shader = backend::factory->instance_msdf_shader();
         backend::mtsdf_shader = backend::factory->instance_mtsdf_shader();
+
+        backend::renderer_pipeline = backend::factory->instance_renderer_pipeline();
+        backend::renderer_pipeline->intermediate_buffer = backend::msaa_buffer.get();
     }
 
     void begin_frame() {

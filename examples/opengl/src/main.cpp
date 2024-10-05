@@ -80,8 +80,7 @@ void main_loop() {
         draw_example("gradient brush\npen", quad_gradient_brush, 430, pen_brush);
     } ntl::render::end_frame();
 
-    ntl::render::backend::renderer->begin_render();
-    ntl::render::backend::renderer->end_render();
+    ntl::render::backend::renderer_pipeline->process();
 }
 
 int main() {
