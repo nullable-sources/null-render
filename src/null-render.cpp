@@ -60,7 +60,9 @@ namespace ntl::render {
         backend::mtsdf_shader = backend::factory->instance_mtsdf_shader();
 
         backend::renderer_pipeline = backend::factory->instance_renderer_pipeline();
-        backend::renderer_pipeline->intermediate_buffer = backend::msaa_buffer.get();
+        backend::renderer_pipeline
+            ->set_intermediate_buffer(backend::msaa_buffer.get())
+            .add_flush_draw_list(draw_list.get());
     }
 
     void begin_frame() {

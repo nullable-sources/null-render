@@ -1,7 +1,6 @@
 #include "../internal/frame-buffer.h"
 #include "../post-processing/post-processing.h"
 #include "../state-pipeline/state-pipeline.h"
-#include "../../graphic/draw-list/draw-list.h"
 
 #include "renderer-pipeline.h"
 
@@ -17,7 +16,7 @@ namespace ntl::render::backend {
             if(clear_intermediate_buffer) intermediate_buffer->clear();
         }
 
-        if(flush_default_draw_list) draw_list->flush();
+        std::ranges::for_each(flushing_draw_lists, std::bind(&c_draw_list::flush, std::placeholders::_1));
     }
 
     void c_renderer_pipeline::end() {

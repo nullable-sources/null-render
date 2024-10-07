@@ -1,12 +1,12 @@
 #pragma once
+#include "../../graphic/draw-list/draw-list.h"
 #include "../renderer/renderer.h"
 
 namespace ntl::render::backend {
     class c_renderer_pipeline {
     public:
         i_frame_buffer* intermediate_buffer{ };
-
-        bool flush_default_draw_list{ true };
+        std::vector<c_draw_list*> flushing_draw_lists{ };
 
         bool use_intermediate_buffer{ true };
         bool clear_intermediate_buffer{ true };
@@ -18,6 +18,49 @@ namespace ntl::render::backend {
     public:
         c_renderer_pipeline() { }
         virtual ~c_renderer_pipeline() { }
+
+    public:
+        template <typename self_t>
+        auto&& set_intermediate_buffer(this self_t&& self, i_frame_buffer* frame_buffer) {
+            self.intermediate_buffer = frame_buffer;
+            return self;
+        }
+
+        template <typename self_t>
+        auto&& add_flush_draw_list(this self_t&& self, c_draw_list* draw_list) {
+            self.flushing_draw_lists.push_back(draw_list);
+            return self;
+        }
+
+        template <typename self_t>
+        auto&& set_intermediate_buffer_using(this self_t&& self, bool intermediate_buffer_using) {
+            self.use_intermediate_buffer = intermediate_buffer_using;
+            return self;
+        }
+
+        template <typename self_t>
+        auto&& set_intermediate_buffer_clear(this self_t&& self, bool intermediate_buffer_clear) {
+            self.clear_intermediate_buffer = intermediate_buffer_clear;
+            return self;
+        }
+
+        template <typename self_t>
+        auto&& set_intermediate_buffer_blit(this self_t&& self, bool intermediate_buffer_blit) {
+            self.blit_intermediate_buffer = intermediate_buffer_blit;
+            return self;
+        }
+
+        template <typename self_t>
+        auto&& set_state_pipeline_store(this self_t&& self, bool state_pipeline_store) {
+            self.store_state_pipeline = state_pipeline_store;
+            return self;
+        }
+
+        template <typename self_t>
+        auto&& set_state_pipeline_setup(this self_t&& self, bool state_pipeline_setup) {
+            self.setup_state_pipeline = state_pipeline_setup;
+            return self;
+        }
 
     public:
         virtual void begin();
