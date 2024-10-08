@@ -10,10 +10,6 @@
         <ClCompile>
             <AdditionalIncludeDirectories>$(NullRenderBackendDirectx9Root)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
         </ClCompile>
-        <Lib>
-            <AdditionalLibraryDirectories>$(NullRenderBackendDirectx9Root)build;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-            <AdditionalDependencies>null-render-backend-directx9-$(NullRenderBackendDirectx9Configuration)-$(LibrariesArchitecture).lib;%(AdditionalDependencies)</AdditionalDependencies>
-        </Lib>
         <Link>
             <AdditionalLibraryDirectories>$(NullRenderBackendDirectx9Root)build;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
             <AdditionalDependencies>null-render-backend-directx9-$(NullRenderBackendDirectx9Configuration)-$(LibrariesArchitecture).lib;%(AdditionalDependencies)</AdditionalDependencies>

@@ -6,18 +6,11 @@
         <NullRenderBackendDirectx11Configuration Condition="'$(UseDebugLibraries)' == 'false'">release</NullRenderBackendDirectx11Configuration>
     </PropertyGroup>
 
+    <Import Project="$(NullRenderBackendDirectx11Root)\null-render-backend-directx11.props" />
+
     <ItemDefinitionGroup>
         <ClCompile>
-            <AdditionalIncludeDirectories>$(NullRenderBackendDirectx11Root)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
             <PreprocessorDefinitions>NULL_RENDER_DX11_ALLOW_FEATURE_11_1;%(PreprocessorDefinitions);</PreprocessorDefinitions>
         </ClCompile>
-        <Lib>
-            <AdditionalLibraryDirectories>$(NullRenderBackendDirectx11Root)build;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-            <AdditionalDependencies>null-render-backend-directx11-$(NullRenderBackendDirectx11Configuration)-$(LibrariesArchitecture).lib;%(AdditionalDependencies)</AdditionalDependencies>
-        </Lib>
-        <Link>
-            <AdditionalLibraryDirectories>$(NullRenderBackendDirectx11Root)build;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-            <AdditionalDependencies>null-render-backend-directx11-$(NullRenderBackendDirectx11Configuration)-$(LibrariesArchitecture).lib;%(AdditionalDependencies)</AdditionalDependencies>
-        </Link>
     </ItemDefinitionGroup>
 </Project>

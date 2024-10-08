@@ -13,7 +13,6 @@
         </ClCompile>
         <Lib>
             <AdditionalLibraryDirectories>$(NullRenderRoot)build;$(NullRenderRoot)third-party\freetype\libs;$(NullRenderRoot)third-party\msdf-atlas-gen\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-            <AdditionalDependencies>null-render-$(NullRenderLibPostfix).lib;freetype-$(LibrariesArchitecture).lib;msdf-atlas-gen-$(NullRenderLibPostfix).lib;msdfgen-core-$(NullRenderLibPostfix).lib;msdfgen-ext-$(NullRenderLibPostfix).lib;%(AdditionalDependencies)</AdditionalDependencies>
         </Lib>
         <Link>
             <AdditionalLibraryDirectories>$(NullRenderRoot)build;$(NullRenderRoot)third-party\freetype\libs;$(NullRenderRoot)third-party\msdf-atlas-gen\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
