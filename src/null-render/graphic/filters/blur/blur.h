@@ -7,8 +7,8 @@ namespace ntl::render {
         none = 0,
         backbuffer = 1 << 0, //@note: this flag is only needed if the msaa buffer is not the primary one.
         msaa = 1 << 1,
-    }; ENUM_CREATE_BIT_OPERATORS(e_blur_filter_sources, true);
-    ENUM_CREATE_CAST_OPERATOR(e_blur_filter_sources, -);
+    }; NULLSDK_ENUM_CREATE_BIT_OPERATORS(e_blur_filter_sources, true);
+    NULLSDK_ENUM_CREATE_CAST_OPERATOR(e_blur_filter_sources, -);
 
     class c_blur_filter : public i_filter {
     public:

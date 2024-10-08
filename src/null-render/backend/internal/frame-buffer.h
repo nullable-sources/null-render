@@ -13,8 +13,8 @@ namespace ntl::render::backend {
         none = 0,
         msaa = 1 << 0,
         depth_buffer = 1 << 1
-    }; ENUM_CREATE_BIT_OPERATORS(e_frame_buffer_flags, true);
-    ENUM_CREATE_CAST_OPERATOR(e_frame_buffer_flags, -);
+    }; NULLSDK_ENUM_CREATE_BIT_OPERATORS(e_frame_buffer_flags, true);
+    NULLSDK_ENUM_CREATE_CAST_OPERATOR(e_frame_buffer_flags, -);
 
     class i_frame_buffer : protected i_renderer_event_listener, public i_usable_object {
     public:

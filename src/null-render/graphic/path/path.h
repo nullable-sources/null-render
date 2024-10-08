@@ -158,7 +158,7 @@ namespace ntl::render {
         top_right,
         bottom_left,
         bottom_right
-    }; ENUM_CREATE_CAST_OPERATOR(e_corner_sides, -);
+    }; NULLSDK_ENUM_CREATE_CAST_OPERATOR(e_corner_sides, -);
 
     enum class e_corner_flags {
         top_left = 1 << 0,
@@ -175,8 +175,8 @@ namespace ntl::render {
         right_diagonal = top_right | bottom_left,
 
         all = top_left | top_right | bottom_left | bottom_right
-    }; ENUM_CREATE_BIT_OPERATORS(e_corner_flags, true);
-    ENUM_CREATE_CAST_OPERATOR(e_corner_flags, -);
+    }; NULLSDK_ENUM_CREATE_BIT_OPERATORS(e_corner_flags, true);
+    NULLSDK_ENUM_CREATE_CAST_OPERATOR(e_corner_flags, -);
 
     struct rounding_t {
     public:

@@ -12,8 +12,8 @@ namespace ntl::render {
         center_x = 1 << 2,
         center_y = 1 << 3,
         center = center_x | center_y,
-    }; ENUM_CREATE_BIT_OPERATORS(e_text_align, true);
-    ENUM_CREATE_CAST_OPERATOR(e_text_align, -);
+    }; NULLSDK_ENUM_CREATE_BIT_OPERATORS(e_text_align, true);
+    NULLSDK_ENUM_CREATE_CAST_OPERATOR(e_text_align, -);
 
     class i_text_brush : public c_brush {
     public:

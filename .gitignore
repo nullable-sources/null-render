@@ -3,6 +3,8 @@ build/
 *.user
 *.log
 
+third-party/null-projects-config
+
 third-party/msdf-atlas-gen/build
 third-party/msdf-atlas-gen/libs/*.pdb
 third-party/msdf-atlas-gen/libs/*.idb

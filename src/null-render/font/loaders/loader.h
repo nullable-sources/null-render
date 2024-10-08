@@ -14,8 +14,8 @@ namespace ntl::render {
         mono_hinting = 1 << 4,
         bold = 1 << 5,
         oblique = 1 << 6
-    }; ENUM_CREATE_BIT_OPERATORS(e_font_rasterizer_flags, true);
-    ENUM_CREATE_CAST_OPERATOR(e_font_rasterizer_flags, -);
+    }; NULLSDK_ENUM_CREATE_BIT_OPERATORS(e_font_rasterizer_flags, true);
+    NULLSDK_ENUM_CREATE_CAST_OPERATOR(e_font_rasterizer_flags, -);
 
     enum class e_font_render_mode { monochrome, sdf, psdf, msdf, mtsdf };
     enum class e_font_coloring_mode { none, simple, ink_trap, by_distance };
