@@ -2499,13 +2499,8 @@ namespace opengl {
     class c_opengl_dll : public ntl::c_dll {
     public: using c_dll::c_dll;
     public:
-        c_dll::i_export* find_stored_export(std::string_view _name) override {
-            c_dll::i_export* finded_export = c_dll::find_stored_export(_name);
-            return finded_export && finded_export->address ? finded_export : nullptr;
-        }
-
-        ntl::address_t load_export(std::string_view _name) override {
-            if(ntl::address_t address = c_dll::load_export(_name); address) return address;
+        ntl::address_t get_export(std::string_view _name) override {
+            if(ntl::address_t address = c_dll::get_export(_name); address) return address;
             return wglGetProcAddress(_name.data());
         }
     } inline opengl32{ "opengl32.dll" };
@@ -2522,13 +2517,13 @@ namespace opengl {
     public:
         c_opengl_export(const std::string_view& _name) {
             name = _name;
-            if(i_export* finded = opengl32.find_stored_export(_name)) address = (*finded).address;
+            if(i_export* finded = opengl32.get_export(_name)) address = (*finded).address;
             else opengl32.stored_exports.push_back(this);
         }
 
     public:
         return_t operator()(args_t... args) {
-            if(!address) { address = opengl32.load_export(name); }
+            if(!address) { address = opengl32.get_export(name); }
             if(!address) { ntl::sdk::logger(ntl::sdk::e_log_type::error, "'{}' export address == nullptr.", name.empty() ? "unknown" : name); return return_t{ }; }
             return ((prototype_t)address)(args...);
         }
