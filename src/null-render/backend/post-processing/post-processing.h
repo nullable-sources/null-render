@@ -1,6 +1,7 @@
 #pragma once
 #include "null-render/backend/internal/mesh.h"
 #include "null-render/backend/internal/frame-buffer.h"
+#include "null-render/backend/shaders/passthrough.h"
 #include "../../graphic/commands/geometry/geometry.h"
 
 namespace ntl::render::backend {
@@ -17,6 +18,7 @@ namespace ntl::render::backend {
         matrix4x4_t viewport_matrix{ };
         std::unique_ptr<c_mesh> mesh{ };
         std::shared_ptr<c_geometry_command> geometry_command{ };
+        i_shader* custom_passthrough_shader{ };
 
         bool geometry_dirty{ };
 
@@ -30,6 +32,11 @@ namespace ntl::render::backend {
             renderer_event_dispatcher.detach_listener(e_renderer_event_type::create, this);
             renderer_event_dispatcher.detach_listener(e_renderer_event_type::viewport_resize_end, this);
         }
+
+    public:
+        void restore_passthrough_shader() { custom_passthrough_shader = nullptr; }
+        void set_passthrough_shader(i_shader* shader) { custom_passthrough_shader = shader; }
+        i_shader* get_passthrough_shader() { return custom_passthrough_shader ? custom_passthrough_shader : passthrough_shader.get(); }
 
     public:
         void initialize();

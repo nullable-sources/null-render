@@ -5,7 +5,7 @@ namespace ntl::render {
         if(radius == 0.f || a_min_of_12 > a_max_of_12) return { center };
         else {
             return std::views::iota(a_min_of_12 * shared::arc_fast_tessellation_multiplier, a_max_of_12 * shared::arc_fast_tessellation_multiplier + 1)
-                | std::views::transform([&](const int& a) { return vec2_t<float>(center + shared::arc_fast_vertex[a % shared::arc_fast_vertex.size()] * radius); })
+                | std::views::transform([&](int a) { return vec2_t<float>(center + shared::arc_fast_vertex[a % shared::arc_fast_vertex.size()] * radius); })
                 | std::ranges::to<std::vector>();
         }
     }
@@ -14,7 +14,7 @@ namespace ntl::render {
         if(radius == 0.f) return { center };
         else {
             return std::views::iota(0, num_segments + 1)
-                | std::views::transform([&](const int& i) { const float a = a_min + ((float)i / (float)num_segments) * (a_max - a_min); return vec2_t<float>(center + vec2_t(std::cosf(a), std::sinf(a)) * radius); })
+                | std::views::transform([&](int i) { const float a = a_min + ((float)i / (float)num_segments) * (a_max - a_min); return vec2_t<float>(center + vec2_t(std::cosf(a), std::sinf(a)) * radius); })
                 | std::ranges::to<std::vector>();
         }
     }

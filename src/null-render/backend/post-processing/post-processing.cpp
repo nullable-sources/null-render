@@ -38,19 +38,19 @@ namespace ntl::render::backend {
     }
 
     void c_post_processing::blit_buffer_region(i_frame_buffer* buffer, const vec2_t<float>& uvs) {
-        state_pipeline->shaders.push(passthrough_shader);
+        state_pipeline->shaders.push(get_passthrough_shader());
         draw_buffer_region(buffer, uvs);
         state_pipeline->shaders.pop();
     }
 
     void c_post_processing::blit_buffer_region(i_frame_buffer* buffer, const rect_t<float>& geometry_region, const rect_t<float>& uvs_region) {
-        state_pipeline->shaders.push(passthrough_shader);
+        state_pipeline->shaders.push(get_passthrough_shader());
         draw_buffer_region(buffer, geometry_region, uvs_region);
         state_pipeline->shaders.pop();
     }
 
     void c_post_processing::blit_buffer(i_frame_buffer* buffer) {
-        state_pipeline->shaders.push(passthrough_shader);
+        state_pipeline->shaders.push(get_passthrough_shader());
         draw_buffer(buffer);
         state_pipeline->shaders.pop();
     }
