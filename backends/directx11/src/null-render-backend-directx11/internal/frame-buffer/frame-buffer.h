@@ -10,6 +10,8 @@ namespace ntl::render::directx11 {
         ID3D11RenderTargetView* render_target{ };
         ID3D11DepthStencilView* depth_stencil_view{ };
 
+        bool use_srgb{ false };
+
     public:
         void* get_surface() override { return render_target_texture; }
         void* get_texture() override { return shader_resource_view; }

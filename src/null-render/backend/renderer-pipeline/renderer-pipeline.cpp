@@ -11,6 +11,11 @@ namespace ntl::render::backend {
         renderer_event_dispatcher.create();
         if(setup_state_pipeline) state_pipeline->setup_state();
 
+        if(use_rendering_buffer && rendering_buffer) {
+            state_pipeline->framebuffers.push(rendering_buffer);
+            if(clear_rendering_buffer) rendering_buffer->clear();
+        }
+
         if(use_intermediate_buffer && intermediate_buffer) {
             state_pipeline->framebuffers.push(intermediate_buffer);
             if(clear_intermediate_buffer) intermediate_buffer->clear();
@@ -22,7 +27,12 @@ namespace ntl::render::backend {
     void c_renderer_pipeline::end() {
         if(use_intermediate_buffer && intermediate_buffer) {
             state_pipeline->framebuffers.pop();
-            if(blit_intermediate_buffer) post_processing->blit_buffer(msaa_buffer.get());
+            if(blit_intermediate_buffer) post_processing->blit_buffer(intermediate_buffer);
+        }
+
+        if(use_rendering_buffer && rendering_buffer) {
+            state_pipeline->framebuffers.push(rendering_buffer);
+            if(blit_rendering_buffer) post_processing->blit_buffer(rendering_buffer);
         }
 
         renderer_event_dispatcher.end_render();

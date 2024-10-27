@@ -11,7 +11,7 @@ namespace ntl::render::directx11 {
                 .Height{ (std::uint32_t)size.y },
                 .MipLevels{ 1 },
                 .ArraySize{ 1 },
-                .Format{ DXGI_FORMAT_R8G8B8A8_UNORM },
+                .Format{ use_srgb ? DXGI_FORMAT_R8G8B8A8_UNORM_SRGB : DXGI_FORMAT_R8G8B8A8_UNORM },
                 .SampleDesc{
                     .Count{ flags & backend::e_frame_buffer_flags::msaa ? render::shared::msaa_quality : 1 },
                     .Quality{ 0 }

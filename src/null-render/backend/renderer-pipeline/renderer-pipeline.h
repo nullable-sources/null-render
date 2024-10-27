@@ -5,12 +5,12 @@
 namespace ntl::render::backend {
     class c_renderer_pipeline {
     public:
-        i_frame_buffer* intermediate_buffer{ };
+        i_frame_buffer* rendering_buffer{ }, *intermediate_buffer{ };
         std::vector<c_draw_list*> flushing_draw_lists{ };
 
-        bool use_intermediate_buffer{ true };
-        bool clear_intermediate_buffer{ true };
-        bool blit_intermediate_buffer{ true };
+        bool use_rendering_buffer{ false }, use_intermediate_buffer{ true };
+        bool clear_rendering_buffer{ false }, clear_intermediate_buffer{ true };
+        bool blit_rendering_buffer{ false }, blit_intermediate_buffer{ true };
 
         bool store_state_pipeline{ true };
         bool setup_state_pipeline{ true };
@@ -21,6 +21,12 @@ namespace ntl::render::backend {
 
     public:
         template <typename self_t>
+        auto&& set_rendering_buffer(this self_t&& self, i_frame_buffer* frame_buffer) {
+            self.rendering_buffer = frame_buffer;
+            return self;
+        }
+
+        template <typename self_t>
         auto&& set_intermediate_buffer(this self_t&& self, i_frame_buffer* frame_buffer) {
             self.intermediate_buffer = frame_buffer;
             return self;
@@ -29,6 +35,24 @@ namespace ntl::render::backend {
         template <typename self_t>
         auto&& add_flush_draw_list(this self_t&& self, c_draw_list* draw_list) {
             self.flushing_draw_lists.push_back(draw_list);
+            return self;
+        }
+
+        template <typename self_t>
+        auto&& set_rendering_buffer_using(this self_t&& self, bool rendering_buffer_using) {
+            self.use_rendering_buffer = rendering_buffer_using;
+            return self;
+        }
+
+        template <typename self_t>
+        auto&& set_rendering_buffer_clear(this self_t&& self, bool rendering_buffer_clear) {
+            self.clear_rendering_buffer = rendering_buffer_clear;
+            return self;
+        }
+
+        template <typename self_t>
+        auto&& set_rendering_buffer_blit(this self_t&& self, bool rendering_buffer_blit) {
+            self.blit_rendering_buffer = rendering_buffer_blit;
             return self;
         }
 
