@@ -56,6 +56,8 @@ namespace ntl::render::directx9 {
         shared.device->GetVertexDeclaration(&vertex_declaration);
         shared.device->GetStreamSource(0, &vertex_buffer, &vertex_offset, &vertex_stride);
         shared.device->GetIndices(&index_buffer);
+
+        stored_frame_buffer->set_from_external(framebuffer);
     }
 
     void c_state_pipeline::restore_state() {

@@ -11,6 +11,8 @@ namespace ntl::render::opengl3 {
         void* get_surface() override { return (void*)fbo; }
         void* get_texture() override { return (void*)fbo_attachment; }
 
+        void set_from_external(void* external_resource) override { fbo = (std::uint32_t)external_resource; }
+
     public:
         void create() override;
         void destroy() override;

@@ -14,6 +14,7 @@ namespace ntl::render::directx11 {
 
     void c_state_pipeline::save_state() {
         shared.context->OMGetRenderTargets(1, &saved_state.render_target_view, &saved_state.depth_stencil_view);
+        stored_frame_buffer->set_from_external(saved_state.render_target_view);
 
         saved_state.scissor_rects_count = saved_state.viewports_count = D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE;
         shared.context->RSGetScissorRects(&saved_state.scissor_rects_count, saved_state.scissor_rects);

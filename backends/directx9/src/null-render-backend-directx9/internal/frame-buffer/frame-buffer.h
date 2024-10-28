@@ -13,6 +13,8 @@ namespace ntl::render::directx9 {
         void* get_surface() override { return surface; }
         void* get_texture() override { return texture; }
 
+        void set_from_external(void* external_resource) override;
+
     public:
         void create() override;
         void destroy() override;

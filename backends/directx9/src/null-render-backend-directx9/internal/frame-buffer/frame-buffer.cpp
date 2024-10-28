@@ -1,8 +1,16 @@
 #include "frame-buffer.h"
 
 namespace ntl::render::directx9 {
+    void c_frame_buffer::set_from_external(void* external_resource) {
+        if(surface == external_resource) return;
+        if(surface) destroy();
+        surface = (IDirect3DSurface9*)external_resource;
+        surface->AddRef();
+    }
+
     void c_frame_buffer::create() {
         if(!empty()) return;
+        if(type == backend::e_frame_buffer_type::external) return;
 
         //@note: creating texture for render target
         if(type == backend::e_frame_buffer_type::postprocessing) {

@@ -31,7 +31,7 @@ namespace ntl::render::backend {
         }
 
         if(use_rendering_buffer && rendering_buffer) {
-            state_pipeline->framebuffers.push(rendering_buffer);
+            state_pipeline->framebuffers.pop();
             if(blit_rendering_buffer) post_processing->blit_buffer(rendering_buffer);
         }
 

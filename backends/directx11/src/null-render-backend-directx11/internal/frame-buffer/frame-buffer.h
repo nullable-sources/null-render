@@ -16,6 +16,8 @@ namespace ntl::render::directx11 {
         void* get_surface() override { return render_target_texture; }
         void* get_texture() override { return shader_resource_view; }
 
+        void set_from_external(void* external_resource) override;
+
     public:
         void create() override;
         void destroy() override;

@@ -87,6 +87,16 @@ namespace ntl::render::backend {
             void set_default() override;
         } blends{ };
 
+    protected:
+        std::unique_ptr<i_frame_buffer> stored_frame_buffer{ };
+
+    public:
+        i_state_pipeline();
+        virtual ~i_state_pipeline();
+
+    public:
+        i_frame_buffer* get_stored_frame_buffer() { return stored_frame_buffer.get(); }
+
     public:
         virtual void setup_state();
         virtual void save_state() = 0;

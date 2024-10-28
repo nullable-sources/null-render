@@ -1,8 +1,21 @@
 #include "frame-buffer.h"
 
 namespace ntl::render::directx11 {
+    void c_frame_buffer::set_from_external(void* external_resource) {
+        if(render_target == external_resource) return;
+        if(render_target) destroy();
+        render_target = (ID3D11RenderTargetView*)external_resource;
+        render_target->AddRef();
+
+        ID3D11Resource* resource{ };
+        render_target->GetResource(&resource);
+        resource->QueryInterface<ID3D11Texture2D>(&render_target_texture);
+        resource->Release();
+    }
+
     void c_frame_buffer::create() {
         if(!empty()) return;
+        if(type == backend::e_frame_buffer_type::external) return;
 
         //@note: creating texture for render target
         if(type == backend::e_frame_buffer_type::postprocessing) {

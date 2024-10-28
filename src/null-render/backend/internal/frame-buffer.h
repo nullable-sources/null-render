@@ -6,7 +6,8 @@
 namespace ntl::render::backend {
     enum class e_frame_buffer_type {
         backbuffer,
-        postprocessing
+        postprocessing,
+        external
     };
 
     enum class e_frame_buffer_flags {
@@ -40,6 +41,8 @@ namespace ntl::render::backend {
     public:
         virtual void* get_surface() = 0;
         virtual void* get_texture() = 0;
+
+        virtual void set_from_external(void* external_resource) = 0;
 
     public:
         virtual void create() = 0;

@@ -158,7 +158,7 @@ namespace ntl::render::directx11 {
                 context->ClearState();
                 backend::renderer->create_objects();
 
-                auto res = swap_chain->ResizeBuffers(0, render::shared::viewport.x, render::shared::viewport.y, DXGI_FORMAT_UNKNOWN, 0);
+                HRESULT res = swap_chain->ResizeBuffers(0, render::shared::viewport.x, render::shared::viewport.y, DXGI_FORMAT_UNKNOWN, 0);
                 backend::renderer->end_resize_viewport();
                 resize_buffers = false;
             }

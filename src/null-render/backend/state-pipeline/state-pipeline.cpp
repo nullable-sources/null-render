@@ -1,3 +1,4 @@
+#include "../backend.h"
 #include "../renderer/renderer.h"
 #include "state-pipeline.h"
 
@@ -19,6 +20,14 @@ namespace ntl::render::backend {
 
     void i_state_pipeline::c_blends_pipeline::append() { stack.back()->use(); }
     void i_state_pipeline::c_blends_pipeline::set_default() { state_pipeline->restore_blend(); }
+
+    i_state_pipeline::i_state_pipeline() {
+        stored_frame_buffer = factory->instance_frame_buffer(shared::viewport, e_frame_buffer_type::external, e_frame_buffer_flags::none);
+    }
+
+    i_state_pipeline::~i_state_pipeline() {
+        stored_frame_buffer.reset();
+    }
 
     void i_state_pipeline::setup_state() {
         rasterizers.push(default_rasterizer_state);

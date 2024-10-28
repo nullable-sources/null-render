@@ -4,6 +4,7 @@
 namespace ntl::render::opengl3 {
     void c_frame_buffer::create() {
         if(!empty()) return;
+        if(type == backend::e_frame_buffer_type::external) return;
 
         if(type == backend::e_frame_buffer_type::postprocessing) {
             opengl::gen_framebuffers(1, &fbo);

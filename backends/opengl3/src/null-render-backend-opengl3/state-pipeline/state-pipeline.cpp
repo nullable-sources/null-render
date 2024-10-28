@@ -63,6 +63,8 @@ namespace ntl::render::opengl3 {
         //@note: rasterizer save
         saved_rasterizer.enable_scissor_test = opengl::is_enabled(opengl::e_scissor_test);
         saved_rasterizer.enable_multisample = opengl::is_enabled(opengl::e_multisample);
+
+        stored_frame_buffer->set_from_external((void*)saved_state.draw_fbo);
     }
 
     void c_state_pipeline::restore_state() {
