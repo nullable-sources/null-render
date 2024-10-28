@@ -20,7 +20,9 @@ namespace ntl::render::backend {
             state_pipeline->framebuffers.push(intermediate_buffer);
             if(clear_intermediate_buffer) intermediate_buffer->clear();
         }
+    }
 
+    void c_renderer_pipeline::flush() {
         std::ranges::for_each(flushing_draw_lists, std::bind(&c_draw_list::flush, std::placeholders::_1));
     }
 

@@ -88,8 +88,9 @@ namespace ntl::render::backend {
 
     public:
         virtual void begin();
+        virtual void flush();
         virtual void end();
 
-        virtual void process() { begin(); end(); }
+        virtual void process() { begin(); flush(); end(); }
     }; inline std::unique_ptr<c_renderer_pipeline> renderer_pipeline{ };
 }
