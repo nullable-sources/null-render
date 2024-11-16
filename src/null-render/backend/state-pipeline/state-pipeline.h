@@ -5,6 +5,7 @@
 
 #include "rasterizer-state.h"
 #include "blend-state.h"
+#include "stencil-state.h"
 
 namespace ntl::render::backend {
     class i_state_pipeline {
@@ -87,6 +88,12 @@ namespace ntl::render::backend {
             void set_default() override;
         } blends{ };
 
+        class c_stencils_pipeline : public i_pipeline<i_stencil_state> {
+        public:
+            void append() override;
+            void set_default() override;
+        } stencils{ };
+
     protected:
         std::unique_ptr<i_frame_buffer> stored_frame_buffer{ };
 
@@ -109,5 +116,6 @@ namespace ntl::render::backend {
         virtual void restore_texture() = 0;
         virtual void restore_rasterizer() = 0;
         virtual void restore_blend() = 0;
+        virtual void restore_stencil() = 0;
     }; inline std::unique_ptr<i_state_pipeline> state_pipeline{ };
 }

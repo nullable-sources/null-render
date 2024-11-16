@@ -31,6 +31,14 @@ namespace ntl::render::directx9 {
             std::uint32_t blend_factor{ };
         } saved_blend{ };
         
+        struct saved_stencil_t {
+        public:
+            std::uint32_t enable{ };
+            std::uint32_t fail{ }, zfail{ }, pass{ };
+            std::uint32_t comp{ };
+            std::uint32_t ref{ };
+        } saved_stencil{ };
+
     public:
         c_state_pipeline() {
             backend::renderer_event_dispatcher.attach_listener(backend::e_renderer_event_type::create, this);
@@ -54,6 +62,7 @@ namespace ntl::render::directx9 {
         void restore_texture() override;
         void restore_rasterizer() override;
         void restore_blend() override;
+        void restore_stencil() override;
 
     private:
         void on_create() override;

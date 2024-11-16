@@ -48,6 +48,13 @@ namespace ntl::render::directx9 {
         shared.device->GetRenderState(D3DRS_COLORWRITEENABLE, (DWORD*)&saved_blend.color_write);
         shared.device->GetRenderState(D3DRS_BLENDFACTOR, (DWORD*)&saved_blend.blend_factor);
 
+        shared.device->GetRenderState(D3DRS_STENCILENABLE, (DWORD*)&saved_stencil.enable);
+        shared.device->GetRenderState(D3DRS_STENCILFAIL, (DWORD*)&saved_stencil.fail);
+        shared.device->GetRenderState(D3DRS_STENCILZFAIL, (DWORD*)&saved_stencil.zfail);
+        shared.device->GetRenderState(D3DRS_STENCILPASS, (DWORD*)&saved_stencil.pass);
+        shared.device->GetRenderState(D3DRS_STENCILFUNC, (DWORD*)&saved_stencil.comp);
+        shared.device->GetRenderState(D3DRS_STENCILREF, (DWORD*)&saved_stencil.ref);
+
         shared.device->GetRenderTarget(0, &framebuffer);
         shared.device->GetDepthStencilSurface(&depth);
         shared.device->GetTexture(0, &texture);
@@ -73,6 +80,7 @@ namespace ntl::render::directx9 {
         restore_texture();
         restore_rasterizer();
         restore_blend();
+        restore_stencil();
 
         if(framebuffer) { framebuffer->Release(); framebuffer = nullptr; }
         if(depth) { depth->Release(); depth = nullptr; }
@@ -117,6 +125,15 @@ namespace ntl::render::directx9 {
         shared.device->SetRenderState(D3DRS_DESTBLENDALPHA, saved_blend.dst_blend_alpha);
         shared.device->SetRenderState(D3DRS_COLORWRITEENABLE, saved_blend.color_write);
         shared.device->SetRenderState(D3DRS_BLENDFACTOR, saved_blend.blend_factor);
+    }
+
+    void c_state_pipeline::restore_stencil() {
+        shared.device->SetRenderState(D3DRS_STENCILENABLE, saved_stencil.enable);
+        shared.device->SetRenderState(D3DRS_STENCILFAIL, saved_stencil.fail);
+        shared.device->SetRenderState(D3DRS_STENCILZFAIL, saved_stencil.zfail);
+        shared.device->SetRenderState(D3DRS_STENCILPASS, saved_stencil.pass);
+        shared.device->SetRenderState(D3DRS_STENCILFUNC, saved_stencil.comp);
+        shared.device->SetRenderState(D3DRS_STENCILREF, saved_stencil.ref);
     }
 
     void c_state_pipeline::on_create() {

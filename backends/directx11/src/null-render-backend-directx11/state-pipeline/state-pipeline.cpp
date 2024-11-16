@@ -42,8 +42,6 @@ namespace ntl::render::directx11 {
 
         shared.context->RSSetScissorRects(saved_state.scissor_rects_count, saved_state.scissor_rects);
         shared.context->RSSetViewports(saved_state.viewports_count, saved_state.viewports);
-        shared.context->OMSetDepthStencilState(saved_state.depth_stencil_state, saved_state.stencil_ref);
-        if(saved_state.depth_stencil_state) saved_state.depth_stencil_state->Release();
 
         restore_framebuffer();
         restore_mesh();
@@ -51,7 +49,9 @@ namespace ntl::render::directx11 {
         restore_texture();
         restore_rasterizer();
         restore_blend();
+        restore_stencil();
 
+        if(saved_state.depth_stencil_state) saved_state.depth_stencil_state->Release();
         if(saved_state.blend_state) saved_state.blend_state->Release();
         if(saved_state.render_target_view) saved_state.render_target_view->Release();
         if(saved_state.depth_stencil_view) saved_state.depth_stencil_view->Release();
@@ -104,5 +104,9 @@ namespace ntl::render::directx11 {
     
     void c_state_pipeline::restore_blend() {
         shared.context->OMSetBlendState(saved_state.blend_state, saved_state.blend_factor, saved_state.sample_mask);
+    }
+
+    void c_state_pipeline::restore_stencil() {
+        shared.context->OMSetDepthStencilState(saved_state.depth_stencil_state, saved_state.stencil_ref);
     }
 }

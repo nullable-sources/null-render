@@ -33,6 +33,9 @@
     <Filter Include="src\backend\renderer-pipeline">
       <UniqueIdentifier>{eeb6801c-5ff4-4a0e-a075-63f9449d42e9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\backend\stencil-buffer">
+      <UniqueIdentifier>{e11495ac-57bd-4c7d-a9bb-bd2a4f1758ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\null-render\font\font.cpp">
@@ -109,6 +112,9 @@
     </ClCompile>
     <ClCompile Include="src\null-render\backend\renderer-pipeline\renderer-pipeline.cpp">
       <Filter>src\backend\renderer-pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="src\null-render\backend\stencil-buffer\stencil-buffer.cpp">
+      <Filter>src\backend\stencil-buffer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -226,9 +232,6 @@
     <ClInclude Include="src\null-render\backend\post-processing\post-processing.h">
       <Filter>src\backend\post-processing</Filter>
     </ClInclude>
-    <ClInclude Include="src\null-render\backend\internal\stencil-buffer.h">
-      <Filter>src\backend\internal</Filter>
-    </ClInclude>
     <ClInclude Include="src\null-render\font\glyph.h">
       <Filter>src\font</Filter>
     </ClInclude>
@@ -246,6 +249,12 @@
     </ClInclude>
     <ClInclude Include="src\null-render\backend\renderer-pipeline\renderer-pipeline.h">
       <Filter>src\backend\renderer-pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render\backend\state-pipeline\stencil-state.h">
+      <Filter>src\backend\state-pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render\backend\stencil-buffer\stencil-buffer.h">
+      <Filter>src\backend\stencil-buffer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

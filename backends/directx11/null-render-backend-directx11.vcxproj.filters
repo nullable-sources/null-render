@@ -1,40 +1,45 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="src"/>
-    <Filter Include="src\shaders"/>
-    <Filter Include="src\wrapper"/>
-    <Filter Include="src\wrapper\shaders"/>
-    <Filter Include="src\wrapper\constant-buffer"/>
-    <Filter Include="src\internal"/>
-    <Filter Include="src\internal\frame-buffer"/>
-    <Filter Include="src\internal\mesh"/>
-    <Filter Include="src\renderer"/>
-    <Filter Include="src\shaders\sdf"/>
-    <Filter Include="src\shaders\quad-gradient"/>
-    <Filter Include="src\shaders\linear-gradient"/>
-    <Filter Include="src\shaders\sdf\hlsl"/>
-    <Filter Include="src\shaders\quad-gradient\hlsl"/>
-    <Filter Include="src\shaders\linear-gradient\hlsl"/>
-    <Filter Include="src\shaders\radial-gradient"/>
-    <Filter Include="src\shaders\radial-gradient\hlsl"/>
-    <Filter Include="src\shaders\blur"/>
-    <Filter Include="src\shaders\blur\hlsl"/>
-    <Filter Include="src\state-pipeline"/>
-    <Filter Include="src\internal\stencil-buffer"/>
-    <Filter Include="src\shaders\color"/>
-    <Filter Include="src\shaders\passthrough"/>
-    <Filter Include="src\shaders\texture"/>
-    <Filter Include="src\shaders\color\hlsl"/>
-    <Filter Include="src\shaders\passthrough\hlsl"/>
-    <Filter Include="src\shaders\texture\hlsl"/>
-    <Filter Include="src\state-pipeline\rasterizer-state"/>
-    <Filter Include="src\wrapper\state-machine"/>
-    <Filter Include="src\wrapper\state-machine\rasterizer-state-instances-stack"/>
-    <Filter Include="src\wrapper\state-machine\blend-state-instances-stack"/>
-    <Filter Include="src\state-pipeline\blend-state"/>
+    <Filter Include="src" />
+    <Filter Include="src\shaders" />
+    <Filter Include="src\wrapper" />
+    <Filter Include="src\wrapper\shaders" />
+    <Filter Include="src\wrapper\constant-buffer" />
+    <Filter Include="src\internal" />
+    <Filter Include="src\internal\frame-buffer" />
+    <Filter Include="src\internal\mesh" />
+    <Filter Include="src\renderer" />
+    <Filter Include="src\shaders\sdf" />
+    <Filter Include="src\shaders\quad-gradient" />
+    <Filter Include="src\shaders\linear-gradient" />
+    <Filter Include="src\shaders\sdf\hlsl" />
+    <Filter Include="src\shaders\quad-gradient\hlsl" />
+    <Filter Include="src\shaders\linear-gradient\hlsl" />
+    <Filter Include="src\shaders\radial-gradient" />
+    <Filter Include="src\shaders\radial-gradient\hlsl" />
+    <Filter Include="src\shaders\blur" />
+    <Filter Include="src\shaders\blur\hlsl" />
+    <Filter Include="src\state-pipeline" />
+    <Filter Include="src\shaders\color" />
+    <Filter Include="src\shaders\passthrough" />
+    <Filter Include="src\shaders\texture" />
+    <Filter Include="src\shaders\color\hlsl" />
+    <Filter Include="src\shaders\passthrough\hlsl" />
+    <Filter Include="src\shaders\texture\hlsl" />
+    <Filter Include="src\state-pipeline\rasterizer-state" />
+    <Filter Include="src\wrapper\state-machine" />
+    <Filter Include="src\wrapper\state-machine\rasterizer-state-instances-stack" />
+    <Filter Include="src\wrapper\state-machine\blend-state-instances-stack" />
+    <Filter Include="src\state-pipeline\blend-state" />
+    <Filter Include="src\stencil-buffer" />
+    <Filter Include="src\wrapper\state-machine\stencil-state-instances-stack">
+      <UniqueIdentifier>{1013099b-8175-448b-9e18-4c778e54e2ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\state-pipeline\stencil-state">
+      <UniqueIdentifier>{74f7032f-66ab-46e6-b22c-4e8abbf7f03c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
-
   <ItemGroup>
     <ClCompile Include="src\null-render-backend-directx11\internal\frame-buffer\frame-buffer.cpp">
       <Filter>src\internal\frame-buffer</Filter>
@@ -60,9 +65,6 @@
     <ClCompile Include="src\null-render-backend-directx11\state-pipeline\state-pipeline.cpp">
       <Filter>src\state-pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="src\null-render-backend-directx11\internal\stencil-buffer\stencil-buffer.cpp">
-      <Filter>src\internal\stencil-buffer</Filter>
-    </ClCompile>
     <ClCompile Include="src\null-render-backend-directx11\shaders\color\color.cpp">
       <Filter>src\shaders\color</Filter>
     </ClCompile>
@@ -80,6 +82,15 @@
     </ClCompile>
     <ClCompile Include="src\null-render-backend-directx11\state-pipeline\blend-state\blend-state.cpp">
       <Filter>src\state-pipeline\blend-state</Filter>
+    </ClCompile>
+    <ClCompile Include="src\null-render-backend-directx11\stencil-buffer\stencil-buffer.cpp">
+      <Filter>src\stencil-buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\null-render-backend-directx11\wrapper\state-machine\stencil-state-instances-stack\stencil-state-instances-stack.cpp">
+      <Filter>src\wrapper\state-machine\stencil-state-instances-stack</Filter>
+    </ClCompile>
+    <ClCompile Include="src\null-render-backend-directx11\state-pipeline\stencil-state\stencil-state.cpp">
+      <Filter>src\state-pipeline\stencil-state</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -143,9 +154,6 @@
     <ClInclude Include="src\null-render-backend-directx11\state-pipeline\state-pipeline.h">
       <Filter>src\state-pipeline</Filter>
     </ClInclude>
-    <ClInclude Include="src\null-render-backend-directx11\internal\stencil-buffer\stencil-buffer.h">
-      <Filter>src\internal\stencil-buffer</Filter>
-    </ClInclude>
     <ClInclude Include="src\null-render-backend-directx11\shaders\color\color.h">
       <Filter>src\shaders\color</Filter>
     </ClInclude>
@@ -179,8 +187,16 @@
     <ClInclude Include="src\null-render-backend-directx11\state-pipeline\blend-state\blend-state.h">
       <Filter>src\state-pipeline\blend-state</Filter>
     </ClInclude>
+    <ClInclude Include="src\null-render-backend-directx11\stencil-buffer\stencil-buffer.h">
+      <Filter>src\stencil-buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render-backend-directx11\wrapper\state-machine\stencil-state-instances-stack\stencil-state-instances-stack.h">
+      <Filter>src\wrapper\state-machine\stencil-state-instances-stack</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render-backend-directx11\state-pipeline\stencil-state\stencil-state.h">
+      <Filter>src\state-pipeline\stencil-state</Filter>
+    </ClInclude>
   </ItemGroup>
-
   <ItemGroup>
     <FxCompile Include="src\null-render-backend-directx11\shaders\sdf\hlsl\sdf.hlsl">
       <Filter>src\shaders\sdf\hlsl</Filter>
@@ -219,7 +235,6 @@
       <Filter>src\shaders\sdf\hlsl</Filter>
     </FxCompile>
   </ItemGroup>
-  
   <ItemGroup>
     <None Include="src\null-render-backend-directx11\shaders\sdf\hlsl\sdf.hlsli">
       <Filter>src\shaders\sdf\hlsl</Filter>

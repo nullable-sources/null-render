@@ -6,7 +6,7 @@
 #include "shaders/radial-gradient.h"
 #include "shaders/sdf.h"
 
-#include "internal/stencil-buffer.h"
+#include "stencil-buffer/stencil-buffer.h"
 #include "post-processing/post-processing.h"
 #include "renderer-pipeline/renderer-pipeline.h"
 #include "state-pipeline/state-pipeline.h"
@@ -22,6 +22,7 @@ namespace ntl::render::backend {
         virtual std::unique_ptr<i_state_pipeline> instance_state_pipeline() = 0;
         virtual std::unique_ptr<i_rasterizer_state> instance_rasterizer_state() = 0;
         virtual std::unique_ptr<i_blend_state> instance_blend_state() = 0;
+        virtual std::unique_ptr<i_stencil_state> instance_stencil_state() = 0;
 
         virtual std::unique_ptr<i_passthrough_shader> instance_passthrough_shader() = 0;
         virtual std::unique_ptr<i_color_shader> instance_color_shader() = 0;

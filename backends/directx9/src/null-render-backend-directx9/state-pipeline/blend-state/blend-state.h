@@ -1,4 +1,6 @@
 #pragma once
+#include <d3d9types.h>
+
 #include <null-render/backend/state-pipeline/blend-state.h>
 
 namespace ntl::render::directx9 {

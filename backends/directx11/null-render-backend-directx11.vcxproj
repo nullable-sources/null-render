@@ -18,11 +18,9 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-
   <ItemGroup>
     <ClCompile Include="src\null-render-backend-directx11\internal\frame-buffer\frame-buffer.cpp" />
     <ClCompile Include="src\null-render-backend-directx11\internal\mesh\mesh.cpp" />
-    <ClCompile Include="src\null-render-backend-directx11\internal\stencil-buffer\stencil-buffer.cpp" />
     <ClCompile Include="src\null-render-backend-directx11\renderer\renderer.cpp" />
     <ClCompile Include="src\null-render-backend-directx11\shaders\blur\blur.cpp" />
     <ClCompile Include="src\null-render-backend-directx11\shaders\color\color.cpp" />
@@ -33,14 +31,15 @@
     <ClCompile Include="src\null-render-backend-directx11\state-pipeline\blend-state\blend-state.cpp" />
     <ClCompile Include="src\null-render-backend-directx11\state-pipeline\rasterizer-state\rasterizer-state.cpp" />
     <ClCompile Include="src\null-render-backend-directx11\state-pipeline\state-pipeline.cpp" />
+    <ClCompile Include="src\null-render-backend-directx11\state-pipeline\stencil-state\stencil-state.cpp" />
+    <ClCompile Include="src\null-render-backend-directx11\stencil-buffer\stencil-buffer.cpp" />
     <ClCompile Include="src\null-render-backend-directx11\wrapper\state-machine\blend-state-instances-stack\blend-state-instances-stack.cpp" />
     <ClCompile Include="src\null-render-backend-directx11\wrapper\state-machine\rasterizer-state-instances-stack\rasterizer-state-instances-stack.cpp" />
-
+    <ClCompile Include="src\null-render-backend-directx11\wrapper\state-machine\stencil-state-instances-stack\stencil-state-instances-stack.cpp" />
     <ClInclude Include="src\null-render-backend-directx11\internal\frame-buffer\frame-buffer.h" />
     <ClInclude Include="src\null-render-backend-directx11\internal\mesh\mesh.h" />
     <ClInclude Include="src\null-render-backend-directx11.h" />
     <ClInclude Include="src\null-render-backend-directx11\internal\shader.h" />
-    <ClInclude Include="src\null-render-backend-directx11\internal\stencil-buffer\stencil-buffer.h" />
     <ClInclude Include="src\null-render-backend-directx11\renderer\renderer.h" />
     <ClInclude Include="src\null-render-backend-directx11\shaders\blur\blur.h" />
     <ClInclude Include="src\null-render-backend-directx11\shaders\blur\compiled-object.h" />
@@ -61,6 +60,8 @@
     <ClInclude Include="src\null-render-backend-directx11\state-pipeline\blend-state\blend-state.h" />
     <ClInclude Include="src\null-render-backend-directx11\state-pipeline\rasterizer-state\rasterizer-state.h" />
     <ClInclude Include="src\null-render-backend-directx11\state-pipeline\state-pipeline.h" />
+    <ClInclude Include="src\null-render-backend-directx11\state-pipeline\stencil-state\stencil-state.h" />
+    <ClInclude Include="src\null-render-backend-directx11\stencil-buffer\stencil-buffer.h" />
     <ClInclude Include="src\null-render-backend-directx11\wrapper\constant-buffer\constant-buffer.h" />
     <ClInclude Include="src\null-render-backend-directx11\wrapper\shaders\pixel.h" />
     <ClInclude Include="src\null-render-backend-directx11\wrapper\shaders\shader.h" />
@@ -68,7 +69,7 @@
     <ClInclude Include="src\null-render-backend-directx11\wrapper\state-machine\blend-state-instances-stack\blend-state-instances-stack.h" />
     <ClInclude Include="src\null-render-backend-directx11\wrapper\state-machine\rasterizer-state-instances-stack\rasterizer-state-instances-stack.h" />
     <ClInclude Include="src\null-render-backend-directx11\wrapper\state-machine\state-machine.h" />
-
+    <ClInclude Include="src\null-render-backend-directx11\wrapper\state-machine\stencil-state-instances-stack\stencil-state-instances-stack.h" />
     <FxCompile Include="src\null-render-backend-directx11\shaders\blur\hlsl\blur.hlsl">
       <VariableName>shader_data</VariableName>
       <HeaderFileOutput>%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
@@ -141,10 +142,8 @@
       <ShaderType>Pixel</ShaderType>
       <ShaderModel>4.0</ShaderModel>
     </FxCompile>
-
     <None Include="src\null-render-backend-directx11\shaders\sdf\hlsl\sdf.hlsli" />
   </ItemGroup>
-
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -152,12 +151,10 @@
     <RootNamespace>null_renderer_directx11</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
-  
   <PropertyGroup Label="NullVCXProperties">
     <NullRenderBackendDirectx11DependenciesPath Condition="Exists('$(SolutionDir)third-party\null-sdk\null-sdk.sln')">$(SolutionDir)third-party\</NullRenderBackendDirectx11DependenciesPath>
     <NullRenderBackendDirectx11DependenciesPath Condition="!Exists('$(SolutionDir)third-party\null-sdk\null-sdk.sln')">..\..\..\</NullRenderBackendDirectx11DependenciesPath>
   </PropertyGroup>
-
   <PropertyGroup Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
@@ -166,11 +163,9 @@
     <UseDebugLibraries Condition="'$(Configuration)'=='release'">false</UseDebugLibraries>
     <WholeProgramOptimization Condition="'$(Configuration)'=='release'">true</WholeProgramOptimization>
   </PropertyGroup>
-
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-
   <PropertyGroup>
     <OutDir>$(ProjectDir)build\</OutDir>
     <IntDir>$(SolutionDir)build\$(Configuration)-$(PlatformShortName)\obj-$(ProjectName)\</IntDir>
@@ -179,7 +174,6 @@
     <LinkIncremental Condition="'$(Configuration)'=='debug'">true</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)'=='release'">false</LinkIncremental>
   </PropertyGroup>
-
   <ItemDefinitionGroup>
     <ClCompile>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
@@ -208,7 +202,6 @@
       <AdditionalOptions>/ignore:4221,4006 %(AdditionalOptions)</AdditionalOptions>
     </Lib>
   </ItemDefinitionGroup>
-
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="..\..\null-render.props" />
   <Import Project="$(NullRenderBackendDirectx11DependenciesPath)null-sdk\null-sdk.props" />

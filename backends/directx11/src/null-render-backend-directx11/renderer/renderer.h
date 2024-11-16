@@ -27,6 +27,15 @@ namespace ntl::render::directx11 {
         dx_blend_factor_desc() { }
         dx_blend_factor_desc(const D3D11_BLEND_DESC& desc) : D3D11_BLEND_DESC(desc) { }
     };
+
+    struct dx_stencil_desc : public D3D11_DEPTH_STENCIL_DESC {
+    public:
+        int ref{ };
+
+    public:
+        dx_stencil_desc() { }
+        dx_stencil_desc(const D3D11_DEPTH_STENCIL_DESC& desc) : D3D11_DEPTH_STENCIL_DESC(desc) { }
+    };
 }
 
 #include <null-render.h>
@@ -45,7 +54,6 @@ namespace ntl::render::directx11 {
 
         struct {
             ID3D11SamplerState* sampler{ };
-            ID3D11DepthStencilState* depth_stencil{ };
         } internal_objects{ };
 
     public:

@@ -23,6 +23,7 @@
     <ClCompile Include="src\null-render\backend\renderer-pipeline\renderer-pipeline.cpp" />
     <ClCompile Include="src\null-render\backend\renderer\renderer.cpp" />
     <ClCompile Include="src\null-render\backend\state-pipeline\state-pipeline.cpp" />
+    <ClCompile Include="src\null-render\backend\stencil-buffer\stencil-buffer.cpp" />
     <ClCompile Include="src\null-render\font\font.cpp" />
     <ClCompile Include="src\null-render\font\loaders\freetype\freetype.cpp" />
     <ClCompile Include="src\null-render\font\loaders\loader.cpp" />
@@ -45,7 +46,6 @@
     <ClCompile Include="src\null-render\graphic\pen\pen.cpp" />
     <ClCompile Include="src\null-render\graphic\stroke\stroke.cpp" />
     <ClInclude Include="src\null-render\backend\backend.h" />
-    <ClInclude Include="src\null-render\backend\internal\stencil-buffer.h" />
     <ClInclude Include="src\null-render\backend\internal\renderer-events.h" />
     <ClInclude Include="src\null-render\backend\internal\frame-buffer.h" />
     <ClInclude Include="src\null-render\backend\internal\geometry-buffer.h" />
@@ -65,6 +65,8 @@
     <ClInclude Include="src\null-render\backend\state-pipeline\rasterizer-state.h" />
     <ClInclude Include="src\null-render\backend\state-pipeline\state-field.h" />
     <ClInclude Include="src\null-render\backend\state-pipeline\state-pipeline.h" />
+    <ClInclude Include="src\null-render\backend\state-pipeline\stencil-state.h" />
+    <ClInclude Include="src\null-render\backend\stencil-buffer\stencil-buffer.h" />
     <ClInclude Include="src\null-render\font\font.h" />
     <ClInclude Include="src\null-render\font\glyph.h" />
     <ClInclude Include="src\null-render\font\loaders\freetype\freetype.h" />

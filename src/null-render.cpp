@@ -20,12 +20,15 @@ namespace ntl::render {
             return;
         }
 
+        //@note: states
         backend::state_pipeline = backend::factory->instance_state_pipeline();
+
         backend::default_rasterizer_state = backend::factory->instance_rasterizer_state();
         backend::default_rasterizer_state->unlock();
         backend::default_rasterizer_state->msaa_disable.set(false);
         backend::default_rasterizer_state->scissor_disable.set(false);
         backend::default_rasterizer_state->lock();
+
         backend::default_blend_state = backend::factory->instance_blend_state();
         backend::default_blend_state->unlock();
         backend::default_blend_state->blend_enable.set(true);
@@ -36,6 +39,16 @@ namespace ntl::render {
         backend::default_blend_state->factor.set(1.f);
         backend::default_blend_state->disable_color_write.set(false);
         backend::default_blend_state->lock();
+
+        backend::default_stencil_state = backend::factory->instance_stencil_state();
+        backend::default_stencil_state->unlock();
+        backend::default_stencil_state->enable.set(false);
+        backend::default_stencil_state->fail.set(backend::e_stencil_op::keep);
+        backend::default_stencil_state->zfail.set(backend::e_stencil_op::keep);
+        backend::default_stencil_state->pass.set(backend::e_stencil_op::keep);
+        backend::default_stencil_state->comp.set(backend::e_stencil_comp::always);
+        backend::default_stencil_state->ref.set(0);
+        backend::default_stencil_state->lock();
 
         backend::renderer = backend::factory->instance_renderer();
         draw_list = c_draw_list::instance(backend::factory->instance_mesh());

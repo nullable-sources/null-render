@@ -20,4 +20,12 @@ namespace ntl::render {
     void c_blend_pop_command::handle() {
         backend::state_pipeline->blends.pop();
     }
+
+    void c_stencil_push_command::handle() {
+        backend::state_pipeline->stencils.push(stencil_state);
+    }
+
+    void c_stencil_pop_command::handle() {
+        backend::state_pipeline->stencils.pop();
+    }
 }

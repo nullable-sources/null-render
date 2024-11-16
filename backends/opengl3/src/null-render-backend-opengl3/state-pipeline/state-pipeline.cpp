@@ -76,22 +76,13 @@ namespace ntl::render::opengl3 {
         restore_texture();
         restore_rasterizer();
         restore_blend();
+        restore_stencil();
 
         if(saved_state.enable_cull_face) opengl::enable(opengl::e_cull_face); else opengl::disable(opengl::e_cull_face);
         if(saved_state.enable_depth_test) opengl::enable(opengl::e_depth_test); else opengl::disable(opengl::e_depth_test);
-        if(saved_state.enable_stencil_test) opengl::enable(opengl::e_stencil_test); else opengl::disable(opengl::e_stencil_test);
         if(saved_state.enable_primitive_restart) opengl::enable(opengl::e_primitive_restart); else opengl::disable(opengl::e_primitive_restart);
         opengl::viewport(saved_state.viewport[0], saved_state.viewport[1], saved_state.viewport[2], saved_state.viewport[3]);
         opengl::scissor(saved_state.scissor_box[0], saved_state.scissor_box[1], saved_state.scissor_box[2], saved_state.scissor_box[3]);
-
-        opengl::clear_stencil(saved_state.stencil_clear_value);
-        opengl::stencil_func_separate(opengl::e_front, saved_state.stencil_front.func, saved_state.stencil_front.ref, saved_state.stencil_front.value_mask);
-        opengl::stencil_mask_separate(opengl::e_front, saved_state.stencil_front.writemask);
-        opengl::stencil_op_separate(opengl::e_front, saved_state.stencil_front.fail, saved_state.stencil_front.pass_depth_fail, saved_state.stencil_front.pass_depth_pass);
-
-        opengl::stencil_func_separate(opengl::e_back, saved_state.stencil_back.func, saved_state.stencil_back.ref, saved_state.stencil_back.value_mask);
-        opengl::stencil_mask_separate(opengl::e_back, saved_state.stencil_back.writemask);
-        opengl::stencil_op_separate(opengl::e_back, saved_state.stencil_back.fail, saved_state.stencil_back.pass_depth_fail, saved_state.stencil_back.pass_depth_pass);
     }
 
     void c_state_pipeline::restore_framebuffer() {
@@ -130,5 +121,18 @@ namespace ntl::render::opengl3 {
         );
         opengl::color_mask(saved_blend.color_write[0], saved_blend.color_write[1], saved_blend.color_write[2], saved_blend.color_write[3]);
         opengl::blend_color(saved_blend.blend_color[0], saved_blend.blend_color[1], saved_blend.blend_color[2], saved_blend.blend_color[3]);
+    }
+
+    void c_state_pipeline::restore_stencil() {
+        if(saved_state.enable_stencil_test) opengl::enable(opengl::e_stencil_test); else opengl::disable(opengl::e_stencil_test);
+
+        opengl::clear_stencil(saved_state.stencil_clear_value);
+        opengl::stencil_func_separate(opengl::e_front, saved_state.stencil_front.func, saved_state.stencil_front.ref, saved_state.stencil_front.value_mask);
+        opengl::stencil_mask_separate(opengl::e_front, saved_state.stencil_front.writemask);
+        opengl::stencil_op_separate(opengl::e_front, saved_state.stencil_front.fail, saved_state.stencil_front.pass_depth_fail, saved_state.stencil_front.pass_depth_pass);
+
+        opengl::stencil_func_separate(opengl::e_back, saved_state.stencil_back.func, saved_state.stencil_back.ref, saved_state.stencil_back.value_mask);
+        opengl::stencil_mask_separate(opengl::e_back, saved_state.stencil_back.writemask);
+        opengl::stencil_op_separate(opengl::e_back, saved_state.stencil_back.fail, saved_state.stencil_back.pass_depth_fail, saved_state.stencil_back.pass_depth_pass);
     }
 }

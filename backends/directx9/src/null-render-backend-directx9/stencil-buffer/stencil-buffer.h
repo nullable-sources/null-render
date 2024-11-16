@@ -1,12 +1,11 @@
 #pragma once
-#include <null-render.h>
+#include "../renderer/renderer.h"
 
-namespace ntl::render::opengl3 {
+namespace ntl::render::directx9 {
     class c_stencil_buffer : public backend::i_stencil_buffer {
     public: using i_stencil_buffer::i_stencil_buffer;
     public:
-        std::uint32_t buffer{ };
-        int stencil_ref{ -1 };
+        IDirect3DSurface9* buffer{ };
 
     public:
         void* get_buffer() override { return (void*)buffer; }
@@ -17,10 +16,7 @@ namespace ntl::render::opengl3 {
 
         void clear() override;
 
-        void set_test(bool test) override;
-        void set_operation(backend::e_stencil_operation operation) override;
-
     public:
-        bool empty() const override { return buffer == 0; }
+        bool empty() const override { return buffer == nullptr; }
     };
 }

@@ -1,5 +1,5 @@
 #pragma once
-#include "../../../backend/internal/stencil-buffer.h"
+#include "../../../backend/stencil-buffer/stencil-buffer.h"
 #include "../commands.h"
 
 namespace ntl::render {

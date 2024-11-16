@@ -1,7 +1,9 @@
 #pragma once
-#include "object.h"
-#include "renderer-events.h"
+#include "../internal/object.h"
+#include "../internal/renderer-events.h"
 #include "../renderer/renderer.h"
+#include "../state-pipeline/blend-state.h"
+#include "../state-pipeline/stencil-state.h"
 
 namespace ntl::render::backend {
     enum class e_stencil_operation {
@@ -13,13 +15,16 @@ namespace ntl::render::backend {
     };
 
     class i_stencil_buffer : protected i_renderer_event_listener {
+    private:
+        bool already_testing{ };
+
     public:
-        i_stencil_buffer() {
-            renderer_event_dispatcher.attach_listener(e_renderer_event_type::viewport_resize_begin, this);
-            renderer_event_dispatcher.attach_listener(e_renderer_event_type::viewport_resize_end, this);
-            renderer_event_dispatcher.attach_listener(e_renderer_event_type::create, this);
-            renderer_event_dispatcher.attach_listener(e_renderer_event_type::destroy, this);
-        }
+        std::unique_ptr<backend::i_blend_state> disable_write_blend{ };
+        std::unique_ptr<backend::i_stencil_state> stencil_test_state{ }, stencil_set_write_state{ }, stencil_intersect_write_state{ };
+        int stencil_ref{ -1 };
+
+    public:
+        i_stencil_buffer();
 
         virtual ~i_stencil_buffer() {
             renderer_event_dispatcher.detach_listener(e_renderer_event_type::viewport_resize_begin, this);
@@ -37,8 +42,9 @@ namespace ntl::render::backend {
 
         virtual void clear() = 0;
 
-        virtual void set_test(bool test) = 0;
-        virtual void set_operation(e_stencil_operation operation) = 0;
+    public:
+        void set_test(bool test);
+        void set_operation(e_stencil_operation operation);
 
     public:
         virtual bool empty() const = 0;

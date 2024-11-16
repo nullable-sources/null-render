@@ -18,11 +18,9 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-
   <ItemGroup>
     <ClCompile Include="src\null-render-backend-directx9\internal\frame-buffer\frame-buffer.cpp" />
     <ClCompile Include="src\null-render-backend-directx9\internal\mesh\mesh.cpp" />
-    <ClCompile Include="src\null-render-backend-directx9\internal\stencil-buffer\stencil-buffer.cpp" />
     <ClCompile Include="src\null-render-backend-directx9\renderer\renderer.cpp" />
     <ClCompile Include="src\null-render-backend-directx9\shaders\blur\blur.cpp" />
     <ClCompile Include="src\null-render-backend-directx9\shaders\linear-gradient\linear-gradient.cpp" />
@@ -31,14 +29,14 @@
     <ClCompile Include="src\null-render-backend-directx9\state-pipeline\blend-state\blend-state.cpp" />
     <ClCompile Include="src\null-render-backend-directx9\state-pipeline\rasterizer-state\rasterizer-state.cpp" />
     <ClCompile Include="src\null-render-backend-directx9\state-pipeline\state-pipeline.cpp" />
+    <ClCompile Include="src\null-render-backend-directx9\state-pipeline\stencil-state\stencil-state.cpp" />
+    <ClCompile Include="src\null-render-backend-directx9\stencil-buffer\stencil-buffer.cpp" />
     <ClCompile Include="src\null-render-backend-directx9\wrapper\pixel\pixel.cpp" />
     <ClCompile Include="src\null-render-backend-directx9\wrapper\vertex\vertex.cpp" />
-
     <ClInclude Include="src\null-render-backend-directx9\internal\frame-buffer\frame-buffer.h" />
     <ClInclude Include="src\null-render-backend-directx9\internal\mesh\mesh.h" />
     <ClInclude Include="src\null-render-backend-directx9.h" />
     <ClInclude Include="src\null-render-backend-directx9\internal\shader.h" />
-    <ClInclude Include="src\null-render-backend-directx9\internal\stencil-buffer\stencil-buffer.h" />
     <ClInclude Include="src\null-render-backend-directx9\renderer\renderer.h" />
     <ClInclude Include="src\null-render-backend-directx9\shaders\blur\blur.h" />
     <ClInclude Include="src\null-render-backend-directx9\shaders\blur\compiled-object.h" />
@@ -59,104 +57,112 @@
     <ClInclude Include="src\null-render-backend-directx9\state-pipeline\blend-state\blend-state.h" />
     <ClInclude Include="src\null-render-backend-directx9\state-pipeline\rasterizer-state\rasterizer-state.h" />
     <ClInclude Include="src\null-render-backend-directx9\state-pipeline\state-pipeline.h" />
+    <ClInclude Include="src\null-render-backend-directx9\state-pipeline\stencil-state\stencil-state.h" />
+    <ClInclude Include="src\null-render-backend-directx9\stencil-buffer\stencil-buffer.h" />
     <ClInclude Include="src\null-render-backend-directx9\wrapper\pixel\pixel.h" />
     <ClInclude Include="src\null-render-backend-directx9\wrapper\compiled-shader.h" />
     <ClInclude Include="src\null-render-backend-directx9\wrapper\vertex\vertex.h" />
-
     <None Include="src\null-render-backend-directx9\shaders\sdf\hlsl\sdf.hlsli" />
-
     <FxCmpile Include="src\null-render-backend-directx9\shaders\sdf\hlsl\sdf.hlsl">
       <VariableName>shader_data</VariableName>
       <HeaderFileOutput>%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
-      <ObjectFileOutput></ObjectFileOutput>
+      <ObjectFileOutput>
+      </ObjectFileOutput>
       <ShaderModel>3.0</ShaderModel>
     </FxCmpile>
-    
     <FxCompile Include="src\null-render-backend-directx9\shaders\color\hlsl\color-vs.hlsl">
       <VariableName>shader_data</VariableName>
       <HeaderFileOutput>%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
-      <ObjectFileOutput></ObjectFileOutput>
+      <ObjectFileOutput>
+      </ObjectFileOutput>
       <ShaderModel>3.0</ShaderModel>
       <ShaderType>Vertex</ShaderType>
     </FxCompile>
     <FxCompile Include="src\null-render-backend-directx9\shaders\passthrough\hlsl\passthrough-vs.hlsl">
       <VariableName>shader_data</VariableName>
       <HeaderFileOutput>%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
-      <ObjectFileOutput></ObjectFileOutput>
+      <ObjectFileOutput>
+      </ObjectFileOutput>
       <ShaderModel>3.0</ShaderModel>
       <ShaderType>Vertex</ShaderType>
     </FxCompile>
-
     <FxCompile Include="src\null-render-backend-directx9\shaders\blur\hlsl\blur.hlsl">
       <VariableName>shader_data</VariableName>
       <HeaderFileOutput>%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
-      <ObjectFileOutput></ObjectFileOutput>
+      <ObjectFileOutput>
+      </ObjectFileOutput>
       <ShaderModel>3.0</ShaderModel>
       <ShaderType>Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="src\null-render-backend-directx9\shaders\color\hlsl\color-ps.hlsl">
       <VariableName>shader_data</VariableName>
       <HeaderFileOutput>%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
-      <ObjectFileOutput></ObjectFileOutput>
+      <ObjectFileOutput>
+      </ObjectFileOutput>
       <ShaderModel>3.0</ShaderModel>
       <ShaderType>Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="src\null-render-backend-directx9\shaders\linear-gradient\hlsl\linear-gradient.hlsl">
       <VariableName>shader_data</VariableName>
       <HeaderFileOutput>%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
-      <ObjectFileOutput></ObjectFileOutput>
+      <ObjectFileOutput>
+      </ObjectFileOutput>
       <ShaderModel>3.0</ShaderModel>
       <ShaderType>Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="src\null-render-backend-directx9\shaders\passthrough\hlsl\passthrough-ps.hlsl">
       <VariableName>shader_data</VariableName>
       <HeaderFileOutput>%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
-      <ObjectFileOutput></ObjectFileOutput>
+      <ObjectFileOutput>
+      </ObjectFileOutput>
       <ShaderModel>3.0</ShaderModel>
       <ShaderType>Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="src\null-render-backend-directx9\shaders\quad-gradient\hlsl\quad-gradient.hlsl">
       <VariableName>shader_data</VariableName>
       <HeaderFileOutput>%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
-      <ObjectFileOutput></ObjectFileOutput>
+      <ObjectFileOutput>
+      </ObjectFileOutput>
       <ShaderModel>3.0</ShaderModel>
       <ShaderType>Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="src\null-render-backend-directx9\shaders\radial-gradient\hlsl\radial-gradient.hlsl">
       <VariableName>shader_data</VariableName>
       <HeaderFileOutput>%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
-      <ObjectFileOutput></ObjectFileOutput>
+      <ObjectFileOutput>
+      </ObjectFileOutput>
       <ShaderModel>3.0</ShaderModel>
       <ShaderType>Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="src\null-render-backend-directx9\shaders\sdf\hlsl\msdf.hlsl">
       <VariableName>shader_data</VariableName>
       <HeaderFileOutput>%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
-      <ObjectFileOutput></ObjectFileOutput>
+      <ObjectFileOutput>
+      </ObjectFileOutput>
       <ShaderModel>3.0</ShaderModel>
       <ShaderType>Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="src\null-render-backend-directx9\shaders\sdf\hlsl\mtsdf.hlsl">
       <VariableName>shader_data</VariableName>
       <HeaderFileOutput>%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
-      <ObjectFileOutput></ObjectFileOutput>
+      <ObjectFileOutput>
+      </ObjectFileOutput>
       <ShaderModel>3.0</ShaderModel>
       <ShaderType>Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="src\null-render-backend-directx9\shaders\texture\hlsl\texture.hlsl">
       <VariableName>shader_data</VariableName>
       <HeaderFileOutput>%(RootDir)%(Directory)..\compiled\%(Filename).h</HeaderFileOutput>
-      <ObjectFileOutput></ObjectFileOutput>
+      <ObjectFileOutput>
+      </ObjectFileOutput>
       <ShaderModel>3.0</ShaderModel>
       <ShaderType>Pixel</ShaderType>
     </FxCompile>
   </ItemGroup>
-
   <PropertyGroup Label="NullVCXProperties">
     <NullRenderBackendDirectx9DependenciesPath Condition="Exists('$(SolutionDir)third-party\null-sdk\null-sdk.sln')">$(SolutionDir)third-party\</NullRenderBackendDirectx9DependenciesPath>
     <NullRenderBackendDirectx9DependenciesPath Condition="!Exists('$(SolutionDir)third-party\null-sdk\null-sdk.sln')">..\..\..\</NullRenderBackendDirectx9DependenciesPath>
   </PropertyGroup>
-
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -164,7 +170,6 @@
     <RootNamespace>null_renderer_directx9</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
-
   <PropertyGroup Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
@@ -173,11 +178,9 @@
     <UseDebugLibraries Condition="'$(Configuration)'=='release'">false</UseDebugLibraries>
     <WholeProgramOptimization Condition="'$(Configuration)'=='release'">true</WholeProgramOptimization>
   </PropertyGroup>
-
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  
   <PropertyGroup>
     <OutDir>$(ProjectDir)build\</OutDir>
     <IntDir>$(SolutionDir)build\$(Configuration)-$(PlatformShortName)\obj-$(ProjectName)\</IntDir>
@@ -186,7 +189,6 @@
     <LinkIncremental Condition="'$(Configuration)'=='debug'">true</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)'=='release'">false</LinkIncremental>
   </PropertyGroup>
-
   <ItemDefinitionGroup>
     <ClCompile>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
@@ -212,7 +214,6 @@
       <AdditionalOptions>/ignore:4221,4006 %(AdditionalOptions)</AdditionalOptions>
     </Lib>
   </ItemDefinitionGroup>
-
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="..\..\null-render.props" />
   <Import Project="$(NullRenderBackendDirectx9DependenciesPath)null-sdk\null-sdk.props" />

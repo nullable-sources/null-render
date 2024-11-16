@@ -22,7 +22,6 @@
     <Filter Include="src\shaders\blur\hlsl" />
     <Filter Include="src\shaders\radial-gradient\hlsl" />
     <Filter Include="src\state-pipeline" />
-    <Filter Include="src\internal\stencil-buffer" />
     <Filter Include="src\shaders\texture" />
     <Filter Include="src\shaders\texture\hlsl" />
     <Filter Include="src\shaders\color" />
@@ -31,6 +30,10 @@
     <Filter Include="src\shaders\passthrough\hlsl" />
     <Filter Include="src\state-pipeline\rasterizer-state" />
     <Filter Include="src\state-pipeline\blend-state" />
+    <Filter Include="src\state-pipeline\stencil-state">
+      <UniqueIdentifier>{7bd2884f-db97-4c44-b1f1-2ef8265aa937}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\stencil-buffer" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\null-render-backend-directx9\wrapper\pixel\pixel.cpp">
@@ -63,14 +66,17 @@
     <ClCompile Include="src\null-render-backend-directx9\state-pipeline\state-pipeline.cpp">
       <Filter>src\state-pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="src\null-render-backend-directx9\internal\stencil-buffer\stencil-buffer.cpp">
-      <Filter>src\internal\stencil-buffer</Filter>
-    </ClCompile>
     <ClCompile Include="src\null-render-backend-directx9\state-pipeline\rasterizer-state\rasterizer-state.cpp">
       <Filter>src\state-pipeline\rasterizer-state</Filter>
     </ClCompile>
     <ClCompile Include="src\null-render-backend-directx9\state-pipeline\blend-state\blend-state.cpp">
       <Filter>src\state-pipeline\blend-state</Filter>
+    </ClCompile>
+    <ClCompile Include="src\null-render-backend-directx9\state-pipeline\stencil-state\stencil-state.cpp">
+      <Filter>src\state-pipeline\stencil-state</Filter>
+    </ClCompile>
+    <ClCompile Include="src\null-render-backend-directx9\stencil-buffer\stencil-buffer.cpp">
+      <Filter>src\stencil-buffer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -131,9 +137,6 @@
     <ClInclude Include="src\null-render-backend-directx9\state-pipeline\state-pipeline.h">
       <Filter>src\state-pipeline</Filter>
     </ClInclude>
-    <ClInclude Include="src\null-render-backend-directx9\internal\stencil-buffer\stencil-buffer.h">
-      <Filter>src\internal\stencil-buffer</Filter>
-    </ClInclude>
     <ClInclude Include="src\null-render-backend-directx9\shaders\color\compiled-object.h">
       <Filter>src\shaders\color</Filter>
     </ClInclude>
@@ -157,6 +160,12 @@
     </ClInclude>
     <ClInclude Include="src\null-render-backend-directx9\state-pipeline\blend-state\blend-state.h">
       <Filter>src\state-pipeline\blend-state</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render-backend-directx9\state-pipeline\stencil-state\stencil-state.h">
+      <Filter>src\state-pipeline\stencil-state</Filter>
+    </ClInclude>
+    <ClInclude Include="src\null-render-backend-directx9\stencil-buffer\stencil-buffer.h">
+      <Filter>src\stencil-buffer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

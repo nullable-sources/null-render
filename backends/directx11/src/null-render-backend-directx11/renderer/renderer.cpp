@@ -73,29 +73,6 @@ namespace ntl::render::directx11 {
     }
 
     void c_renderer::create_internal_objects() {
-        if(!internal_objects.depth_stencil) {
-            D3D11_DEPTH_STENCIL_DESC depth_stencil_desc{
-                .DepthEnable{ false },
-                .DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL,
-                .DepthFunc = D3D11_COMPARISON_ALWAYS,
-                .StencilEnable = false,
-                .FrontFace{
-                    .StencilFailOp{ D3D11_STENCIL_OP_KEEP },
-                    .StencilDepthFailOp{ D3D11_STENCIL_OP_KEEP },
-                    .StencilPassOp{ D3D11_STENCIL_OP_KEEP },
-                    .StencilFunc{ D3D11_COMPARISON_ALWAYS }
-                },
-                .BackFace{
-                    .StencilFailOp{ D3D11_STENCIL_OP_KEEP },
-                    .StencilDepthFailOp{ D3D11_STENCIL_OP_KEEP },
-                    .StencilPassOp{ D3D11_STENCIL_OP_KEEP },
-                    .StencilFunc{ D3D11_COMPARISON_ALWAYS }
-                }
-            };
-            if(auto result = shared.device->CreateDepthStencilState(&depth_stencil_desc, &internal_objects.depth_stencil); FAILED(result))
-                sdk::logger(sdk::e_log_type::error, "cant create depth stencil state, return code {}.", result);
-        }
-
         if(!internal_objects.sampler) {
             D3D11_SAMPLER_DESC sampler_desc{
                 .Filter{ D3D11_FILTER_MIN_MAG_MIP_LINEAR },
@@ -114,12 +91,9 @@ namespace ntl::render::directx11 {
 
     void c_renderer::destroy_internal_objects() {
         if(internal_objects.sampler) { internal_objects.sampler->Release(); internal_objects.sampler = nullptr; }
-        if(internal_objects.depth_stencil) { internal_objects.depth_stencil->Release(); internal_objects.depth_stencil = nullptr; }
     }
 
     void c_renderer::on_setup_state() {
         shared.context->PSSetSamplers(0, 1, &internal_objects.sampler);
-
-        shared.context->OMSetDepthStencilState(internal_objects.depth_stencil, 0);
     }
 }

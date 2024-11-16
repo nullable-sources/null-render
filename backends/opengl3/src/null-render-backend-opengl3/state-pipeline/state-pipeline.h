@@ -45,5 +45,6 @@ namespace ntl::render::opengl3 {
         void restore_texture() override;
         void restore_rasterizer() override;
         void restore_blend() override;
+        void restore_stencil() override;
     };
 }

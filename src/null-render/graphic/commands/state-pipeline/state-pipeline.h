@@ -68,4 +68,33 @@ namespace ntl::render {
     public:
         void handle() override;
     };
+
+    class c_stencil_push_command : public i_command {
+    public:
+        static std::shared_ptr<c_stencil_push_command> instance() { return std::make_shared<c_stencil_push_command>(); }
+        static std::shared_ptr<c_stencil_push_command> instance(backend::i_stencil_state* stencil_state) { return std::make_shared<c_stencil_push_command>(stencil_state); }
+        static std::shared_ptr<c_stencil_push_command> instance(std::unique_ptr<backend::i_stencil_state>& stencil_state) { return std::make_shared<c_stencil_push_command>(stencil_state.get()); }
+
+    protected:
+        backend::i_stencil_state* stencil_state{ };
+
+    public:
+        c_stencil_push_command() { }
+        c_stencil_push_command(backend::i_stencil_state* _stencil_state) : stencil_state(_stencil_state) { }
+
+    public:
+        void handle() override;
+
+    public:
+        void set_stencil_state(backend::i_stencil_state* _stencil_state) { stencil_state = _stencil_state; }
+        void set_stencil_state(std::unique_ptr<backend::i_stencil_state>& _stencil_state) { stencil_state = _stencil_state.get(); }
+    };
+
+    class c_stencil_pop_command : public i_command {
+    public:
+        static std::shared_ptr<c_stencil_pop_command> instance() { return std::make_shared<c_stencil_pop_command>(); }
+
+    public:
+        void handle() override;
+    };
 }

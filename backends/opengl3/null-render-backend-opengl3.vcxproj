@@ -25,7 +25,6 @@
     <ClCompile Include="src\null-render-backend-opengl3\internal\frame-buffer\frame-buffer.cpp" />
     <ClCompile Include="src\null-render-backend-opengl3\internal\mesh\mesh.cpp" />
     <ClCompile Include="src\null-render-backend-opengl3\internal\shader\shader.cpp" />
-    <ClCompile Include="src\null-render-backend-opengl3\internal\stencil-buffer\stencil-buffer.cpp" />
     <ClCompile Include="src\null-render-backend-opengl3\renderer\renderer.cpp" />
     <ClCompile Include="src\null-render-backend-opengl3\shaders\blur\blur.cpp" />
     <ClCompile Include="src\null-render-backend-opengl3\shaders\linear-gradient\linear-gradient.cpp" />
@@ -34,11 +33,12 @@
     <ClCompile Include="src\null-render-backend-opengl3\state-pipeline\blend-state\blend-state.cpp" />
     <ClCompile Include="src\null-render-backend-opengl3\state-pipeline\rasterizer-state\rasterizer-state.cpp" />
     <ClCompile Include="src\null-render-backend-opengl3\state-pipeline\state-pipeline.cpp" />
+    <ClCompile Include="src\null-render-backend-opengl3\state-pipeline\stencil-state\stencil-state.cpp" />
+    <ClCompile Include="src\null-render-backend-opengl3\stencil-buffer\stencil-buffer.cpp" />
     <ClInclude Include="src\null-render-backend-opengl3\internal\frame-buffer\frame-buffer.h" />
     <ClInclude Include="src\null-render-backend-opengl3\internal\mesh\mesh.h" />
     <ClInclude Include="src\null-render-backend-opengl3.h" />
     <ClInclude Include="src\null-render-backend-opengl3\internal\shader\shader.h" />
-    <ClInclude Include="src\null-render-backend-opengl3\internal\stencil-buffer\stencil-buffer.h" />
     <ClInclude Include="src\null-render-backend-opengl3\renderer\renderer.h" />
     <ClInclude Include="src\null-render-backend-opengl3\shaders\blur\compiled-object.h" />
     <ClInclude Include="src\null-render-backend-opengl3\shaders\blur\blur.h" />
@@ -59,9 +59,12 @@
     <ClInclude Include="src\null-render-backend-opengl3\state-pipeline\blend-state\blend-state.h" />
     <ClInclude Include="src\null-render-backend-opengl3\state-pipeline\rasterizer-state\rasterizer-state.h" />
     <ClInclude Include="src\null-render-backend-opengl3\state-pipeline\state-pipeline.h" />
+    <ClInclude Include="src\null-render-backend-opengl3\state-pipeline\stencil-state\stencil-state.h" />
+    <ClInclude Include="src\null-render-backend-opengl3\stencil-buffer\stencil-buffer.h" />
     <ClInclude Include="src\null-render-backend-opengl3\wrapper\fields.h" />
     <ClInclude Include="src\null-render-backend-opengl3\wrapper\opengl3.h" />
     <ClInclude Include="src\null-render-backend-opengl3\wrapper\program.h" />
+    <ClInclude Include="src\null-render-backend-opengl3\wrapper\recursively-inherited-state.h" />
     <ClInclude Include="src\null-render-backend-opengl3\wrapper\shader.h" />
     <ResourceCompile Include="resources\null-render-backend-opengl3-resources.rc" />
     <None Include="src\null-render-backend-opengl3\shaders\blur\glsl\blur.frag" />

@@ -21,6 +21,9 @@ namespace ntl::render::backend {
     void i_state_pipeline::c_blends_pipeline::append() { stack.back()->use(); }
     void i_state_pipeline::c_blends_pipeline::set_default() { state_pipeline->restore_blend(); }
 
+    void i_state_pipeline::c_stencils_pipeline::append() { stack.back()->use(); }
+    void i_state_pipeline::c_stencils_pipeline::set_default() { state_pipeline->restore_stencil(); }
+
     i_state_pipeline::i_state_pipeline() {
         stored_frame_buffer = factory->instance_frame_buffer(shared::viewport, e_frame_buffer_type::external, e_frame_buffer_flags::none);
     }
@@ -32,6 +35,7 @@ namespace ntl::render::backend {
     void i_state_pipeline::setup_state() {
         rasterizers.push(default_rasterizer_state);
         blends.push(default_blend_state);
+        stencils.push(default_stencil_state);
         backend::renderer->set_clip({ { 0 }, shared::viewport });
         backend::renderer->set_matrix(backend::renderer->get_projection_matrix());
         backend::renderer->update_translation(0.f);
@@ -40,6 +44,7 @@ namespace ntl::render::backend {
     }
 
     void i_state_pipeline::restore_state() {
+        stencils.pop();
         blends.pop();
         rasterizers.pop();
     }
