@@ -43,6 +43,7 @@ namespace ntl::render::backend {
         virtual void clear() = 0;
 
     public:
+        bool is_testing() const { return already_testing; }
         void set_test(bool test);
         void set_operation(e_stencil_operation operation);
 
