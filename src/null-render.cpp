@@ -42,6 +42,7 @@ namespace ntl::render {
 
         backend::default_stencil_state = backend::factory->instance_stencil_state();
         backend::default_stencil_state->unlock();
+        backend::default_stencil_state->depth_test.set(false);
         backend::default_stencil_state->enable.set(false);
         backend::default_stencil_state->fail.set(backend::e_stencil_op::keep);
         backend::default_stencil_state->zfail.set(backend::e_stencil_op::keep);

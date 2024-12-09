@@ -7,6 +7,7 @@ template<>
 struct std::hash<ntl::render::directx11::dx_stencil_desc> {
     std::size_t operator()(const ntl::render::directx11::dx_stencil_desc& desc) const noexcept {
         std::size_t hash{ };
+        boost::hash_combine(hash, desc.DepthEnable);
         boost::hash_combine(hash, desc.StencilEnable);
         boost::hash_combine(hash, desc.BackFace.StencilFailOp);
         boost::hash_combine(hash, desc.BackFace.StencilDepthFailOp);

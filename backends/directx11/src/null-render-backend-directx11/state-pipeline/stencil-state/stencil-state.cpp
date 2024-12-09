@@ -33,6 +33,7 @@ namespace ntl::render::directx11 {
     }
 
     void c_stencil_state::append_state_to_desc(dx_stencil_desc& desc) {
+        if(!depth_test.has_inherit()) desc.DepthEnable = depth_test.get();
         if(!enable.has_inherit()) desc.StencilEnable = enable.get();
         if(!fail.has_inherit()) desc.BackFace.StencilFailOp = desc.FrontFace.StencilFailOp = to_backend_op(fail.get());
         if(!zfail.has_inherit()) desc.BackFace.StencilDepthFailOp = desc.FrontFace.StencilDepthFailOp = to_backend_op(zfail.get());

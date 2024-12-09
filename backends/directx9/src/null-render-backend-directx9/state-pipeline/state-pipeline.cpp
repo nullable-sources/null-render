@@ -11,8 +11,6 @@ namespace ntl::render::directx9 {
 
         shared.device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
         shared.device->SetRenderState(D3DRS_LIGHTING, false);
-        shared.device->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
-        shared.device->SetRenderState(D3DRS_ZWRITEENABLE, true);
         shared.device->SetRenderState(D3DRS_ALPHATESTENABLE, false);
         shared.device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
         shared.device->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);

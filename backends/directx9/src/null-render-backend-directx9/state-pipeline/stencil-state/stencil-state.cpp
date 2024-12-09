@@ -31,6 +31,10 @@ namespace ntl::render::directx9 {
     void c_stencil_state::use() {
         if(overridden_hash == 0) return;
 
+        if(!depth_test.has_inherit()) {
+            shared.device->SetRenderState(D3DRS_ZENABLE, depth_test.get());
+            shared.device->SetRenderState(D3DRS_ZWRITEENABLE, depth_test.get());
+        }
         if(!enable.has_inherit()) shared.device->SetRenderState(D3DRS_STENCILENABLE, enable.get());
         if(!fail.has_inherit()) shared.device->SetRenderState(D3DRS_STENCILFAIL, to_backend_op(fail.get()));
         if(!zfail.has_inherit()) shared.device->SetRenderState(D3DRS_STENCILZFAIL, to_backend_op(zfail.get()));

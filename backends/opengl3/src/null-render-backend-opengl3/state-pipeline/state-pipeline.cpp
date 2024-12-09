@@ -4,8 +4,6 @@
 namespace ntl::render::opengl3 {
     void c_state_pipeline::setup_state() {
         opengl::blend_equation(opengl::e_func_add);
-        opengl::enable(opengl::e_depth_test);
-        opengl::depth_mask(true);
         opengl::depth_func(opengl::e_lequal);
 
         opengl::disable(opengl::e_cull_face);

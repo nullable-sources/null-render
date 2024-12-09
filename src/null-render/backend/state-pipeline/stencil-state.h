@@ -22,7 +22,7 @@ namespace ntl::render::backend {
         bool locked{ };
 
     public:
-        state_field_t<bool> enable{ };
+        state_field_t<bool> enable{ }, depth_test{ };
         state_field_t<e_stencil_op> fail{ }, zfail{ }, pass{ };
         state_field_t<e_stencil_comp> comp{ };
         state_field_t<int> ref{ };

@@ -36,6 +36,10 @@ namespace ntl::render::opengl3 {
         update_inheritance();
         if(overridden_hash == 0) return;
 
+        if(!depth_test.has_inherit()) {
+            depth_test.get() ? opengl::enable(opengl::e_depth_test) : opengl::disable(opengl::e_depth_test);
+            opengl::depth_mask(depth_test.get());
+        }
         if(!enable.has_inherit()) enable.get() ? opengl::enable(opengl::e_stencil_test) : opengl::disable(opengl::e_stencil_test);
         if(!fail.has_inherit() || !zfail.has_inherit() || !pass.has_inherit())
             opengl::stencil_op(
