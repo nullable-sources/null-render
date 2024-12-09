@@ -29,7 +29,7 @@ namespace ntl::render::directx11 {
             .ViewDimension{ shared::msaa_quality > 1 ? D3D11_DSV_DIMENSION_TEXTURE2DMS : D3D11_DSV_DIMENSION_TEXTURE2D },
         };
 
-        if(auto result = shared.device->CreateDepthStencilView(texture, nullptr, &buffer); FAILED(result)) {
+        if(auto result = shared.device->CreateDepthStencilView(texture, &depth_stencil_view_desc, &buffer); FAILED(result)) {
             sdk::logger(sdk::e_log_type::error, "CreateDepthStencilView failed, return code {}.", result);
             return;
         }

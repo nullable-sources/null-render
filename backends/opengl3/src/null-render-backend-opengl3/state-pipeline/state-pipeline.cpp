@@ -4,8 +4,11 @@
 namespace ntl::render::opengl3 {
     void c_state_pipeline::setup_state() {
         opengl::blend_equation(opengl::e_func_add);
+        opengl::enable(opengl::e_depth_test);
+        opengl::depth_mask(true);
+        opengl::depth_func(opengl::e_lequal);
+
         opengl::disable(opengl::e_cull_face);
-        opengl::disable(opengl::e_depth_test);
         opengl::disable(opengl::e_primitive_restart);
 
         i_state_pipeline::setup_state();
@@ -28,6 +31,8 @@ namespace ntl::render::opengl3 {
         opengl::get_integerv(opengl::e_scissor_box, saved_state.scissor_box);
         saved_state.enable_cull_face = opengl::is_enabled(opengl::e_cull_face);
         saved_state.enable_depth_test = opengl::is_enabled(opengl::e_depth_test);
+        saved_state.depth_mask = opengl::is_enabled(opengl::e_depth_writemask);
+        opengl::get_integerv(opengl::e_depth_func, &saved_state.depth_func);
         saved_state.enable_primitive_restart = opengl::is_enabled(opengl::e_primitive_restart);
         saved_state.enable_stencil_test = opengl::is_enabled(opengl::e_stencil_test);
 
@@ -80,6 +85,8 @@ namespace ntl::render::opengl3 {
 
         if(saved_state.enable_cull_face) opengl::enable(opengl::e_cull_face); else opengl::disable(opengl::e_cull_face);
         if(saved_state.enable_depth_test) opengl::enable(opengl::e_depth_test); else opengl::disable(opengl::e_depth_test);
+        opengl::depth_mask(saved_state.depth_mask);
+        opengl::depth_func(saved_state.depth_func);
         if(saved_state.enable_primitive_restart) opengl::enable(opengl::e_primitive_restart); else opengl::disable(opengl::e_primitive_restart);
         opengl::viewport(saved_state.viewport[0], saved_state.viewport[1], saved_state.viewport[2], saved_state.viewport[3]);
         opengl::scissor(saved_state.scissor_box[0], saved_state.scissor_box[1], saved_state.scissor_box[2], saved_state.scissor_box[3]);

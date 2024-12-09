@@ -12,6 +12,7 @@ namespace ntl::render {
         protected:
             matrix4x4_t matrix{ };
             vec2_t<float> translation{ };
+            float depth{ };
 
         public:
             i_renderer() { }
@@ -21,13 +22,17 @@ namespace ntl::render {
             virtual void update_uniforms();
 
         public:
-            void set_matrix(const matrix4x4_t& _matrix) { matrix = _matrix; }
-            void update_matrix(const matrix4x4_t& _matrix) { set_matrix(_matrix); update_uniforms(); }
-            const matrix4x4_t& get_matrix() const { return matrix; }
+            inline void set_matrix(const matrix4x4_t& _matrix) { matrix = _matrix; }
+            inline void update_matrix(const matrix4x4_t& _matrix) { set_matrix(_matrix); update_uniforms(); }
+            inline const matrix4x4_t& get_matrix() const { return matrix; }
 
-            void set_translation(const vec2_t<float>& _translation) { translation = _translation; }
-            void update_translation(const vec2_t<float>& _translation) { set_translation(_translation); update_uniforms(); }
-            const vec2_t<float>& get_translation() { return translation; }
+            inline void set_translation(const vec2_t<float>& _translation) { translation = _translation; }
+            inline void update_translation(const vec2_t<float>& _translation) { set_translation(_translation); update_uniforms(); }
+            inline const vec2_t<float>& get_translation() { return translation; }
+
+            inline void set_depth(float _depth) { depth = _depth; }
+            inline void update_depth(float _depth) { set_depth(_depth); update_uniforms(); }
+            inline float get_depth() { return depth; }
 
             //@note: opengl is crap, there may be an easier way to do this, but for now it will be like this
             constexpr virtual bool framebuffer_uvs_flipped() = 0;

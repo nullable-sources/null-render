@@ -33,8 +33,10 @@ namespace ntl::render::directx9 {
             if(empty()) return;
             c_shader::use();
 
+            float depth = backend::renderer->get_depth();
             vertex_shader->set_constant(1, backend::renderer->get_matrix().linear_array.data(), 4);
             vertex_shader->set_constant(5, backend::renderer->get_translation().coordinates.data());
+            vertex_shader->set_constant(6, &depth);
         }
     };
 }

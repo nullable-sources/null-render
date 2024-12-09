@@ -27,6 +27,14 @@ namespace ntl::render {
         backend::renderer->update_translation(translation);
     }
 
+    void c_set_depth_command::handle() {
+        backend::renderer->set_depth(depth);
+    }
+
+    void c_update_depth_command::handle() {
+        backend::renderer->update_depth(depth);
+    }
+
     void c_stencil_test_command::handle() {
         backend::stencil_buffer->set_test(test);
     }

@@ -99,6 +99,38 @@ namespace ntl::render {
         void handle() override;
     };
 
+    class c_set_depth_command : public i_command {
+    public:
+        static std::shared_ptr<c_set_depth_command> instance() { return std::make_shared<c_set_depth_command>(); }
+        static std::shared_ptr<c_set_depth_command> instance(float depth) { return std::make_shared<c_set_depth_command>(depth); }
+
+    public:
+        float depth{ };
+
+    public:
+        c_set_depth_command() { }
+        c_set_depth_command(float _depth) : depth(_depth) { }
+
+    public:
+        void handle() override;
+    };
+
+    class c_update_depth_command : public i_command {
+    public:
+        static std::shared_ptr<c_update_depth_command> instance() { return std::make_shared<c_update_depth_command>(); }
+        static std::shared_ptr<c_update_depth_command> instance(float depth) { return std::make_shared<c_update_depth_command>(depth); }
+
+    public:
+        float depth{ };
+
+    public:
+        c_update_depth_command() { }
+        c_update_depth_command(float _depth) : depth(_depth) { }
+
+    public:
+        void handle() override;
+    };
+
     class c_stencil_test_command : public i_command {
     public:
         static std::shared_ptr<c_stencil_test_command> instance() { return std::make_shared<c_stencil_test_command>(); }

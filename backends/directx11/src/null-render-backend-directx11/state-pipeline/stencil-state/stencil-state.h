@@ -16,9 +16,9 @@ namespace ntl::render::directx11 {
 
     public:
         c_stencil_state() : i_state_machine(D3D11_DEPTH_STENCIL_DESC{
-            .DepthEnable{ false },
+            .DepthEnable{ true },
             .DepthWriteMask{ D3D11_DEPTH_WRITE_MASK_ALL },
-            .DepthFunc{ D3D11_COMPARISON_LESS },
+            .DepthFunc{ D3D11_COMPARISON_LESS_EQUAL },
             .StencilReadMask{ D3D11_DEFAULT_STENCIL_READ_MASK },
             .StencilWriteMask{ D3D11_DEFAULT_STENCIL_WRITE_MASK }
             }) { }

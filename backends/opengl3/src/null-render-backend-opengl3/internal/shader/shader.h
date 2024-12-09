@@ -27,6 +27,7 @@ namespace ntl::render::opengl3 {
     public:
         c_uniform<matrix4x4_t> matrix{ };
         c_uniform<vec2_t<float>> translation{ };
+        c_uniform<float> depth{ };
 
     public:
         virtual ~c_default_shader() { }

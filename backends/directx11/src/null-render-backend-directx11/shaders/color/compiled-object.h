@@ -31,6 +31,7 @@ namespace ntl::render::directx11 {
         public:
             matrix4x4_t matrix{ };
             vec2_t<float> translation{ };
+            float depth{ };
         };
         c_constant_buffer<constant_buffer_t> constant_buffer{ };
 

@@ -1,6 +1,7 @@
 #version 330
 uniform mat4 matrix;
 uniform vec2 translation;
+uniform float depth;
 
 in vec3 position;
 in vec2 uv;
@@ -14,5 +15,5 @@ void main() {
     frag_color = color / 255.f;
     frag_color.rgb *= frag_color.a;
 
-    gl_Position = matrix * vec4(position.xy + translation,0,1);
+    gl_Position = matrix * vec4(position.xy + translation, depth, 1);
 }

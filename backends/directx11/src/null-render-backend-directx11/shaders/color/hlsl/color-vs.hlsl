@@ -1,6 +1,7 @@
 cbuffer constant_buffer : register(b0) {
     matrix projection_matrix;
     float2 translation;
+    float depth;
 };
 
 struct vs_input_t {
@@ -17,8 +18,7 @@ struct ps_input_t {
 
 ps_input_t main(vs_input_t input) {
     ps_input_t output;
-    output.position = mul(projection_matrix, float4(input.position + translation, 0.f, 1.f));
-    
+    output.position = mul(projection_matrix, float4(input.position + translation, depth, 1.f));
     output.color = input.color / 255.f;
     output.color.rgb *= output.color.a;
     

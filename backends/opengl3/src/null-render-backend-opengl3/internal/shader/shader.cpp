@@ -29,6 +29,7 @@ namespace ntl::render::opengl3 {
 
         matrix.get_location(program.get(), "matrix");
         translation.get_location(program.get(), "translation");
+        depth.get_location(program.get(), "depth");
     }
 
     void c_default_shader::use() {
@@ -36,5 +37,6 @@ namespace ntl::render::opengl3 {
 
         matrix.set(backend::renderer->get_matrix());
         translation.set(backend::renderer->get_translation());
+        depth.set(backend::renderer->get_depth());
     }
 }

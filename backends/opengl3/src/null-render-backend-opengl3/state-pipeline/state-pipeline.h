@@ -12,8 +12,8 @@ namespace ntl::render::opengl3 {
 
             std::uint32_t draw_fbo{ }, read_fbo{ }, rbo{ };
             std::uint32_t active_texture{ }, program{ }, texture{ }, sampler{ }, array_buffer{ }, element_array_buffer{ }, vertex_array_object{ };
-            bool enable_cull_face{ }, enable_depth_test{ }, enable_stencil_test{ }, enable_primitive_restart{ };
-            int stencil_clear_value{ };
+            bool enable_cull_face{ }, enable_depth_test{ }, depth_mask{ }, enable_stencil_test{ }, enable_primitive_restart{ };
+            int stencil_clear_value{ }, depth_func{ };
             int viewport[4]{ }, scissor_box[4]{ };
         } saved_state{ };
 

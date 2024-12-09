@@ -38,8 +38,9 @@ namespace ntl::render::backend {
         stencils.push(default_stencil_state);
         backend::renderer->set_clip({ { 0 }, shared::viewport });
         backend::renderer->set_matrix(backend::renderer->get_projection_matrix());
-        backend::renderer->update_translation(0.f);
         backend::renderer->set_translation(0.f);
+        backend::renderer->set_depth(0.f);
+        backend::stencil_buffer->clear();
         backend::renderer_event_dispatcher.setup_state();
     }
 
