@@ -6,7 +6,7 @@ namespace ntl::render {
     std::shared_ptr<i_command> pen_t::around_convex_shape(const std::shared_ptr<c_geometry_command>& command) const {
         std::shared_ptr<c_geometry_command> pen_command = c_geometry_command::instance(command->geometry_buffer);
 
-        for(size_t i : std::views::iota(0u, command->vertex_count)) {
+        for(size_t i = 0; i < command->vertex_count; i++) {
             const size_t previous_i = (i + command->vertex_count - 1) % command->vertex_count;
             const size_t next_i = (i + 1) % command->vertex_count;
 
@@ -32,7 +32,7 @@ namespace ntl::render {
     }
 
     void pen_t::around_order(std::shared_ptr<c_geometry_command>& pen_command, const std::shared_ptr<c_geometry_command>& command, const std::vector<backend::index_t>& order, math::e_rotation rotation, backend::index_t first_vertex_offset) const {
-        for(size_t i : std::views::iota(0u, order.size())) {
+        for(size_t i = 0; i < order.size(); i++) {
             const size_t previous_i = (i + order.size() - 1) % order.size();
             const size_t next_i = (i + 1) % order.size();
 

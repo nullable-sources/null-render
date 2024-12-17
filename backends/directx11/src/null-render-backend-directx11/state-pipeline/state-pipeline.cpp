@@ -61,12 +61,12 @@ namespace ntl::render::directx11 {
         if(saved_state.input_layout) saved_state.input_layout->Release();
         if(saved_state.sampler) saved_state.sampler->Release();
         if(saved_state.pixel_shader) saved_state.pixel_shader->Release();
-        for(std::uint32_t i : std::views::iota(0u, saved_state.pixel_shader_instances_count)) if(saved_state.pixel_shader_instances[i]) saved_state.pixel_shader_instances[i]->Release();
+        for(std::uint32_t i = 0; i < saved_state.pixel_shader_instances_count; i++) if(saved_state.pixel_shader_instances[i]) saved_state.pixel_shader_instances[i]->Release();
         if(saved_state.vertex_shader) saved_state.vertex_shader->Release();
-        for(std::uint32_t i : std::views::iota(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT)) if(saved_state.pixel_shader_constant_buffer[i]) saved_state.pixel_shader_constant_buffer[i]->Release();
-        for(std::uint32_t i : std::views::iota(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT)) if(saved_state.vertex_shader_constant_buffer[i]) saved_state.vertex_shader_constant_buffer[i]->Release();
+        for(std::uint32_t i = 0; i < D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT; i++) if(saved_state.pixel_shader_constant_buffer[i]) saved_state.pixel_shader_constant_buffer[i]->Release();
+        for(std::uint32_t i = 0; i < D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT; i++) if(saved_state.vertex_shader_constant_buffer[i]) saved_state.vertex_shader_constant_buffer[i]->Release();
         if(saved_state.geometry_shader) saved_state.geometry_shader->Release();
-        for(std::uint32_t i : std::views::iota(0u, saved_state.vertex_shader_instances_count)) if(saved_state.vertex_shader_instances[i]) saved_state.vertex_shader_instances[i]->Release();
+        for(std::uint32_t i = 0; i < saved_state.vertex_shader_instances_count; i++) if(saved_state.vertex_shader_instances[i]) saved_state.vertex_shader_instances[i]->Release();
         if(saved_state.shader_resource) saved_state.shader_resource->Release();
     }
 

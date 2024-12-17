@@ -196,7 +196,7 @@ namespace ntl::render {
         std::shared_ptr<c_geometry_command> command = c_geometry_command::instance(&mesh->geometry_buffer);
 
         command->index_count += (points.size() - 2) * 3;
-        for(int i : std::views::iota(2u, points.size()))
+        for(int i = 2; i < points.size(); i++)
             mesh->geometry_buffer.add_index(0).add_index(i - 1).add_index(i);
 
         command->vertex_count += points.size();

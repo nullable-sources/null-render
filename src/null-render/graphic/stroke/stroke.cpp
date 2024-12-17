@@ -19,8 +19,9 @@ namespace ntl::render {
 
     void stroke_t::build_segments(std::vector<segment_t>& segments, const std::vector<vec2_t<float>>& points) const {
         const size_t segments_count = points.size();
+        segments.resize(segments_count);
 
-        for(size_t i : std::views::iota(0u, segments_count)) {
+        for(size_t i = 0; i < segments_count; i++) {
             const size_t previous_i = (i + segments_count - 1) % segments_count;
             const size_t next_i = (i + 1) % segments_count;
 
@@ -31,10 +32,10 @@ namespace ntl::render {
             const vec2_t<float>& next_point = points[next_i];
 
             std::shared_ptr<segment_t::edge_t> begin_edge{ }, end_edge{ };
-            if(!segments.empty()) begin_edge = segments.back().end_edge;
+            if(!is_first) begin_edge = segments[i - 1].end_edge;
             else begin_edge = std::make_shared<segment_t::edge_t>();
 
-            if(is_last) end_edge = segments.front().begin_edge;
+            if(is_last) end_edge = segments[0].begin_edge;
             else end_edge = std::make_shared<segment_t::edge_t>();
 
             begin_edge->from_points(previous_point, current_point, next_point);
@@ -80,7 +81,7 @@ namespace ntl::render {
                 begin_edge->inward_begin = begin_edge->inward_end = 1;
             }
 
-            segments.push_back(segment_t(begin_edge, end_edge, is_first, is_last));
+            segments[i] = segment_t(begin_edge, end_edge, is_first, is_last);
         }
     }
 }

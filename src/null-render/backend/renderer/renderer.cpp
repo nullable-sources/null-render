@@ -42,9 +42,9 @@ namespace ntl::render::backend {
         std::unique_ptr<std::uint8_t[]> premultiplied(new std::uint8_t[data_size]);
         if(!data) return std::move(premultiplied);
 
-        for(size_t i : std::views::iota(0u, data_size) | std::views::stride(4u)) {
+        for(size_t i = 0; i < data_size; i += 4) {
             const std::uint8_t alpha = data[i + 3];
-            for(size_t j : std::views::iota(0u, 3u))
+            for(size_t j = 0; j < 3; j++)
                 premultiplied[i + j] = int(data[i + j]) * int(alpha) / 255;
             premultiplied[i + 3] = alpha;
         }

@@ -87,7 +87,7 @@ namespace ntl::render {
         if(downsample_count > 0) {
             rect_t<float> blit_region = geometry_region;
             rect_t<float> previous_blit{ };
-            for(int i : std::views::iota(0, downsample_count + 1)) {
+            for(int i = 0; i <= downsample_count; i++) {
                 previous_blit = blit_region;
                 blit_region *= 0.5f;
                 const bool break_downsample = blit_region.size() < 1.f;
@@ -116,7 +116,7 @@ namespace ntl::render {
         make_constants();
         backend::blur_shader->set_constants(constants);
         backend::blur_shader->use();
-        for(int i : std::views::iota(0, pass_count)) {
+        for(int i = 0; i < pass_count; i++) {
             secondary_buffer->use();
             backend::renderer->set_texture(main_buffer->get_texture());
             backend::blur_shader->set_direction(direction);

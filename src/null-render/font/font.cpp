@@ -26,7 +26,7 @@ namespace ntl::render {
         }
 
         //@note: fill all created glyphs to lookup_table
-        for(size_t i : std::views::iota(0u, glyphs.size()))
+        for(size_t i = 0; i < glyphs.size(); i++)
             lookup_table[glyphs[i].codepoint] = i;
 
         if(const glyph_t* whitespace = find_glyph(' ')) {

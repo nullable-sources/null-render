@@ -35,6 +35,7 @@ namespace ntl::render::backend {
         virtual void lock() {
             locked = true;
             enable.to_hash(overridden_hash);
+            depth_test.to_hash(overridden_hash);
             fail.to_hash(overridden_hash);
             zfail.to_hash(overridden_hash);
             pass.to_hash(overridden_hash);

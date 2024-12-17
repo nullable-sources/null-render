@@ -33,8 +33,8 @@ namespace ntl::render::directx9 {
             }
 
             std::size_t pitch = locked_rect.Pitch / 4;
-            for(int y : std::views::iota(0, size.y)) {
-                for(int x : std::views::iota(0, size.x)) {
+            for(int y = 0; y < size.y; y++) {
+                for(int x = 0; x < size.x; x++) {
                     std::uint32_t rgba = ((std::uint32_t*)data)[(int)size.x * y + x];
 
                     std::uint8_t r = rgba >> 0;
