@@ -44,8 +44,10 @@ namespace ntl::render {
 
                 command->index_count += 6;
                 mesh->geometry_buffer
-                    .add_index(command->vertex_count).add_index(command->vertex_count + 1).add_index(command->vertex_count + 2)
-                    .add_index(command->vertex_count).add_index(command->vertex_count + 2).add_index(command->vertex_count + 3);
+                    .add_indexes(
+                        command->vertex_count, command->vertex_count + 1, command->vertex_count + 2,
+                        command->vertex_count, command->vertex_count + 2, command->vertex_count + 3
+                    );
 
                 command->vertex_count += 4;
                 mesh->geometry_buffer

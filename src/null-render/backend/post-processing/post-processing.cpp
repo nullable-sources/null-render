@@ -20,8 +20,10 @@ namespace ntl::render::backend {
     void c_post_processing::generate_draw_geometry(c_geometry_command* command, const rect_t<float>& geometry_region, rect_t<float> uvs) {
         command->index_count += 6;
         command->geometry_buffer
-            ->add_index(0).add_index(1).add_index(2)
-            .add_index(0).add_index(2).add_index(3);
+            ->add_indexes(
+                0, 1, 2,
+                0, 2, 3
+            );
 
         if(renderer->framebuffer_uvs_flipped()) {
             uvs.min.y = 1.f - uvs.min.y;

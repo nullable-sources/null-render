@@ -111,8 +111,10 @@ namespace ntl::render {
 
                 command->index_count += 6;
                 mesh->geometry_buffer
-                    .add_index(command->vertex_count + segment.begin_edge->outward_end).add_index(next_edge_offset + segment.end_edge->outward_begin).add_index(next_edge_offset + segment.end_edge->inward_begin)
-                    .add_index(command->vertex_count + segment.begin_edge->outward_end).add_index(next_edge_offset + segment.end_edge->inward_begin).add_index(command->vertex_count + segment.begin_edge->inward_end);
+                    .add_indexes(
+                        command->vertex_count + segment.begin_edge->outward_end, next_edge_offset + segment.end_edge->outward_begin, next_edge_offset + segment.end_edge->inward_begin,
+                        command->vertex_count + segment.begin_edge->outward_end, next_edge_offset + segment.end_edge->inward_begin, command->vertex_count + segment.begin_edge->inward_end
+                    );
             }
 
             if(stroke.line_cap != e_line_cap::joint && (segment.is_first || segment.is_last)) {
@@ -141,7 +143,7 @@ namespace ntl::render {
                         origin_offset = segment.begin_edge->get_mitter_offset(inward_thickness > outward_thickness ? (outward_thickness - half_thickness) : (half_thickness - inward_thickness));
 
                     command->index_count += 3;
-                    mesh->geometry_buffer.add_index(command->vertex_count).add_index(command->vertex_count + 1).add_index(command->vertex_count + 2);
+                    mesh->geometry_buffer.add_indexes(command->vertex_count, command->vertex_count + 1, command->vertex_count + 2);
 
                     const vec2_t<float> point = *segment.begin_edge->point + origin_offset;
                     const vec2_t<float> miter_vertex = point + distance;
@@ -197,7 +199,7 @@ namespace ntl::render {
 
         command->index_count += (points.size() - 2) * 3;
         for(int i = 2; i < points.size(); i++)
-            mesh->geometry_buffer.add_index(0).add_index(i - 1).add_index(i);
+            mesh->geometry_buffer.add_indexes(0, i - 1, i);
 
         command->vertex_count += points.size();
         for(const vec2_t<float>& current_point : points) {

@@ -47,9 +47,10 @@ namespace ntl::render {
 
         const size_t next_vertex_offset = is_last ? first_vertex_offset : pen_command->vertex_count + 2;
         pen_command->index_count += 6;
-        pen_command->geometry_buffer
-            ->add_index(pen_command->vertex_count).add_index(next_vertex_offset).add_index(next_vertex_offset + 1)
-            .add_index(pen_command->vertex_count).add_index(next_vertex_offset + 1).add_index(pen_command->vertex_count + 1);
+        pen_command->geometry_buffer->add_indexes(
+            pen_command->vertex_count, next_vertex_offset,     next_vertex_offset + 1,
+            pen_command->vertex_count, next_vertex_offset + 1, pen_command->vertex_count + 1
+        );
 
         stroke_t::segment_t::i_edge current_edge{ };
         current_edge.from_points(previous_vertex.pos, current_vertex.pos, next_vertex.pos, rotation);
